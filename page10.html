@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Focus Timer | Glass Theme</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary-color: #87ceeb;
+      --glass-bg: rgba(255, 255, 255, 0.15);
+      --glass-border: rgba(255, 255, 255, 0.2);
+      --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      --text-primary: #222;
+      --text-secondary: #444;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: "Poppins", sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      transition: background-color 1s ease;
+      padding: 20px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1200px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+      position: relative;
+    }
+
+    .glass-panel {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 24px;
+      padding: 40px;
+      backdrop-filter: blur(12px);
+      box-shadow: var(--glass-shadow);
+      text-align: center;
+      transition: all 0.5s ease;
+    }
+
+    .timer-panel {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      grid-column: 1 / -1;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .settings-panel {
+      display: flex;
+      flex-direction: column;
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 350px;
+      transform: translateX(0);
+      opacity: 1;
+      z-index: 10;
+    }
+
+    .settings-panel.hidden {
+      transform: translateX(120%);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .toggle-settings {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      z-index: 20;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+      color: var(--text-primary);
+      font-weight: 600;
+      font-size: 2.2rem;
+    }
+
+    h2 {
+      color: var(--text-primary);
+      font-weight: 500;
+      margin-bottom: 25px;
+      font-size: 1.5rem;
+    }
+
+    label {
+      color: var(--text-secondary);
+      font-size: 16px;
+      display: block;
+      margin-bottom: 8px;
+      text-align: left;
+    }
+
+    .controls, .actions {
+      margin: 20px 0;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .settings-group {
+      margin-bottom: 25px;
+      text-align: left;
+    }
+
+    button {
+      padding: 12px 20px;
+      border: none;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.25);
+      color: var(--text-primary);
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    button:hover {
+      background: rgba(255, 255, 255, 0.4);
+      transform: translateY(-2px);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    .timer-btn {
+      min-width: 100px;
+    }
+
+    .action-btn {
+      min-width: 120px;
+      justify-content: center;
+    }
+
+    #timer {
+      font-size: 5rem;
+      margin: 30px 0;
+      font-weight: 600;
+      color: var(--text-primary);
+      text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .progress-container {
+      width: 100%;
+      height: 8px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 4px;
+      overflow: hidden;
+      margin: 20px 0;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: var(--primary-color);
+      border-radius: 4px;
+      transition: width 1s linear;
+    }
+
+    input[type="color"] {
+      width: 100%;
+      height: 40px;
+      border: none;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      cursor: pointer;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      height: 8px;
+      -webkit-appearance: none;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 4px;
+      outline: none;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--primary-color);
+      cursor: pointer;
+    }
+
+    .preset-colors {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .color-preset {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+
+    .color-preset:hover {
+      transform: scale(1.1);
+    }
+
+    .notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 15px 25px;
+      background: var(--glass-bg);
+      backdrop-filter: blur(12px);
+      border-radius: 12px;
+      box-shadow: var(--glass-shadow);
+      transform: translateX(150%);
+      transition: transform 0.3s ease;
+      z-index: 1000;
+    }
+
+    .notification.show {
+      transform: translateX(0);
+    }
+
+    @media (max-width: 900px) {
+      .container {
+        grid-template-columns: 1fr;
+      }
+      
+      #timer {
+        font-size: 4rem;
+      }
+      
+      .settings-panel {
+        position: relative;
+        width: 100%;
+        margin-top: 30px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .glass-panel {
+        padding: 25px;
+      }
+      
+      #timer {
+        font-size: 3.5rem;
+      }
+      
+      button {
+        padding: 10px 15px;
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="glass-panel timer-panel">
+      <h1>Focus Timer</h1>
+      <div id="timer">25:00</div>
+      <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+      <div class="actions">
+        <button onclick="startTimer()" class="action-btn"><i class="fas fa-play"></i> Start</button>
+        <button onclick="pauseTimer()" class="action-btn"><i class="fas fa-pause"></i> Pause</button>
+        <button onclick="resetTimer()" class="action-btn"><i class="fas fa-redo"></i> Reset</button>
+      </div>
+    </div>
+
+    <div class="glass-panel settings-panel">
+      <h2>Settings</h2>
+      
+      <div class="settings-group">
+        <label for="timerDuration">Timer Duration (minutes)</label>
+        <input type="range" id="timerDuration" min="1" max="120" value="25" oninput="updateDurationValue(this.value)">
+        <div id="durationValue">25 min</div>
+      </div>
+      
+      <div class="settings-group">
+        <label for="colorPicker">Progress Color</label>
+        <input type="color" id="colorPicker" value="#87ceeb">
+        
+        <div class="preset-colors">
+          <div class="color-preset" style="background-color: #87ceeb;" onclick="setColor('#87ceeb')"></div>
+          <div class="color-preset" style="background-color: #9370db;" onclick="setColor('#9370db')"></div>
+          <div class="color-preset" style="background-color: #50c878;" onclick="setColor('#50c878')"></div>
+          <div class="color-preset" style="background-color: #ff7f50;" onclick="setColor('#ff7f50')"></div>
+          <div class="color-preset" style="background-color: #f67280;" onclick="setColor('#f67280')"></div>
+        </div>
+      </div>
+      
+      <div class="settings-group">
+        <label>Quick Presets</label>
+        <div class="controls">
+          <button onclick="setDuration(15)" class="timer-btn">15 Min</button>
+          <button onclick="setDuration(25)" class="timer-btn">25 Min</button>
+          <button onclick="setDuration(45)" class="timer-btn">45 Min</button>
+          <button onclick="setDuration(60)" class="timer-btn">60 Min</button>
+        </div>
+      </div>
+    </div>
+    
+    <button class="toggle-settings" onclick="toggleSettings()">
+      <i class="fas fa-cog"></i>
+    </button>
+  </div>
+
+  <div class="notification" id="notification">
+    <i class="fas fa-bell"></i> Timer completed!
+  </div>
+
+  <script>
+    // App state
+    const state = {
+      timerInterval: null,
+      totalSeconds: 25 * 60,
+      remainingSeconds: 25 * 60,
+      chosenColor: "#87ceeb",
+      isPaused: true,
+      startColor: [255, 255, 255], // white
+      endColor: hexToRgb("#87ceeb"),
+      settingsVisible: true
+    };
+
+    // DOM elements
+    const elements = {
+      timer: document.getElementById("timer"),
+      progressBar: document.getElementById("progressBar"),
+      colorPicker: document.getElementById("colorPicker"),
+      timerDuration: document.getElementById("timerDuration"),
+      durationValue: document.getElementById("durationValue"),
+      notification: document.getElementById("notification"),
+      settingsPanel: document.querySelector('.settings-panel')
+    };
+
+    // Initialize the app
+    function init() {
+      updateTimerDisplay();
+      elements.colorPicker.addEventListener("input", (e) => {
+        state.chosenColor = e.target.value;
+        state.endColor = hexToRgb(state.chosenColor);
+      });
+    }
+
+    // Toggle settings panel visibility
+    function toggleSettings() {
+      state.settingsVisible = !state.settingsVisible;
+      elements.settingsPanel.classList.toggle('hidden', !state.settingsVisible);
+    }
+
+    // Set timer duration from quick preset
+    function setDuration(minutes) {
+      elements.timerDuration.value = minutes;
+      updateDurationValue(minutes);
+    }
+
+    // Update duration value display
+    function updateDurationValue(value) {
+      elements.durationValue.textContent = `${value} min`;
+      state.totalSeconds = value * 60;
+      state.remainingSeconds = state.totalSeconds;
+      updateTimerDisplay();
+      updateProgressBar();
+    }
+
+    // Set color from preset
+    function setColor(color) {
+      state.chosenColor = color;
+      state.endColor = hexToRgb(color);
+      elements.colorPicker.value = color;
+    }
+
+    // Start the timer
+    function startTimer() {
+      if (state.timerInterval) {
+        clearInterval(state.timerInterval);
+      }
+      
+      // Hide settings panel when timer starts
+      state.settingsVisible = false;
+      elements.settingsPanel.classList.add('hidden');
+      
+      state.isPaused = false;
+      document.body.style.backgroundColor = "rgb(255,255,255)";
+      
+      state.timerInterval = setInterval(() => {
+        if (state.isPaused) return;
+        
+        state.remainingSeconds--;
+        updateTimerDisplay();
+        updateProgressBar();
+        
+        // Update background color based on progress
+        const progress = (state.totalSeconds - state.remainingSeconds) / state.totalSeconds;
+        const r = Math.round(state.startColor[0] + (state.endColor[0] - state.startColor[0]) * progress);
+        const g = Math.round(state.startColor[1] + (state.endColor[1] - state.startColor[1]) * progress);
+        const b = Math.round(state.startColor[2] + (state.endColor[2] - state.startColor[2]) * progress);
+        
+        document.body.style.backgroundColor = `rgb(${r},${g},${b})`;
+        
+        if (state.remainingSeconds <= 0) {
+          clearInterval(state.timerInterval);
+          showNotification();
+        }
+      }, 1000);
+    }
+
+    // Pause the timer
+    function pauseTimer() {
+      state.isPaused = true;
+    }
+
+    // Reset the timer
+    function resetTimer() {
+      clearInterval(state.timerInterval);
+      state.timerInterval = null;
+      state.isPaused = true;
+      state.remainingSeconds = state.totalSeconds;
+      updateTimerDisplay();
+      updateProgressBar();
+      document.body.style.backgroundColor = "white";
+      
+      // Show settings again when resetting
+      state.settingsVisible = true;
+      elements.settingsPanel.classList.remove('hidden');
+    }
+
+    // Update timer display
+    function updateTimerDisplay() {
+      const min = Math.floor(state.remainingSeconds / 60);
+      const sec = state.remainingSeconds % 60;
+      elements.timer.textContent = `${String(min).padStart(2, "0")}:${String(sec).padStart(2, "0")}`;
+    }
+
+    // Update progress bar
+    function updateProgressBar() {
+      const progress = ((state.totalSeconds - state.remainingSeconds) / state.totalSeconds) * 100;
+      elements.progressBar.style.width = `${progress}%`;
+      elements.progressBar.style.backgroundColor = state.chosenColor;
+    }
+
+    // Show notification
+    function showNotification() {
+      elements.notification.classList.add('show');
+      setTimeout(() => {
+        elements.notification.classList.remove('show');
+      }, 3000);
+    }
+
+    // Convert hex to RGB
+    function hexToRgb(hex) {
+      const bigint = parseInt(hex.slice(1), 16);
+      const r = (bigint >> 16) & 255;
+      const g = (bigint >> 8) & 255;
+      const b = bigint & 255;
+      return [r, g, b];
+    }
+
+    // Initialize the app when the DOM is loaded
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>
