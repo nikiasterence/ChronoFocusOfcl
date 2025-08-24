@@ -111,20 +111,19 @@
     }
     
     .buttons {
-      display: flex;
-      flex-direction: column;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
       gap: 15px;
       margin-top: 30px;
     }
     
-    button {
-      padding: 16px 25px;
+    .round-btn {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
       border: none;
-      border-radius: 14px;
-      background: rgba(255, 255, 255, 0.2);
       color: white;
-      font-size: 1rem;
-      font-weight: 600;
+      font-size: 1.5rem;
       cursor: pointer;
       transition: all 0.3s ease;
       box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1),
@@ -132,54 +131,96 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 10px;
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
+      margin: 0 auto;
+      position: relative;
     }
     
-    button:hover {
-      background: rgba(255, 255, 255, 0.25);
-      transform: translateY(-2px) scale(1.02);
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15),
+    .round-btn:hover {
+      transform: translateY(-5px) scale(1.1);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15),
                   inset 0 0 0 1px rgba(255, 255, 255, 0.2);
     }
     
-    button:active {
+    .round-btn:active {
       transform: translateY(0) scale(1);
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1),
                   inset 0 0 0 1px rgba(255, 255, 255, 0.1);
     }
     
-    .primary-btn {
-      background: rgba(255, 149, 0, 0.3);
+    .btn-label {
+      position: absolute;
+      bottom: -25px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.7rem;
+      white-space: nowrap;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+      font-weight: 500;
     }
     
-    .secondary-btn {
-      background: rgba(0, 0, 0, 0.2);
+    .function-label {
+      position: absolute;
+      top: -30px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.6rem;
+      width: 80px;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+      font-weight: 500;
+      background: rgba(0, 0, 0, 0.7);
+      padding: 3px 6px;
+      border-radius: 6px;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
     }
     
-    .caffeine-btn {
-      background: rgba(255, 159, 10, 0.3);
+    .button-wrapper:hover .function-label {
+      opacity: 1;
+    }
+    
+    .tip-btn {
+      background: linear-gradient(135deg, #ff7b00, #ff5500);
     }
     
     .study-with-me-btn {
-      background: rgba(255, 100, 0, 0.3);
+      background: linear-gradient(135deg, #4361ee, #3a0ca3);
     }
     
     .calculator-btn {
-      background: rgba(255, 179, 67, 0.3);
+      background: linear-gradient(135deg, #f72585, #b5179e);
     }
     
-    .drawing-calc-btn {
-      background: rgba(255, 195, 0, 0.3);
+    .caffeine-btn {
+      background: linear-gradient(135deg, #4cc9f0, #4895ef);
     }
     
     .periodic-table-btn {
-      background: rgba(255, 125, 0, 0.3);
+      background: linear-gradient(135deg, #560bad, #7209b7);
     }
     
     .solar-system-btn {
-      background: rgba(255, 111, 0, 0.3);
+      background: linear-gradient(135deg, #f9c74f, #f9844a);
+    }
+    
+    .favorite-btn {
+      background: linear-gradient(135deg, #ffd166, #ff9e00);
+    }
+    
+    .back-btn {
+      background: linear-gradient(135deg, #06d6a0, #048a81);
+    }
+    
+    .puzzle-btn {
+      background: linear-gradient(135deg, #118ab2, #073b4c);
+    }
+    
+    .draw-btn {
+      background: linear-gradient(135deg, #9d4edd, #5a189a);
     }
     
     .caffeine-counter {
@@ -211,6 +252,19 @@
       padding: 10px 16px;
       font-size: 0.9rem;
       border-radius: 10px;
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
+    }
+    
+    .reset-btn:hover {
+      background: rgba(255, 255, 255, 0.25);
     }
     
     /* Floating Draw Calculator Button */
@@ -221,7 +275,7 @@
       width: 70px;
       height: 70px;
       border-radius: 50%;
-      background: rgba(255, 159, 0, 0.3);
+      background: linear-gradient(135deg, #ff9e00, #ff5400);
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
       border: 1px solid rgba(255, 255, 255, 0.2);
@@ -240,7 +294,6 @@
     
     .floating-btn:hover {
       transform: scale(1.1) translateY(-5px);
-      background: rgba(255, 159, 0, 0.5);
       box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3),
                   inset 0 0 0 1px rgba(255, 255, 255, 0.2);
       animation: none;
@@ -476,8 +529,26 @@
         font-size: 1rem;
       }
       
-      button {
-        padding: 14px 20px;
+      .buttons {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+      }
+      
+      .round-btn {
+        width: 60px;
+        height: 60px;
+        font-size: 1.3rem;
+      }
+      
+      .btn-label {
+        font-size: 0.6rem;
+        bottom: -20px;
+      }
+      
+      .function-label {
+        font-size: 0.55rem;
+        width: 70px;
+        top: -25px;
       }
       
       .caffeine-counter {
@@ -533,50 +604,97 @@
     </div>
     
     <div class="buttons">
-      <button class="primary-btn" onclick="newTip()">
-        <i class="fas fa-lightbulb"></i> Get Recommendation
-      </button>
-      
-      <button class="study-with-me-btn" onclick="openStudyWithMe()">
-        <i class="fas fa-users"></i> Study With Me
-      </button>
-      
-      <button class="calculator-btn" onclick="openCalculator()">
-        <i class="fas fa-calculator"></i> Scientific Calculator
-      </button>
-      
-      <button class="caffeine-btn" onclick="addCaffeine()">
-        <i class="fas fa-coffee"></i> Add Caffeine
-      </button>
-      
-      <!-- NEW BUTTONS ADDED HERE -->
-      <a href="page5.html">
-        <button class="periodic-table-btn">
-          <i class="fas fa-atom"></i> Periodic Table
+      <!-- Round buttons with labels -->
+      <div class="button-wrapper">
+        <div class="function-label">Get Study Tips</div>
+        <button class="round-btn tip-btn" onclick="newTip()">
+          <i class="fas fa-lightbulb"></i>
         </button>
-      </a>
+        <div class="btn-label">Tip</div>
+      </div>
       
-      <a href="page6.html">
-        <button class="solar-system-btn">
-          <i class="fas fa-globe"></i> Solar System
+      <div class="button-wrapper">
+        <div class="function-label">Study With Me Videos</div>
+        <button class="round-btn study-with-me-btn" onclick="openStudyWithMe()">
+          <i class="fas fa-users"></i>
         </button>
-      </a>
+        <div class="btn-label">Study With Me</div>
+      </div>
       
-      <button class="secondary-btn" onclick="markFavorite()">
-        <i class="far fa-star"></i> Mark as Favorite
-      </button>
-      
-      <a href="index.html">
-        <button class="secondary-btn">
-          <i class="fas fa-arrow-left"></i> Back to To-Do
+      <div class="button-wrapper">
+        <div class="function-label">Scientific Calculator</div>
+        <button class="round-btn calculator-btn" onclick="openCalculator()">
+          <i class="fas fa-calculator"></i>
         </button>
-      </a>
+        <div class="btn-label">Calculator</div>
+      </div>
       
-      <a href="page7.html">
-        <button class="secondary-btn">
-          <i class="fas fa-puzzle-piece"></i> Play Puzzle
+      <div class="button-wrapper">
+        <div class="function-label">Track Caffeine Intake</div>
+        <button class="round-btn caffeine-btn" onclick="addCaffeine()">
+          <i class="fas fa-coffee"></i>
         </button>
-      </a>
+        <div class="btn-label">Caffeine</div>
+      </div>
+      
+      <div class="button-wrapper">
+        <div class="function-label">Interactive Periodic Table</div>
+        <a href="page5.html">
+          <button class="round-btn periodic-table-btn">
+            <i class="fas fa-atom"></i>
+          </button>
+        </a>
+        <div class="btn-label">Periodic Table</div>
+      </div>
+      
+      <div class="button-wrapper">
+        <div class="function-label">Solar System Explorer</div>
+        <a href="page6.html">
+          <button class="round-btn solar-system-btn">
+            <i class="fas fa-globe"></i>
+          </button>
+        </a>
+        <div class="btn-label">Solar System</div>
+      </div>
+      
+      <div class="button-wrapper">
+        <div class="function-label">Save Favorite Tips</div>
+        <button class="round-btn favorite-btn" onclick="markFavorite()">
+          <i class="far fa-star"></i>
+        </button>
+        <div class="btn-label">Favorite</div>
+      </div>
+      
+      <div class="button-wrapper">
+        <div class="function-label">Return to Home</div>
+        <a href="index.html">
+          <button class="round-btn back-btn">
+            <i class="fas fa-arrow-left"></i>
+          </button>
+        </a>
+        <div class="btn-label">Back</div>
+      </div>
+      
+      <div class="button-wrapper">
+        <div class="function-label">Educational Puzzles</div>
+        <a href="page7.html">
+          <button class="round-btn puzzle-btn">
+            <i class="fas fa-puzzle-piece"></i>
+          </button>
+        </a>
+        <div class="btn-label">Puzzle</div>
+      </div>
+      
+      <!-- NEW DRAW BUTTON -->
+      <div class="button-wrapper">
+        <div class="function-label">Drawing Canvas</div>
+        <a href="page8.html">
+          <button class="round-btn draw-btn">
+            <i class="fas fa-paint-brush"></i>
+          </button>
+        </a>
+        <div class="btn-label">Draw</div>
+      </div>
     </div>
   </div>
 
@@ -690,10 +808,10 @@
         
         // Update button icon to indicate it's favorited
         const favButton = document.querySelector("button[onclick='markFavorite()']");
-        favButton.innerHTML = '<i class="fas fa-star"></i> Favorited';
+        favButton.innerHTML = '<i class="fas fa-star"></i>';
         
         setTimeout(() => {
-          favButton.innerHTML = '<i class="far fa-star"></i> Mark as Favorite';
+          favButton.innerHTML = '<i class="far fa-star"></i>';
         }, 2000);
       } else if (favorites.includes(currentTip)) {
         alert("This tip is already in your favorites!");
