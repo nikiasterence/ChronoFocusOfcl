@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orange Scientific Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #ff7e00, #ff5500, #ff3c00);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            color: #fff;
+        }
+        
+        .app-container {
+            width: 100%;
+            max-width: 1000px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(12px);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .app-header {
+            padding: 20px;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.2);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+        }
+        
+        .app-header h1 {
+            font-weight: 700;
+            font-size: 32px;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            color: #fff;
+        }
+        
+        .navigation {
+            display: flex;
+            background: rgba(0, 0, 0, 0.25);
+            padding: 0;
+        }
+        
+        .nav-item {
+            flex: 1;
+            padding: 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            border-bottom: 3px solid transparent;
+            font-size: 18px;
+        }
+        
+        .nav-item.active {
+            background: rgba(255, 255, 255, 0.2);
+            border-bottom: 3px solid #ffaa00;
+        }
+        
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+        
+        .content {
+            padding: 25px;
+        }
+        
+        .page {
+            display: none;
+        }
+        
+        .page.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        /* Calculator Styles */
+        .calculator-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .calculator {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 18px;
+            padding: 25px;
+            margin: 0 auto;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: inset 0 5px 12px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        
+        .display {
+            background: rgba(0, 0, 0, 0.35);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+            text-align: right;
+            font-size: 32px;
+            min-height: 100px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            box-shadow: inset 0 3px 8px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            word-break: break-all;
+            font-family: 'Courier New', monospace;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        
+        .calculation {
+            font-size: 20px;
+            color: rgba(255, 255, 255, 0.8);
+            min-height: 27px;
+            overflow: hidden;
+        }
+        
+        .result {
+            font-size: 32px;
+            font-weight: 600;
+        }
+        
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 12px;
+        }
+        
+        .btn {
+            padding: 16px 10px;
+            border: none;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.12);
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        
+        .btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px);
+        }
+        
+        .btn:active {
+            transform: translateY(1px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+        }
+        
+        .operator {
+            background: rgba(255, 170, 0, 0.35);
+        }
+        
+        .scientific {
+            background: rgba(255, 136, 0, 0.4);
+            font-size: 16px;
+        }
+        
+        .equals {
+            background: rgba(255, 200, 0, 0.5);
+            grid-column: span 2;
+        }
+        
+        .clear {
+            background: rgba(255, 100, 0, 0.5);
+        }
+        
+        .memory {
+            background: rgba(255, 150, 0, 0.45);
+        }
+        
+        /* Math Notes Styles */
+        .math-notes {
+            padding: 20px;
+        }
+        
+        .notes-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .notes-container {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            box-shadow: inset 0 4px 10px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        textarea {
+            width: 100%;
+            height: 300px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            color: white;
+            font-size: 17px;
+            resize: vertical;
+        }
+        
+        .notes-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 15px;
+        }
+        
+        .notes-actions button {
+            padding: 12px 20px;
+            border-radius: 10px;
+            border: none;
+            background: rgba(255, 170, 0, 0.4);
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 600;
+        }
+        
+        .notes-actions button:hover {
+            background: rgba(255, 170, 0, 0.6);
+        }
+        
+        /* Graph Page Styles */
+        .graph-page {
+            padding: 20px;
+        }
+        
+        .graph-controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+        
+        .graph-controls input {
+            flex: 1;
+            min-width: 200px;
+            padding: 14px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(0, 0, 0, 0.3);
+            color: white;
+            font-size: 16px;
+        }
+        
+        .graph-controls button {
+            padding: 14px 25px;
+            border-radius: 10px;
+            border: none;
+            background: rgba(255, 170, 0, 0.4);
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 600;
+        }
+        
+        .graph-controls button:hover {
+            background: rgba(255, 170, 0, 0.6);
+        }
+        
+        .graph-container {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            height: 400px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: inset 0 4px 10px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .graph-placeholder {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.7);
+            padding: 20px;
+        }
+        
+        .graph-placeholder h3 {
+            margin-bottom: 15px;
+            font-size: 24px;
+        }
+        
+        .graph-placeholder p {
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        
+        canvas {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 900px) {
+            .buttons {
+                grid-template-columns: repeat(4, 1fr);
+            }
+            
+            .scientific-btn-row {
+                display: none;
+            }
+            
+            .scientific-mode .scientific-btn-row {
+                display: grid;
+            }
+            
+            .scientific-toggle {
+                display: block !important;
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .buttons {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 8px;
+            }
+            
+            .btn {
+                padding: 14px 8px;
+                font-size: 16px;
+            }
+            
+            .display {
+                font-size: 28px;
+                padding: 15px;
+                min-height: 80px;
+            }
+            
+            .calculation {
+                font-size: 18px;
+            }
+            
+            .result {
+                font-size: 28px;
+            }
+            
+            .graph-controls input {
+                min-width: 100%;
+            }
+        }
+        
+        .scientific-btn-row {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 12px;
+            margin-top: 12px;
+        }
+        
+        .scientific-toggle {
+            display: none;
+            background: rgba(255, 170, 0, 0.4);
+            margin-top: 15px;
+            padding: 12px 20px;
+            border-radius: 10px;
+            border: none;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <div class="app-header">
+            <h1>Draw Calculator</h1>
+        </div>
+        
+        <div class="navigation">
+            <div class="nav-item active" data-page="calculator">Calculator</div>
+            <div class="nav-item" data-page="math-notes">Math Notes</div>
+            <div class="nav-item" data-page="graph">Graph Calculator</div>
+        </div>
+        
+        <div class="content">
+            <!-- Calculator Page -->
+            <div class="page active" id="calculator-page">
+                <div class="calculator-container">
+                    <div class="calculator">
+                        <div class="display">
+                            <div class="calculation" id="calculation"></div>
+                            <div class="result" id="display">0</div>
+                        </div>
+                        <div class="buttons">
+                            <button class="btn memory" onclick="handleMemory('mc')">MC</button>
+                            <button class="btn memory" onclick="handleMemory('mr')">MR</button>
+                            <button class="btn memory" onclick="handleMemory('m+')">M+</button>
+                            <button class="btn memory" onclick="handleMemory('m-')">M-</button>
+                            <button class="btn clear" onclick="clearDisplay()">C</button>
+                            
+                            <button class="btn scientific" onclick="calculateFunction('sin')">sin</button>
+                            <button class="btn scientific" onclick="calculateFunction('cos')">cos</button>
+                            <button class="btn scientific" onclick="calculateFunction('tan')">tan</button>
+                            <button class="btn scientific" onclick="calculateFunction('π')">π</button>
+                            <button class="btn operator" onclick="appendOperation('/')">/</button>
+                            
+                            <button class="btn scientific" onclick="calculateFunction('asin')">sin⁻¹</button>
+                            <button class="btn scientific" onclick="calculateFunction('acos')">cos⁻¹</button>
+                            <button class="btn scientific" onclick="calculateFunction('atan')">tan⁻¹</button>
+                            <button class="btn scientific" onclick="calculateFunction('e')">e</button>
+                            <button class="btn operator" onclick="appendOperation('*')">×</button>
+                            
+                            <button class="btn scientific" onclick="calculateFunction('log')">log</button>
+                            <button class="btn scientific" onclick="calculateFunction('ln')">ln</button>
+                            <button class="btn scientific" onclick="calculatePower('pow')">x^y</button>
+                            <button class="btn scientific" onclick="calculateFunction('sqrt')">√</button>
+                            <button class="btn operator" onclick="appendOperation('-')">-</button>
+                            
+                            <button class="btn" onclick="appendNumber('7')">7</button>
+                            <button class="btn" onclick="appendNumber('8')">8</button>
+                            <button class="btn" onclick="appendNumber('9')">9</button>
+                            <button class="btn operator" onclick="appendOperation('+')">+</button>
+                            
+                            <button class="btn" onclick="appendNumber('4')">4</button>
+                            <button class="btn" onclick="appendNumber('5')">5</button>
+                            <button class="btn" onclick="appendNumber('6')">6</button>
+                            <button class="btn" onclick="appendNumber('(')">(</button>
+                            <button class="btn" onclick="appendNumber(')')">)</button>
+                            
+                            <button class="btn" onclick="appendNumber('1')">1</button>
+                            <button class="btn" onclick="appendNumber('2')">2</button>
+                            <button class="btn" onclick="appendNumber('3')">3</button>
+                            <button class="btn" onclick="appendNumber('.')">.</button>
+                            <button class="btn" onclick="backspace()">⌫</button>
+                            
+                            <button class="btn" onclick="appendNumber('0')">0</button>
+                            <button class="btn" onclick="appendOperation('%')">%</button>
+                            <button class="btn scientific" onclick="calculateFunction('fact')">x!</button>
+                            <button class="btn equals" onclick="calculate()">=</button>
+                        </div>
+                        <button class="scientific-toggle" onclick="toggleScientific()">Show Scientific Functions</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Math Notes Page -->
+            <div class="page" id="math-notes-page">
+                <div class="math-notes">
+                    <div class="notes-header">
+                        <h2>Math Notes</h2>
+                    </div>
+                    <p>Record your mathematical thoughts and equations here.</p>
+                    <div class="notes-container">
+                        <textarea id="math-notes" placeholder="Start typing your math notes here..."></textarea>
+                        <div class="notes-actions">
+                            <button onclick="saveNotes()">Save Notes</button>
+                            <button onclick="clearNotes()">Clear Notes</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Graph Calculator Page -->
+            <div class="page" id="graph-page">
+                <div class="graph-page">
+                    <h2>Graph Calculator</h2>
+                    <p>Enter a function to graph (e.g., x^2, sin(x), 2*x+3).</p>
+                    
+                    <div class="graph-controls">
+                        <input type="text" id="function-input" placeholder="Enter function of x (e.g., x^2)">
+                        <button onclick="plotFunction()">Plot Graph</button>
+                    </div>
+                    
+                    <div class="graph-container">
+                        <canvas id="graph-canvas"></canvas>
+                        <div class="graph-placeholder" id="graph-placeholder">
+                            <h3>Graph Will Appear Here</h3>
+                            <p>Enter a function and click "Plot Graph" to visualize it.</p>
+                            <p>Example functions: x^2, sin(x), 2*x+3, log(x)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Navigation functionality
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', function() {
+                // Update active navigation item
+                document.querySelectorAll('.nav-item').forEach(nav => {
+                    nav.classList.remove('active');
+                });
+                this.classList.add('active');
+                
+                // Show corresponding page
+                const pageId = this.getAttribute('data-page');
+                document.querySelectorAll('.page').forEach(page => {
+                    page.classList.remove('active');
+                });
+                document.getElementById(`${pageId}-page`).classList.add('active');
+                
+                // If graph page, resize canvas
+                if (pageId === 'graph') {
+                    setTimeout(resizeCanvas, 50);
+                }
+            });
+        });
+        
+        // Calculator functionality
+        let currentInput = '0';
+        let calculation = '';
+        let memory = 0;
+        let isScientificMode = false;
+        
+        function updateDisplay() {
+            const display = document.getElementById('display');
+            const calculationEl = document.getElementById('calculation');
+            
+            display.textContent = currentInput;
+            calculationEl.textContent = calculation;
+        }
+        
+        function appendNumber(number) {
+            if (currentInput === '0' || shouldResetScreen) {
+                currentInput = number;
+                shouldResetScreen = false;
+            } else {
+                currentInput += number;
+            }
+            updateDisplay();
+        }
+        
+        function appendOperation(operator) {
+            if (shouldResetScreen) {
+                shouldResetScreen = false;
+            }
+            
+            // Add current input to calculation
+            if (calculation === '') {
+                calculation = currentInput + operator;
+            } else {
+                calculation += currentInput + operator;
+            }
+            
+            currentInput = '0';
+            updateDisplay();
+        }
+        
+        function clearDisplay() {
+            currentInput = '0';
+            calculation = '';
+            updateDisplay();
+        }
+        
+        function backspace() {
+            if (currentInput.length === 1) {
+                currentInput = '0';
+            } else {
+                currentInput = currentInput.slice(0, -1);
+            }
+            updateDisplay();
+        }
+        
+        function calculate() {
+            try {
+                // Add current input to calculation
+                if (calculation !== '') {
+                    calculation += currentInput;
+                } else {
+                    calculation = currentInput;
+                }
+                
+                // Replace visual operators with JavaScript operators
+                let expression = calculation
+                    .replace(/×/g, '*')
+                    .replace(/π/g, Math.PI)
+                    .replace(/e/g, Math.E)
+                    .replace(/sin⁻¹/g, 'asin')
+                    .replace(/cos⁻¹/g, 'acos')
+                    .replace(/tan⁻¹/g, 'atan')
+                    .replace(/log/g, 'log10')
+                    .replace(/ln/g, 'log')
+                    .replace(/√/g, 'sqrt');
+                
+                // Evaluate the expression safely
+                currentInput = eval(expression).toString();
+                calculation = '';
+                updateDisplay();
+            } catch (error) {
+                currentInput = 'Error';
+                updateDisplay();
+                setTimeout(() => {
+                    currentInput = '0';
+                    calculation = '';
+                    updateDisplay();
+                }, 1500);
+            }
+            shouldResetScreen = true;
+        }
+        
+        function calculateFunction(func) {
+            try {
+                let value = parseFloat(currentInput);
+                let result;
+                
+                switch(func) {
+                    case 'sin':
+                        result = Math.sin(value);
+                        break;
+                    case 'cos':
+                        result = Math.cos(value);
+                        break;
+                    case 'tan':
+                        result = Math.tan(value);
+                        break;
+                    case 'asin':
+                        result = Math.asin(value);
+                        break;
+                    case 'acos':
+                        result = Math.acos(value);
+                        break;
+                    case 'atan':
+                        result = Math.atan(value);
+                        break;
+                    case 'log':
+                        result = Math.log10(value);
+                        break;
+                    case 'ln':
+                        result = Math.log(value);
+                        break;
+                    case 'sqrt':
+                        result = Math.sqrt(value);
+                        break;
+                    case 'π':
+                        result = Math.PI;
+                        break;
+                    case 'e':
+                        result = Math.E;
+                        break;
+                    case 'fact':
+                        result = factorial(value);
+                        break;
+                }
+                
+                calculation = `${func}(${value})`;
+                currentInput = result.toString();
+                updateDisplay();
+                shouldResetScreen = true;
+            } catch (error) {
+                currentInput = 'Error';
+                updateDisplay();
+                setTimeout(() => {
+                    currentInput = '0';
+                    updateDisplay();
+                }, 1500);
+            }
+        }
+        
+        function calculatePower() {
+            calculation = currentInput + '^';
+            currentInput = '0';
+            updateDisplay();
+        }
+        
+        function factorial(n) {
+            if (n === 0 || n === 1) return 1;
+            let result = 1;
+            for (let i = 2; i <= n; i++) {
+                result *= i;
+            }
+            return result;
+        }
+        
+        function handleMemory(action) {
+            const value = parseFloat(currentInput);
+            
+            switch(action) {
+                case 'mc':
+                    memory = 0;
+                    break;
+                case 'mr':
+                    currentInput = memory.toString();
+                    updateDisplay();
+                    break;
+                case 'm+':
+                    memory += value;
+                    break;
+                case 'm-':
+                    memory -= value;
+                    break;
+            }
+        }
+        
+        function toggleScientific() {
+            const calculator = document.querySelector('.calculator');
+            calculator.classList.toggle('scientific-mode');
+            
+            const toggleBtn = document.querySelector('.scientific-toggle');
+            if (calculator.classList.contains('scientific-mode')) {
+                toggleBtn.textContent = 'Hide Scientific Functions';
+            } else {
+                toggleBtn.textContent = 'Show Scientific Functions';
+            }
+        }
+        
+        // Math Notes functionality
+        function saveNotes() {
+            const notes = document.getElementById('math-notes').value;
+            localStorage.setItem('mathNotes', notes);
+            alert('Notes saved successfully!');
+        }
+        
+        function clearNotes() {
+            if (confirm('Are you sure you want to clear all notes?')) {
+                document.getElementById('math-notes').value = '';
+                localStorage.removeItem('mathNotes');
+            }
+        }
+        
+        // Load saved notes
+        window.addEventListener('load', function() {
+            const savedNotes = localStorage.getItem('mathNotes');
+            if (savedNotes) {
+                document.getElementById('math-notes').value = savedNotes;
+            }
+        });
+        
+        // Graph functionality
+        const canvas = document.getElementById('graph-canvas');
+        const ctx = canvas.getContext('2d');
+        
+        function resizeCanvas() {
+            const container = document.querySelector('.graph-container');
+            canvas.width = container.offsetWidth;
+            canvas.height = container.offsetHeight;
+        }
+        
+        function plotFunction() {
+            const functionInput = document.getElementById('function-input').value;
+            if (functionInput) {
+                document.getElementById('graph-placeholder').style.display = 'none';
+                resizeCanvas();
+                drawGraph(functionInput);
+            } else {
+                alert('Please enter a function to graph.');
+            }
+        }
+        
+        function drawGraph(expression) {
+            const width = canvas.width;
+            const height = canvas.height;
+            const padding = 40;
+            const xMin = -10;
+            const xMax = 10;
+            const yMin = -10;
+            const yMax = 10;
+            
+            // Clear canvas
+            ctx.clearRect(0, 0, width, height);
+            
+            // Draw grid
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+            ctx.lineWidth = 1;
+            
+            // Vertical grid lines
+            for (let x = xMin; x <= xMax; x++) {
+                if (x === 0) continue; // Skip zero for now
+                const pixelX = ((x - xMin) / (xMax - xMin)) * (width - 2 * padding) + padding;
+                ctx.beginPath();
+                ctx.moveTo(pixelX, padding);
+                ctx.lineTo(pixelX, height - padding);
+                ctx.stroke();
+            }
+            
+            // Horizontal grid lines
+            for (let y = yMin; y <= yMax; y++) {
+                if (y === 0) continue; // Skip zero for now
+                const pixelY = height - (((y - yMin) / (yMax - yMin)) * (height - 2 * padding) + padding);
+                ctx.beginPath();
+                ctx.moveTo(padding, pixelY);
+                ctx.lineTo(width - padding, pixelY);
+                ctx.stroke();
+            }
+            
+            // Draw axes
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
+            ctx.lineWidth = 2;
+            
+            // X-axis
+            const xAxisY = height - ((-yMin) / (yMax - yMin) * (height - 2 * padding) + padding);
+            ctx.beginPath();
+            ctx.moveTo(padding, xAxisY);
+            ctx.lineTo(width - padding, xAxisY);
+            ctx.stroke();
+            
+            // Y-axis
+            const yAxisX = ((0 - xMin) / (xMax - xMin) * (width - 2 * padding) + padding);
+            ctx.beginPath();
+            ctx.moveTo(yAxisX, padding);
+            ctx.lineTo(yAxisX, height - padding);
+            ctx.stroke();
+            
+            // Draw function
+            ctx.strokeStyle = '#ffaa00';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            
+            let isFirstPoint = true;
+            
+            for (let pixelX = padding; pixelX <= width - padding; pixelX++) {
+                const x = xMin + (pixelX - padding) / (width - 2 * padding) * (xMax - xMin);
+                
+                try {
+                    // Replace math functions and constants
+                    let expr = expression
+                        .replace(/sin\(/g, 'Math.sin(')
+                        .replace(/cos\(/g, 'Math.cos(')
+                        .replace(/tan\(/g, 'Math.tan(')
+                        .replace(/log\(/g, 'Math.log10(')
+                        .replace(/ln\(/g, 'Math.log(')
+                        .replace(/sqrt\(/g, 'Math.sqrt(')
+                        .replace(/π/g, Math.PI)
+                        .replace(/e/g, Math.E);
+                    
+                    // Evaluate the expression
+                    const y = eval(expr.replace(/x/g, `(${x})`));
+                    
+                    if (isNaN(y) || !isFinite(y)) continue;
+                    
+                    const pixelY = height - ((y - yMin) / (yMax - yMin) * (height - 2 * padding) + padding);
+                    
+                    if (isFirstPoint) {
+                        ctx.moveTo(pixelX, pixelY);
+                        isFirstPoint = false;
+                    } else {
+                        ctx.lineTo(pixelX, pixelY);
+                    }
+                } catch (e) {
+                    console.error('Error evaluating function:', e);
+                }
+            }
+            
+            ctx.stroke();
+        }
+        
+        // Initialize the app
+        let shouldResetScreen = false;
+        updateDisplay();
+        resizeCanvas();
+        
+        // Add keyboard support
+        document.addEventListener('keydown', function(event) {
+            if (/[0-9]/.test(event.key)) {
+                appendNumber(event.key);
+            } else if (['+', '-', '*', '/'].includes(event.key)) {
+                appendOperation(event.key);
+            } else if (event.key === 'Enter' || event.key === '=') {
+                calculate();
+            } else if (event.key === 'Escape') {
+                clearDisplay();
+            } else if (event.key === 'Backspace') {
+                backspace();
+            } else if (event.key === '.') {
+                appendNumber('.');
+            }
+        });
+    </script>
+</body>
+</html>

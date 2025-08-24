@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liquid Glass Memory Match</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0a1929, #0d2339);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            color: #e0f7ff;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        /* Liquid glass bubbles effect */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(93, 188, 252, 0.15) 0%, transparent 20%),
+                radial-gradient(circle at 80% 70%, rgba(158, 236, 249, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 40% 80%, rgba(110, 142, 251, 0.1) 0%, transparent 20%);
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* Glass reflection effect */
+        .container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                to bottom right,
+                rgba(255, 255, 255, 0) 0%,
+                rgba(255, 255, 255, 0) 40%,
+                rgba(255, 255, 255, 0.05) 45%,
+                rgba(255, 255, 255, 0.2) 50%,
+                rgba(255, 255, 255, 0.05) 55%,
+                rgba(255, 255, 255, 0) 60%,
+                rgba(255, 255, 255, 0) 100%
+            );
+            transform: rotate(30deg);
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 25px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        h1 {
+            background: linear-gradient(90deg, #7db9f0, #5dcef8);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 10px;
+            font-size: 2.5rem;
+            text-shadow: 0 2px 10px rgba(93, 206, 248, 0.3);
+        }
+        
+        .game-info {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 25px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 15px;
+            font-size: 1.2rem;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            position: relative;
+            z-index: 2;
+        }
+        
+        .info-box {
+            text-align: center;
+        }
+        
+        .info-label {
+            color: #a0d2ff;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+        
+        .info-value {
+            font-weight: bold;
+            color: #5dcef8;
+            text-shadow: 0 0 8px rgba(93, 206, 248, 0.5);
+        }
+        
+        .game-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 25px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .card {
+            aspect-ratio: 1;
+            background: rgba(255, 255, 255, 0.12);
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2rem;
+            color: transparent;
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            transform-style: preserve-3d;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* Liquid effect inside cards */
+        .card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                to bottom right,
+                rgba(255, 255, 255, 0) 0%,
+                rgba(255, 255, 255, 0) 40%,
+                rgba(255, 255, 255, 0.1) 45%,
+                rgba(255, 255, 255, 0.15) 50%,
+                rgba(255, 255, 255, 0.1) 55%,
+                rgba(255, 255, 255, 0) 60%,
+                rgba(255, 255, 255, 0) 100%
+            );
+            transform: rotate(25deg);
+            transition: all 0.5s ease;
+            opacity: 0;
+        }
+        
+        .card:hover::before {
+            opacity: 1;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            transform: rotate(15deg);
+        }
+        
+        .card.flipped {
+            background: rgba(255, 255, 255, 0.2);
+            color: #fff;
+            transform: rotateY(180deg) scale(1.05);
+            box-shadow: 0 0 15px rgba(110, 142, 251, 0.5);
+            border: 1px solid rgba(110, 142, 251, 0.3);
+        }
+        
+        .card.matched {
+            background: rgba(64, 224, 208, 0.2);
+            color: white;
+            transform: rotateY(180deg) scale(1);
+            cursor: default;
+            border: 1px solid rgba(64, 224, 208, 0.3);
+            box-shadow: 0 0 15px rgba(64, 224, 208, 0.4);
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 50px;
+            background: linear-gradient(90deg, #5dcef8, #7db9f0);
+            color: #0a1929;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(93, 206, 248, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255, 255, 255, 0.4),
+                transparent
+            );
+            transition: all 0.5s ease;
+        }
+        
+        button:hover::before {
+            left: 100%;
+        }
+        
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(93, 206, 248, 0.5);
+        }
+        
+        #restart-btn {
+            background: linear-gradient(90deg, #ff7eb3, #ff758c);
+            box-shadow: 0 4px 10px rgba(255, 117, 140, 0.3);
+        }
+        
+        #restart-btn:hover {
+            box-shadow: 0 6px 15px rgba(255, 117, 140, 0.5);
+        }
+        
+        .instructions {
+            margin-top: 25px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 15px;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            position: relative;
+            z-index: 2;
+        }
+        
+        .instructions h2 {
+            background: linear-gradient(90deg, #7db9f0, #5dcef8);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+        
+        .instructions ul {
+            padding-left: 20px;
+        }
+        
+        .instructions li {
+            margin-bottom: 8px;
+            color: #c3e3ff;
+        }
+        
+        .win-message {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 25, 41, 0.95);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            color: white;
+            font-size: 2rem;
+            display: none;
+            z-index: 10;
+            backdrop-filter: blur(5px);
+        }
+        
+        .win-message.show {
+            display: flex;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .win-message h2 {
+            background: linear-gradient(90deg, #7db9f0, #5dcef8);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 20px;
+            font-size: 3rem;
+        }
+        
+        .win-message p {
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+            text-align: center;
+            color: #c3e3ff;
+        }
+        
+        .win-message button {
+            font-size: 1.2rem;
+            padding: 15px 40px;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @media (max-width: 500px) {
+            .game-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .win-message h2 {
+                font-size: 2rem;
+            }
+            
+            .win-message p {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Liquid Glass Memory Match</h1>
+            <p>Find all matching pairs in this fluid puzzle experience!</p>
+        </header>
+        
+        <div class="game-info">
+            <div class="info-box">
+                <div class="info-label">Time</div>
+                <div class="info-value" id="timer">0s</div>
+            </div>
+            <div class="info-box">
+                <div class="info-label">Moves</div>
+                <div class="info-value" id="moves">0</div>
+            </div>
+            <div class="info-box">
+                <div class="info-label">Pairs Found</div>
+                <div class="info-value" id="pairs">0/8</div>
+            </div>
+        </div>
+        
+        <div class="game-grid" id="game-board">
+            <!-- Cards will be generated by JavaScript -->
+        </div>
+        
+        <div class="controls">
+            <button id="start-btn">Start Game</button>
+            <button id="restart-btn">Restart</button>
+        </div>
+        
+        <div class="instructions">
+            <h2>How to Play</h2>
+            <ul>
+                <li>Click on any card to flip it and reveal its symbol</li>
+                <li>Find and match pairs of cards with the same symbol</li>
+                <li>Try to complete the game with as few moves and as quickly as possible</li>
+                <li>Press Restart to shuffle the cards and play again</li>
+            </ul>
+        </div>
+    </div>
+    
+    <div class="win-message" id="win-message">
+        <h2>Congratulations!</h2>
+        <p>You found all pairs in <span id="win-time"></span> with <span id="win-moves"></span> moves!</p>
+        <button id="play-again">Play Again</button>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Game elements
+            const gameBoard = document.getElementById('game-board');
+            const timerElement = document.getElementById('timer');
+            const movesElement = document.getElementById('moves');
+            const pairsElement = document.getElementById('pairs');
+            const startButton = document.getElementById('start-btn');
+            const restartButton = document.getElementById('restart-btn');
+            const winMessage = document.getElementById('win-message');
+            const winTime = document.getElementById('win-time');
+            const winMoves = document.getElementById('win-moves');
+            const playAgainButton = document.getElementById('play-again');
+            
+            // Game state
+            let cards = [];
+            let hasFlippedCard = false;
+            let lockBoard = false;
+            let firstCard, secondCard;
+            let moves = 0;
+            let matchedPairs = 0;
+            let totalPairs = 8;
+            let timer = 0;
+            let timerInterval = null;
+            let gameStarted = false;
+            
+            // Card symbols (using emoji for simplicity)
+            const cardSymbols = ['🍎', '🍌', '🍇', '🍊', '🍓', '🍉', '🍒', '🥝'];
+            
+            // Initialize game
+            initializeGame();
+            
+            // Set up event listeners
+            startButton.addEventListener('click', startGame);
+            restartButton.addEventListener('click', restartGame);
+            playAgainButton.addEventListener('click', restartGame);
+            
+            function initializeGame() {
+                // Create pairs of cards
+                cards = [...cardSymbols, ...cardSymbols];
+                
+                // Shuffle cards
+                shuffleCards();
+                
+                // Generate card elements
+                generateCards();
+            }
+            
+            function startGame() {
+                if (!gameStarted) {
+                    gameStarted = true;
+                    startButton.textContent = "Pause";
+                    startTimer();
+                } else {
+                    gameStarted = false;
+                    startButton.textContent = "Resume";
+                    clearInterval(timerInterval);
+                }
+            }
+            
+            function startTimer() {
+                clearInterval(timerInterval);
+                timerInterval = setInterval(() => {
+                    timer++;
+                    timerElement.textContent = `${timer}s`;
+                }, 1000);
+            }
+            
+            function shuffleCards() {
+                // Fisher-Yates shuffle algorithm
+                for (let i = cards.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [cards[i], cards[j]] = [cards[j], cards[i]];
+                }
+            }
+            
+            function generateCards() {
+                gameBoard.innerHTML = '';
+                
+                cards.forEach((symbol, index) => {
+                    const card = document.createElement('div');
+                    card.classList.add('card');
+                    card.dataset.symbol = symbol;
+                    card.dataset.index = index;
+                    card.textContent = symbol;
+                    
+                    card.addEventListener('click', flipCard);
+                    
+                    gameBoard.appendChild(card);
+                });
+            }
+            
+            function flipCard() {
+                if (lockBoard) return;
+                if (this === firstCard) return;
+                if (this.classList.contains('matched')) return;
+                
+                if (!gameStarted) {
+                    startGame();
+                }
+                
+                this.classList.add('flipped');
+                
+                if (!hasFlippedCard) {
+                    // First card flipped
+                    hasFlippedCard = true;
+                    firstCard = this;
+                    return;
+                }
+                
+                // Second card flipped
+                secondCard = this;
+                moves++;
+                movesElement.textContent = moves;
+                
+                checkForMatch();
+            }
+            
+            function checkForMatch() {
+                const isMatch = firstCard.dataset.symbol === secondCard.dataset.symbol;
+                
+                if (isMatch) {
+                    disableCards();
+                    matchedPairs++;
+                    pairsElement.textContent = `${matchedPairs}/${totalPairs}`;
+                    
+                    if (matchedPairs === totalPairs) {
+                        endGame();
+                    }
+                } else {
+                    unflipCards();
+                }
+            }
+            
+            function disableCards() {
+                firstCard.classList.add('matched');
+                secondCard.classList.add('matched');
+                
+                resetBoard();
+            }
+            
+            function unflipCards() {
+                lockBoard = true;
+                
+                setTimeout(() => {
+                    firstCard.classList.remove('flipped');
+                    secondCard.classList.remove('flipped');
+                    
+                    resetBoard();
+                }, 1000);
+            }
+            
+            function resetBoard() {
+                [hasFlippedCard, lockBoard] = [false, false];
+                [firstCard, secondCard] = [null, null];
+            }
+            
+            function endGame() {
+                clearInterval(timerInterval);
+                
+                winTime.textContent = `${timer} seconds`;
+                winMoves.textContent = moves;
+                
+                setTimeout(() => {
+                    winMessage.classList.add('show');
+                }, 500);
+            }
+            
+            function restartGame() {
+                clearInterval(timerInterval);
+                
+                // Reset game state
+                timer = 0;
+                moves = 0;
+                matchedPairs = 0;
+                gameStarted = false;
+                
+                timerElement.textContent = '0s';
+                movesElement.textContent = '0';
+                pairsElement.textContent = '0/8';
+                
+                startButton.textContent = 'Start Game';
+                
+                // Reinitialize game
+                initializeGame();
+                
+                // Hide win message
+                winMessage.classList.remove('show');
+            }
+        });
+    </script>
+</body>
+</html>

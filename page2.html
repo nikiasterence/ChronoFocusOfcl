@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Study Recommendations</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    }
+    
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #ff7b00, #ff5500);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    /* Liquid glass background effect */
+    body::before {
+      content: '';
+      position: absolute;
+      width: 150%;
+      height: 150%;
+      background: radial-gradient(circle at center, rgba(255, 255, 255, 0.1) 0%, transparent 60%);
+      animation: liquidMove 15s infinite alternate;
+      z-index: -1;
+    }
+    
+    @keyframes liquidMove {
+      0% {
+        transform: translate(-10%, -10%) scale(1) rotate(0deg);
+      }
+      100% {
+        transform: translate(10%, 10%) scale(1.2) rotate(5deg);
+      }
+    }
+    
+    .app {
+      width: 90%;
+      max-width: 500px;
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: 24px;
+      padding: 30px;
+      box-shadow: 0 10px 32px rgba(0, 0, 0, 0.2), 
+                  inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+      text-align: center;
+      color: #fff;
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+    }
+    
+    /* Apple-style frosted glass effect */
+    .app::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+      z-index: -1;
+      background: rgba(255, 165, 0, 0.1);
+      border-radius: 24px;
+    }
+    
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+    
+    .tip-container {
+      min-height: 150px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 25px 0;
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 18px;
+      box-shadow: inset 0 0 12px rgba(255, 255, 255, 0.15),
+                  0 4px 12px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    #tip {
+      font-size: 1.2rem;
+      line-height: 1.6;
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+      font-weight: 500;
+    }
+    
+    .buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      margin-top: 30px;
+    }
+    
+    button {
+      padding: 16px 25px;
+      border: none;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1),
+                  inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+    
+    button:hover {
+      background: rgba(255, 255, 255, 0.25);
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15),
+                  inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+    }
+    
+    button:active {
+      transform: translateY(0) scale(1);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1),
+                  inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+    }
+    
+    .primary-btn {
+      background: rgba(255, 149, 0, 0.3);
+    }
+    
+    .secondary-btn {
+      background: rgba(0, 0, 0, 0.2);
+    }
+    
+    .caffeine-btn {
+      background: rgba(255, 159, 10, 0.3);
+    }
+    
+    .study-with-me-btn {
+      background: rgba(255, 100, 0, 0.3);
+    }
+    
+    .calculator-btn {
+      background: rgba(255, 179, 67, 0.3);
+    }
+    
+    .drawing-calc-btn {
+      background: rgba(255, 195, 0, 0.3);
+    }
+    
+    .periodic-table-btn {
+      background: rgba(255, 125, 0, 0.3);
+    }
+    
+    .solar-system-btn {
+      background: rgba(255, 111, 0, 0.3);
+    }
+    
+    .caffeine-counter {
+      margin-top: 15px;
+      padding: 15px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: inset 0 0 8px rgba(255, 255, 255, 0.1),
+                  0 4px 8px rgba(0, 0, 0, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .caffeine-display {
+      font-size: 1.1rem;
+      font-weight: bold;
+    }
+    
+    .caffeine-warning {
+      color: #ffdd00;
+      font-size: 0.9rem;
+      margin-top: 5px;
+      display: none;
+    }
+    
+    .reset-btn {
+      padding: 10px 16px;
+      font-size: 0.9rem;
+      border-radius: 10px;
+    }
+    
+    /* Floating Draw Calculator Button */
+    .floating-btn {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      background: rgba(255, 159, 0, 0.3);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      cursor: pointer;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2),
+                  inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+      z-index: 100;
+      transition: all 0.3s ease;
+      animation: float 3s ease-in-out infinite;
+    }
+    
+    .floating-btn:hover {
+      transform: scale(1.1) translateY(-5px);
+      background: rgba(255, 159, 0, 0.5);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3),
+                  inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+      animation: none;
+    }
+    
+    .floating-btn::after {
+      content: 'Draw Calculator';
+      position: absolute;
+      top: -40px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0, 0, 0, 0.7);
+      color: white;
+      padding: 6px 12px;
+      border-radius: 10px;
+      font-size: 0.8rem;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+      white-space: nowrap;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+    
+    .floating-btn:hover::after {
+      opacity: 1;
+    }
+    
+    @keyframes float {
+      0% {
+        transform: translateY(0px);
+      }
+      50% {
+        transform: translateY(-10px);
+      }
+      100% {
+        transform: translateY(0px);
+      }
+    }
+    
+    /* Calculator Modal Styles */
+    .calculator-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+    
+    .calculator-modal.active {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    .calculator-container {
+      width: 90%;
+      max-width: 400px;
+      background: rgba(255, 165, 0, 0.2);
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+      border-radius: 24px;
+      padding: 20px;
+      box-shadow: 0 10px 32px rgba(0, 0, 0, 0.2),
+                  inset 0 0 0 1px rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #fff;
+    }
+    
+    .calculator-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+    
+    .calculator-title {
+      font-size: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 600;
+    }
+    
+    .close-calculator {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.5rem;
+      cursor: pointer;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
+    }
+    
+    .close-calculator:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+    
+    .calculator-display {
+      width: 100%;
+      height: 80px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 14px;
+      margin-bottom: 15px;
+      padding: 10px 15px;
+      text-align: right;
+      font-size: 2rem;
+      overflow: hidden;
+      box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      font-family: 'SF Mono', Monaco, Inconsolata, 'Roboto Mono', monospace;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .calculator-keys {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+    }
+    
+    .calc-btn {
+      padding: 14px 5px;
+      border: none;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+    }
+    
+    .calc-btn:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+    
+    .calc-btn:active {
+      transform: scale(0.95);
+    }
+    
+    .calc-number {
+      background: rgba(255, 255, 255, 0.15);
+    }
+    
+    .calc-operator {
+      background: rgba(255, 100, 0, 0.3);
+    }
+    
+    .calc-function {
+      background: rgba(255, 159, 67, 0.3);
+    }
+    
+    .calc-equals {
+      background: rgba(255, 195, 0, 0.3);
+      grid-column: span 2;
+    }
+    
+    .calc-clear {
+      background: rgba(255, 69, 0, 0.3);
+    }
+    
+    /* Apple-style animations */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.05);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+    
+    .fade-in {
+      animation: fadeIn 0.5s ease forwards;
+    }
+    
+    .pulse {
+      animation: pulse 2s infinite;
+    }
+    
+    /* Apple-style subtle focus effects */
+    button:focus,
+    .calc-btn:focus {
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.5),
+                  inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 600px) {
+      .app {
+        width: 95%;
+        padding: 20px;
+      }
+      
+      h1 {
+        font-size: 2rem;
+      }
+      
+      #tip {
+        font-size: 1rem;
+      }
+      
+      button {
+        padding: 14px 20px;
+      }
+      
+      .caffeine-counter {
+        flex-direction: column;
+        gap: 10px;
+      }
+      
+      .calculator-keys {
+        grid-template-columns: repeat(4, 1fr);
+      }
+      
+      .calc-btn {
+        padding: 12px 5px;
+        font-size: 0.9rem;
+      }
+      
+      .floating-btn {
+        bottom: 20px;
+        right: 20px;
+        width: 60px;
+        height: 60px;
+        font-size: 1.5rem;
+      }
+      
+      .floating-btn::after {
+        font-size: 0.7rem;
+        top: -35px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Floating Draw Calculator Button -->
+  <a href="page4.html" class="floating-btn">
+    <i class="fas fa-pen"></i>
+  </a>
+  
+  <div class="app">
+    <h1><i class="fas fa-book-open"></i> Study Tips</h1>
+   
+    <div class="tip-container">
+      <p id="tip">Click the button to get a study recommendation!</p>
+    </div>
+    
+    <div class="caffeine-counter">
+      <div>
+        <span class="caffeine-display">Caffeine: <span id="caffeine-count">0</span> mg</span>
+        <div class="caffeine-warning" id="caffeine-warning">Recommended max: 400mg per day</div>
+      </div>
+      <button class="reset-btn" onclick="resetCaffeine()">
+        <i class="fas fa-redo"></i> Reset
+      </button>
+    </div>
+    
+    <div class="buttons">
+      <button class="primary-btn" onclick="newTip()">
+        <i class="fas fa-lightbulb"></i> Get Recommendation
+      </button>
+      
+      <button class="study-with-me-btn" onclick="openStudyWithMe()">
+        <i class="fas fa-users"></i> Study With Me
+      </button>
+      
+      <button class="calculator-btn" onclick="openCalculator()">
+        <i class="fas fa-calculator"></i> Scientific Calculator
+      </button>
+      
+      <button class="caffeine-btn" onclick="addCaffeine()">
+        <i class="fas fa-coffee"></i> Add Caffeine
+      </button>
+      
+      <!-- NEW BUTTONS ADDED HERE -->
+      <a href="page5.html">
+        <button class="periodic-table-btn">
+          <i class="fas fa-atom"></i> Periodic Table
+        </button>
+      </a>
+      
+      <a href="page6.html">
+        <button class="solar-system-btn">
+          <i class="fas fa-globe"></i> Solar System
+        </button>
+      </a>
+      
+      <button class="secondary-btn" onclick="markFavorite()">
+        <i class="far fa-star"></i> Mark as Favorite
+      </button>
+      
+      <a href="index.html">
+        <button class="secondary-btn">
+          <i class="fas fa-arrow-left"></i> Back to To-Do
+        </button>
+      </a>
+      
+      <a href="page7.html">
+        <button class="secondary-btn">
+          <i class="fas fa-puzzle-piece"></i> Play Puzzle
+        </button>
+      </a>
+    </div>
+  </div>
+
+  <!-- Calculator Modal -->
+  <div class="calculator-modal" id="calculator-modal">
+    <div class="calculator-container">
+      <div class="calculator-header">
+        <h2 class="calculator-title"><i class="fas fa-calculator"></i> Scientific Calculator</h2>
+        <button class="close-calculator" onclick="closeCalculator()">&times;</button>
+      </div>
+      
+      <div class="calculator-display" id="calc-display">0</div>
+      
+      <div class="calculator-keys">
+        <button class="calc-btn calc-clear" onclick="clearCalculator()">C</button>
+        <button class="calc-btn calc-function" onclick="backspace()">⌫</button>
+        <button class="calc-btn calc-function" onclick="appendToDisplay('(')">(</button>
+        <button class="calc-btn calc-function" onclick="appendToDisplay(')')">)</button>
+        <button class="calc-btn calc-function" onclick="appendToDisplay('**')">x^y</button>
+        
+        <button class="calc-btn calc-function" onclick="appendToDisplay('Math.sin(')">sin</button>
+        <button class="calc-btn calc-function" onclick="appendToDisplay('Math.cos(')">cos</button>
+        <button class="calc-btn calc-function" onclick="appendToDisplay('Math.tan(')">tan</button>
+        <button class="calc-btn calc-function" onclick="appendToDisplay('Math.log(')">log</button>
+        <button class="calc-btn calc-function" onclick="appendToDisplay('Math.sqrt(')">√</button>
+        
+        <button class="calc-btn calc-number" onclick="appendToDisplay('7')">7</button>
+        <button class="calc-btn calc-number" onclick="appendToDisplay('8')">8</button>
+        <button class="calc-btn calc-number" onclick="appendToDisplay('9')">9</button>
+        <button class="calc-btn calc-operator" onclick="appendToDisplay('/')">/</button>
+        <button class="calc-btn calc-function" onclick="appendToDisplay('Math.PI')">π</button>
+        
+        <button class="calc-btn calc-number" onclick="appendToDisplay('4')">4</button>
+        <button class="calc-btn calc-number" onclick="appendToDisplay('5')">5</button>
+        <button class="calc-btn calc-number" onclick="appendToDisplay('6')">6</button>
+        <button class="calc-btn calc-operator" onclick="appendToDisplay('*')">×</button>
+        <button class="calc-btn calc-function" onclick="appendToDisplay('**2')">x²</button>
+        
+        <button class="calc-btn calc-number" onclick="appendToDisplay('1')">1</button>
+        <button class="calc-btn calc-number" onclick="appendToDisplay('2')">2</button>
+        <button class="calc-btn calc-number" onclick="appendToDisplay('3')">3</button>
+        <button class="calc-btn calc-operator" onclick="appendToDisplay('-')">-</button>
+        <button class="calc-btn calc-function" onclick="appendToDisplay('1/')">1/x</button>
+        
+        <button class="calc-btn calc-number" onclick="appendToDisplay('0')">0</button>
+        <button class="calc-btn calc-number" onclick="appendToDisplay('.')">.</button>
+        <button class="calc-btn calc-operator" onclick="calculate()">=</button>
+        <button class="calc-btn calc-operator" onclick="appendToDisplay('+')">+</button>
+        <button class="calc-btn calc-function" onclick="appendToDisplay('%')">%</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const tips = [
+      "📌 Break your study into 25-minute focus sessions with 5-minute breaks.",
+      "📌 Use active recall: test yourself instead of just rereading notes.",
+      "📌 Teach someone else what you learned — it improves understanding.",
+      "📌 Study in a quiet, distraction-free place.",
+      "📌 Make short notes and summaries instead of memorizing long text.",
+      "📌 Revise daily for 10 minutes instead of cramming at the last moment.",
+      "📌 Sleep well — memory improves with rest.",
+      "📌 Use flashcards for quick memory reinforcement.",
+      "📌 Mix subjects while studying to keep your brain engaged.",
+      "📌 Set small goals and reward yourself after completing them."
+    ];
+
+    let favorites = [];
+    let caffeineIntake = 0;
+    
+    function newTip() {
+      const tipElement = document.getElementById("tip");
+      tipElement.classList.remove("fade-in");
+      
+      // Trigger reflow to restart animation
+      void tipElement.offsetWidth;
+      
+      let randomIndex = Math.floor(Math.random() * tips.length);
+      tipElement.textContent = tips[randomIndex];
+      tipElement.classList.add("fade-in");
+      
+      // Add pulse animation to the container
+      document.querySelector(".tip-container").classList.add("pulse");
+      setTimeout(() => {
+        document.querySelector(".tip-container").classList.remove("pulse");
+      }, 2000);
+    }
+    
+    function openStudyWithMe() {
+      // Open the study with me page in a new tab
+      window.open('page3.html', '_blank');
+      
+      // Show a confirmation message
+      const tipElement = document.getElementById("tip");
+      tipElement.textContent = "Opening Study With Me videos... Happy studying! 🎥";
+      tipElement.classList.add("fade-in");
+      
+      // Add a fun animation to the button
+      const studyButton = document.querySelector("button[onclick='openStudyWithMe()']");
+      studyButton.classList.add("pulse");
+      setTimeout(() => {
+        studyButton.classList.remove("pulse");
+      }, 2000);
+    }
+    
+    function markFavorite() {
+      const currentTip = document.getElementById("tip").textContent;
+      if (currentTip && !favorites.includes(currentTip)) {
+        favorites.push(currentTip);
+        alert("Added to favorites!");
+        
+        // Update button icon to indicate it's favorited
+        const favButton = document.querySelector("button[onclick='markFavorite()']");
+        favButton.innerHTML = '<i class="fas fa-star"></i> Favorited';
+        
+        setTimeout(() => {
+          favButton.innerHTML = '<i class="far fa-star"></i> Mark as Favorite';
+        }, 2000);
+      } else if (favorites.includes(currentTip)) {
+        alert("This tip is already in your favorites!");
+      }
+    }
+    
+    function addCaffeine() {
+      // Add a random amount of caffeine between 50-150mg (typical coffee range)
+      const caffeineAmount = Math.floor(Math.random() * 101) + 50;
+      caffeineIntake += caffeineAmount;
+      
+      document.getElementById("caffeine-count").textContent = caffeineIntake;
+      
+      // Show warning if approaching or exceeding recommended daily limit
+      const warningElement = document.getElementById("caffeine-warning");
+      if (caffeineIntake >= 400) {
+        warningElement.style.display = "block";
+        warningElement.textContent = "⚠️ Exceeded recommended daily max of 400mg!";
+      } else if (caffeineIntake >= 300) {
+        warningElement.style.display = "block";
+        warningElement.textContent = "⚠️ Approaching daily max (400mg recommended)";
+      }
+      
+      // Add a fun coffee-related study tip occasionally
+      if (Math.random() > 0.7) {
+        const coffeeTips = [
+          "☕ Remember to stay hydrated with water too!",
+          "☕ Too much caffeine can increase anxiety.",
+          "☕ Try green tea for a lighter caffeine alternative.",
+          "☕ Avoid caffeine 6 hours before bedtime for better sleep."
+        ];
+        const randomCoffeeTip = coffeeTips[Math.floor(Math.random() * coffeeTips.length)];
+        
+        const tipElement = document.getElementById("tip");
+        tipElement.textContent = randomCoffeeTip;
+        tipElement.classList.add("fade-in");
+      }
+    }
+    
+    function resetCaffeine() {
+      caffeineIntake = 0;
+      document.getElementById("caffeine-count").textContent = caffeineIntake;
+      document.getElementById("caffeine-warning").style.display = "none";
+    }
+    
+    // Calculator Functions
+    function openCalculator() {
+      document.getElementById('calculator-modal').classList.add('active');
+    }
+    
+    function closeCalculator() {
+      document.getElementById('calculator-modal').classList.remove('active');
+    }
+    
+    function appendToDisplay(value) {
+      const display = document.getElementById('calc-display');
+      if (display.textContent === '0' || display.textContent === 'Error') {
+        display.textContent = value;
+      } else {
+        display.textContent += value;
+      }
+    }
+    
+    function clearCalculator() {
+      document.getElementById('calc-display').textContent = '0';
+    }
+    
+    function backspace() {
+      const display = document.getElementById('calc-display');
+      if (display.textContent.length === 1 || display.textContent === 'Error') {
+        display.textContent = '0';
+      } else {
+        display.textContent = display.textContent.slice(0, -1);
+      }
+    }
+    
+    function calculate() {
+      const display = document.getElementById('calc-display');
+      try {
+        // Handle special cases for 1/x and x²
+        let expression = display.textContent;
+        
+        // Replace visual representations with JavaScript equivalents
+        expression = expression.replace(/×/g, '*');
+        expression = expression.replace(/÷/g, '/');
+        
+        // Handle special functions
+        if (expression.includes('1/')) {
+          expression = expression.replace('1/', '1/(') + ')';
+        }
+        
+        // Evaluate the expression
+        const result = eval(expression);
+        
+        // Handle very large or very small numbers
+        if (typeof result === 'number') {
+          if (result > 1e15 || (result < 1e-15 && result > 0)) {
+            display.textContent = result.toExponential(5);
+          } else {
+            // Round to avoid floating point precision issues
+            display.textContent = parseFloat(result.toPrecision(12));
+          }
+        } else {
+          display.textContent = result;
+        }
+      } catch (error) {
+        display.textContent = 'Error';
+      }
+    }
+    
+    // Close calculator when clicking outside
+    document.getElementById('calculator-modal').addEventListener('click', function(e) {
+      if (e.target === this) {
+        closeCalculator();
+      }
+    });
+    
+    // Add initial animation when page loads
+    document.addEventListener("DOMContentLoaded", function() {
+      document.querySelector(".app").classList.add("fade-in");
+    });
+  </script>
+</body>
+</html>

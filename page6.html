@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Solar System Model</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: #000;
+            color: #fff;
+            overflow: hidden;
+            perspective: 1000px;
+        }
+        
+        h1 {
+            margin: 20px 0;
+            color: #4fc3f7;
+            text-align: center;
+            z-index: 10;
+        }
+        
+        .controls {
+            margin: 10px 0 20px;
+            display: flex;
+            gap: 15px;
+            z-index: 10;
+        }
+        
+        button {
+            padding: 8px 15px;
+            background: #2196f3;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        button:hover {
+            background: #1976d2;
+        }
+        
+        .solar-system {
+            position: relative;
+            width: 800px;
+            height: 800px;
+            margin: 0 auto;
+        }
+        
+        .sun {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 80px;
+            height: 80px;
+            margin: -40px 0 0 -40px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #ffd600 30%, #ff9800 70%);
+            box-shadow: 0 0 50px #ff9800, 0 0 100px #ff9800;
+            z-index: 10;
+        }
+        
+        .orbit {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transform-style: preserve-3d;
+            transform: rotateX(70deg);
+        }
+        
+        .planet {
+            position: absolute;
+            border-radius: 50%;
+            transform-style: preserve-3d;
+            top: 50%;
+            animation-name: orbit;
+            animation-iteration-count: infinite;
+            animation-timing-function: linear;
+        }
+        
+        .planet-info {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            width: 150px;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+            z-index: 100;
+            font-size: 14px;
+        }
+        
+        .planet:hover .planet-info {
+            opacity: 1;
+        }
+        
+        /* Mercury */
+        #mercury-orbit {
+            width: 160px;
+            height: 160px;
+            margin: -80px 0 0 -80px;
+        }
+        
+        #mercury {
+            width: 10px;
+            height: 10px;
+            margin-top: -5px;
+            margin-left: -5px;
+            background: #a6a6a6;
+            animation-duration: 2.5s;
+        }
+        
+        /* Venus */
+        #venus-orbit {
+            width: 220px;
+            height: 220px;
+            margin: -110px 0 0 -110px;
+        }
+        
+        #venus {
+            width: 15px;
+            height: 15px;
+            margin-top: -7.5px;
+            margin-left: -7.5px;
+            background: #e3bb7f;
+            animation-duration: 6s;
+        }
+        
+        /* Earth */
+        #earth-orbit {
+            width: 300px;
+            height: 300px;
+            margin: -150px 0 0 -150px;
+        }
+        
+        #earth {
+            width: 16px;
+            height: 16px;
+            margin-top: -8px;
+            margin-left: -8px;
+            background: #2196f3;
+            animation-duration: 10s;
+        }
+        
+        /* Mars */
+        #mars-orbit {
+            width: 380px;
+            height: 380px;
+            margin: -190px 0 0 -190px;
+        }
+        
+        #mars {
+            width: 12px;
+            height: 12px;
+            margin-top: -6px;
+            margin-left: -6px;
+            background: #ff5722;
+            animation-duration: 18s;
+        }
+        
+        /* Jupiter */
+        #jupiter-orbit {
+            width: 500px;
+            height: 500px;
+            margin: -250px 0 0 -250px;
+        }
+        
+        #jupiter {
+            width: 40px;
+            height: 40px;
+            margin-top: -20px;
+            margin-left: -20px;
+            background: #e0b568;
+            animation-duration: 30s;
+        }
+        
+        /* Saturn */
+        #saturn-orbit {
+            width: 620px;
+            height: 620px;
+            margin: -310px 0 0 -310px;
+        }
+        
+        #saturn {
+            width: 35px;
+            height: 35px;
+            margin-top: -17.5px;
+            margin-left: -17.5px;
+            background: #d8ca9d;
+            animation-duration: 60s;
+        }
+        
+        /* Saturn's rings */
+        #saturn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 60px;
+            height: 10px;
+            margin: -5px 0 0 -30px;
+            background: linear-gradient(to right, 
+                        transparent, 
+                        rgba(210, 180, 140, 0.8), 
+                        transparent);
+            border-radius: 50%;
+            transform: rotateX(80deg);
+            z-index: -1;
+        }
+        
+        /* Uranus */
+        #uranus-orbit {
+            width: 700px;
+            height: 700px;
+            margin: -350px 0 0 -350px;
+        }
+        
+        #uranus {
+            width: 25px;
+            height: 25px;
+            margin-top: -12.5px;
+            margin-left: -12.5px;
+            background: #b3e5fc;
+            animation-duration: 84s;
+        }
+        
+        /* Neptune */
+        #neptune-orbit {
+            width: 780px;
+            height: 780px;
+            margin: -390px 0 0 -390px;
+        }
+        
+        #neptune {
+            width: 24px;
+            height: 24px;
+            margin-top: -12px;
+            margin-left: -12px;
+            background: #1976d2;
+            animation-duration: 165s;
+        }
+        
+        .stars {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+        
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+        }
+        
+        @keyframes orbit {
+            0% {
+                transform: rotateZ(0deg);
+            }
+            100% {
+                transform: rotateZ(360deg);
+            }
+        }
+        
+        @media (max-width: 850px) {
+            .solar-system {
+                width: 100vw;
+                height: 100vw;
+            }
+            
+            .sun {
+                width: 40px;
+                height: 40px;
+                margin: -20px 0 0 -20px;
+            }
+            
+            /* Adjust all orbits and planets for mobile */
+            #mercury-orbit {
+                width: 80px;
+                height: 80px;
+                margin: -40px 0 0 -40px;
+            }
+            
+            #mercury {
+                width: 5px;
+                height: 5px;
+                margin-top: -2.5px;
+                margin-left: -2.5px;
+            }
+            
+            /* Continue adjusting other planets... */
+            
+            h1 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>3D Solar System Model</h1>
+    
+    <div class="controls">
+        <button id="pause-btn">Pause</button>
+        <button id="resume-btn">Resume</button>
+        <button id="speed-up">Speed Up</button>
+        <button id="slow-down">Slow Down</button>
+    </div>
+    
+    <div class="solar-system">
+        <div class="sun"></div>
+        
+        <!-- Mercury -->
+        <div class="orbit" id="mercury-orbit">
+            <div class="planet" id="mercury">
+                <div class="planet-info">Mercury</div>
+            </div>
+        </div>
+        
+        <!-- Venus -->
+        <div class="orbit" id="venus-orbit">
+            <div class="planet" id="venus">
+                <div class="planet-info">Venus</div>
+            </div>
+        </div>
+        
+        <!-- Earth -->
+        <div class="orbit" id="earth-orbit">
+            <div class="planet" id="earth">
+                <div class="planet-info">Earth</div>
+            </div>
+        </div>
+        
+        <!-- Mars -->
+        <div class="orbit" id="mars-orbit">
+            <div class="planet" id="mars">
+                <div class="planet-info">Mars</div>
+            </div>
+        </div>
+        
+        <!-- Jupiter -->
+        <div class="orbit" id="jupiter-orbit">
+            <div class="planet" id="jupiter">
+                <div class="planet-info">Jupiter</div>
+            </div>
+        </div>
+        
+        <!-- Saturn -->
+        <div class="orbit" id="saturn-orbit">
+            <div class="planet" id="saturn">
+                <div class="planet-info">Saturn</div>
+            </div>
+        </div>
+        
+        <!-- Uranus -->
+        <div class="orbit" id="uranus-orbit">
+            <div class="planet" id="uranus">
+                <div class="planet-info">Uranus</div>
+            </div>
+        </div>
+        
+        <!-- Neptune -->
+        <div class="orbit" id="neptune-orbit">
+            <div class="planet" id="neptune">
+                <div class="planet-info">Neptune</div>
+            </div>
+        </div>
+        
+        <div class="stars" id="stars"></div>
+    </div>
+
+    <script>
+        // Create stars for background
+        function createStars() {
+            const starsContainer = document.getElementById('stars');
+            const starCount = 200;
+            
+            for (let i = 0; i < starCount; i++) {
+                const star = document.createElement('div');
+                star.classList.add('star');
+                
+                // Random position
+                const left = Math.random() * 100;
+                const top = Math.random() * 100;
+                
+                // Random size (very small)
+                const size = Math.random() * 2;
+                
+                // Random opacity
+                const opacity = Math.random() * 0.7 + 0.3;
+                
+                star.style.left = `${left}%`;
+                star.style.top = `${top}%`;
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+                star.style.opacity = `${opacity}`;
+                
+                // Some stars twinkle
+                if (Math.random() > 0.7) {
+                    star.style.animation = `twinkle ${Math.random() * 3 + 2}s infinite alternate`;
+                }
+                
+                starsContainer.appendChild(star);
+            }
+        }
+        
+        // Control animations
+        let speedMultiplier = 1;
+        
+        document.getElementById('pause-btn').addEventListener('click', function() {
+            const planets = document.querySelectorAll('.planet');
+            planets.forEach(planet => {
+                planet.style.animationPlayState = 'paused';
+            });
+        });
+        
+        document.getElementById('resume-btn').addEventListener('click', function() {
+            const planets = document.querySelectorAll('.planet');
+            planets.forEach(planet => {
+                planet.style.animationPlayState = 'running';
+            });
+        });
+        
+        document.getElementById('speed-up').addEventListener('click', function() {
+            speedMultiplier *= 1.5;
+            updateAnimationSpeed();
+        });
+        
+        document.getElementById('slow-down').addEventListener('click', function() {
+            speedMultiplier /= 1.5;
+            updateAnimationSpeed();
+        });
+        
+        function updateAnimationSpeed() {
+            const planets = document.querySelectorAll('.planet');
+            planets.forEach(planet => {
+                const baseDuration = parseFloat(planet.style.animationDuration || 
+                    getComputedStyle(planet).animationDuration);
+                planet.style.animationDuration = `${baseDuration / speedMultiplier}s`;
+            });
+        }
+        
+        // Initialize
+        window.addEventListener('load', function() {
+            createStars();
+            
+            // Position planet info boxes
+            const planets = document.querySelectorAll('.planet');
+            planets.forEach(planet => {
+                const info = planet.querySelector('.planet-info');
+                info.style.transform = 'translate(-50%, -140%)';
+            });
+        });
+    </script>
+</body>
+</html>
