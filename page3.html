@@ -10,20 +10,55 @@
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
     }
     
     body {
-      background: #0f0f0f;
+      background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
       color: #fff;
       min-height: 100vh;
       overflow-x: hidden;
+      padding: 20px;
     }
     
-    .container {
+    .glass-container {
       max-width: 100%;
       margin: 0 auto;
-      padding: 0 16px;
+    }
+    
+    /* Liquid Glass Effect */
+    .liquid-glass {
+      background: rgba(255, 255, 255, 0.06);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+      overflow: hidden;
+      position: relative;
+    }
+    
+    .liquid-glass::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle at center, rgba(255, 110, 196, 0.15) 0%, rgba(0, 0, 0, 0) 60%),
+                  radial-gradient(circle at 30% 70%, rgba(0, 191, 255, 0.15) 0%, rgba(0, 0, 0, 0) 60%);
+      transform: rotate(30deg);
+      z-index: -1;
+      animation: liquidMove 15s infinite alternate;
+    }
+    
+    @keyframes liquidMove {
+      0% {
+        transform: rotate(30deg) translate(0, 0) scale(1);
+      }
+      100% {
+        transform: rotate(35deg) translate(-20px, 10px) scale(1.1);
+      }
     }
     
     /* Header Styles */
@@ -31,22 +66,29 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 12px 16px;
-      background: #0f0f0f;
+      padding: 16px 24px;
+      background: rgba(15, 15, 15, 0.7);
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
       position: sticky;
-      top: 0;
-      z-index: 100;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      top: 20px;
+      z-index: 1000;
+      border-radius: 16px;
+      margin-bottom: 24px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
     }
     
     .logo {
       display: flex;
       align-items: center;
       gap: 10px;
-      font-size: 1.5rem;
+      font-size: 1.6rem;
       font-weight: 700;
       color: #fff;
       text-decoration: none;
+      background: linear-gradient(45deg, #ff6ec4, #7873f5);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
     
     .search-bar {
@@ -58,26 +100,43 @@
     
     .search-bar input {
       flex: 1;
-      padding: 10px 15px;
-      background: #121212;
+      padding: 14px 24px;
+      background: rgba(255, 255, 255, 0.08);
       border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 20px 0 0 20px;
+      border-radius: 24px;
       font-size: 1rem;
       color: #fff;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      transition: all 0.3s ease;
+    }
+    
+    .search-bar input:focus {
+      outline: none;
+      border-color: rgba(255, 105, 180, 0.5);
+      box-shadow: 0 0 0 3px rgba(255, 105, 180, 0.2);
     }
     
     .search-bar button {
-      padding: 10px 20px;
-      background: rgba(255, 255, 255, 0.1);
+      padding: 14px 28px;
+      margin-left: 12px;
+      background: linear-gradient(45deg, #ff6ec4, #7873f5);
       color: white;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 0 20px 20px 0;
+      border: none;
+      border-radius: 24px;
       cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+    
+    .search-bar button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(120, 115, 245, 0.4);
     }
     
     .user-actions {
       display: flex;
-      gap: 15px;
+      gap: 16px;
       align-items: center;
     }
     
@@ -86,15 +145,21 @@
       border: none;
       color: white;
       cursor: pointer;
-      font-size: 1.2rem;
+      font-size: 1.3rem;
+      transition: all 0.3s ease;
+    }
+    
+    .user-action:hover {
+      color: #ff6ec4;
+      transform: scale(1.1);
     }
     
     .back-btn {
-      padding: 10px 20px;
+      padding: 12px 24px;
       background: rgba(255, 255, 255, 0.1);
       color: white;
       border: none;
-      border-radius: 8px;
+      border-radius: 16px;
       cursor: pointer;
       font-weight: 600;
       transition: all 0.3s ease;
@@ -102,26 +167,27 @@
       align-items: center;
       gap: 8px;
       margin-right: 15px;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
     }
     
     .back-btn:hover {
       background: rgba(255, 255, 255, 0.2);
+      transform: translateY(-2px);
     }
     
     /* Content Layout */
     .content {
       display: grid;
       grid-template-columns: 7fr 3fr;
-      gap: 20px;
-      padding: 20px;
+      gap: 28px;
       max-width: 1600px;
       margin: 0 auto;
     }
     
     /* Video Player */
     .video-container {
-      background: #0f0f0f;
-      border-radius: 12px;
+      border-radius: 20px;
       overflow: hidden;
     }
     
@@ -129,72 +195,80 @@
       width: 100%;
       aspect-ratio: 16/9;
       background: #000;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.4);
     }
     
     .video-info {
-      padding: 16px 0;
+      padding: 24px 0;
     }
     
     .video-title {
-      font-size: 1.25rem;
-      margin-bottom: 12px;
-      font-weight: 500;
+      font-size: 1.7rem;
+      margin-bottom: 20px;
+      font-weight: 600;
+      line-height: 1.4;
     }
     
     .video-stats {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding-bottom: 16px;
+      padding-bottom: 24px;
       border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
     
     .video-views {
       color: rgba(255, 255, 255, 0.7);
-      font-size: 0.9rem;
+      font-size: 1rem;
     }
     
     .video-actions {
       display: flex;
-      gap: 15px;
+      gap: 16px;
     }
     
     .action-btn {
       display: flex;
       align-items: center;
-      gap: 6px;
-      background: rgba(255, 255, 255, 0.05);
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.08);
       border: none;
       color: white;
-      padding: 8px 16px;
-      border-radius: 18px;
+      padding: 12px 20px;
+      border-radius: 24px;
       cursor: pointer;
       transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
     }
     
     .action-btn:hover {
-      background: rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.15);
+      transform: translateY(-2px);
     }
     
     /* Channel Info */
     .channel-info {
       display: flex;
       align-items: center;
-      gap: 15px;
-      margin: 16px 0;
-      padding-bottom: 16px;
+      gap: 16px;
+      margin: 24px 0;
+      padding-bottom: 24px;
       border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
     
     .channel-avatar {
-      width: 48px;
-      height: 48px;
+      width: 56px;
+      height: 56px;
       border-radius: 50%;
-      background: linear-gradient(135deg, #00b4db 0%, #0083b0 100%);
+      background: linear-gradient(135deg, #ff6ec4 0%, #7873f5 100%);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.2rem;
+      font-size: 1.3rem;
+      box-shadow: 0 6px 20px rgba(120, 115, 245, 0.4);
     }
     
     .channel-details {
@@ -202,42 +276,30 @@
     }
     
     .channel-name {
-      font-weight: 500;
-      margin-bottom: 4px;
+      font-weight: 600;
+      margin-bottom: 6px;
+      font-size: 1.2rem;
     }
     
     .channel-subs {
       color: rgba(255, 255, 255, 0.7);
-      font-size: 0.85rem;
-    }
-    
-    .subscribe-btn {
-      padding: 10px 16px;
-      background: #cc0000;
-      color: white;
-      border: none;
-      border-radius: 18px;
-      cursor: pointer;
-      font-weight: 500;
-      transition: all 0.3s ease;
-    }
-    
-    .subscribe-btn:hover {
-      background: #ff0000;
+      font-size: 0.95rem;
     }
     
     /* Video Description */
     .video-description {
-      background: rgba(255, 255, 255, 0.05);
-      padding: 16px;
-      border-radius: 12px;
-      margin-top: 16px;
-      font-size: 0.9rem;
-      line-height: 1.5;
+      background: rgba(255, 255, 255, 0.06);
+      padding: 24px;
+      border-radius: 20px;
+      margin-top: 24px;
+      font-size: 1rem;
+      line-height: 1.6;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
     }
     
     .description-text {
-      margin-bottom: 12px;
+      margin-bottom: 20px;
     }
     
     .show-more {
@@ -246,23 +308,28 @@
       border: none;
       cursor: pointer;
       font-weight: 500;
+      transition: all 0.3s ease;
+    }
+    
+    .show-more:hover {
+      color: #ff6ec4;
     }
     
     /* Comments Section */
     .comments-section {
-      margin-top: 24px;
+      margin-top: 32px;
     }
     
     .comments-header {
       display: flex;
       align-items: center;
       gap: 16px;
-      margin-bottom: 16px;
+      margin-bottom: 24px;
     }
     
     .comments-title {
-      font-size: 1.1rem;
-      font-weight: 500;
+      font-size: 1.3rem;
+      font-weight: 600;
     }
     
     .sort-by {
@@ -272,24 +339,38 @@
       cursor: pointer;
       display: flex;
       align-items: center;
-      gap: 4px;
+      gap: 8px;
+      transition: all 0.3s ease;
+    }
+    
+    .sort-by:hover {
+      color: #ff6ec4;
     }
     
     .comment {
       display: flex;
       gap: 16px;
-      margin-bottom: 16px;
+      margin-bottom: 24px;
+      padding: 20px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.04);
+      transition: all 0.3s ease;
+    }
+    
+    .comment:hover {
+      background: rgba(255, 255, 255, 0.08);
+      transform: translateY(-2px);
     }
     
     .comment-avatar {
-      width: 40px;
-      height: 40px;
+      width: 48px;
+      height: 48px;
       border-radius: 50%;
-      background: linear-gradient(135deg, #00b4db 0%, #0083b0 100%);
+      background: linear-gradient(135deg, #ff6ec4 0%, #7873f5 100%);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1rem;
+      font-size: 1.1rem;
       flex-shrink: 0;
     }
     
@@ -298,22 +379,22 @@
     }
     
     .comment-author {
-      font-weight: 500;
-      margin-bottom: 4px;
-      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+      font-size: 1rem;
     }
     
     .comment-time {
       color: rgba(255, 255, 255, 0.7);
-      font-size: 0.8rem;
+      font-size: 0.9rem;
       margin-left: 8px;
       font-weight: 400;
     }
     
     .comment-text {
-      font-size: 0.9rem;
-      line-height: 1.4;
-      margin-bottom: 8px;
+      font-size: 1rem;
+      line-height: 1.5;
+      margin-bottom: 12px;
     }
     
     .comment-actions {
@@ -324,50 +405,76 @@
     .comment-action {
       display: flex;
       align-items: center;
-      gap: 4px;
+      gap: 6px;
       color: rgba(255, 255, 255, 0.7);
-      font-size: 0.8rem;
+      font-size: 0.9rem;
       background: none;
       border: none;
       cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .comment-action:hover {
+      color: #ff6ec4;
     }
     
     /* Related Videos */
     .related-videos {
-      padding: 0 10px;
+      padding: 0 12px;
     }
     
     .section-title {
-      font-size: 1.1rem;
-      font-weight: 500;
-      margin-bottom: 16px;
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin-bottom: 24px;
+      padding-left: 12px;
     }
     
     .video-card {
       display: flex;
-      gap: 8px;
-      margin-bottom: 12px;
+      gap: 12px;
+      margin-bottom: 20px;
       cursor: pointer;
+      padding: 16px;
+      border-radius: 16px;
+      transition: all 0.3s ease;
+    }
+    
+    .video-card:hover {
+      background: rgba(255, 255, 255, 0.06);
+      transform: translateY(-3px);
     }
     
     .card-thumbnail {
       width: 168px;
       height: 94px;
-      background: #000;
-      border-radius: 4px;
+      border-radius: 12px;
       flex-shrink: 0;
       position: relative;
+      overflow: hidden;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+    }
+    
+    .thumbnail-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: all 0.5s ease;
+    }
+    
+    .video-card:hover .thumbnail-img {
+      transform: scale(1.05);
     }
     
     .card-duration {
       position: absolute;
-      bottom: 4px;
-      right: 4px;
+      bottom: 8px;
+      right: 8px;
       background: rgba(0, 0, 0, 0.8);
       color: white;
-      padding: 2px 4px;
-      border-radius: 2px;
-      font-size: 0.75rem;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 0.8rem;
     }
     
     .card-info {
@@ -375,37 +482,38 @@
     }
     
     .card-title {
-      font-size: 0.9rem;
+      font-size: 1rem;
       font-weight: 500;
-      margin-bottom: 4px;
+      margin-bottom: 8px;
       display: -webkit-box;
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
       overflow: hidden;
+      line-height: 1.4;
     }
     
     .card-channel {
-      font-size: 0.8rem;
+      font-size: 0.9rem;
       color: rgba(255, 255, 255, 0.7);
-      margin-bottom: 4px;
+      margin-bottom: 6px;
     }
     
     .card-meta {
-      font-size: 0.8rem;
-      color: rgba(255, 255, 255, 0.7);
+      font-size: 0.85rem;
+      color: rgba(255, 255, 255, 0.6);
     }
     
     /* Responsive Design */
     @media (max-width: 1200px) {
       .content {
         grid-template-columns: 1fr;
-        gap: 30px;
+        gap: 32px;
       }
       
       .related-videos {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-        gap: 16px;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 24px;
       }
       
       .video-card {
@@ -420,22 +528,29 @@
     }
     
     @media (max-width: 768px) {
+      body {
+        padding: 12px;
+      }
+      
       .header {
-        padding: 8px 12px;
+        padding: 12px 16px;
+        flex-wrap: wrap;
       }
       
       .search-bar {
-        margin: 0 10px;
+        order: 3;
+        width: 100%;
+        margin: 12px 0 0 0;
       }
       
       .search-bar input {
-        padding: 8px 12px;
+        padding: 12px 20px;
       }
       
       .video-stats {
         flex-direction: column;
         align-items: flex-start;
-        gap: 12px;
+        gap: 16px;
       }
       
       .video-actions {
@@ -446,12 +561,7 @@
       .channel-info {
         flex-direction: column;
         align-items: flex-start;
-        gap: 12px;
-      }
-      
-      .subscribe-btn {
-        width: 100%;
-        text-align: center;
+        gap: 16px;
       }
     }
     
@@ -461,12 +571,42 @@
       height: 100%;
       border: none;
     }
+    
+    /* Floating particles for liquid effect */
+    .floating-particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: -1;
+    }
+    
+    .particle {
+      position: absolute;
+      border-radius: 50%;
+      background: linear-gradient(45deg, rgba(255, 110, 196, 0.2), rgba(120, 115, 245, 0.2));
+      animation: float 15s infinite linear;
+    }
+    
+    @keyframes float {
+      0% {
+        transform: translate(0, 0) rotate(0deg);
+      }
+      100% {
+        transform: translate(100px, 100px) rotate(360deg);
+      }
+    }
   </style>
 </head>
 <body>
-  <div class="container">
+  <!-- Floating particles for liquid effect -->
+  <div class="floating-particles" id="particles"></div>
+  
+  <div class="glass-container">
     <!-- Header -->
-    <div class="header">
+    <div class="header liquid-glass">
       <a href="htmls.html" class="logo">
         <i class="fas fa-graduation-cap"></i>
         <span>StudyTube</span>
@@ -482,7 +622,6 @@
           <i class="fas fa-arrow-left"></i> To-Do App
         </button>
         <button class="user-action"><i class="fas fa-video"></i></button>
-        <button class="user-action"><i class="fas fa-bell"></i></button>
         <button class="user-action"><i class="fas fa-user-circle"></i></button>
       </div>
     </div>
@@ -491,7 +630,7 @@
     <div class="content">
       <!-- Main Video Content -->
       <div class="main-content">
-        <div class="video-container">
+        <div class="video-container liquid-glass">
           <div class="video-player" id="mainPlayer">
             <!-- Video will be loaded here -->
           </div>
@@ -503,16 +642,10 @@
               <div class="video-views" id="videoViews">285,432 views • Apr 15, 2023</div>
               <div class="video-actions">
                 <button class="action-btn">
-                  <i class="fas fa-thumbs-up"></i> 12K
+                  <i class="fas fa-clock"></i> Watch Later
                 </button>
                 <button class="action-btn">
-                  <i class="fas fa-thumbs-down"></i> 243
-                </button>
-                <button class="action-btn">
-                  <i class="fas fa-share"></i> Share
-                </button>
-                <button class="action-btn">
-                  <i class="fas fa-save"></i> Save
+                  <i class="fas fa-list"></i> Save to Playlist
                 </button>
               </div>
             </div>
@@ -525,7 +658,6 @@
                 <div class="channel-name" id="channelName">Study Stream</div>
                 <div class="channel-subs">1.2M subscribers</div>
               </div>
-              <button class="subscribe-btn">SUBSCRIBE</button>
             </div>
             
             <div class="video-description">
@@ -535,7 +667,7 @@
           </div>
         </div>
         
-        <div class="comments-section">
+        <div class="comments-section liquid-glass">
           <div class="comments-header">
             <h3 class="comments-title">245 Comments</h3>
             <button class="sort-by">
@@ -557,9 +689,8 @@
                   <i class="fas fa-thumbs-up"></i> 342
                 </button>
                 <button class="comment-action">
-                  <i class="fas fa-thumbs-down"></i>
+                  REPLY
                 </button>
-                <button class="comment-action">REPLY</button>
               </div>
             </div>
           </div>
@@ -578,9 +709,8 @@
                   <i class="fas fa-thumbs-up"></i> 215
                 </button>
                 <button class="comment-action">
-                  <i class="fas fa-thumbs-down"></i>
+                  REPLY
                 </button>
-                <button class="comment-action">REPLY</button>
               </div>
             </div>
           </div>
@@ -591,8 +721,21 @@
       <div class="related-videos">
         <h3 class="section-title">Related Videos</h3>
         
-        <div class="video-card" data-video="sUwD3GRPJos" data-title="Study With Me - 8 Hours of Focus" data-channel="Study Stream" data-views="142K views • 3 months ago" data-description="An 8-hour study session with focus music and Pomodoro timer. Perfect for long study sessions.">
+        <div class="video-card liquid-glass" data-video="e3sobyHWa0I" data-title="Study With Me - 10 Hours of Focus" data-channel="Study Stream" data-views="189K views • 2 months ago" data-description="A 10-hour study session with focus music and Pomodoro timer. Perfect for long study sessions.">
           <div class="card-thumbnail">
+            <img src="https://i.ytimg.com/vi/e3sobyHWa0I/hqdefault.jpg" alt="Study With Me - 10 Hours of Focus" class="thumbnail-img">
+            <div class="card-duration">10:00:00</div>
+          </div>
+          <div class="card-info">
+            <div class="card-title">Study With Me - 10 Hours of Focus</div>
+            <div class="card-channel">Study Stream</div>
+            <div class="card-meta">189K views • 2 months ago</div>
+          </div>
+        </div>
+        
+        <div class="video-card liquid-glass" data-video="sUwD3GRPJos" data-title="Study With Me - 8 Hours of Focus" data-channel="Study Stream" data-views="142K views • 3 months ago" data-description="An 8-hour study session with focus music and Pomodoro timer. Perfect for long study sessions.">
+          <div class="card-thumbnail">
+            <img src="https://i.ytimg.com/vi/sUwD3GRPJos/hqdefault.jpg" alt="Study With Me - 8 Hours of Focus" class="thumbnail-img">
             <div class="card-duration">8:00:00</div>
           </div>
           <div class="card-info">
@@ -602,8 +745,9 @@
           </div>
         </div>
         
-        <div class="video-card" data-video="OS8lnKZdJYc" data-title="Real Time Study Session - No Music" data-channel="Focus Factory" data-views="98K views • 2 weeks ago" data-description="A real-time study session with no music, just ambient sounds. Perfect for those who prefer silence while studying.">
+        <div class="video-card liquid-glass" data-video="OS8lnKZdJYc" data-title="Real Time Study Session - No Music" data-channel="Focus Factory" data-views="98K views • 2 weeks ago" data-description="A real-time study session with no music, just ambient sounds. Perfect for those who prefer silence while studying.">
           <div class="card-thumbnail">
+            <img src="https://i.ytimg.com/vi/OS8lnKZdJYc/hqdefault.jpg" alt="Real Time Study Session - No Music" class="thumbnail-img">
             <div class="card-duration">6:24:18</div>
           </div>
           <div class="card-info">
@@ -613,8 +757,9 @@
           </div>
         </div>
         
-        <div class="video-card" data-video="LjRygr4xR7g" data-title="Night Study Session - Lofi Hip Hop" data-channel="Night Owl Studies" data-views="204K views • 1 month ago" data-description="A relaxing night study session with lofi hip hop music. Perfect for late-night study sessions.">
+        <div class="video-card liquid-glass" data-video="LjRygr4xR7g" data-title="Night Study Session - Lofi Hip Hop" data-channel="Night Owl Studies" data-views="204K views • 1 month ago" data-description="A relaxing night study session with lofi hip hop music. Perfect for late-night study sessions.">
           <div class="card-thumbnail">
+            <img src="https://i.ytimg.com/vi/LjRygr4xR7g/hqdefault.jpg" alt="Night Study Session - Lofi Hip Hop" class="thumbnail-img">
             <div class="card-duration">5:47:32</div>
           </div>
           <div class="card-info">
@@ -624,8 +769,9 @@
           </div>
         </div>
         
-        <div class="video-card" data-video="LzBBCmDVRqM" data-title="10-Hour Study With Me - Forest Sounds" data-channel="Nature Focus" data-views="176K views • 2 months ago" data-description="A 10-hour study session with calming forest sounds. Great for nature lovers who need to focus.">
+        <div class="video-card liquid-glass" data-video="LzBBCmDVRqM" data-title="10-Hour Study With Me - Forest Sounds" data-channel="Nature Focus" data-views="176K views • 2 months ago" data-description="A 10-hour study session with calming forest sounds. Great for nature lovers who need to focus.">
           <div class="card-thumbnail">
+            <img src="https://i.ytimg.com/vi/LzBBCmDVRqM/hqdefault.jpg" alt="10-Hour Study With Me - Forest Sounds" class="thumbnail-img">
             <div class="card-duration">10:00:00</div>
           </div>
           <div class="card-info">
@@ -635,8 +781,9 @@
           </div>
         </div>
         
-        <div class="video-card" data-video="XcoFHz5i8T0" data-title="Medical Student Study Session" data-channel="Med Student Diaries" data-views="312K views • 5 months ago" data-description="Follow a medical student's real study session. See how med students prepare for exams.">
+        <div class="video-card liquid-glass" data-video="XcoFHz5i8T0" data-title="Medical Student Study Session" data-channel="Med Student Diaries" data-views="312K views • 5 months ago" data-description="Follow a medical student's real study session. See how med students prepare for exams.">
           <div class="card-thumbnail">
+            <img src="https://i.ytimg.com/vi/XcoFHz5i8T0/hqdefault.jpg" alt="Medical Student Study Session" class="thumbnail-img">
             <div class="card-duration">7:12:45</div>
           </div>
           <div class="card-info">
@@ -650,42 +797,54 @@
   </div>
 
   <script>
-    // Video data
+    // Video data with thumbnails
     const videos = {
+      "e3sobyHWa0I": {
+        title: "Study With Me - 10 Hours of Focus",
+        channel: "Study Stream",
+        views: "189K views • 2 months ago",
+        description: "A 10-hour study session with focus music and Pomodoro timer. Perfect for long study sessions.",
+        thumbnail: "https://i.ytimg.com/vi/e3sobyHWa0I/hqdefault.jpg"
+      },
       "sUwD3GRPJos": {
         title: "Study With Me - 8 Hours of Focus",
         channel: "Study Stream",
         views: "142K views • 3 months ago",
-        description: "An 8-hour study session with focus music and Pomodoro timer. Perfect for long study sessions."
+        description: "An 8-hour study session with focus music and Pomodoro timer. Perfect for long study sessions.",
+        thumbnail: "https://i.ytimg.com/vi/sUwD3GRPJos/hqdefault.jpg"
       },
       "OS8lnKZdJYc": {
         title: "Real Time Study Session - No Music",
         channel: "Focus Factory",
         views: "98K views • 2 weeks ago",
-        description: "A real-time study session with no music, just ambient sounds. Perfect for those who prefer silence while studying."
+        description: "A real-time study session with no music, just ambient sounds. Perfect for those who prefer silence while studying.",
+        thumbnail: "https://i.ytimg.com/vi/OS8lnKZdJYc/hqdefault.jpg"
       },
       "LjRygr4xR7g": {
         title: "Night Study Session - Lofi Hip Hop",
         channel: "Night Owl Studies",
         views: "204K views • 1 month ago",
-        description: "A relaxing night study session with lofi hip hop music. Perfect for late-night study sessions."
+        description: "A relaxing night study session with lofi hip hop music. Perfect for late-night study sessions.",
+        thumbnail: "https://i.ytimg.com/vi/LjRygr4xR7g/hqdefault.jpg"
       },
       "LzBBCmDVRqM": {
         title: "10-Hour Study With Me - Forest Sounds",
         channel: "Nature Focus",
         views: "176K views • 2 months ago",
-        description: "A 10-hour study session with calming forest sounds. Great for nature lovers who need to focus."
+        description: "A 10-hour study session with calming forest sounds. Great for nature lovers who need to focus.",
+        thumbnail: "https://i.ytimg.com/vi/LzBBCmDVRqM/hqdefault.jpg"
       },
       "XcoFHz5i8T0": {
         title: "Medical Student Study Session",
         channel: "Med Student Diaries",
         views: "312K views • 5 months ago",
-        description: "Follow a medical student's real study session. See how med students prepare for exams."
+        description: "Follow a medical student's real study session. See how med students prepare for exams.",
+        thumbnail: "https://i.ytimg.com/vi/XcoFHz5i8T0/hqdefault.jpg"
       }
     };
 
     // Load default video
-    let currentVideoId = "sUwD3GRPJos";
+    let currentVideoId = "e3sobyHWa0I";
     
     // Function to load a video
     function loadVideo(videoId) {
@@ -696,7 +855,7 @@
       const player = document.getElementById('mainPlayer');
       player.innerHTML = `
         <iframe class="video-embed" 
-          src="https://www.youtube.com/embed/${videoId}" 
+          src="https://www.youtube.com/embed/${videoId}?autoplay=1" 
           title="YouTube video player" 
           frameborder="0" 
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
@@ -739,6 +898,35 @@
         document.querySelector('.search-bar button').click();
       }
     });
+    
+    // Create floating particles for liquid effect
+    function createParticles() {
+      const particlesContainer = document.getElementById('particles');
+      const particleCount = 20;
+      
+      for (let i = 0; i < particleCount; i++) {
+        const particle = document.createElement('div');
+        particle.classList.add('particle');
+        
+        // Random size and position
+        const size = Math.random() * 100 + 20;
+        const posX = Math.random() * 100;
+        const posY = Math.random() * 100;
+        const animationDuration = Math.random() * 20 + 10;
+        
+        particle.style.width = `${size}px`;
+        particle.style.height = `${size}px`;
+        particle.style.left = `${posX}%`;
+        particle.style.top = `${posY}%`;
+        particle.style.opacity = Math.random() * 0.3 + 0.1;
+        particle.style.animationDuration = `${animationDuration}s`;
+        
+        particlesContainer.appendChild(particle);
+      }
+    }
+    
+    // Initialize particles
+    createParticles();
   </script>
 </body>
 </html>
