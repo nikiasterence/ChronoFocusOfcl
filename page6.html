@@ -1,382 +1,240 @@
-<!DOCTYPE html>
-<html lang="en">
+<meta name='viewport' content='width=device-width, initial-scale=1'/><!DOCTYPE html>
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Solar System Explorer</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(to bottom, #000428, #004e92);
-            color: #fff;
-            min-height: 100vh;
-            padding: 20px;
-            overflow-x: hidden;
-        }
-        
-        header {
-            text-align: center;
-            margin-bottom: 30px;
-            padding: 20px;
-        }
-        
-        h1 {
-            font-size: 3rem;
-            margin-bottom: 10px;
-            text-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
-        }
-        
-        .subtitle {
-            font-size: 1.2rem;
-            opacity: 0.8;
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        
-        .solar-system {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-bottom: 40px;
-        }
-        
-        .sun {
-            width: 100px;
-            height: 100px;
-            background: radial-gradient(circle, #ffd000 10%, #ff8c00 70%);
-            border-radius: 50%;
-            box-shadow: 0 0 50px #ff8c00, 0 0 100px #ff8c00;
-            margin-bottom: 30px;
-            position: relative;
-            z-index: 1;
-        }
-        
-        .orbit {
-            position: relative;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 50%;
-            margin: 20px 0;
-        }
-        
-        .planet {
-            position: absolute;
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            cursor: pointer;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        
-        .planet:hover {
-            transform: translate(-50%, -50%) scale(1.2);
-            box-shadow: 0 0 15px rgba(255, 255, 255, 0.8);
-        }
-        
-        .mercury { 
-            width: 20px; 
-            height: 20px; 
-            background: #a5a5a5; 
-        }
-        
-        .venus { 
-            width: 30px; 
-            height: 30px; 
-            background: #e6c229; 
-        }
-        
-        .earth { 
-            width: 35px; 
-            height: 35px; 
-            background: #2a6bbe; 
-        }
-        
-        .mars { 
-            width: 25px; 
-            height: 25px; 
-            background: #c1440e; 
-        }
-        
-        .jupiter { 
-            width: 70px; 
-            height: 70px; 
-            background: #d8ca9d; 
-        }
-        
-        .saturn { 
-            width: 65px; 
-            height: 65px; 
-            background: #e3be76; 
-            position: relative;
-        }
-        
-        .saturn::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 90px;
-            height: 10px;
-            background: rgba(199, 177, 121, 0.6);
-            border-radius: 50%;
-            transform: translate(-50%, -50%) rotate(-15deg);
-        }
-        
-        .uranus { 
-            width: 45px; 
-            height: 45px; 
-            background: #b3e3e1; 
-        }
-        
-        .neptune { 
-            width: 45px; 
-            height: 45px; 
-            background: #3454df; 
-        }
-        
-        .planet-info {
-            background: rgba(0, 0, 0, 0.7);
-            border-radius: 10px;
-            padding: 20px;
-            max-width: 500px;
-            margin: 0 auto;
-            display: none;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .planet-info.active {
-            display: block;
-            animation: fadeIn 0.5s ease;
-        }
-        
-        .planet-info h2 {
-            font-size: 2rem;
-            margin-bottom: 15px;
-            color: #ffcc00;
-        }
-        
-        .planet-info p {
-            margin-bottom: 10px;
-            line-height: 1.6;
-        }
-        
-        .close-btn {
-            background: #ffcc00;
-            color: #000;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-top: 15px;
-            font-weight: bold;
-        }
-        
-        .close-btn:hover {
-            background: #ffdd44;
-        }
-        
-        footer {
-            text-align: center;
-            margin-top: 40px;
-            padding: 20px;
-            opacity: 0.7;
-            font-size: 0.9rem;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        
-        /* Responsive adjustments */
-        @media (max-width: 768px) {
-            h1 {
-                font-size: 2rem;
-            }
-            
-            .sun {
-                width: 70px;
-                height: 70px;
-            }
-            
-            .planet-info {
-                max-width: 90%;
-            }
-        }
-    </style>
+  <style>
+    body {
+      background-color:#1a0154;
+      margin:0;
+      height:100vh;
+      overflow:hidden;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      font-family: Arial, sans-serif;
+      color: #fff;
+    }
+
+    /* Sun */
+    .sun {
+      position:absolute;
+      width:120px;
+      border-radius:50%;
+      z-index:10;
+      cursor:pointer;
+    }
+
+    /* Orbits */
+    .orbit {
+      position:absolute;
+      border:1px dashed rgba(255,255,255,0.3);
+      border-radius:50%;
+      top:50%;
+      left:50%;
+      transform:translate(-50%,-50%);
+    }
+
+    /* Planets */
+    img.planet {
+      border-radius:50%;
+      position:absolute;
+      cursor:pointer;
+    }
+
+    .mercury { width:20px; animation:mercury 10s linear infinite; }
+    .venus   { width:30px; animation:venus 20s linear infinite; }
+    .earth   { width:25px; animation:earth 30s linear infinite; }
+    .mars    { width:18px; animation:mars 40s linear infinite; }
+    .jupiter { width:50px; animation:jupiter 60s linear infinite; }
+    .saturn  { width:45px; animation:saturn 80s linear infinite; }
+    .uranus  { width:40px; animation:uranus 100s linear infinite; }
+    .neptune { width:28px; animation:neptune 120s linear infinite; }
+
+    /* Keyframes for planet orbits */
+    @keyframes mercury { from { transform: rotate(0deg) translateX(70px) rotate(0deg); } to { transform: rotate(360deg) translateX(70px) rotate(-360deg); } }
+    @keyframes venus   { from { transform: rotate(0deg) translateX(100px) rotate(0deg); } to { transform: rotate(360deg) translateX(100px) rotate(-360deg); } }
+    @keyframes earth   { from { transform: rotate(0deg) translateX(140px) rotate(0deg); } to { transform: rotate(360deg) translateX(140px) rotate(-360deg); } }
+    @keyframes mars    { from { transform: rotate(0deg) translateX(180px) rotate(0deg); } to { transform: rotate(360deg) translateX(180px) rotate(-360deg); } }
+    @keyframes jupiter { from { transform: rotate(0deg) translateX(230px) rotate(0deg); } to { transform: rotate(360deg) translateX(230px) rotate(-360deg); } }
+    @keyframes saturn  { from { transform: rotate(0deg) translateX(280px) rotate(0deg); } to { transform: rotate(360deg) translateX(280px) rotate(-360deg); } }
+    @keyframes uranus  { from { transform: rotate(0deg) translateX(330px) rotate(0deg); } to { transform: rotate(360deg) translateX(330px) rotate(-360deg); } }
+    @keyframes neptune { from { transform: rotate(0deg) translateX(380px) rotate(0deg); } to { transform: rotate(360deg) translateX(380px) rotate(-360deg); } }
+
+    /* Popup details box */
+    .info-box {
+      position:fixed;
+      top:50%;
+      left:50%;
+      transform:translate(-50%,-50%);
+      background: rgba(0,0,0,0.95);
+      border:2px solid #fff;
+      padding:20px;
+      width:350px;
+      display:none;
+      z-index:100;
+      border-radius:10px;
+      text-align:left;
+      line-height:1.5;
+    }
+
+    .info-box img {
+      display:block;
+      margin:0 auto 10px auto;
+      width:120px;
+      border-radius:50%;
+    }
+
+    .info-box h2 {
+      text-align:center;
+      margin-bottom:10px;
+    }
+
+    .info-box button {
+      margin-top:10px;
+      padding:5px 10px;
+      cursor:pointer;
+      display:block;
+      margin-left:auto;
+      margin-right:auto;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>Solar System Explorer</h1>
-            <p class="subtitle">Our planetary system located in the Milky Way galaxy</p>
-        </header>
-        
-        <div class="solar-system">
-            <div class="sun"></div>
-            
-            <!-- Mercury -->
-            <div class="orbit" style="width: 200px; height: 200px;">
-                <div class="planet mercury" data-planet="mercury" style="left: 50%; top: 0%;"></div>
-            </div>
-            
-            <!-- Venus -->
-            <div class="orbit" style="width: 280px; height: 280px;">
-                <div class="planet venus" data-planet="venus" style="left: 50%; top: 0%;"></div>
-            </div>
-            
-            <!-- Earth -->
-            <div class="orbit" style="width: 360px; height: 360px;">
-                <div class="planet earth" data-planet="earth" style="left: 50%; top: 0%;"></div>
-            </div>
-            
-            <!-- Mars -->
-            <div class="orbit" style="width: 430px; height: 430px;">
-                <div class="planet mars" data-planet="mars" style="left: 50%; top: 0%;"></div>
-            </div>
-            
-            <!-- Jupiter -->
-            <div class="orbit" style="width: 580px; height: 580px;">
-                <div class="planet jupiter" data-planet="jupiter" style="left: 50%; top: 0%;"></div>
-            </div>
-            
-            <!-- Saturn -->
-            <div class="orbit" style="width: 750px; height: 750px;">
-                <div class="planet saturn" data-planet="saturn" style="left: 50%; top: 0%;"></div>
-            </div>
-            
-            <!-- Uranus -->
-            <div class="orbit" style="width: 880px; height: 880px;">
-                <div class="planet uranus" data-planet="uranus" style="left: 50%; top: 0%;"></div>
-            </div>
-            
-            <!-- Neptune -->
-            <div class="orbit" style="width: 1000px; height: 1000px;">
-                <div class="planet neptune" data-planet="neptune" style="left: 50%; top: 0%;"></div>
-            </div>
-        </div>
-        
-        <!-- Planet Information -->
-        <div id="planet-info" class="planet-info">
-            <h2 id="info-title">Planet Name</h2>
-            <div id="info-content">
-                <p id="info-desc">Description will appear here.</p>
-                <p id="info-distance">Distance from Sun: </p>
-                <p id="info-diameter">Diameter: </p>
-                <p id="info-orbit">Orbital Period: </p>
-            </div>
-            <button class="close-btn">Close</button>
-        </div>
-        
-        <footer>
-            <p>Our Solar System has 8 planets, 5 dwarf planets, and hundreds of moons</p>
-        </footer>
-    </div>
+  <!-- Sun -->
+  <img src="https://science.nasa.gov/wp-content/uploads/2024/05/sdo-x5pt8-flare-0122ut-may-11-2024-171-193-131.jpg?w=4096&format=jpeg" class="sun" onclick="showInfo('sun')">
 
-    <script>
-        // Planet data
-        const planetData = {
-            mercury: {
-                name: "Mercury",
-                desc: "Mercury is the smallest and innermost planet in the Solar System. It's a rocky planet with a surface covered in craters, similar to our Moon.",
-                distance: "57.9 million km",
-                diameter: "4,879 km",
-                orbit: "88 days"
-            },
-            venus: {
-                name: "Venus",
-                desc: "Venus is the second planet from the Sun and is Earth's closest planetary neighbor. It's the hottest planet in our solar system due to its thick atmosphere.",
-                distance: "108.2 million km",
-                diameter: "12,104 km",
-                orbit: "225 days"
-            },
-            earth: {
-                name: "Earth",
-                desc: "Earth is the third planet from the Sun and the only astronomical object known to harbor life. It has a single natural satellite, the Moon.",
-                distance: "149.6 million km",
-                diameter: "12,742 km",
-                orbit: "365.25 days"
-            },
-            mars: {
-                name: "Mars",
-                desc: "Mars is the fourth planet from the Sun and the second-smallest planet in the Solar System. It's often called the 'Red Planet' due to its reddish appearance.",
-                distance: "227.9 million km",
-                diameter: "6,779 km",
-                orbit: "687 days"
-            },
-            jupiter: {
-                name: "Jupiter",
-                desc: "Jupiter is the fifth planet from the Sun and the largest in the Solar System. It is a gas giant with a mass one-thousandth that of the Sun.",
-                distance: "778.5 million km",
-                diameter: "139,820 km",
-                orbit: "12 years"
-            },
-            saturn: {
-                name: "Saturn",
-                desc: "Saturn is the sixth planet from the Sun and the second-largest in the Solar System, after Jupiter. It is best known for its spectacular ring system.",
-                distance: "1.4 billion km",
-                diameter: "116,460 km",
-                orbit: "29.5 years"
-            },
-            uranus: {
-                name: "Uranus",
-                desc: "Uranus is the seventh planet from the Sun. It has the third-largest planetary radius and fourth-largest planetary mass in the Solar System.",
-                distance: "2.9 billion km",
-                diameter: "50,724 km",
-                orbit: "84 years"
-            },
-            neptune: {
-                name: "Neptune",
-                desc: "Neptune is the eighth and farthest known planet from the Sun in the Solar System. It is the fourth-largest planet by diameter and the third-largest by mass.",
-                distance: "4.5 billion km",
-                diameter: "49,244 km",
-                orbit: "165 years"
-            }
-        };
+  <!-- Orbits -->
+  <div class="orbit" style="width:140px;height:140px;"></div>
+  <div class="orbit" style="width:200px;height:200px;"></div>
+  <div class="orbit" style="width:280px;height:280px;"></div>
+  <div class="orbit" style="width:360px;height:360px;"></div>
+  <div class="orbit" style="width:460px;height:460px;"></div>
+  <div class="orbit" style="width:560px;height:560px;"></div>
+  <div class="orbit" style="width:660px;height:660px;"></div>
+  <div class="orbit" style="width:760px;height:760px;"></div>
 
-        // Get DOM elements
-        const planets = document.querySelectorAll('.planet');
-        const planetInfo = document.getElementById('planet-info');
-        const infoTitle = document.getElementById('info-title');
-        const infoDesc = document.getElementById('info-desc');
-        const infoDistance = document.getElementById('info-distance');
-        const infoDiameter = document.getElementById('info-diameter');
-        const infoOrbit = document.getElementById('info-orbit');
-        const closeBtn = document.querySelector('.close-btn');
+  <!-- Planets -->
+  <img src="https://learn.weatherstem.com/modules/learn/lessons/119/img/planet-mercury.jpg" class="planet mercury" onclick="showInfo('mercury')">
+  <img src="https://science.nasa.gov/wp-content/uploads/2023/06/Venus-jpeg.webp?w=4096&format=png&crop=1" class="planet venus" onclick="showInfo('venus')">
+  <img src="https://i.postimg.cc/tT6ChRJs/360-F-623933559-b-Mgd-Qv84-A3r-YXc-B7k-BWy-Vdl-Bp-Hmu80qg-removebg-preview.png" class="planet earth" onclick="showInfo('earth')">
+  <img src="https://www.esa.int/var/esa/storage/images/esa_multimedia/images/2007/02/true-colour_image_of_mars_seen_by_osiris/9969705-2-eng-GB/True-colour_image_of_Mars_seen_by_OSIRIS.jpg" class="planet mars" onclick="showInfo('mars')">
+  <img src="https://stsci-opo.org/STScI-01GX6C2FDK4R1WAKTA5MFNH4Z4.png" class="planet jupiter" onclick="showInfo('jupiter')">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/c/c7/Saturn_during_Equinox.jpg" class="planet saturn" onclick="showInfo('saturn')">
+  <img src="https://i.postimg.cc/nhfrTDBn/rings-of-uranus-planet-natural-satellite-solar-system-planet-removebg-preview.png" class="planet uranus" onclick="showInfo('uranus')">
+  <img src="https://cdn.mos.cms.futurecdn.net/PezBzd9Fehsq9XWgWMauVV-1200-80.jpg" class="planet neptune" onclick="showInfo('neptune')">
 
-        // Add click event to each planet
-        planets.forEach(planet => {
-            planet.addEventListener('click', () => {
-                const planetId = planet.getAttribute('data-planet');
-                const data = planetData[planetId];
-                
-                // Update info box with planet data
-                infoTitle.textContent = data.name;
-                infoDesc.textContent = data.desc;
-                infoDistance.textContent = `Distance from Sun: ${data.distance}`;
-                infoDiameter.textContent = `Diameter: ${data.diameter}`;
-                infoOrbit.textContent = `Orbital Period: ${data.orbit}`;
-                
-                // Show info box
-                planetInfo.classList.add('active');
-            });
-        });
+  <!-- Info popup -->
+  <div id="infoBox" class="info-box">
+    <img id="planetImg" src="">
+    <h2 id="planetName"></h2>
+    <p id="planetDetails"></p>
+    <button onclick="closeInfo()">Close</button>
+  </div>
 
-        // Close button event
-        closeBtn.addEventListener('click', () => {
-            planetInfo.classList.remove('active');
-        });
-    </script>
+  <script>
+    const planetData = {
+      sun: {
+        img: "https://science.nasa.gov/wp-content/uploads/2024/05/sdo-x5pt8-flare-0122ut-may-11-2024-171-193-131.jpg?w=4096&format=jpeg",
+        name: "Sun",
+        details: `Type: Star (G-type main-sequence)  
+Diameter: 1,392,700 km  
+Distance from Earth: 149.6 million km  
+Mass: 1.989 ×10^30 kg  
+Temperature: ~5,500°C  
+Interesting: The Sun contains 99.8% of the mass of the Solar System.`
+      },
+      mercury: {
+        img: "https://learn.weatherstem.com/modules/learn/lessons/119/img/planet-mercury.jpg",
+        name: "Mercury",
+        details: `Type: Planet (Terrestrial)  
+Diameter: 4,880 km  
+Distance from Sun: 57.9 million km  
+Orbital period: 88 days  
+Moons: 0  
+Interesting: Mercury has extreme temperatures and a very thin atmosphere.`
+      },
+      venus: {
+        img: "https://science.nasa.gov/wp-content/uploads/2023/06/Venus-jpeg.webp?w=4096&format=png&crop=1",
+        name: "Venus",
+        details: `Type: Planet (Terrestrial)  
+Diameter: 12,104 km  
+Distance from Sun: 108.2 million km  
+Orbital period: 225 days  
+Moons: 0  
+Interesting: Venus has a thick toxic atmosphere and rotates backward.`
+      },
+      earth: {
+        img: "https://i.postimg.cc/tT6ChRJs/360-F-623933559-b-Mgd-Qv84-A3r-YXc-B7k-BWy-Vdl-Bp-Hmu80qg-removebg-preview.png",
+        name: "Earth",
+        details: `Type: Planet (Terrestrial)  
+Diameter: 12,742 km  
+Distance from Sun: 149.6 million km  
+Orbital period: 365 days  
+Moons: 1 (Moon)  
+Interesting: Earth is the only planet known to support life.`
+      },
+      mars: {
+        img: "https://www.esa.int/var/esa/storage/images/esa_multimedia/images/2007/02/true-colour_image_of_mars_seen_by_osiris/9969705-2-eng-GB/True-colour_image_of_Mars_seen_by_OSIRIS.jpg",
+        name: "Mars",
+        details: `Type: Planet (Terrestrial)  
+Diameter: 6,779 km  
+Distance from Sun: 227.9 million km  
+Orbital period: 687 days  
+Moons: 2 (Phobos & Deimos)  
+Interesting: Known as the Red Planet, it has the tallest volcano in the Solar System.`
+      },
+      jupiter: {
+        img: "https://stsci-opo.org/STScI-01GX6C2FDK4R1WAKTA5MFNH4Z4.png",
+        name: "Jupiter",
+        details: `Type: Planet (Gas Giant)  
+Diameter: 139,820 km  
+Distance from Sun: 778.5 million km  
+Orbital period: 12 years  
+Moons: 95+  
+Interesting: Jupiter has a giant storm called the Great Red Spot.`
+      },
+      saturn: {
+        img: "https://upload.wikimedia.org/wikipedia/commons/c/c7/Saturn_during_Equinox.jpg",
+        name: "Saturn",
+        details: `Type: Planet (Gas Giant)  
+Diameter: 116,460 km  
+Distance from Sun: 1.43 billion km  
+Orbital period: 29 years  
+Moons: 83+  
+Interesting: Saturn is famous for its extensive ring system.`
+      },
+      uranus: {
+        img: "https://i.postimg.cc/nhfrTDBn/rings-of-uranus-planet-natural-satellite-solar-system-planet-removebg-preview.png",
+        name: "Uranus",
+        details: `Type: Planet (Ice Giant)  
+Diameter: 50,724 km  
+Distance from Sun: 2.87 billion km  
+Orbital period: 84 years  
+Moons: 27  
+Interesting: Uranus rotates on its side and has faint rings.`
+      },
+      neptune: {
+        img: "https://cdn.mos.cms.futurecdn.net/PezBzd9Fehsq9XWgWMauVV-1200-80.jpg",
+        name: "Neptune",
+        details: `Type: Planet (Ice Giant)  
+Diameter: 49,244 km  
+Distance from Sun: 4.5 billion km  
+Orbital period: 165 years  
+Moons: 14  
+Interesting: Neptune has the strongest winds in the Solar System.`
+      }
+    };
+
+    function showInfo(planet) {
+      const data = planetData[planet];
+      document.getElementById('planetImg').src = data.img;
+     document.getElementById('planetName').innerText = data.name;
+      document.getElementById('planetDetails').innerText = data.details;
+      document.getElementById('infoBox').style.display = 'block';
+    }
+
+    function closeInfo() {
+      document.getElementById('infoBox').style.display = 'none';
+    }
+  </script>
 </body>
 </html>
