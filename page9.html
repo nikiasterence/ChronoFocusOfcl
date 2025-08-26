@@ -1,488 +1,483 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Focus Timer | Glass Theme</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <style>
-    :root {
-      --primary-color: #87ceeb;
-      --glass-bg: rgba(255, 255, 255, 0.15);
-      --glass-border: rgba(255, 255, 255, 0.2);
-      --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-      --text-primary: #222;
-      --text-secondary: #444;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Focus Timer</title>
+    <style>
+        :root {
+            --primary-color: #ba2a5149;
+            --background-color: rgba(242, 142, 167, 0.487);
+            --text-color: #000000;
+            --border-radius: 12px;
+            --blur-effect: blur(10px);
+        }
 
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background: #b84f79a9 url('https://source.unsplash.com/random/1600x900?abstract,gradient') no-repeat center center/cover;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: var(--text-color);
+            transition: opacity 0.5s ease-in-out;
+        }
 
-    body {
-      margin: 0;
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-family: "Poppins", sans-serif;
-      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-      transition: background-color 1s ease;
-      padding: 20px;
-    }
+        .app-container {
+            width: 90%;
+            max-width: 1200px;
+            height: 90vh;
+            background: var(--background-color);
+            backdrop-filter: var(--blur-effect);
+            -webkit-backdrop-filter: var(--blur-effect);
+            border-radius: var(--border-radius);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            display: flex;
+            overflow: hidden;
+            transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+        }
 
-    .container {
-      width: 100%;
-      max-width: 1200px;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 30px;
-      position: relative;
-    }
+        .app-container.hidden {
+            opacity: 0;
+            transform: scale(0.95);
+            pointer-events: none;
+        }
 
-    .glass-panel {
-      background: var(--glass-bg);
-      border: 1px solid var(--glass-border);
-      border-radius: 24px;
-      padding: 40px;
-      backdrop-filter: blur(12px);
-      box-shadow: var(--glass-shadow);
-      text-align: center;
-      transition: all 0.5s ease;
-    }
+        .main-content {
+            flex-grow: 1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
 
-    .timer-panel {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      grid-column: 1 / -1;
-      max-width: 600px;
-      margin: 0 auto;
-    }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
 
-    .settings-panel {
-      display: flex;
-      flex-direction: column;
-      position: absolute;
-      top: 0;
-      right: 0;
-      width: 350px;
-      transform: translateX(0);
-      opacity: 1;
-      z-index: 10;
-    }
+        .calendar-nav button {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-color);
+        }
 
-    .settings-panel.hidden {
-      transform: translateX(120%);
-      opacity: 0;
-      pointer-events: none;
-    }
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+            text-align: center;
+            margin-top: 20px;
+        }
 
-    .toggle-settings {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      z-index: 20;
-    }
+        .calendar-grid div {
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
 
-    h1 {
-      margin-bottom: 20px;
-      color: var(--text-primary);
-      font-weight: 600;
-      font-size: 2.2rem;
-    }
+        .calendar-grid .day-name {
+            font-weight: bold;
+            color: #888;
+        }
 
-    h2 {
-      color: var(--text-primary);
-      font-weight: 500;
-      margin-bottom: 25px;
-      font-size: 1.5rem;
-    }
+        .calendar-grid .today {
+            background-color: var(--primary-color);
+            color: white;
+        }
 
-    label {
-      color: var(--text-secondary);
-      font-size: 16px;
-      display: block;
-      margin-bottom: 8px;
-      text-align: left;
-    }
+        .task-sidebar {
+            width: 300px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: var(--blur-effect);
+            -webkit-backdrop-filter: var(--blur-effect);
+            padding: 20px;
+            border-left: 1px solid rgba(255, 255, 255, 0.18);
+            display: flex;
+            flex-direction: column;
+        }
 
-    .controls, .actions {
-      margin: 20px 0;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 10px;
-    }
+        .task-card {
+            background: rgba(255, 255, 255, 0.4);
+            padding: 15px;
+            border-radius: var(--border-radius);
+            margin-bottom: 15px;
+        }
+        
+        #new-task-form h3 { margin-top: 0; }
+        
+        #new-task-form input, #new-task-form textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            box-sizing: border-box;
+            background: rgba(255,255,255,0.7);
+        }
 
-    .settings-group {
-      margin-bottom: 25px;
-      text-align: left;
-    }
+        #new-task-form button {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            background-color: var(--primary-color);
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        
+        #task-list .task-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        #task-list .task-item button { background: none; border: none; cursor: pointer; padding: 5px; }
+        #task-list .start-focus { font-weight: bold; color: var(--primary-color); }
 
-    button {
-      padding: 12px 20px;
-      border: none;
-      border-radius: 16px;
-      background: rgba(255, 255, 255, 0.25);
-      color: var(--text-primary);
-      cursor: pointer;
-      font-size: 16px;
-      font-weight: 500;
-      transition: all 0.3s ease;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
+        /* Full Page Focus View */
+        .focus-view-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: #ffffff;
+            display: none; /* Changed from flex to none */
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
 
-    button:hover {
-      background: rgba(255, 255, 255, 0.4);
-      transform: translateY(-2px);
-    }
+        .focus-view-container.visible {
+            display: flex;
+            opacity: 1;
+        }
 
-    button:active {
-      transform: translateY(0);
-    }
+        .color-fill-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 0; /* Starts at 0 height */
+            z-index: -1;
+            transition: height 1s linear; /* Smooth transition */
+        }
+        
+        .focus-content {
+            color: #333;
+            text-align: center;
+            transition: color 0.5s ease-in-out;
+        }
+        
+        .focus-content.dark-text{
+             color: #fff; /* Text color changes when bg is dark */
+        }
 
-    .timer-btn {
-      min-width: 100px;
-    }
+        .focus-content h2 {
+            margin-top: 0;
+            font-size: 3em;
+            font-weight: 500;
+        }
 
-    .action-btn {
-      min-width: 120px;
-      justify-content: center;
-    }
+        #focus-timer {
+            font-size: 7em;
+            margin: 20px 0;
+            font-weight: 300;
+        }
 
-    #timer {
-      font-size: 5rem;
-      margin: 30px 0;
-      font-weight: 600;
-      color: var(--text-primary);
-      text-shadow: 0 2px 4px rgba(0,0,0,0.1);
-      font-variant-numeric: tabular-nums;
-    }
+        .focus-view-container p {
+            font-size: 1.5em;
+            letter-spacing: 2px;
+        }
+        
+        .focus-controls button {
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(0,0,0,0.1);
+            color: inherit;
+            padding: 12px 24px;
+            margin: 20px 10px;
+            border-radius: 8px;
+            font-size: 18px;
+            cursor: pointer;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+        }
 
-    .progress-container {
-      width: 100%;
-      height: 8px;
-      background: rgba(255, 255, 255, 0.2);
-      border-radius: 4px;
-      overflow: hidden;
-      margin: 20px 0;
-    }
+        /* Color Picker */
+        .color-picker-bar {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px;
+            border-radius: var(--border-radius);
+            display: flex;
+            gap: 10px;
+            z-index: 5;
+            transition: opacity 0.5s ease-in-out;
+        }
+        
+        .color-picker-bar.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
 
-    .progress-bar {
-      height: 100%;
-      background: var(--primary-color);
-      border-radius: 4px;
-      transition: width 1s linear;
-    }
+        .color-swatch {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+        
+        .color-swatch.active { border-color: #fff; }
 
-    input[type="color"] {
-      width: 100%;
-      height: 40px;
-      border: none;
-      background: rgba(255, 255, 255, 0.2);
-      border-radius: 12px;
-      cursor: pointer;
-    }
-
-    input[type="range"] {
-      width: 100%;
-      height: 8px;
-      -webkit-appearance: none;
-      background: rgba(255, 255, 255, 0.2);
-      border-radius: 4px;
-      outline: none;
-    }
-
-    input[type="range"]::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      width: 20px;
-      height: 20px;
-      border-radius: 50%;
-      background: var(--primary-color);
-      cursor: pointer;
-    }
-
-    .preset-colors {
-      display: flex;
-      gap: 10px;
-      margin-top: 10px;
-    }
-
-    .color-preset {
-      width: 30px;
-      height: 30px;
-      border-radius: 50%;
-      cursor: pointer;
-      transition: transform 0.2s ease;
-    }
-
-    .color-preset:hover {
-      transform: scale(1.1);
-    }
-
-    .notification {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      padding: 15px 25px;
-      background: var(--glass-bg);
-      backdrop-filter: blur(12px);
-      border-radius: 12px;
-      box-shadow: var(--glass-shadow);
-      transform: translateX(150%);
-      transition: transform 0.3s ease;
-      z-index: 1000;
-    }
-
-    .notification.show {
-      transform: translateX(0);
-    }
-
-    @media (max-width: 900px) {
-      .container {
-        grid-template-columns: 1fr;
-      }
-      
-      #timer {
-        font-size: 4rem;
-      }
-      
-      .settings-panel {
-        position: relative;
-        width: 100%;
-        margin-top: 30px;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .glass-panel {
-        padding: 25px;
-      }
-      
-      #timer {
-        font-size: 3.5rem;
-      }
-      
-      button {
-        padding: 10px 15px;
-        font-size: 14px;
-      }
-    }
-  </style>
+        #custom-color-picker { opacity: 0; width: 0; height: 0; position: absolute; }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <div class="glass-panel timer-panel">
-      <h1>Focus Timer</h1>
-      <div id="timer">25:00</div>
-      <div class="progress-container">
-        <div class="progress-bar" id="progressBar"></div>
-      </div>
-      <div class="actions">
-        <button onclick="startTimer()" class="action-btn"><i class="fas fa-play"></i> Start</button>
-        <button onclick="pauseTimer()" class="action-btn"><i class="fas fa-pause"></i> Pause</button>
-        <button onclick="resetTimer()" class="action-btn"><i class="fas fa-redo"></i> Reset</button>
-      </div>
-    </div>
 
-    <div class="glass-panel settings-panel">
-      <h2>Settings</h2>
-      
-      <div class="settings-group">
-        <label for="timerDuration">Timer Duration (minutes)</label>
-        <input type="range" id="timerDuration" min="1" max="120" value="25" oninput="updateDurationValue(this.value)">
-        <div id="durationValue">25 min</div>
-      </div>
-      
-      <div class="settings-group">
-        <label for="colorPicker">Progress Color</label>
-        <input type="color" id="colorPicker" value="#87ceeb">
-        
-        <div class="preset-colors">
-          <div class="color-preset" style="background-color: #87ceeb;" onclick="setColor('#87ceeb')"></div>
-          <div class="color-preset" style="background-color: #9370db;" onclick="setColor('#9370db')"></div>
-          <div class="color-preset" style="background-color: #50c878;" onclick="setColor('#50c878')"></div>
-          <div class="color-preset" style="background-color: #ff7f50;" onclick="setColor('#ff7f50')"></div>
-          <div class="color-preset" style="background-color: #f67280;" onclick="setColor('#f67280')"></div>
+    <div class="app-container">
+        <div class="main-content">
+            <header>
+                <h1 id="month-year">August 2025</h1>
+                <div class="calendar-nav">
+                    <button id="prev-month">&lt;</button>
+                    <button id="next-month">&gt;</button>
+                </div>
+            </header>
+            <div class="calendar-grid"></div>
         </div>
-      </div>
-      
-      <div class="settings-group">
-        <label>Quick Presets</label>
-        <div class="controls">
-          <button onclick="setDuration(15)" class="timer-btn">15 Min</button>
-          <button onclick="setDuration(25)" class="timer-btn">25 Min</button>
-          <button onclick="setDuration(45)" class="timer-btn">45 Min</button>
-          <button onclick="setDuration(60)" class="timer-btn">60 Min</button>
+        <div class="task-sidebar">
+             <div class="task-card">
+                 <form id="new-task-form">
+                    <h3>New Task</h3>
+                     <input type="text" id="task-name" placeholder="What?" required>
+                     <input type="time" id="task-time" required>
+                     <textarea id="task-notes" placeholder="Notes..."></textarea>
+                     <input type="number" id="task-duration" placeholder="Duration (minutes)" required>
+                     <button type="submit">Create Task</button>
+                 </form>
+             </div>
+             <div id="task-list" class="task-card"></div>
         </div>
-      </div>
     </div>
     
-    <button class="toggle-settings" onclick="toggleSettings()">
-      <i class="fas fa-cog"></i>
-    </button>
-  </div>
+    <div class="focus-view-container" id="focus-view">
+        <div class="color-fill-bg" id="color-fill-bg"></div>
+        <div class="focus-content" id="focus-content">
+            <h2 id="focus-task-name"></h2>
+            <div id="focus-timer">00:00:00</div>
+            <p>REMAINING</p>
+            <div class="focus-controls">
+                <button id="complete-btn">✓ Complete Session</button>
+            </div>
+        </div>
+    </div>
 
-  <div class="notification" id="notification">
-    <i class="fas fa-bell"></i> Timer completed!
-  </div>
+    <div class="color-picker-bar">
+        <div class="color-swatch active" style="background-color: #007aff;" data-color="#007aff"></div>
+        <div class="color-swatch" style="background-color: #ff3b30;" data-color="#ff3b30"></div>
+        <div class="color-swatch" style="background-color: #34c759;" data-color="#34c759"></div>
+        <div class="color-swatch" style="background-color: #ff9500;" data-color="#ff9500"></div>
+        <label for="custom-color-picker" class="color-swatch" style="background: conic-gradient(red, yellow, lime, aqua, blue, magenta, red); display: flex; align-items: center; justify-content: center; font-size: 20px; color: white;">+</label>
+        <input type="color" id="custom-color-picker" value="#007aff">
+    </div>
 
-  <script>
-    // App state
-    const state = {
-      timerInterval: null,
-      totalSeconds: 25 * 60,
-      remainingSeconds: 25 * 60,
-      chosenColor: "#87ceeb",
-      isPaused: true,
-      startColor: [255, 255, 255], // white
-      endColor: hexToRgb("#87ceeb"),
-      settingsVisible: true
-    };
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const appContainer = document.querySelector('.app-container');
+            const colorPickerBar = document.querySelector('.color-picker-bar');
 
-    // DOM elements
-    const elements = {
-      timer: document.getElementById("timer"),
-      progressBar: document.getElementById("progressBar"),
-      colorPicker: document.getElementById("colorPicker"),
-      timerDuration: document.getElementById("timerDuration"),
-      durationValue: document.getElementById("durationValue"),
-      notification: document.getElementById("notification"),
-      settingsPanel: document.querySelector('.settings-panel')
-    };
+            // Calendar elements
+            const monthYearEl = document.getElementById('month-year');
+            const prevMonthBtn = document.getElementById('prev-month');
+            const nextMonthBtn = document.getElementById('next-month');
+            const calendarGrid = document.querySelector('.calendar-grid');
+            
+            // Task elements
+            const taskForm = document.getElementById('new-task-form');
+            const taskNameInput = document.getElementById('task-name');
+            const taskTimeInput = document.getElementById('task-time');
+            const taskNotesInput = document.getElementById('task-notes');
+            const taskDurationInput = document.getElementById('task-duration');
+            const taskListEl = document.getElementById('task-list');
 
-    // Initialize the app
-    function init() {
-      updateTimerDisplay();
-      elements.colorPicker.addEventListener("input", (e) => {
-        state.chosenColor = e.target.value;
-        state.endColor = hexToRgb(state.chosenColor);
-      });
-    }
+            // Focus View elements
+            const focusView = document.getElementById('focus-view');
+            const colorFillBg = document.getElementById('color-fill-bg');
+            const focusContent = document.getElementById('focus-content');
+            const focusTaskNameEl = document.getElementById('focus-task-name');
+            const focusTimerEl = document.getElementById('focus-timer');
+            const completeBtn = document.getElementById('complete-btn');
 
-    // Toggle settings panel visibility
-    function toggleSettings() {
-      state.settingsVisible = !state.settingsVisible;
-      elements.settingsPanel.classList.toggle('hidden', !state.settingsVisible);
-    }
+            // Color Picker elements
+            const colorSwatches = document.querySelectorAll('.color-swatch');
+            const customColorPicker = document.getElementById('custom-color-picker');
 
-    // Set timer duration from quick preset
-    function setDuration(minutes) {
-      elements.timerDuration.value = minutes;
-      updateDurationValue(minutes);
-    }
+            let currentDate = new Date(2025, 7, 26);
+            let tasks = [];
+            let timerInterval;
+            
+            function renderCalendar() {
+                calendarGrid.innerHTML = '';
+                const year = currentDate.getFullYear();
+                const month = currentDate.getMonth();
 
-    // Update duration value display
-    function updateDurationValue(value) {
-      elements.durationValue.textContent = `${value} min`;
-      state.totalSeconds = value * 60;
-      state.remainingSeconds = state.totalSeconds;
-      updateTimerDisplay();
-      updateProgressBar();
-    }
+                monthYearEl.textContent = `${currentDate.toLocaleString('default', { month: 'long' })} ${year}`;
 
-    // Set color from preset
-    function setColor(color) {
-      state.chosenColor = color;
-      state.endColor = hexToRgb(color);
-      elements.colorPicker.value = color;
-    }
+                ['S', 'M', 'T', 'W', 'T', 'F', 'S'].forEach(day => {
+                    const dayEl = document.createElement('div');
+                    dayEl.classList.add('day-name');
+                    dayEl.textContent = day;
+                    calendarGrid.appendChild(dayEl);
+                });
 
-    // Start the timer
-    function startTimer() {
-      if (state.timerInterval) {
-        clearInterval(state.timerInterval);
-      }
-      
-      // Hide settings panel when timer starts
-      state.settingsVisible = false;
-      elements.settingsPanel.classList.add('hidden');
-      
-      state.isPaused = false;
-      document.body.style.backgroundColor = "rgb(255,255,255)";
-      
-      state.timerInterval = setInterval(() => {
-        if (state.isPaused) return;
-        
-        state.remainingSeconds--;
-        updateTimerDisplay();
-        updateProgressBar();
-        
-        // Update background color based on progress
-        const progress = (state.totalSeconds - state.remainingSeconds) / state.totalSeconds;
-        const r = Math.round(state.startColor[0] + (state.endColor[0] - state.startColor[0]) * progress);
-        const g = Math.round(state.startColor[1] + (state.endColor[1] - state.startColor[1]) * progress);
-        const b = Math.round(state.startColor[2] + (state.endColor[2] - state.startColor[2]) * progress);
-        
-        document.body.style.backgroundColor = `rgb(${r},${g},${b})`;
-        
-        if (state.remainingSeconds <= 0) {
-          clearInterval(state.timerInterval);
-          showNotification();
-        }
-      }, 1000);
-    }
+                const firstDayOfMonth = new Date(year, month, 1).getDay();
+                for (let i = 0; i < firstDayOfMonth; i++) calendarGrid.appendChild(document.createElement('div'));
+                
+                const daysInMonth = new Date(year, month + 1, 0).getDate();
+                for (let day = 1; day <= daysInMonth; day++) {
+                    const dayEl = document.createElement('div');
+                    dayEl.textContent = day;
+                    if (day === new Date().getDate() && month === new Date().getMonth() && year === new Date().getFullYear()) {
+                        dayEl.classList.add('today');
+                    }
+                    calendarGrid.appendChild(dayEl);
+                }
+            }
+            
+            function renderTasks() {
+                taskListEl.innerHTML = '<h3>Today\'s Tasks</h3>';
+                if(tasks.length === 0) {
+                    taskListEl.innerHTML += '<p>No tasks yet.</p>';
+                    return;
+                }
+                tasks.forEach((task, index) => {
+                    const taskItem = document.createElement('div');
+                    taskItem.classList.add('task-item');
+                    taskItem.innerHTML = `
+                        <div>
+                            <strong>${task.name}</strong>
+                            <p style="font-size: 0.9em; color: #555;">${task.time} - ${task.duration} min</p>
+                        </div>
+                        <div>
+                           <button class="start-focus" data-index="${index}">Focus</button>
+                           <button class="delete-task" data-index="${index}">🗑️</button>
+                        </div>
+                    `;
+                    taskListEl.appendChild(taskItem);
+                });
+            }
+            
+            function formatTime(seconds) {
+                const h = Math.floor(seconds / 3600).toString().padStart(2, '0');
+                const m = Math.floor((seconds % 3600) / 60).toString().padStart(2, '0');
+                const s = (seconds % 60).toString().padStart(2, '0');
+                return `${h}:${m}:${s}`;
+            }
 
-    // Pause the timer
-    function pauseTimer() {
-      state.isPaused = true;
-    }
+            function startFocusSession(task) {
+                appContainer.classList.add('hidden');
+                colorPickerBar.classList.add('hidden');
 
-    // Reset the timer
-    function resetTimer() {
-      clearInterval(state.timerInterval);
-      state.timerInterval = null;
-      state.isPaused = true;
-      state.remainingSeconds = state.totalSeconds;
-      updateTimerDisplay();
-      updateProgressBar();
-      document.body.style.backgroundColor = "white";
-      
-      // Show settings again when resetting
-      state.settingsVisible = true;
-      elements.settingsPanel.classList.remove('hidden');
-    }
+                setTimeout(() => {
+                    focusView.classList.add('visible');
+                    const totalDuration = task.duration * 60;
+                    let timeRemaining = totalDuration;
+                    
+                    const currentColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color');
+                    colorFillBg.style.backgroundColor = currentColor;
+                    colorFillBg.style.height = '0%';
+                    focusContent.classList.remove('dark-text');
+                    
+                    focusTaskNameEl.textContent = task.name;
+                    focusTimerEl.textContent = formatTime(timeRemaining);
 
-    // Update timer display
-    function updateTimerDisplay() {
-      const min = Math.floor(state.remainingSeconds / 60);
-      const sec = state.remainingSeconds % 60;
-      elements.timer.textContent = `${String(min).padStart(2, "0")}:${String(sec).padStart(2, "0")}`;
-    }
+                    timerInterval = setInterval(() => {
+                        timeRemaining--;
+                        focusTimerEl.textContent = formatTime(timeRemaining);
+                        
+                        const percentageElapsed = ((totalDuration - timeRemaining) / totalDuration) * 100;
+                        colorFillBg.style.height = `${percentageElapsed}%`;
+                        
+                        if (percentageElapsed > 50) {
+                             focusContent.classList.add('dark-text');
+                        }
 
-    // Update progress bar
-    function updateProgressBar() {
-      const progress = ((state.totalSeconds - state.remainingSeconds) / state.totalSeconds) * 100;
-      elements.progressBar.style.width = `${progress}%`;
-      elements.progressBar.style.backgroundColor = state.chosenColor;
-    }
+                        if (timeRemaining <= 0) {
+                            clearInterval(timerInterval);
+                            alert(`Session for "${task.name}" completed!`);
+                            endFocusSession();
+                        }
+                    }, 1000);
+                }, 500); // Wait for fade-out transition
+            }
+            
+            function endFocusSession() {
+                clearInterval(timerInterval);
+                focusView.classList.remove('visible');
+                
+                setTimeout(() => {
+                    appContainer.classList.remove('hidden');
+                    colorPickerBar.classList.remove('hidden');
+                }, 500); // Wait for fade-out transition
+            }
 
-    // Show notification
-    function showNotification() {
-      elements.notification.classList.add('show');
-      setTimeout(() => {
-        elements.notification.classList.remove('show');
-      }, 3000);
-    }
+            taskForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                tasks.push({
+                    name: taskNameInput.value, time: taskTimeInput.value,
+                    notes: taskNotesInput.value, duration: parseInt(taskDurationInput.value),
+                });
+                renderTasks();
+                taskForm.reset();
+            });
 
-    // Convert hex to RGB
-    function hexToRgb(hex) {
-      const bigint = parseInt(hex.slice(1), 16);
-      const r = (bigint >> 16) & 255;
-      const g = (bigint >> 8) & 255;
-      const b = bigint & 255;
-      return [r, g, b];
-    }
+            taskListEl.addEventListener('click', e => {
+                const index = e.target.dataset.index;
+                if (e.target.classList.contains('delete-task')) {
+                    tasks.splice(index, 1);
+                    renderTasks();
+                } else if (e.target.classList.contains('start-focus')) {
+                    startFocusSession(tasks[index]);
+                }
+            });
+            
+            completeBtn.addEventListener('click', endFocusSession);
+            
+            prevMonthBtn.addEventListener('click', () => { currentDate.setMonth(currentDate.getMonth() - 1); renderCalendar(); });
+            nextMonthBtn.addEventListener('click', () => { currentDate.setMonth(currentDate.getMonth() + 1); renderCalendar(); });
 
-    // Initialize the app when the DOM is loaded
-    document.addEventListener('DOMContentLoaded', init);
-  </script>
+            colorSwatches.forEach(swatch => {
+                swatch.addEventListener('click', (e) => {
+                    if(e.target.dataset.color) {
+                       document.documentElement.style.setProperty('--primary-color', e.target.dataset.color);
+                       document.querySelector('.color-swatch.active')?.classList.remove('active');
+                       e.target.classList.add('active');
+                    }
+                });
+            });
+
+            customColorPicker.addEventListener('input', (e) => {
+                 document.documentElement.style.setProperty('--primary-color', e.target.value);
+            });
+            
+            renderCalendar();
+            renderTasks();
+        });
+    </script>
 </body>
 </html>
