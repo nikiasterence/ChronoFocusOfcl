@@ -1,836 +1,493 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Study Recommendations</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-    }
-    
-    body {
-      min-height: 100vh;
-      background: linear-gradient(135deg, #ff9a9e, #ffb0eb, #fbc2eb, #7dacff, #ffda84);
-      background-size: 500% 500%;
-      animation: gradientBG 15s ease infinite;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
-      position: relative;
-      overflow: hidden;
-    }
-    
-    @keyframes gradientBG {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
-    
-    /* Liquid glass background effect */
-    body::before {
-      content: '';
-      position: absolute;
-      width: 150%;
-      height: 150%;
-      background: radial-gradient(circle at center, rgba(255, 255, 255, 0.2) 0%, transparent 60%);
-      animation: liquidMove 15s infinite alternate;
-      z-index: -1;
-    }
-    
-    @keyframes liquidMove {
-      0% {
-        transform: translate(-10%, -10%) scale(1) rotate(0deg);
-      }
-      100% {
-        transform: translate(10%, 10%) scale(1.2) rotate(5deg);
-      }
-    }
-    
-    .app {
-      width: 90%;
-      max-width: 500px;
-      background: rgba(255, 255, 255, 0.25);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border-radius: 24px;
-      padding: 30px;
-      box-shadow: 0 10px 32px rgba(0, 0, 0, 0.15), 
-                  inset 0 0 0 1px rgba(255, 255, 255, 0.3);
-      text-align: center;
-      color: #5a3d5c;
-      position: relative;
-      overflow: hidden;
-      z-index: 1;
-    }
-    
-    /* Cozy glass effect */
-    .app::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      backdrop-filter: blur(25px);
-      -webkit-backdrop-filter: blur(25px);
-      z-index: -1;
-      background: rgba(255, 255, 255,  0.15);
-      border-radius: 24px;
-      border: 1px solid rgba(255, 255, 255, 0.3);
-    }
-    
-    h1 {
-      font-size: 2.5rem;
-      margin-bottom: 20px;
-      text-shadow: 0 2px 8px rgba(255, 255, 255, 0.5);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 10px;
-      font-weight: 700;
-      letter-spacing: -0.5px;
-      color: #5a3d5c;
-    }
-    
-    .tip-container {
-      min-height: 150px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 25px 0;
-      padding: 20px;
-      background: rgba(255, 255, 255, 0.3);
-      border-radius: 18px;
-      box-shadow: inset  0 0 12px rgba(255, 255, 255, 0.3),
-                  0 4px 12px rgba(0, 0, 0, 0.05);
-      transition: all 0.3s ease;
-      border: 1px solid rgba(255, 255, 255, 0.4);
-    }
-    
-    #tip {
-      font-size: 1.2rem;
-      line-height: 1.6;
-      text-shadow: 0 1px 3px rgba(255, 255, 255, 0.5);
-      font-weight: 500;
-      color: #5a3d5c;
-    }
-    
-    .caffeine-counter {
-      margin-top: 15px;
-      padding: 15px;
-      background: rgba(255, 255, 255, 0.3);
-     极速5分钟快3开奖结果查询 border-radius: 18px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      box-shadow: inset 0 0 8px rgba(255, 255, 255, 0.3),
-                  0 4px 8px rgba(0, 0, 0, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.4);
-    }
-    
-    .caffeine-display {
-      font-size: 1.1rem;
-      font-weight: bold;
-      color: #5a3d5c;
-    }
-    
-    .caffeine-warning {
-      color: #ff6b6b;
-      font-size: 0.9rem;
-      margin-top: 5px;
-      display: none;
-    }
-    
-    .reset-btn {
-      padding: 10px 16px;
-      font-size: 0.9rem;
-      border-radius: 10px;
-      background: rgba(255, 255, 255, 0.4);
-      color: #5a3d极速5分钟快3开奖结果查询5c;
-      border: none;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      backdrop-filter: blur(5px);
-      -webkit-backdrop-filter: blur(5px);
-      transition: all 0.3s ease;
-      border: 1px solid rgba(255, 255, 255, 0.4);
-    }
-    
-    .reset-btn:hover {
-      background: rgba(255, 255, 255, 0.5);
-    }
-    
-    /* iPadOS Style Dock */
-    .dock {
-      position: fixed;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      justify-content: center;
-      align-items: flex-end;
-      padding: 12px;
-      background: rgba(255, 255, 255, 0.4);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border-radius: 24px;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1),
-                  inset 0 0 0 1px rgba(255, 255, 255, 0.5);
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      z-index: 100;
-      transition: all 0.3s ease;
-    }
-    
-    .dock-icon {
-      width: 60px;
-      height: 60px;
-      margin: 0 8px;
-      border-radius: 16px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      position: relative;
-      color: white;
-      font-size: 1.4rem;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1),
-                  inset 0 0 0 1px rgba(255, 255, 255, 0.2);
-    }
-    
-    .dock-icon:hover {
-      transform: translateY(-10px) scale(1.15);
-    }
-    
-    .dock-icon-label {
-      position: absolute;
-      bottom: -25px;
-      font-size: 0.7rem;
-      color: #5a3d5c;
-      text-shadow: 0 1px 2px rgba(255, 255, 255, 0.5);
-      opacity: 0;
-      transition: opacity 0.3s ease;
-      white-space: nowrap;
-      font-weight: 500;
-    }
-    
-    .dock-icon:hover .dock-icon-label {
-      opacity: 1;
-    }
-    
-    /* Individual dock icon colors */
-    .dock-tip {
-      background: linear-gradient(135deg, #ff7b00, #ff5500);
-    }
-    
-    .dock-study {
-      background: linear-gradient(135deg, #ff0000, #cc0000); /* YouTube red color */
-    }
-    
-    .dock-calc {
-      background: linear-gradient(135deg, #f72585, #b5179e);
-    }
-    
-    .dock-caffeine {
-      background: linear-gradient(135deg, #4cc9f0, #4895ef);
-    }
-    
-    .dock-periodic {
-      background: linear-gradient(135deg, #560bad, #7209b7);
-    }
-    
-    .dock-solar {
-      background: linear-gradient(135deg, #f9c74f, #f9844a);
-    }
-    
-    .dock-favorite {
-      background: linear-gradient(135deg, #ffd166, #ff9e00);
-    }
-    
-    .dock-home {
-      background: linear-gradient(135deg, #06d6a0, #048a81);
-    }
-    
-    .dock-puzzle {
-      background: linear-gradient(135deg, #118ab2, #073b4c);
-    }
-    
-    .dock-draw {
-      background: linear-gradient(135deg, #ff9e00, #ff5400);
-    }
-    
-    .dock-books {
-      background: linear-gradient(135deg, #8a5a44, #6f4e37);
-    }
-    
-    .dock-measure {
-      background: linear-gradient(135deg, #4caf50, #2e7d32);
-    }
-    
-    /* Floating Draw Calculator Button - Removed as requested */
-    
-    /* Calculator Modal Styles */
-    .calculator-modal {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.5);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
-      opacity: 0;
-      visibility: hidden;
-      transition: all 0.3s ease;
-    }
-    
-    .calculator-modal.active {
-      opacity: 1;
-      visibility: visible;
-    }
-    
-    .calculator-container {
-      width: 90%;
-      max-width: 400px;
-      background: rgba(255, 255, 255, 0.25);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border-radius: 24px;
-      padding: 20px;
-      box-shadow: 0 10极速5分钟快3开奖结果查询px 32px rgba(0, 0, 0, 0.15),
-                  inset 0 0 0 1极速5分钟快3开奖结果查询px rgba(255, 255, 255, 0.3);
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      color: #5a3d5c;
-    }
-    
-    .calculator-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 15px;
-    }
-    
-    .calculator-title {
-      font-size: 1.5rem;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-weight: 600;
-    }
-    
-    .close-calculator {
-      background: rgba(255, 255, 255, 0.3);
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      color: #5a3d5c;
-      font-size: 1.5rem;
-      cursor: pointer;
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      backdrop-filter: blur(5px);
-      -webkit-backdrop-filter: blur(5px);
-      transition: all 0.3s ease;
-    }
-    
-    .close极速5分钟快3开奖结果查询-calculator:hover {
-      background: rgba(255, 255, 255, 0.4);
-    }
-    
-    .calculator-display {
-      width: 100%;
-      height: 80px;
-      background: rgba(255, 255, 255, 0.3);
-      border-radius: 14px;
-      margin-bottom: 15px;
-      padding: 10px 15px;
-      text-align: right;
-      font-size: 2rem;
-      overflow: hidden;
-      box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.05);
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      font-family: 'SF Mono', Monaco, Inconsolata, 'Roboto Mono', monospace;
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      color: #5a3d5c;
-    }
-    
-    .calculator-keys {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 8px;
-    }
-    
-    .calc-btn {
-      padding: 14px 5px;
-      border: none;
-      border-radius: 12px;
-      background: rgba(255, 255, 255, 0.3);
-      color: #5a3d5c;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      backdrop-filter: blur(5px);
-      -webkit-backdrop-filter: blur(5px);
-      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.3);
-      border: 1px solid rgba(255, 255, 255, 0.3);
-    }
-    
-    .calc-btn:hover {
-      background: rgba(255, 255, 255, 0.4);
-    }
-    
-    .calc-btn:active {
-      transform: scale(0.95);
-    }
-    
-    .calc-number {
-      background: rgba(255, 255, 255, 0.4);
-    }
-    
-    .calc-operator {
-      background: rgba(255, 179, 71, 0.3);
-    }
-    
-    .calc-function {
-      background: rgba(255, 159, 67, 0.3);
-    }
-    
-    .calc-equals {
-      background: rgba(255, 195, 0, 0.3);
-      grid-column: span 2;
-    }
-    
-    .calc-clear {
-      background: rgba(255, 99, 99, 0.3);
-    }
-    
-    /* Apple-style animations */
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(10px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-    
-    @keyframes pulse {
-      0% {
-        transform: scale(1);
-      }
-      50% {
-        transform: scale(1.05);
-      }
-      100% {
-        transform: scale(1);
-      }
-    }
-    
-    .fade-in {
-      animation: fadeIn 0.5s ease forwards;
-    }
-    
-    .pulse {
-      animation: pulse 2s infinite;
-    }
-    
-    /* Apple-style subtle focus effects */
-    button:focus,
-    .calc-btn:focus {
-      outline: none;
-      box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.5),
-                  inset 0 0 0 1px rgba(255, 255, 255, 0.3);
-    }
-    
-    /* Responsive adjustments */
-    @media (max-width: 900px) {
-      .dock {
-        width: 90%;
-        overflow-x: auto;
-        justify-content: flex-start;
-        padding: 10px 15px;
-      }
-      
-      .dock-icon {
-        width: 50px;
-        height: 50px;
-        font-size: 1.2rem;
-        margin: 0 5px;
-        flex-shrink: 0;
-      }
-      
-      .dock-icon-label {
-        font-size: 0.6rem;
-        bottom: -20px;
-      }
-    }
-    
-    @media (max-width: 600px) {
-      .app {
-        width: 95%;
-        padding: 20px;
-      }
-      
-      h1 {
-        font-size: 2rem;
-      }
-      
-      #tip {
-        font-size: 1rem;
-      }
-      
-      .caffeine-counter {
-        flex-direction: column;
-        gap: 10px;
-      }
-      
-      .calculator-keys {
-        grid-template-columns: repeat(4, 1fr);
-      }
-      
-      .calc-btn {
-        padding: 12px 5px;
-        font-size: 0.9rem;
-      }
-      
-      .dock {
-        bottom: 10px;
-      }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudyVERSE - Your Cosmic Study Companion</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-glow: #ff9a9e;
+            --secondary-glow: #7dacff;
+            --background: #fcffc6;
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.7);
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --shadow-color: rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background-color: var(--background);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow: hidden;
+            position: relative;
+            color: var(--text-primary);
+        }
+
+        .aurora-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            overflow: hidden;
+        }
+
+        .aurora-item {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
+            opacity: 0;
+            animation: aurora-glow 15s infinite alternate;
+        }
+
+        .aurora-item:nth-child(1) {
+            width: 500px;
+            height: 500px;
+            background: var(--primary-glow);
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .aurora-item:nth-child(2) {
+            width: 400px;
+            height: 400px;
+            background: var(--secondary-glow);
+            bottom: 5%;
+            right: 5%;
+            animation-delay: 3s;
+        }
+
+        .aurora-item:nth-child(3) {
+            width: 300px;
+            height: 300px;
+            background: #ffb0eb;
+            top: 50%;
+            left: 50%;
+            animation-delay: 6s;
+            transform: translate(-50%, -50%);
+        }
+
+        @keyframes aurora-glow {
+            0% { transform: scale(1) translate(0, 0); opacity: 0.3; }
+            100% { transform: scale(1.5) translate(20px, -20px); opacity: 0.6; }
+        }
+
+        .app {
+            width: 95%;
+            max-width: 550px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border-radius: 30px;
+            padding: 40px;
+            box-shadow: 0 16px 64px var(--shadow-color);
+            border: 1px solid var(--glass-border);
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 30px;
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            font-weight: 700;
+        }
+
+        .tip-container {
+            min-height: 180px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 30px 0;
+            padding: 25px;
+            background: var(--glass-bg);
+            border-radius: 20px;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.2);
+            transition: all 0.4s ease;
+            border: 1px solid var(--glass-border);
+            position: relative;
+        }
+        
+        #tip {
+            font-size: 1.3rem;
+            line-height: 1.7;
+            text-shadow: 0 1px 3px var(--shadow-color);
+            font-weight: 500;
+        }
+
+        .copy-tip-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: var(--text-primary);
+            padding: 8px 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            opacity: 0.5;
+            transition: all 0.3s;
+        }
+
+        .tip-container:hover .copy-tip-btn {
+            opacity: 1;
+        }
+
+        .caffeine-counter {
+            margin-top: 20px;
+            padding: 20px;
+            background: var(--glass-bg);
+            border-radius: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--glass-border);
+        }
+        
+        .caffeine-display {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+        
+        .caffeine-warning {
+            color: #ff6b6b;
+            font-size: 0.9rem;
+            margin-top: 5px;
+            display: none;
+        }
+        
+        .reset-btn {
+            padding: 10px 18px;
+            font-size: 0.9rem;
+            border-radius: 12px;
+            background: var(--glass-bg);
+            color: var(--text-secondary);
+            border: 1px solid var(--glass-border);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .reset-btn:hover {
+            background: rgba(255,255,255,0.3);
+            color: var(--text-primary);
+        }
+        
+        .dock {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: flex-end;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 28px;
+            box-shadow: 0 12px 40px var(--shadow-color);
+            border: 1px solid var(--glass-border);
+            z-index: 100;
+        }
+        
+        .dock-icon {
+            width: 65px;
+            height: 65px;
+            margin: 0 10px;
+            border-radius: 18px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            position: relative;
+            color: white;
+            font-size: 1.6rem;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .dock-icon:hover {
+            transform: translateY(-12px) scale(1.1);
+            box-shadow: 0 12px 25px rgba(0,0,0,0.4);
+        }
+        
+        .dock-icon-label {
+            position: absolute;
+            bottom: -30px;
+            font-size: 0.8rem;
+            color: var(--text-primary);
+            text-shadow: 0 1px 5px var(--shadow-color);
+            opacity: 0;
+            transition: opacity 0.3s;
+            white-space: nowrap;
+            font-weight: 500;
+        }
+        
+        .dock-icon:hover .dock-icon-label {
+            opacity: 1;
+        }
+        
+        /* Dock Icon Gradients */
+        .dock-tip { background: linear-gradient(135deg, #ff7b00, #ff5500); }
+        .dock-study { background: linear-gradient(135deg, #ff0000, #cc0000); }
+        .dock-measure { background: linear-gradient(135deg, #4caf50, #2e7d32); }
+        .dock-caffeine { background: linear-gradient(135deg, #4cc9f0, #4895ef); }
+        .dock-periodic { background: linear-gradient(135deg, #560bad, #7209b7); }
+        .dock-solar { background: linear-gradient(135deg, #f9c74f, #f9844a); }
+        .dock-favorite { background: linear-gradient(135deg, #ffd166, #ff9e00); }
+        .dock-home { background: linear-gradient(135deg, #06d6a0, #048a81); }
+        .dock-puzzle { background: linear-gradient(135deg, #118ab2, #073b4c); }
+        .dock-draw { background: linear-gradient(135deg, #ff9e00, #ff5400); }
+        
+        /* Favorite Modal Styles */
+        .modal {
+            position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+            display: flex; justify-content: center; align-items: center;
+            z-index: 1000;
+            opacity: 0; visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .modal.active { opacity: 1; visibility: visible; }
+        
+        .modal-content {
+            width: 90%; max-width: 600px;
+            background: var(--glass-bg);
+            padding: 30px;
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .close-modal {
+            background: transparent; border: none; color: white;
+            font-size: 2rem; cursor: pointer;
+        }
+        
+        #favorites-list { list-style: none; }
+        #favorites-list li {
+            background: rgba(0,0,0,0.2);
+            padding: 15px; border-radius: 10px;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        @media (max-width: 900px) {
+            .dock {
+                width: 90%;
+                overflow-x: auto;
+                justify-content: flex-start;
+                padding: 10px 15px;
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .app { padding: 25px; }
+            h1 { font-size: 2.2rem; }
+            #tip { font-size: 1.1rem; }
+            .caffeine-counter { flex-direction: column; gap: 15px; }
+        }
+
+    </style>
 </head>
 <body>
-  <!-- iPadOS Style Dock -->
-  <div class="dock">
-    <div class="dock-icon dock-tip" onclick="newTip()">
-      <i class="fas fa-lightbulb"></i>
-      <div class="dock-icon-label">Study Tip</div>
+    <div class="aurora-container">
+        <div class="aurora-item"></div>
+        <div class="aurora-item"></div>
+        <div class="aurora-item"></div>
     </div>
-    
-    <div class="dock-icon dock-study" onclick="openStudyWithMe()">
-      <i class="fab fa-youtube"></i> <!-- Changed to YouTube icon -->
-      <div class="dock-icon-label">Study With Me</div>
-    </div>
-    
-    <a href="page10.html" class="dock-icon dock-measure">
-      <i class="fas fa-ruler-combined"></i>
-      <div class="dock-icon-label">Measure</div>
-    </a>
-    
-    <div class="dock-icon dock-caffeine" onclick="addCaffeine()">
-      <i class="fas fa-coffee"></i>
-      <div class="dock-icon-label">Caffeine</div>
-    </div>
-    
-    <a href="page5.html" class="dock-icon dock-periodic">
-      <i class="fas fa-atom"></i>
-      <div class="dock-icon-label">Periodic Table</div>
-    </a>
-    
-    <a href="page6.html" class="dock-icon dock-solar">
-      <i class="fas fa-globe"></i>
-      <div class="dock-icon-label">Solar System</div>
-    </a>
-    
-    <div class="dock-icon dock-favorite" onclick="markFavorite()">
-      <i class="far fa-star"></i>
-      <div class="dock-icon-label">Favorites</div>
-    </div>
-    
-    <a href="index.html" class="dock-icon dock-home">
-      <i class="fas fa-home"></i>
-      <div class="dock-icon-label">Home</div>
-    </a>
-    
-    <a href="page11.html" class="dock-icon dock-books">
-      <i class="fas fa-book"></i>
-      <div class="dock-icon-label">Books</div>
-    </a>
-    
-    <a href="page7.html" class="dock-icon dock-puzzle">
-      <i class="fas fa-puzzle-piece"></i>
-      <div class="dock-icon-label">Puzzles</div>
-    </a>
-    
-    <a href="page4.html" class="dock-icon dock-draw">
-      <i class="fas fa-pen"></i>
-      <div class="dock-icon-label">Draw Calc</div>
-    </a>
-  </div>
-  
-  <div class="app">
-    <h1><i class="fas fa-book-open"></i> Study Tips</h1>
-   
-    <div class="tip-container">
-      <p id="tip">Click the button to get a study recommendation!</p>
-    </div>
-    
-    <div class="caffeine-counter">
-      <div>
-        <span class="caffeine-display">Caffeine: <span id="caffeine-count">0</span> mg</span>
-        <div class="caffeine-warning" id="caffeine-warning">Recommended max: 400mg per day</div>
-      </div>
-      <button class="reset-btn" onclick="resetCaffeine()">
-        <i class="fas fa-redo"></i> Reset
-      </button>
-    </div>
-  </div>
 
-  <!-- Calculator Modal -->
-  <div class="calculator-modal" id="calculator-modal">
-    <div class="calculator-container">
-      <div class极速5分钟快3开奖结果查询="calculator-header">
-        <h2 class="calculator-title"><i class="fas fa-calculator"></i> Scientific Calculator</h2>
-        <button class="close-calculator" onclick="closeCalculator()">&times;</button>
-      </div>
-      
-      <div class="calculator-display" id="calc-display">0</div>
-      
-      <div class="calculator-keys">
-        <button class="calc-btn calc-clear" onclick="clearCalculator()">C</button>
-        <button class="calc-btn calc-function" onclick="backspace()">⌫</button>
-        <button class="calc-btn calc-function" onclick="appendToDisplay('(')">(</button>
-        <button class="calc-btn calc-function" onclick="appendToDisplay(')')">)</button>
-        <button class="calc-btn calc-function" onclick="appendToDisplay('**')">x^y</button>
-        
-        <button class="calc-btn calc-function" onclick="appendToDisplay('Math.sin(')">sin</button>
-        <button class="calc-btn calc-function" onclick="appendToDisplay('Math.cos('极速5分钟快3开奖结果查询)">cos</button>
-        <button class="calc-btn calc-function" onclick="appendToDisplay('Math.tan(')">tan</button>
-        <button class="calc-btn calc-function" onclick="appendToDisplay('Math.log(')">log</button>
-        <button class="calc-btn calc-function" onclick="appendToDisplay('Math.sqrt(')">√</button>
-        
-        <button class="极速5分钟快3开奖结果查询calc-btn calc-number" onclick="appendToDisplay('7')">7</button>
-        <button class="calc-btn calc-number" onclick="appendToDisplay('8')">8</button>
-        <button class="calc-btn calc-number" onclick="appendToDisplay('9')">9</button>
-        <button class="calc-btn calc-operator" onclick="appendToDisplay('/')">/</button>
-        <button class="calc-btn calc-function" onclick="appendToDisplay('Math.PI')">π</button>
-        
-        <button class="calc-btn calc-number" onclick="appendToDisplay('4')">4</button>
-        <button class="calc-btn calc-number" onclick="appendToDisplay('5')">5</button>
-        <button class="calc-btn calc-number" onclick="appendToDisplay('6')极速5分钟快3开奖结果查询">6</button>
-        <button class="calc-btn calc-operator" onclick="append极速5分钟快3开奖结果查询ToDisplay('*')">×</button>
-        <button class="calc-btn calc-function" onclick="appendToDisplay('**2')">x²</button>
-        
-        <button class="calc-btn calc-number" onclick="appendToDisplay('1')">1</button>
-        <button class="calc-btn calc-number" onclick="appendToDisplay('2')">2</button>
-        <button class="calc-btn calc-number" onclick="appendToDisplay('3')">3</button>
-        <button class="calc-btn calc-operator" onclick="appendToDisplay('-')">-</button>
-        <button class="calc-btn calc-function" onclick="appendToDisplay('1/')">1/x</button>
-        
-        <button class="calc-btn calc-number" onclick="appendToDisplay('0')">0</button>
-        <button class="calc-btn calc-number" onclick="appendToDisplay('.')">.</button>
-        <button class="calc-btn calc-operator" onclick="calculate()">=</button>
-        <button class="calc-btn calc-operator" onclick="appendToDisplay('+')">+</button>
-        <button class="calc-btn calc-function" onclick="appendToDisplay('%')">%</button>
-      </div>
+    <div class="dock">
+        <div class="dock-icon dock-tip" onclick="newTip()">
+            <i class="fas fa-lightbulb"></i>
+            <div class="dock-icon-label">New Tip</div>
+        </div>
+        <div class="dock-icon dock-study" onclick="openStudyWithMe()">
+            <i class="fab fa-youtube"></i>
+            <div class="dock-icon-label">Study With Me</div>
+        </div>
+        <a href="page10.html" class="dock-icon dock-measure"><i class="fas fa-ruler-combined"></i><div class="dock-icon-label">Measure</div></a>
+        <div class="dock-icon dock-caffeine" onclick="addCaffeine()">
+            <i class="fas fa-coffee"></i>
+            <div class="dock-icon-label">Add Caffeine</div>
+        </div>
+        <a href="page5.html" class="dock-icon dock-periodic"><i class="fas fa-atom"></i><div class="dock-icon-label">Periodic Table</div></a>
+        <a href="page6.html" class="dock-icon dock-solar"><i class="fas fa-globe"></i><div class="dock-icon-label">Solar System</div></a>
+        <div class="dock-icon dock-favorite" onclick="openFavorites()">
+            <i class="far fa-star"></i>
+            <div class="dock-icon-label">Favorites</div>
+        </div>
+        <a href="index.html" class="dock-icon dock-home"><i class="fas fa-home"></i><div class="dock-icon-label">Home</div></a>
+        <a href="page7.html" class="dock-icon dock-puzzle"><i class="fas fa-puzzle-piece"></i><div class="dock-icon-label">Puzzles</div></a>
+        <a href="page4.html" class="dock-icon dock-draw"><i class="fas fa-pen"></i><div class="dock-icon-label">Draw Calc</div></a>
     </div>
-  </div>
 
-  <script>
-    const tips = [
-      "📌 Break your study into 25-minute focus sessions with 5-minute breaks.",
-      "📌 Use active recall: test yourself instead of just rereading notes.",
-      "📌 Teach someone else what you learned — it improves understanding.",
-      "📌 Study in a quiet, distraction-free place.",
-      "📌 Make short notes and summaries instead of memorizing long text.",
-      "📌 Revise daily for 10 minutes instead of cramming at the last moment.",
-      "📌 Sleep well — memory improves with rest.",
-      "📌 Use flashcards for quick memory reinforcement.",
-      "📌 Mix subjects while studying to keep your brain engaged.",
-      "📌 Set small goals and reward yourself after completing them."
-    ];
-
-    let favorites = [];
-    let caffeineIntake = 0;
+    <div class="app">
+        <h1><i class="fas fa-brain"></i> StudyVERSE</h1>
+        <div class="tip-container">
+            <button class="copy-tip-btn" onclick="copyTip()"><i class="fas fa-copy"></i></button>
+            <p id="tip">Welcome! Click the lightbulb for a study tip.</p>
+        </div>
+        <div class="caffeine-counter">
+            <div>
+                <span class="caffeine-display">Caffeine: <span id="caffeine-count">0</span> mg</span>
+                <div class="caffeine-warning" id="caffeine-warning">Max recommended: 400mg</div>
+            </div>
+            <button class="reset-btn" onclick="resetCaffeine()"><i class="fas fa-redo"></i> Reset</button>
+        </div>
+    </div>
     
-    function newTip() {
-      const tipElement = document.getElementById("tip");
-      tipElement.classList.remove("fade-in");
-      
-      // Trigger reflow to restart animation
-      void tipElement.offsetWidth;
-      
-      let randomIndex = Math.floor(Math.random() * tips.length);
-      tipElement.textContent = tips[randomIndex];
-      tipElement.classList.add("fade-in");
-      
-      // Add pulse animation to the container
-      document.querySelector(".tip-container").classList.add("pulse");
-      setTimeout(() => {
-        document.querySelector(".tip-container").classList.remove("pulse");
-      }, 2000);
-    }
+    <div class="modal" id="favorites-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-star"></i> Favorite Tips</h2>
+                <button class="close-modal" onclick="closeFavorites()">&times;</button>
+            </div>
+            <ul id="favorites-list"></ul>
+        </div>
+    </div>
     
-    function openStudyWithMe() {
-      // Open the study with me page in a new tab
-      window.open('page3.html', '_blank');
-      
-      // Show a confirmation message
-      const tipElement = document.getElementById("tip");
-      tipElement.textContent = "Opening Study With Me videos... Happy studying! 🎥";
-      tipElement.classList.add("fade-in");
-      
-      // Add a fun animation to the button
-      const studyButton = document.querySelector(".dock-study");
-      studyButton.classList.add("pulse");
-      setTimeout(() => {
-        studyButton.classList.remove("pulse");
-      }, 2000);
-    }
-    
-    function markFavorite() {
-      const currentTip = document.getElementById("tip").textContent;
-      if (currentTip && !favorites.includes(currentTip)) {
-        favorites.push(currentTip);
-        alert("Added to favorites!");
-        
-        // Update button icon to indicate it's favorited
-        const favButton = document.querySelector(".dock-favorite");
-        favButton.innerHTML = '<i class="fas fa-star"></i><div class="dock-icon-label">Favorites</div>';
-        
-        setTimeout(() => {
-          favButton.innerHTML = '<i class="far fa-star"></i><div class="dock-icon-label">Favorites</div>';
-        }, 2000);
-      } else if (favorites.includes(currentTip)) {
-        alert("This tip is already in your favorites!");
-      }
-    }
-    
-    function addCaffeine() {
-      // Add a random amount of caffeine between 50-150mg (typical coffee range)
-      const caffeineAmount = Math.floor(Math.random() * 101) + 50;
-      caffeineIntake += caffeineAmount;
-      
-      document.getElementById("caffeine-count").textContent = caffeineIntake;
-      
-      // Show warning if approaching or exceeding recommended daily limit
-      const warningElement = document.getElementById("caffeine-warning");
-      if (caffeineIntake >= 400) {
-        warningElement.style.display = "block";
-        warningElement.textContent = "⚠️ Exceeded recommended daily max of 400mg!";
-      } else if (caffeineIntake >= 300) {
-        warningElement.style.display = "block";
-        warningElement.textContent = "⚠️ Approaching daily max (400mg recommended)";
-      }
-      
-      // Add a fun coffee-related study tip occasionally
-      if (Math.random() > 0.7) {
-        const coffeeTips = [
-          "☕ Remember to stay hydrated with water too!",
-          "☕ Too much caffeine can increase anxiety.",
-          "☕ Try green tea for a lighter caffeine alternative.",
-          "☕ Avoid caffeine 6 hours before bedtime for better sleep."
+    <script>
+        const tips = [
+            "Break your study time into 25-minute intervals with the Pomodoro Technique.",
+            "Use active recall by testing yourself, not just rereading notes.",
+            "Explain what you've learned to someone else to solidify your understanding.",
+            "Create a dedicated, distraction-free study zone.",
+            "Use flashcards for key terms and concepts.",
+            "Review material consistently, a little bit each day.",
+            "Prioritize sleep; it's crucial for memory consolidation.",
+            "Stay hydrated and eat nutritious brain food.",
+            "Use mind maps to visualize connections between ideas.",
+            "Take short, regular breaks to avoid burnout."
         ];
-        const randomCoffeeTip = coffeeTips[Math.floor(Math.random() * coffeeTips.length)];
+        
+        let favorites = JSON.parse(localStorage.getItem('favoriteTips')) || [];
+        let caffeineIntake = 0;
         
         const tipElement = document.getElementById("tip");
-        tip极速5分钟快3开奖结果查询Element.textContent = randomCoffeeTip;
-        tipElement.classList.add("fade-in");
-      }
-    }
-    
-    function resetCaffeine() {
-      caffeineIntake = 0;
-      document.getElementById("caffeine-count").textContent = caffeineIntake;
-      document.getElementById("caffeine-warning").style.display = "none";
-    }
-    
-    // Calculator Functions
-    function openCalculator() {
-      document.getElementById('calculator-modal').classList.add('active');
-    }
-    
-    function closeCalculator() {
-      document.getElementById('calculator-modal').classList.remove('active');
-    }
-    
-    function appendToDisplay(value) {
-      const display = document.getElementById('calc-display');
-      if (display.textContent === '0' || display.textContent === 'Error') {
-        display.textContent = value;
-      } else {
-        display.textContent += value;
-      }
-    }
-    
-    function clearCalculator() {
-      document.getElementById('calc-display').textContent = '0';
-    }
-    
-    function backspace() {
-      const display = document.getElementById('calc-display');
-      if (display.textContent.length === 1 || display.textContent === 'Error') {
-        display.textContent = '0';
-      } else {
-        display.textContent = display.textContent.slice(0, -1);
-      }
-    }
-    
-    function calculate() {
-      const display = document.getElementById('calc-display');
-      try {
-        // Handle special cases for 1/x and x²
-        let expression = display.textContent;
-        
-        // Replace visual representations with JavaScript equivalents
-        expression = expression.replace(/×/g, '*');
-        expression = expression.replace(/÷/g, '/');
-        
-        // Handle special functions
-        if (expression.includes('1/')) {
-          expression = expression.replace('1/', '1/(') + ')';
+        const caffeineCountEl = document.getElementById("caffeine-count");
+        const caffeineWarningEl = document.getElementById("caffeine-warning");
+        const favoritesModal = document.getElementById("favorites-modal");
+        const favoritesListEl = document.getElementById("favorites-list");
+
+        function playSound(url) {
+            new Audio(url).play();
         }
         
-        // Evaluate the expression
-        const result = eval(expression);
-        
-        // Handle very large or very small numbers
-        if (typeof result === 'number') {
-          if (result > 1e15 || (result < 1e-15 && result > 0)) {
-            display.textContent = result.toExponential(5);
-          } else {
-            // Round to avoid floating point precision issues
-            display.textContent = parseFloat(result.toPrecision(12));
-          }
-        } else {
-          display.textContent = result;
+        function newTip() {
+            playSound('https://www.soundjay.com/buttons/sounds/button-16.mp3');
+            tipElement.style.opacity = 0;
+            setTimeout(() => {
+                let randomIndex = Math.floor(Math.random() * tips.length);
+                tipElement.textContent = tips[randomIndex];
+                tipElement.style.opacity = 1;
+            }, 300);
         }
-      } catch (error) {
-        display.textContent = 'Error';
-      }
-    }
-    
-    // Close calculator when clicking outside
-    document.getElementById('calculator-modal').addEventListener('click', function(e) {
-      if (e.target === this) {
-        closeCalculator();
-      }
-    });
-    
-    // Add initial animation when page loads
-    document.addEventListener("DOMContentLoaded", function() {
-      document.querySelector(".app").classList.add("fade-in");
-      newTip(); // Show a tip on load
-    });
-  </script>
+        
+        function copyTip() {
+            navigator.clipboard.writeText(tipElement.textContent).then(() => {
+                playSound('https://www.soundjay.com/buttons/sounds/button-7.mp3');
+                alert("Tip copied to clipboard!");
+            });
+        }
+        
+        function openStudyWithMe() {
+            window.open('page3.html', '_blank');
+        }
+
+        function markFavorite() {
+            const currentTip = tipElement.textContent;
+            if (!favorites.includes(currentTip)) {
+                favorites.push(currentTip);
+                localStorage.setItem('favoriteTips', JSON.stringify(favorites));
+                alert("Tip added to favorites!");
+            } else {
+                alert("This tip is already in your favorites.");
+            }
+        }
+        
+        function openFavorites() {
+            favoritesListEl.innerHTML = '';
+            if (favorites.length === 0) {
+                favoritesListEl.innerHTML = '<li>No favorite tips saved yet.</li>';
+            } else {
+                favorites.forEach(tip => {
+                    const li = document.createElement('li');
+                    li.textContent = tip;
+                    favoritesListEl.appendChild(li);
+                });
+            }
+            favoritesModal.classList.add('active');
+        }
+        
+        function closeFavorites() {
+            favoritesModal.classList.remove('active');
+        }
+
+        function addCaffeine() {
+            const caffeineAmount = Math.floor(Math.random() * 81) + 40; // Approx a cup of coffee
+            caffeineIntake += caffeineAmount;
+            caffeineCountEl.textContent = caffeineIntake;
+
+            if (caffeineIntake >= 400) {
+                caffeineWarningEl.style.display = "block";
+                caffeineWarningEl.textContent = "⚠️ Daily max exceeded!";
+            } else if (caffeineIntake >= 300) {
+                caffeineWarningEl.style.display = "block";
+            }
+        }
+        
+        function resetCaffeine() {
+            caffeineIntake = 0;
+            caffeineCountEl.textContent = caffeineIntake;
+            caffeineWarningEl.style.display = "none";
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            document.querySelector(".app").style.opacity = 0;
+            document.querySelector(".app").style.transform = "translateY(20px)";
+            setTimeout(() => {
+                document.querySelector(".app").style.transition = "opacity 0.5s, transform 0.5s";
+                document.querySelector(".app").style.opacity = 1;
+                document.querySelector(".app").style.transform = "translateY(0)";
+                newTip();
+            }, 100);
+        });
+
+    </script>
 </body>
 </html>
