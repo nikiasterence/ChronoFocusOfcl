@@ -3,41 +3,222 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Whiteboard — Apple Notes style</title>
+  <title>Glassboard — Notes & Whiteboard</title>
   <style>
-    :root{ --toolbar-height:64px; --bg:#f7f7f8 }
-    html,body{height:100%;margin:0;background:var(--bg);font-family:Inter, system-ui, sans-serif}
-    .app{display:flex;flex-direction:column;height:100%}
+    :root {
+      --toolbar-height: 72px;
+      --bg: #E9E9EF;
+      --board-bg: #ffffff;
+      --glass-bg: rgba(255, 255, 255, 0.45);
+      --glass-border: rgba(255, 255, 255, 0.6);
+      --glass-shadow: rgba(0, 0, 0, 0.1);
+      --text-color: #1d1d1f;
+      --control-radius: 12px;
+      --transition-speed: 0.2s;
+    }
 
-    /* top toolbar */
-    .toolbar{height:var(--toolbar-height);display:flex;align-items:center;padding:10px 14px;gap:10px;box-shadow:0 1px 0 rgba(0,0,0,0.06);background:linear-gradient(#ffffff,#fbfbfd)}
-    .group{display:flex;align-items:center;gap:8px}
-    .color-swatch{width:34px;height:34px;border-radius:8px;border:1px solid rgba(0,0,0,0.07);cursor:pointer;box-shadow:0 1px 0 rgba(255,255,255,0.6) inset}
-    .color-swatch.selected{outline:3px solid rgba(0,0,0,0.08);transform:scale(0.98)}
-    .tool-btn{height:34px;padding:0 10px;border-radius:8px;border:1px solid rgba(0,0,0,0.08);background:white;cursor:pointer;display:flex;align-items:center;gap:8px}
-    .tool-btn.active{box-shadow:0 4px 12px rgba(0,0,0,0.06)}
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
 
-    /* brush selector */
-    .brushes{display:flex;gap:8px}
-    .brush{width:40px;height:34px;border-radius:8px;border:1px solid rgba(0,0,0,0.06);display:flex;align-items:center;justify-content:center;cursor:pointer}
-    .brush.active{background:linear-gradient(#f0f8ff,#fff);box-shadow:0 4px 10px rgba(0,0,0,0.06)}
+    html, body {
+      height: 100%;
+      margin: 0;
+      background: var(--bg);
+      font-family: 'Inter', system-ui, sans-serif;
+      color: var(--text-color);
+      overflow: hidden;
+    }
 
-    /* canvas area */
-    .stage{flex:1;display:flex;align-items:center;justify-content:center;padding:18px}
-    .board-wrap{width:100%;height:100%;max-width:1200px;max-height:900px;background:white;border-radius:14px;box-shadow:0 10px 30px rgba(16,24,40,0.08);position:relative;overflow:hidden}
-    canvas{width:100%;height:100%;display:block;touch-action:none}
+    .app {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
 
-    /* bottom controls */
-    .controls{position:absolute;right:12px;bottom:12px;display:flex;gap:8px}
-    .small{height:36px;padding:6px 10px}
-    input[type=range]{width:140px}
+    /* --- Glassmorphism Toolbar --- */
+    .toolbar {
+      height: var(--toolbar-height);
+      display: flex;
+      align-items: center;
+      padding: 0 24px;
+      gap: 16px;
+      position: absolute;
+      top: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: auto;
+      background: var(--glass-bg);
+      border-radius: 16px;
+      border: 1px solid var(--glass-border);
+      box-shadow: 0 8px 32px 0 var(--glass-shadow);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      z-index: 10;
+      transition: all var(--transition-speed) ease;
+    }
 
-    /* simple responsive */
-    @media (max-width:640px){
-      .toolbar{padding:8px}
-      .color-swatch{width:28px;height:28px}
-      .brush{width:36px}
-      input[type=range]{width:100px}
+    .group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 12px;
+      height: 100%;
+    }
+    .group:not(:last-child) {
+      border-right: 1px solid rgba(0,0,0,0.08);
+    }
+
+    .tool-btn, .brush {
+      height: 40px;
+      padding: 0 12px;
+      border-radius: var(--control-radius);
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-color);
+      transition: background-color var(--transition-speed), transform var(--transition-speed);
+    }
+    
+    .tool-btn:hover, .brush:hover {
+        background: rgba(0,0,0,0.05);
+    }
+
+    .tool-btn.active, .brush.active {
+        background: rgba(255,255,255,0.8);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        transform: translateY(-2px);
+    }
+
+    .color-swatch {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: all var(--transition-speed) ease;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    }
+
+    .color-swatch.selected {
+      transform: scale(1.15);
+      border-color: white;
+      box-shadow: 0 0 0 3px var(--glass-border), 0 4px 10px rgba(0,0,0,0.15);
+    }
+    
+    .brush { width: 44px; font-size: 20px; }
+
+    .size-control { display:flex; align-items:center; gap: 8px; }
+    .size-control label { font-size: 13px; font-weight: 500; }
+    input[type=range] {
+        -webkit-appearance: none;
+        width: 120px;
+        height: 6px;
+        background: rgba(0,0,0,0.1);
+        border-radius: 3px;
+        outline: none;
+        transition: opacity var(--transition-speed);
+    }
+    input[type=range]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 20px;
+        height: 20px;
+        background: white;
+        cursor: pointer;
+        border-radius: 50%;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+    }
+
+    /* --- Canvas & Stage Area --- */
+    .stage {
+      flex: 1;
+      padding: 16px;
+      padding-top: calc(var(--toolbar-height) + 32px);
+      box-sizing: border-box;
+    }
+
+    .board-container {
+      width: 100%;
+      height: 100%;
+      background: var(--board-bg);
+      border-radius: 18px;
+      box-shadow: 0 12px 40px rgba(16, 24, 40, 0.1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+      touch-action: none;
+      position: absolute;
+      top: 0; left: 0;
+    }
+    
+    #text-layer {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0; left: 0;
+        pointer-events: none; /* Pass clicks through to canvas by default */
+    }
+    
+    .text-box {
+        position: absolute;
+        padding: 8px;
+        border: 2px solid transparent;
+        line-height: 1.4;
+        cursor: move;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        pointer-events: all; /* Text boxes can be interacted with */
+        min-width: 20px;
+        border-radius: 8px;
+        transition: border-color var(--transition-speed), box-shadow var(--transition-speed);
+    }
+    
+    .text-box:hover {
+        border-color: rgba(0, 122, 255, 0.25);
+    }
+
+    .text-box:focus {
+        outline: none;
+        border-color: rgba(0, 122, 255, 0.5);
+        box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.1);
+    }
+
+    /* --- Bottom Controls --- */
+    .controls {
+      position: absolute;
+      right: 20px;
+      bottom: 20px;
+      display: flex;
+      gap: 12px;
+      z-index: 5;
+    }
+
+    .controls .tool-btn {
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        box-shadow: 0 4px 12px var(--glass-shadow);
+        backdrop-filter: blur(10px);
+    }
+    
+    /* --- Responsive Design --- */
+    @media (max-width: 900px) {
+        .toolbar { padding: 0 12px; gap: 8px; flex-wrap: wrap; height: auto; justify-content: center; }
+        .group { padding: 0 8px; }
+        .tool-btn { height: 36px; padding: 0 10px; font-size: 13px; }
+        .color-swatch { width: 28px; height: 28px; }
+        .brush { width: 40px; height: 36px; }
+        .size-control label { display: none; }
+        input[type=range] { width: 80px; }
     }
   </style>
 </head>
@@ -45,234 +226,245 @@
   <div class="app">
     <div class="toolbar">
       <div class="group">
-        <button id="undo" class="tool-btn">Undo</button>
-        <button id="clear" class="tool-btn">Clear</button>
-        <button id="save" class="tool-btn">Save</button>
+        <button id="undo" class="tool-btn" title="Undo (Ctrl+Z)">↩️</button>
+        <button id="clear" class="tool-btn" title="Clear Canvas">🗑️</button>
       </div>
 
       <div class="group">
-        <!-- 10 color swatches -->
-        <div id="colors" style="display:flex;gap:8px">
-          <!-- colors added by JS -->
+        <div id="colors" style="display:flex;gap:10px;align-items:center;"></div>
+      </div>
+
+      <div class="group">
+        <div id="brushes" class="brushes" style="display:flex;gap:8px;">
+          <div class="brush" data-brush="pencil" title="Pencil (P)">✏️</div>
+          <div class="brush" data-brush="marker" title="Marker (M)">🖊️</div>
+          <div class="brush" data-brush="highlighter" title="Highlighter (H)">🟨</div>
+          <div class="brush" data-brush="text" title="Text Tool (T)">📄</div>
+          <div class="brush" data-brush="eraser" title="Eraser (E)">🧽</div>
         </div>
       </div>
-
-      <div style="flex:1"></div>
-
-      <div class="group">
-        <label style="font-size:13px;color:#444;margin-right:8px">Brush</label>
-        <div id="brushes" class="brushes">
-          <div class="brush" data-brush="pencil" title="Pencil">✏️</div>
-          <div class="brush" data-brush="marker" title="Marker">🖊️</div>
-          <div class="brush" data-brush="highlighter" title="Highlighter">🟨</div>
-          <div class="brush" data-brush="calligraphy" title="Calligraphy">🖋️</div>
-          <div class="brush" data-brush="neon" title="Neon">✨</div>
-          <div class="brush" data-brush="eraser" title="Eraser">🧽</div>
-        </div>
-      </div>
-
-      <div style="width:12px"></div>
-      <div class="group">
-        <label style="font-size:13px">Size</label>
-        <input id="size" type="range" min="1" max="80" value="6">
+      
+      <div class="group size-control">
+        <label>Size</label>
+        <input id="size" type="range" min="1" max="100" value="16">
       </div>
     </div>
 
     <div class="stage">
-      <div class="board-wrap">
+      <div class="board-container">
+        <div id="text-layer"></div>
         <canvas id="board"></canvas>
-
+        
         <div class="controls">
-          <button id="download" class="tool-btn small">Download PNG</button>
-          <button id="exportJpg" class="tool-btn small">Download JPG</button>
+          <button id="downloadPng" class="tool-btn">Export PNG</button>
+          <button id="downloadJpg" class="tool-btn">Export JPG</button>
         </div>
       </div>
     </div>
   </div>
 
-  <script>
-    // Colors (10)
-    const COLORS = ['#000000','#5856D6','#007AFF','#34C759','#FF9500','#FF2D55','#AF52DE','#FFCC00','#8E8E93','#FFFFFF'];
+  <script type="module">
+    // Using a module to allow top-level await for dynamic import
+    const { default: html2canvas } = await import('https://cdn.skypack.dev/html2canvas');
+
+    const COLORS = ['#000000', '#007AFF', '#34C759', '#FF9500', '#FF3B30', '#AF52DE', '#FFCC00', '#8E8E93'];
 
     const canvas = document.getElementById('board');
-    const ctx = canvas.getContext('2d', { alpha: true });
-    let drawing = false;
-    let last = { x: 0, y: 0 };
-    const undoStack = [];
-    const MAX_UNDO = 30;
+    const textLayer = document.getElementById('text-layer');
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
+    
+    const state = {
+      drawing: false,
+      currentBrush: 'pencil',
+      currentColor: COLORS[0],
+      currentSize: 16,
+      lastPos: { x: 0, y: 0 },
+      undoStack: [],
+      MAX_UNDO: 50,
+      activeTextBox: null
+    };
 
-    function resizeCanvas(){
-      // preserve content
-      const data = canvas.toDataURL();
+    // --- Initialization ---
+    function init() {
+      setupCanvas();
+      setupToolbar();
+      setupEventListeners();
+      setBrush('pencil');
+    }
+
+    function setupCanvas() {
+      const ratio = window.devicePixelRatio || 1;
+      const rect = canvas.getBoundingClientRect();
+      const data = canvas.toDataURL(); // Preserve content on resize
+      
+      canvas.width = rect.width * ratio;
+      canvas.height = rect.height * ratio;
+      ctx.scale(ratio, ratio);
+      
       const img = new Image();
       img.onload = () => {
-        const ratio = window.devicePixelRatio || 1;
-        canvas.width = Math.floor(canvas.clientWidth * ratio);
-        canvas.height = Math.floor(canvas.clientHeight * ratio);
-        ctx.setTransform(ratio,0,0,ratio,0,0);
-        ctx.clearRect(0,0,canvas.width,canvas.height);
-        ctx.drawImage(img,0,0,canvas.clientWidth,canvas.clientHeight);
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          ctx.drawImage(img, 0, 0, rect.width, rect.height);
       };
-      img.src = data;
+      if (data.length < 10) { // On first load, it's empty
+          ctx.fillStyle = 'white';
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+      } else {
+          img.src = data;
+      }
     }
-
-    // Live-size the canvas to parent
-    function fitCanvasToContainer(){
-      const wrap = canvas.parentElement;
-      canvas.style.width = '100%';
-      canvas.style.height = '100%';
-      // actual pixel size set on resize
-      resizeCanvas();
-    }
-
-    // init colors UI
-    const colorsEl = document.getElementById('colors');
-    let currentColor = COLORS[0];
-    COLORS.forEach((c,i)=>{
-      const sw = document.createElement('div');
-      sw.className = 'color-swatch' + (i===0? ' selected':'');
-      sw.style.background = c;
-      sw.dataset.color = c;
-      sw.addEventListener('click', ()=>{
-        document.querySelectorAll('.color-swatch').forEach(s=>s.classList.remove('selected'));
-        sw.classList.add('selected');
-        currentColor = c;
-        setBrush(currentBrush);
+    
+    function setupToolbar() {
+      const colorsEl = document.getElementById('colors');
+      COLORS.forEach((c, i) => {
+        const swatch = document.createElement('div');
+        swatch.className = 'color-swatch';
+        swatch.style.background = c;
+        swatch.dataset.color = c;
+        if (i === 0) swatch.classList.add('selected');
+        swatch.addEventListener('click', () => {
+          document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
+          swatch.classList.add('selected');
+          state.currentColor = c;
+          setBrush(state.currentBrush);
+        });
+        colorsEl.appendChild(swatch);
       });
-      colorsEl.appendChild(sw);
-    });
+    }
 
-    // brush handling
-    const brushes = document.getElementById('brushes');
-    let currentBrush = 'pencil';
-    function setBrush(brush){
-      currentBrush = brush;
-      document.querySelectorAll('.brush').forEach(b=>b.classList.toggle('active', b.dataset.brush===brush));
+    // --- Brush & Tool Logic ---
+    function setBrush(brush) {
+      state.currentBrush = brush;
+      document.querySelectorAll('.brush').forEach(b => b.classList.toggle('active', b.dataset.brush === brush));
+      
+      canvas.style.cursor = brush === 'text' ? 'text' : 'crosshair';
+      if (state.activeTextBox) {
+          state.activeTextBox.blur();
+      }
 
-      // base settings
+      const size = parseInt(document.getElementById('size').value, 10);
+      state.currentSize = size;
+      
       ctx.lineCap = 'round';
       ctx.lineJoin = 'round';
       ctx.globalCompositeOperation = 'source-over';
-      ctx.globalAlpha = 1;
       ctx.shadowBlur = 0;
-      ctx.shadowColor = currentColor;
-
-      const sizeInput = document.getElementById('size');
-      const size = parseInt(sizeInput.value,10) || 4;
-
-      switch(brush){
-        case 'pencil':
-          ctx.strokeStyle = currentColor;
-          ctx.lineWidth = Math.max(1, size*0.8);
-          break;
-        case 'marker':
-          ctx.strokeStyle = currentColor;
-          ctx.lineWidth = Math.max(6, size*1.6);
-          ctx.globalAlpha = 0.9;
-          break;
-        case 'highlighter':
-          ctx.strokeStyle = currentColor;
-          ctx.lineWidth = Math.max(12, size*2.2);
-          ctx.globalAlpha = 0.25;
-          break;
-        case 'calligraphy':
-          ctx.strokeStyle = currentColor;
-          ctx.lineWidth = Math.max(2, size*1.5);
-          ctx.lineCap = 'butt';
-          ctx.lineJoin = 'miter';
-          break;
-        case 'neon':
-          ctx.strokeStyle = currentColor;
-          ctx.lineWidth = Math.max(4, size*1.8);
-          ctx.shadowBlur = 18;
-          ctx.shadowColor = currentColor;
-          break;
-        case 'eraser':
-          ctx.globalCompositeOperation = 'destination-out';
-          ctx.lineWidth = Math.max(10, size*2.5);
-          break;
+      
+      switch(brush) {
+        case 'pencil':      ctx.lineWidth = Math.max(1, size * 0.2); break;
+        case 'marker':      ctx.lineWidth = Math.max(2, size * 0.6); break;
+        case 'highlighter': ctx.lineWidth = Math.max(10, size * 1.5); ctx.globalCompositeOperation = 'multiply'; break;
+        case 'eraser':      ctx.lineWidth = Math.max(10, size * 2.5); ctx.globalCompositeOperation = 'destination-out'; break;
       }
+      ctx.strokeStyle = state.currentColor;
+    }
+    
+    // --- Text Note Logic ---
+    function createTextBox(x, y) {
+        if (state.activeTextBox) state.activeTextBox.blur();
+        
+        const textBox = document.createElement('div');
+        textBox.contentEditable = true;
+        textBox.className = 'text-box';
+        textBox.style.left = `${x}px`;
+        textBox.style.top = `${y}px`;
+        textBox.style.color = state.currentColor;
+        textBox.style.fontSize = `${12 + state.currentSize * 0.4}px`;
+        
+        textLayer.appendChild(textBox);
+        textBox.focus();
+        state.activeTextBox = textBox;
+        
+        // Draggable
+        let isDragging = false, offset = { x: 0, y: 0 };
+        textBox.onmousedown = (e) => {
+            if (e.target !== textBox) return;
+            isDragging = true;
+            offset = { x: e.clientX - textBox.offsetLeft, y: e.clientY - textBox.offsetTop };
+            textBox.style.cursor = 'grabbing';
+            e.stopPropagation();
+        };
+        window.onmousemove = (e) => {
+            if (!isDragging) return;
+            textBox.style.left = `${e.clientX - offset.x}px`;
+            textBox.style.top = `${e.clientY - offset.y}px`;
+        };
+        window.onmouseup = () => { isDragging = false; textBox.style.cursor = 'move'; };
+
+        textBox.addEventListener('blur', () => { state.activeTextBox = null; });
     }
 
-    // create brush elements listener
-    document.querySelectorAll('.brush').forEach(b=>{
-      b.addEventListener('click', ()=> setBrush(b.dataset.brush));
-    });
-
-    // size control
-    document.getElementById('size').addEventListener('input', ()=> setBrush(currentBrush));
-
-    // pointer support
-    function getPointerPos(evt){
+    // --- Drawing Logic ---
+    function getPointerPos(e) {
       const rect = canvas.getBoundingClientRect();
-      const x = (evt.clientX - rect.left);
-      const y = (evt.clientY - rect.top);
-      return { x, y };
+      return { x: e.clientX - rect.left, y: e.clientY - rect.top };
     }
 
-    function pushUndo(){
-      try{
-        if(undoStack.length >= MAX_UNDO) undoStack.shift();
-        undoStack.push(canvas.toDataURL());
-      }catch(e){ console.warn('undo push failed',e) }
-    }
+    function pointerDown(e) {
+      const pos = getPointerPos(e);
 
-    function undo(){
-      if(!undoStack.length) return;
-      const last = undoStack.pop();
-      const img = new Image();
-      img.onload = ()=>{
-        ctx.clearRect(0,0,canvas.width,canvas.height);
-        ctx.drawImage(img,0,0,canvas.clientWidth,canvas.clientHeight);
-      };
-      img.src = last;
-    }
+      if (state.currentBrush === 'text') {
+          createTextBox(pos.x, pos.y);
+          return;
+      }
 
-    function pointerDown(e){
-      e.preventDefault();
       pushUndo();
-      drawing = true;
-      const p = getPointerPos(e);
-      last.x = p.x; last.y = p.y;
+      state.drawing = true;
+      state.lastPos = pos;
       ctx.beginPath();
-      ctx.moveTo(last.x, last.y);
-    }
-
-    function pointerMove(e){
-      if(!drawing) return;
-      const p = getPointerPos(e);
-      ctx.lineTo(p.x, p.y);
+      ctx.moveTo(pos.x, pos.y);
+      ctx.lineTo(pos.x, pos.y);
       ctx.stroke();
-      last.x = p.x; last.y = p.y;
     }
 
-    function pointerUp(e){
-      if(!drawing) return;
-      drawing = false;
+    function pointerMove(e) {
+      if (!state.drawing) return;
+      const pos = getPointerPos(e);
+      ctx.lineTo(pos.x, pos.y);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(pos.x, pos.y);
+    }
+
+    function pointerUp() {
+      if (!state.drawing) return;
+      state.drawing = false;
       ctx.closePath();
     }
+    
+    // --- State & History Management ---
+    function pushUndo() {
+      if (state.undoStack.length >= state.MAX_UNDO) state.undoStack.shift();
+      state.undoStack.push(canvas.toDataURL());
+    }
 
-    // events
-    canvas.addEventListener('pointerdown', pointerDown);
-    window.addEventListener('pointermove', pointerMove);
-    window.addEventListener('pointerup', pointerUp);
+    function undo() {
+      if (!state.undoStack.length) return;
+      const lastState = state.undoStack.pop();
+      const img = new Image();
+      img.onload = () => {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        const ratio = window.devicePixelRatio || 1;
+        ctx.drawImage(img, 0, 0, canvas.width / ratio, canvas.height / ratio);
+      };
+      img.src = lastState;
+    }
+    
+    // --- Export & Save ---
+    async function getCombinedImage(format = 'image/png') {
+        if (state.activeTextBox) state.activeTextBox.blur();
+        textLayer.style.pointerEvents = 'all'; // Make sure text is captured
 
-    // keyboard shortcuts
-    window.addEventListener('keydown', (e)=>{
-      if(e.ctrlKey || e.metaKey){
-        if(e.key === 'z') { e.preventDefault(); undo(); }
-      }
-      if(e.key === 'Delete'){ document.getElementById('clear').click(); }
-    });
-
-    // toolbar actions
-    document.getElementById('clear').addEventListener('click', ()=>{
-      pushUndo();
-      ctx.clearRect(0,0,canvas.width,canvas.height);
-    });
-    document.getElementById('undo').addEventListener('click', undo);
-
-    function downloadDataURL(dataURL, filename){
+        const tempCanvas = await html2canvas(document.querySelector('.board-container'), {
+            backgroundColor: format === 'image/jpeg' ? '#ffffff' : null,
+            logging: false
+        });
+        
+        textLayer.style.pointerEvents = 'none';
+        return tempCanvas.toDataURL(format, 0.95);
+    }
+    
+    function downloadDataURL(dataURL, filename) {
       const a = document.createElement('a');
       a.href = dataURL;
       a.download = filename;
@@ -281,68 +473,62 @@
       a.remove();
     }
 
-    document.getElementById('save').addEventListener('click', ()=>{
-      const data = canvas.toDataURL('image/png');
-      downloadDataURL(data, 'whiteboard.png');
-    });
+    // --- Event Listeners ---
+    function setupEventListeners() {
+      canvas.addEventListener('pointerdown', pointerDown);
+      window.addEventListener('pointermove', pointerMove);
+      window.addEventListener('pointerup', pointerUp);
+      
+      document.getElementById('size').addEventListener('input', () => setBrush(state.currentBrush));
+      document.querySelectorAll('.brush').forEach(b => {
+        b.addEventListener('click', () => setBrush(b.dataset.brush));
+      });
+      
+      document.getElementById('clear').addEventListener('click', () => {
+        pushUndo();
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        textLayer.innerHTML = '';
+      });
+      
+      document.getElementById('undo').addEventListener('click', undo);
+      
+      document.getElementById('downloadPng').addEventListener('click', async () => {
+        const data = await getCombinedImage('image/png');
+        downloadDataURL(data, 'glassboard.png');
+      });
+      
+      document.getElementById('downloadJpg').addEventListener('click', async () => {
+        const data = await getCombinedImage('image/jpeg');
+        downloadDataURL(data, 'glassboard.jpg');
+      });
 
-    document.getElementById('download').addEventListener('click', ()=>{
-      const data = canvas.toDataURL('image/png');
-      downloadDataURL(data, 'whiteboard.png');
-    });
+      // --- KEYBOARD SHORTCUTS ---
+      window.addEventListener('keydown', (e) => {
+        if (document.activeElement.isContentEditable) { // If typing text, only allow Escape
+             if (e.key === 'Escape') state.activeTextBox.blur();
+             return;
+        }
 
-    document.getElementById('exportJpg').addEventListener('click', ()=>{
-      // create white background JPG
-      const tmp = document.createElement('canvas');
-      tmp.width = canvas.width; tmp.height = canvas.height;
-      const tctx = tmp.getContext('2d');
-      tctx.fillStyle = '#ffffff';
-      tctx.fillRect(0,0,tmp.width,tmp.height);
-      tctx.drawImage(canvas,0,0,tmp.width,tmp.height);
-      const data = tmp.toDataURL('image/jpeg', 0.92);
-      downloadDataURL(data, 'whiteboard.jpg');
-    });
-
-    // init
-    function init(){
-      // set container pixel size
-      const ratio = window.devicePixelRatio || 1;
-      const wrap = canvas.parentElement;
-      // set initial CSS size based on parent
-      canvas.style.width = '100%';
-      canvas.style.height = '100%';
-      canvas.width = Math.floor(canvas.clientWidth * ratio);
-      canvas.height = Math.floor(canvas.clientHeight * ratio);
-      ctx.setTransform(ratio,0,0,ratio,0,0);
-      // white background
-      ctx.fillStyle = 'white';
-      ctx.fillRect(0,0,canvas.clientWidth,canvas.clientHeight);
-
-      setBrush('pencil');
+        if ((e.ctrlKey || e.metaKey) && e.key === 'z') { e.preventDefault(); undo(); }
+        
+        const keyMap = { p: 'pencil', m: 'marker', h: 'highlighter', t: 'text', e: 'eraser' };
+        if (keyMap[e.key]) {
+            e.preventDefault();
+            setBrush(keyMap[e.key]);
+        }
+      });
+      
+      let resizeTimer;
+      window.addEventListener('resize', () => {
+          clearTimeout(resizeTimer);
+          resizeTimer = setTimeout(setupCanvas, 150);
+      });
+      
+      document.body.addEventListener('touchstart', e => { if (e.target === canvas) e.preventDefault(); }, { passive: false });
+      document.body.addEventListener('touchmove', e => { if (e.target === canvas) e.preventDefault(); }, { passive: false });
     }
 
-    window.addEventListener('resize', ()=>{
-      // smooth resize with a short debounce
-      clearTimeout(window._resizeTimer);
-      window._resizeTimer = setTimeout(()=>{
-        // save current contents to image then redraw (resizeCanvas will use toDataURL)
-        resizeCanvas();
-      },120);
-    });
-
-    // initial
     init();
-
-    // set first swatch as selected
-    document.querySelectorAll('.color-swatch')[0].classList.add('selected');
-
-    // make sure brush matches color change
-    setBrush(currentBrush);
-
-    // Prevent scrolling on touch
-    document.body.addEventListener('touchstart', e=>{ if(e.target === canvas) e.preventDefault(); }, {passive:false});
-    document.body.addEventListener('touchmove', e=>{ if(e.target === canvas) e.preventDefault(); }, {passive:false});
-
   </script>
 </body>
-</html>
+</html>```
