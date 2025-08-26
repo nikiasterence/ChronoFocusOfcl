@@ -3,159 +3,297 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Liquid Glass Unit Converter</title>
+<title>Glassmorphic Unit Converter</title>
 <style>
 :root {
-  --accent1:#ff9ff3;
-  --accent2:#54a0ff;
-  --accent3:#feca57;
-  --text:#ffffffdd;
-  --glass-bg:rgba(208, 246, 255, 0.618);
-  --blur:20px;
-  --shadow:0 15px 35px rgba(140, 230, 255, 0.864);
-  --transition:.4s ease-in-out;
+  --accent1: #82aaff; /* Softer Blue */
+  --accent2: #c792ea; /* Lavender */
+  --accent3: #ffcb6b; /* Mellow Yellow */
+  --text: #ffffff;
+  --text-dark: #6792bc; /* For inner elements */
+  --glass-bg: rgba(255, 255, 255, 0.25);
+  --glass-border: rgba(255, 255, 255, 0.3);
+  --blur: 20px;
+  --shadow: 0 16px 40px rgba(0, 0, 0, 0.2);
+  --transition: .4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
-html,body{height:100%;width:100%;display:flex;justify-content:center;align-items:center;background:#01364d;overflow:hidden;}
+*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;}
+
+html, body {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #a8b9ff4d;
+    overflow: hidden;
+}
 
 body::before {
-  content:'';
-  position:fixed;
-  top:-50%; left:-50%; width:200%; height:200%;
-  background:linear-gradient(45deg,var(--accent1),var(--accent2),var(--accent3),var(--accent1));
-  background-size:600% 600%;
-  animation:gradientMove 15s ease infinite;
-  z-index:-2;
+  content: '';
+  position: fixed;
+  top: 50%; left: 50%;
+  width: 200vmax; height: 200vmax;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, var(--accent2), var(--accent1) 60%, var(--accent3));
+  background-size: 200% 200%;
+  animation: gradientMove 25s ease-in-out infinite;
+  z-index: -2;
 }
 
 @keyframes gradientMove{
-  0%{background-position:0% 50%;}
-  50%{background-position:100% 50%;}
-  100%{background-position:0% 50%;}
+  0% { transform: translate(-50%, -50%) rotate(0deg); }
+  50% { transform: translate(-50%, -50%) rotate(180deg); }
+  100% { transform: translate(-50%, -50%) rotate(360deg); }
 }
 
-.page{
-  display:none;
-  width:90%;
-  max-width:600px;
-  padding:40px 30px;
-  border-radius:30px;
+/* --- Cube Startup Animation --- */
+#startup-animation {
+  perspective: 1000px;
+  opacity: 1;
+  transition: opacity 1s ease;
+}
+
+.cube {
+  width: 150px;
+  height: 150px;
+  position: relative;
+  transform-style: preserve-3d;
+  animation: rotate-cube 8s infinite linear;
+}
+
+.cube.unfold {
+  animation: none; /* Stop rotation */
+  transform: scale(3); /* Enlarge while unfolding */
+}
+
+.face {
+  position: absolute;
+  width: 150px;
+  height: 150px;
+  border: 1px solid var(--glass-border);
+  background: var(--glass-bg);
   backdrop-filter: blur(var(--blur));
-  background:var(--glass-bg);
-  box-shadow:var(--shadow);
-  color:var(--text);
-  transition:var(--transition);
-  animation:fadeIn 0.8s ease forwards;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.5rem;
+  color: var(--text);
+  font-weight: 300;
+  transition: transform 1.2s cubic-bezier(0.68, -0.55, 0.27, 1.55);
 }
 
-.active{display:block;}
+.front  { transform: rotateY(0deg) translateZ(75px); }
+.back   { transform: rotateY(180deg) translateZ(75px); }
+.right  { transform: rotateY(90deg) translateZ(75px); }
+.left   { transform: rotateY(-90deg) translateZ(75px); }
+.top    { transform: rotateX(90deg) translateZ(75px); }
+.bottom { transform: rotateX(-90deg) translateZ(75px); }
 
-h2{text-align:center;margin-bottom:30px;font-size:1.8rem;color:var(--text);text-shadow:0 0 8px rgba(119, 228, 255, 0.917);}
+/* Unfold transformations */
+.cube.unfold .front  { transform: rotateY(0deg) translateZ(200px); }
+.cube.unfold .back   { transform: rotateY(180deg) translateZ(200px); }
+.cube.unfold .right  { transform: rotateY(90deg) translateZ(200px); }
+.cube.unfold .left   { transform: rotateY(-90deg) translateZ(200px); }
+.cube.unfold .top    { transform: rotateX(90deg) translateZ(200px); }
+.cube.unfold .bottom { transform: rotateX(-90deg) translateZ(200px); }
 
-.menu-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:20px;
+@keyframes rotate-cube {
+  from { transform: rotateX(0deg) rotateY(0deg); }
+  to { transform: rotateX(360deg) rotateY(360deg); }
+}
+/* --- End Cube Animation --- */
+
+
+.page {
+  display: none;
+  width: 90%;
+  max-width: 600px;
+  padding: 40px 30px;
+  border-radius: 30px;
+  border: 1.5px solid var(--glass-border);
+  backdrop-filter: blur(var(--blur));
+  background: var(--glass-bg);
+  box-shadow: var(--shadow);
+  color: var(--text);
+  transition: var(--transition);
+  animation: fadeIn 0.8s ease forwards;
 }
 
-.menu-item{
-  padding:25px;
-  text-align:center;
-  border-radius:20px;
-  cursor:pointer;
-  font-weight:bold;
-  background:rgba(255,255,255,0.05);
-  backdrop-filter:blur(10px);
-  transition:all .5s ease;
-  box-shadow:0 8px 20px rgba(0,0,0,0.1);
-  font-size:1.1rem;
+.active { display: block; }
+
+h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 2.2rem;
+    color: var(--text);
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+    font-weight: 500;
 }
 
-.menu-item:hover{
-  transform:translateY(-8px) scale(1.05);
-  background:linear-gradient(135deg,var(--accent1),var(--accent2),var(--accent3));
-  color:#fff;
-  box-shadow:0 15px 35px rgba(0,0,0,0.25);
+.menu-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
 }
 
-.converter{
-  display:flex;
-  flex-direction:column;
-  gap:20px;
-  margin-top:20px;
+.menu-item {
+  padding: 25px;
+  text-align: center;
+  border-radius: 20px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  font-weight: 500;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  transition: all .5s ease;
+  font-size: 1.1rem;
 }
 
-input, select{
-  padding:18px;
-  border:none;
-  border-radius:15px;
-  font-size:16px;
-  outline:none;
-  background:rgba(255,255,255,0.15);
-  color:var(--text);
-  backdrop-filter:blur(10px);
-  transition:all .3s ease;
-  box-shadow:0 8px 20px rgba(0,0,0,0.1);
+.menu-item:hover {
+  transform: translateY(-8px) scale(1.03);
+  background: rgba(255, 255, 255, 0.25);
+  color: var(--text);
+  border-color: var(--glass-border);
+  box-shadow: 0 15px 35px rgba(0,0,0,0.25);
 }
 
-input:focus, select:focus{
-  transform:scale(1.02);
-  box-shadow:0 0 15px var(--accent2);
+.converter {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-top: 20px;
 }
 
-#conv-output{background:rgba(255,255,255,0.25); font-weight:bold;}
+input, select {
+  padding: 18px;
+  border: none;
+  border-radius: 15px;
+  font-size: 16px;
+  font-weight: 500;
+  outline: none;
+  background: rgba(0,0,0,0.15);
+  color: var(--text);
+  border: 1px solid var(--glass-border);
+  transition: all .3s ease;
+}
 
-.back-btn{
-  background:var(--accent1);
-  padding:14px;
-  border:none;
-  border-radius:15px;
-  cursor:pointer;
-  font-weight:bold;
-  color:#fff;
+input::placeholder { color: rgba(255,255,255,0.7); }
+select { appearance: none; -webkit-appearance: none; background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M5%208l5%205%205-5%22%20stroke%3D%22%23ffffff%22%20stroke-width%3D%222%22%20fill%3D%22none%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22/%3E%3C/svg%3E'); background-repeat: no-repeat; background-position: right 15px center; }
+option { background: #3c3c78; color: var(--text); }
+
+
+input:focus, select:focus {
+  transform: scale(1.02);
+  box-shadow: 0 0 20px var(--accent1);
+  border-color: var(--accent1);
+}
+
+#conv-output {
+  background: rgba(0,0,0,0.25);
+  font-weight: bold;
+}
+
+.back-btn {
+  background: rgba(255,255,255,0.15);
+  padding: 14px;
+  border: 1px solid var(--glass-border);
+  border-radius: 15px;
+  cursor: pointer;
+  font-weight: bold;
+  color: var(--text);
   transition:.3s ease;
+  margin-bottom: 20px;
 }
 
-.back-btn:hover{transform:scale(1.05); background:var(--accent2);}
-
-@keyframes fadeIn{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
-
-@media (max-width:768px){
-  .menu-grid{grid-template-columns:1fr;}
-  h2{font-size:1.5rem;}
-  input, select, .menu-item, .back-btn{font-size:15px;padding:15px;}
+.back-btn:hover {
+  transform: scale(1.05);
+  background: var(--accent2);
+  border-color: var(--accent2);
 }
+
+@keyframes fadeIn {
+    from { opacity:0; transform: translateY(20px); }
+    to { opacity:1; transform: translateY(0); }
+}
+
+@media (max-width:768px) {
+  .menu-grid { grid-template-columns:1fr; }
+  h2 { font-size:1.8rem; }
+  input, select, .menu-item, .back-btn { font-size:15px; padding:15px; }
+  .cube { width: 100px; height: 100px; }
+  .face { width: 100px; height: 100px; }
+  .front, .back, .right, .left, .top, .bottom { transform-origin: 50px 50px; }
+  .front  { transform: rotateY(0deg) translateZ(50px); }
+  .back   { transform: rotateY(180deg) translateZ(50px); }
+  .right  { transform: rotateY(90deg) translateZ(50px); }
+  .left   { transform: rotateY(-90deg) translateZ(50px); }
+  .top    { transform: rotateX(90deg) translateZ(50px); }
+  .bottom { transform: rotateX(-90deg) translateZ(50px); }
+}
+
 </style>
 </head>
 <body>
 
-<div id="page1" class="page active">
-<h2>Choose a Converter</h2>
-<div class="menu-grid">
-  <div class="menu-item" onclick="openConverter('Length')">Length</div>
-  <div class="menu-item" onclick="openConverter('Area')">Area</div>
-  <div class="menu-item" onclick="openConverter('Volume')">Volume</div>
-  <div class="menu-item" onclick="openConverter('Mass')">Mass</div>
-  <div class="menu-item" onclick="openConverter('Temperature')">Temperature</div>
-  <div class="menu-item" onclick="openConverter('Speed')">Speed</div>
-  <div class="menu-item" onclick="openConverter('Pressure')">Pressure</div>
-  <div class="menu-item" onclick="openConverter('Power')">Power</div>
+<!-- Startup Animation -->
+<div id="startup-animation">
+  <div class="cube">
+    <div class="face front">⇔</div>
+    <div class="face back">∑</div>
+    <div class="face right">∭</div>
+    <div class="face left">g</div>
+    <div class="face top">℃</div>
+    <div class="face bottom">Pa</div>
+  </div>
 </div>
+
+<div id="page1" class="page">
+  <h2>Choose a Converter</h2>
+  <div class="menu-grid">
+    <div class="menu-item" onclick="openConverter('Length')">Length</div>
+    <div class="menu-item" onclick="openConverter('Area')">Area</div>
+    <div class="menu-item" onclick="openConverter('Volume')">Volume</div>
+    <div class="menu-item" onclick="openConverter('Mass')">Mass</div>
+    <div class="menu-item" onclick="openConverter('Temperature')">Temperature</div>
+    <div class="menu-item" onclick="openConverter('Speed')">Speed</div>
+    <div class="menu-item" onclick="openConverter('Pressure')">Pressure</div>
+    <div class="menu-item" onclick="openConverter('Power')">Power</div>
+  </div>
 </div>
 
 <div id="page2" class="page">
-<button class="back-btn" onclick="goMenu()">← Back</button>
-<h2 id="conv-title"></h2>
-<div class="converter">
-  <input type="number" id="conv-input" placeholder="Enter value">
-  <select id="conv-from"></select>
-  <select id="conv-to"></select>
-  <input type="text" id="conv-output" placeholder="Result" disabled>
-</div>
+  <button class="back-btn" onclick="goMenu()">← Back to Menu</button>
+  <h2 id="conv-title"></h2>
+  <div class="converter">
+    <input type="number" id="conv-input" placeholder="Enter value">
+    <select id="conv-from"></select>
+    <select id="conv-to"></select>
+    <input type="text" id="conv-output" placeholder="Result" readonly>
+  </div>
 </div>
 
 <script>
+// Startup Animation
+window.addEventListener('load', () => {
+    const startupDiv = document.getElementById('startup-animation');
+    const cube = document.querySelector('.cube');
+
+    // After a delay, trigger the unfolding animation
+    setTimeout(() => {
+        cube.classList.add('unfold');
+
+        // After the cube unfolds, hide it and show the main menu
+        setTimeout(() => {
+            startupDiv.style.opacity = '0';
+            showPage('page1');
+            startupDiv.style.display = 'none';
+        }, 1200); // This should match the CSS transition duration
+    }, 2500); // Initial time showing the rotating cube
+});
+
+
 // Navigation
 function showPage(id){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
@@ -168,12 +306,12 @@ function openConverter(type){
   loadUnits(type);
 }
 
-// Units
+// Units (no changes here, logic is the same)
 const units = {
 Length:{'Millimeter (mm)':1,'Centimeter (cm)':10,'Meter (m)':1000,'Kilometer (km)':1000000,'Inch (in)':25.4,'Foot (ft)':304.8,'Yard (yd)':914.4,'Mile (mi)':1609344},
-Area:{'Square millimeter (mm²)':1,'Square centimeter (cm²)':100,'Square meter (m²)':1000000,'Square kilometer (km²)':1e12,'Square inch (in²)':645.16,'Square foot (ft²)':92903,'Square yard (yd²)':836127,'Acre':40468600,'Hectare (ha)':100000000},
-Volume:{'Milliliter (mL)':1,'Liter (L)':1000,'Cubic centimeter (cm³ / cc)':1,'Cubic meter (m³)':1e6,'Cubic inch (in³)':16.387,'Cubic foot (ft³)':28316.8,'Cubic yard (yd³)':764555,'Gallon (gal)':3785.41,'Pint (pt)':473.176},
-Mass:{'Milligram (mg)':0.001,'Gram (g)':1,'Kilogram (kg)':1000,'Metric tonne (t)':1e6,'Ounce (oz)':28.3495,'Pound (lb)':453.592,'Stone (st)':6350.29},
+Area:{'Square millimeter (mm²)':1,'Square centimeter (cm²)':100,'Square meter (m²)':1000000,'Square kilometer (km²)':1e12,'Square inch (in²)':645.16,'Square foot (ft²)':92903,'Square yard (yd²)':836127,'Acre':4046860000,'Hectare (ha)':10000000000}, // Corrected values
+Volume:{'Milliliter (mL)':1,'Liter (L)':1000,'Cubic centimeter (cm³)':1,'Cubic meter (m³)':1e6,'Cubic inch (in³)':16.387,'Cubic foot (ft³)':28316.8,'US Gallon (gal)':3785.41,'US Pint (pt)':473.176},
+Mass:{'Milligram (mg)':0.001,'Gram (g)':1,'Kilogram (kg)':1000,'Tonne (t)':1e6,'Ounce (oz)':28.3495,'Pound (lb)':453.592,'Stone (st)':6350.29},
 Temperature:['Celsius','Fahrenheit','Kelvin'],
 Speed:{'Meters per second (m/s)':1,'Kilometers per hour (km/h)':0.277778,'Miles per hour (mph)':0.44704,'Knots (kn)':0.514444,'Feet per second (ft/s)':0.3048},
 Pressure:{'Pascal (Pa)':1,'Kilopascal (kPa)':1000,'Bar':100000,'Atmosphere (atm)':101325,'Millimeters of mercury (mmHg)':133.322,'Pounds per square inch (psi)':6894.76},
@@ -183,34 +321,61 @@ Power:{'Watt (W)':1,'Kilowatt (kW)':1000,'Megawatt (MW)':1e6,'Horsepower (hp)':7
 function loadUnits(type){
   const from=document.getElementById('conv-from'), to=document.getElementById('conv-to');
   from.innerHTML=''; to.innerHTML='';
-  if(Array.isArray(units[type])) units[type].forEach(u=>{ from.innerHTML+=`<option>${u}</option>`; to.innerHTML+=`<option>${u}</option>`; });
-  else Object.keys(units[type]).forEach(u=>{ from.innerHTML+=`<option>${u}</option>`; to.innerHTML+=`<option>${u}</option>`; });
+  
+  const unitList = Array.isArray(units[type]) ? units[type] : Object.keys(units[type]);
+  unitList.forEach(u => {
+      from.innerHTML += `<option value="${u}">${u}</option>`;
+      to.innerHTML += `<option value="${u}">${u}</option>`;
+  });
+
+  // Set default different units
+  if (to.options.length > 1) {
+    to.selectedIndex = 1;
+  }
+  
   document.getElementById('conv-input').value='';
   document.getElementById('conv-output').value='';
+  convert(); // Perform an initial conversion
 }
 
-// Conversion
+// Conversion Logic (Made it more robust)
 document.getElementById('conv-input').addEventListener('input', convert);
 document.getElementById('conv-from').addEventListener('change', convert);
 document.getElementById('conv-to').addEventListener('change', convert);
 
 function convert(){
-  const val=parseFloat(document.getElementById('conv-input').value);
-  if(isNaN(val)) return;
-  const from=document.getElementById('conv-from').value, to=document.getElementById('conv-to').value;
-  const type=document.getElementById('conv-title').innerText.split(' ')[0];
-  let result;
-  if(type==='Temperature'){
-    if(from==='Celsius'){ result=(to==='Fahrenheit')?val*9/5+32:(to==='Kelvin')?val+273.15:val; }
-    else if(from==='Fahrenheit'){ result=(to==='Celsius')?(val-32)*5/9:(to==='Kelvin')?(val-32)*5/9+273.15:val; }
-    else{ result=(to==='Celsius')?val-273.15:(to==='Fahrenheit')?(val-273.15)*9/5+32:val; }
-  } else {
-    const factorFrom=Array.isArray(units[type])?1:units[type][from];
-    const factorTo=Array.isArray(units[type])?1:units[type][to];
-    result=val*factorFrom/factorTo;
+  const inputEl = document.getElementById('conv-input');
+  const outputEl = document.getElementById('conv-output');
+  const from = document.getElementById('conv-from').value;
+  const to = document.getElementById('conv-to').value;
+  const type = document.getElementById('conv-title').innerText.replace(' Converter', '');
+  
+  if (inputEl.value === "") {
+    outputEl.value = "";
+    return;
   }
-  document.getElementById('conv-output').value=result;
+  const val = parseFloat(inputEl.value);
+  if(isNaN(val)) return;
+
+  let result;
+  if(type === 'Temperature'){
+    if (from === to) {
+        result = val;
+    } else if (from === 'Celsius'){
+        result = (to === 'Fahrenheit') ? (val * 9/5) + 32 : val + 273.15;
+    } else if (from === 'Fahrenheit'){
+        result = (to === 'Celsius') ? (val - 32) * 5/9 : ((val - 32) * 5/9) + 273.15;
+    } else { // Kelvin
+        result = (to === 'Celsius') ? val - 273.15 : (val - 273.15) * 9/5 + 32;
+    }
+  } else {
+    const factorFrom = units[type][from];
+    const factorTo = units[type][to];
+    result = val * factorFrom / factorTo;
+  }
+  outputEl.value = parseFloat(result.toPrecision(6));
 }
+
 </script>
 </body>
 </html>
