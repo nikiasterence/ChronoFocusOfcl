@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Varitus News</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
+        }
+        
+        body {
+            background: #f8f9fa;
+            color: #333;
+            min-height: 100vh;
+            padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+        
+        /* Minimal Intro */
+        #intro {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #f8f9fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 1000;
+            transition: opacity 0.5s ease-out;
+        }
+        
+        .logo {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 10px;
+            letter-spacing: -0.5px;
+        }
+        
+        .subtitle {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            font-weight: 400;
+            margin-bottom: 30px;
+        }
+        
+        .loading-bar {
+            width: 120px;
+            height: 2px;
+            background: #e0e0e0;
+            border-radius: 1px;
+            overflow: hidden;
+        }
+        
+        .loading-progress {
+            height: 100%;
+            width: 0%;
+            background: #3498db;
+            transition: width 4s ease-in-out;
+        }
+        
+        /* Main App */
+        #app {
+            display: none;
+            padding: 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .app-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px 0;
+            border-bottom: 1px solid #eaeaea;
+        }
+        
+        .app-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 5px;
+            letter-spacing: -0.5px;
+        }
+        
+        .app-subtitle {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            font-weight: 400;
+        }
+        
+        /* News Grid */
+        .news-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .news-card {
+            background: #ffffff;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            border: 1px solid #f0f0f0;
+        }
+        
+        .news-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+        
+        .news-image {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .news-content {
+            padding: 20px;
+        }
+        
+        .news-category {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #fff;
+        }
+        
+        .category-education {
+            background: #3498db;
+        }
+        
+        .category-admission {
+            background: #e74c3c;
+        }
+        
+        .category-exam {
+            background: #9b59b6;
+        }
+        
+        .category-technology {
+            background: #2ecc71;
+        }
+        
+        .news-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #2c3e50;
+            line-height: 1.4;
+        }
+        
+        .news-summary {
+            color: #34495e;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+        
+        .news-meta {
+            display: flex;
+            justify-content: space-between;
+            color: #7f8c8d;
+            font-size: 0.8rem;
+            padding-top: 15px;
+            border-top: 1px solid #f0f0f0;
+        }
+        
+        .studio-credit {
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 0.8rem;
+            margin-top: 40px;
+            padding: 15px;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .news-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .logo {
+                font-size: 1.8rem;
+            }
+            
+            .app-title {
+                font-size: 1.5rem;
+            }
+        }
+        
+        /* Animation for news cards */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .news-card {
+            animation: fadeIn 0.4s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <!-- Minimal Intro -->
+    <div id="intro">
+        <div class="logo">Varitus</div>
+        <div class="subtitle">Education News • 2025</div>
+        <div class="loading-bar">
+            <div class="loading-progress" id="loadingProgress"></div>
+        </div>
+    </div>
+    
+    <!-- Main App -->
+    <div id="app">
+        <div class="app-header">
+            <div class="app-title">Varitus Education News</div>
+            <div class="app-subtitle">Latest updates for students • 2025</div>
+        </div>
+        
+        <div class="news-grid" id="news-container">
+            <!-- News cards will be generated here -->
+        </div>
+        
+        <div class="studio-credit">
+            Made by Cozytustudios
+        </div>
+    </div>
+
+    <script>
+        // Updated 2025 news data
+        const newsData = [
+            {
+                title: "Digital University Admissions Begin Nationwide",
+                summary: "Bangladesh's first fully digital university admission process starts today. All applications will be processed through the new National Education Portal.",
+                category: "Admission",
+                date: "Jan 15, 2025",
+                image: "https://images.unsplash.com/photo-1543269865-cbf427effbad?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
+            },
+            {
+                title: "AI-Based Learning Mandatory in All Schools",
+                summary: "The Education Ministry announces AI-integrated curriculum will be implemented in all secondary schools by the end of 2025.",
+                category: "Technology",
+                date: "Feb 3, 2025",
+                image: "https://images.unsplash.com/photo-1677442135135-416f8aa26a5b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
+            },
+            {
+                title: "National Digital Literacy Exam Results Published",
+                summary: "Over 92% of students pass the first national digital literacy assessment, showing significant improvement from 2023's 68% pass rate.",
+                category: "Exam",
+                date: "Mar 22, 2025",
+                image: "https://images.unsplash.com/photo-1546410531-bb4caa6b424d?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
+            },
+            {
+                title: "Free Tablet Distribution for College Students",
+                summary: "Government begins phase 3 of its digital education initiative, providing free learning tablets to all college students nationwide.",
+                category: "Education",
+                date: "Apr 5, 2025",
+                image: "https://images.unsplash.com/photo-1542744094-3a31f272c490?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
+            },
+            {
+                title: "VR Classrooms Implemented in 500 Schools",
+                summary: "The education ministry's pilot program for virtual reality classrooms shows promising results, with student engagement increasing by 45%.",
+                category: "Technology",
+                date: "May 18, 2025",
+                image: "https://images.unsplash.com/photo-1585076641399-5c06d1b3365f?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
+            },
+            {
+                title: "New STEM Scholarship Program Announced",
+                summary: "Applications open for the 2025-26 National STEM Scholarship program, offering full tuition for 10,000 students in science and technology fields.",
+                category: "Education",
+                date: "Jun 9, 2025",
+                image: "https://images.unsplash.com/photo-1501504905252-473c47e087f8?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
+            }
+        ];
+
+        // Generate news cards
+        function generateNewsCards() {
+            const newsContainer = document.getElementById('news-container');
+            newsContainer.innerHTML = '';
+            
+            newsData.forEach((news, index) => {
+                const card = document.createElement('div');
+                card.className = 'news-card';
+                card.style.animationDelay = `${index * 0.1}s`;
+                
+                card.innerHTML = `
+                    <img src="${news.image}" alt="${news.title}" class="news-image">
+                    <div class="news-content">
+                        <span class="news-category category-${news.category.toLowerCase()}">${news.category}</span>
+                        <h3 class="news-title">${news.title}</h3>
+                        <p class="news-summary">${news.summary}</p>
+                        <div class="news-meta">
+                            <span><i class="far fa-calendar"></i> ${news.date}</span>
+                            <span><i class="far fa-newspaper"></i> Brief</span>
+                        </div>
+                    </div>
+                `;
+                
+                newsContainer.appendChild(card);
+            });
+        }
+
+        // Initialize the app
+        function initApp() {
+            // Start loading animation
+            document.getElementById('loadingProgress').style.width = '100%';
+            
+            generateNewsCards();
+            
+            // Simulate loading time
+            setTimeout(() => {
+                document.getElementById('intro').style.opacity = '0';
+                document.getElementById('app').style.display = 'block';
+                
+                setTimeout(() => {
+                    document.getElementById('intro').style.display = 'none';
+                }, 500);
+            }, 2500);
+        }
+
+        // Start the app when page loads
+        window.onload = initApp;
+    </script>
+</body>
+</html>
