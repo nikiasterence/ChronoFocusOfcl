@@ -1,40 +1,45 @@
-<!DOCTYPE html>
+     <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Focus Timer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-color: #ba2a5149;
-            --background-color: rgba(242, 142, 167, 0.487);
-            --text-color: #000000;
-            --border-radius: 12px;
-            --blur-effect: blur(10px);
+            --primary-color: #ba2a51;
+            --primary-color-translucent: rgba(186, 42, 81, 0.29);
+            --glass-background: rgba(255, 255, 255, 0.15);
+            --glass-border: 1px solid rgba(255, 255, 255, 0.2);
+            --text-color: #ffffff;
+            --border-radius: 16px;
+            --blur-effect: blur(15px);
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background: #b84f79a9 url('https://source.unsplash.com/random/1600x900?abstract,gradient') no-repeat center center/cover;
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 99%, #fad0c4 100%);
+            background-image: linear-gradient(to top, #a18cd1 0%, #fbc2eb 100%);
             margin: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             color: var(--text-color);
-            transition: opacity 0.5s ease-in-out;
         }
 
         .app-container {
-            width: 90%;
+            width: 95%;
             max-width: 1200px;
             height: 90vh;
-            background: var(--background-color);
+            background: var(--glass-background);
             backdrop-filter: var(--blur-effect);
             -webkit-backdrop-filter: var(--blur-effect);
             border-radius: var(--border-radius);
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-            border: 1px solid rgba(255, 255, 255, 0.18);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+            border: var(--glass-border);
             display: flex;
             overflow: hidden;
             transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
@@ -45,27 +50,75 @@
             transform: scale(0.95);
             pointer-events: none;
         }
+        
+        /* New Icon Sidebar */
+        .icon-sidebar {
+            width: 70px;
+            flex-shrink: 0;
+            border-right: var(--glass-border);
+            padding: 20px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .icon-sidebar button {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: var(--text-color);
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            font-size: 24px;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.3s ease;
+        }
+
+        .icon-sidebar button:hover {
+            background: rgba(255,255,255,0.4);
+            transform: scale(1.1);
+        }
 
         .main-content {
             flex-grow: 1;
-            padding: 20px;
+            padding: 30px;
             display: flex;
             flex-direction: column;
+        }
+
+        /* Calendar view - toggled by sidebar */
+        #calendar-view {
+            display: none; /* Hidden by default */
+            flex-direction: column;
+            height: 100%;
+        }
+
+        #calendar-view.visible {
+            display: flex;
         }
 
         header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0 20px;
+            padding: 0 10px;
+            margin-bottom: 20px;
+        }
+        
+        header h1 {
+             text-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
 
         .calendar-nav button {
             background: none;
             border: none;
-            font-size: 24px;
+            font-size: 28px;
             cursor: pointer;
             color: var(--text-color);
+            transition: transform 0.2s ease;
+        }
+        .calendar-nav button:hover {
+            transform: scale(1.2);
         }
 
         .calendar-grid {
@@ -73,198 +126,173 @@
             grid-template-columns: repeat(7, 1fr);
             gap: 10px;
             text-align: center;
-            margin-top: 20px;
+            flex-grow: 1;
         }
 
         .calendar-grid div {
             padding: 10px;
-            border-radius: 8px;
+            border-radius: 12px;
             cursor: pointer;
+            transition: background-color 0.3s ease;
         }
 
         .calendar-grid .day-name {
-            font-weight: bold;
-            color: #888;
+            font-weight: 600;
+            color: rgba(255,255,255,0.7);
+        }
+
+        .calendar-grid div:not(.day-name):hover {
+            background: rgba(255,255,255,0.2);
         }
 
         .calendar-grid .today {
-            background-color: var(--primary-color);
+            background-color: var(--primary-color-translucent);
             color: white;
+            font-weight: 600;
         }
+        
+        #welcome-view {
+             text-align: center;
+             margin: auto;
+        }
+         #welcome-view h2 {
+             font-size: 2.5em;
+             font-weight: 500;
+             text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+         }
 
         .task-sidebar {
-            width: 300px;
-            background: rgba(255, 255, 255, 0.2);
+            width: 320px;
+            flex-shrink: 0;
+            background: rgba(0, 0, 0, 0.1);
             backdrop-filter: var(--blur-effect);
             -webkit-backdrop-filter: var(--blur-effect);
             padding: 20px;
-            border-left: 1px solid rgba(255, 255, 255, 0.18);
+            border-left: var(--glass-border);
             display: flex;
             flex-direction: column;
         }
 
         .task-card {
-            background: rgba(255, 255, 255, 0.4);
-            padding: 15px;
+            background: var(--glass-background);
+            padding: 20px;
             border-radius: var(--border-radius);
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
         
         #new-task-form h3 { margin-top: 0; }
         
         #new-task-form input, #new-task-form textarea {
             width: 100%;
-            padding: 8px;
+            padding: 10px;
             margin-bottom: 10px;
-            border-radius: 6px;
-            border: 1px solid #ddd;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
             box-sizing: border-box;
-            background: rgba(255,255,255,0.7);
+            background: rgba(255,255,255,0.2);
+            color: var(--text-color);
+        }
+        #new-task-form input::placeholder, #new-task-form textarea::placeholder {
+             color: rgba(255,255,255,0.7);
         }
 
         #new-task-form button {
             width: 100%;
-            padding: 10px;
+            padding: 12px;
             border: none;
             border-radius: 8px;
             background-color: var(--primary-color);
             color: white;
             font-size: 16px;
             cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        
+        #new-task-form button:hover {
+            background-color: #c93a5e;
         }
         
         #task-list .task-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
         }
         
-        #task-list .task-item button { background: none; border: none; cursor: pointer; padding: 5px; }
-        #task-list .start-focus { font-weight: bold; color: var(--primary-color); }
+        #task-list .task-item:last-child {
+            border-bottom: none;
+        }
+        
+        #task-list .task-item button { background: none; border: none; cursor: pointer; padding: 5px; color: var(--text-color); font-size: 16px;}
+        #task-list .start-focus { font-weight: bold; color: #ffcdd9; }
 
         /* Full Page Focus View */
         .focus-view-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: #ffffff;
-            display: none; /* Changed from flex to none */
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            opacity: 0;
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            display: none; flex-direction: column; justify-content: center;
+            align-items: center; z-index: 1000; opacity: 0;
             transition: opacity 0.5s ease-in-out;
         }
-
-        .focus-view-container.visible {
-            display: flex;
-            opacity: 1;
-        }
-
+        .focus-view-container.visible { display: flex; opacity: 1; }
         .color-fill-bg {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 0; /* Starts at 0 height */
-            z-index: -1;
-            transition: height 1s linear; /* Smooth transition */
+            position: absolute; top: 0; left: 0; width: 100%; height: 0;
+            background-color: var(--primary-color);
+            z-index: -1; transition: height 1s linear;
         }
-        
-        .focus-content {
-            color: #333;
-            text-align: center;
-            transition: color 0.5s ease-in-out;
-        }
-        
-        .focus-content.dark-text{
-             color: #fff; /* Text color changes when bg is dark */
-        }
-
-        .focus-content h2 {
-            margin-top: 0;
-            font-size: 3em;
-            font-weight: 500;
-        }
-
-        #focus-timer {
-            font-size: 7em;
-            margin: 20px 0;
-            font-weight: 300;
-        }
-
-        .focus-view-container p {
-            font-size: 1.5em;
-            letter-spacing: 2px;
-        }
-        
+        .focus-content { text-align: center; transition: color 0.5s ease-in-out; }
+        .focus-content.dark-text{ color: #fff; }
+        .focus-content h2 { font-size: 3em; font-weight: 500; }
+        #focus-timer { font-size: 7em; margin: 20px 0; font-weight: 300; }
+        .focus-view-container p { font-size: 1.5em; letter-spacing: 2px; }
         .focus-controls button {
-            background: rgba(255,255,255,0.2);
-            border: 1px solid rgba(0,0,0,0.1);
-            color: inherit;
-            padding: 12px 24px;
-            margin: 20px 10px;
-            border-radius: 8px;
-            font-size: 18px;
-            cursor: pointer;
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
+            background: rgba(0,0,0,0.1); border: var(--glass-border);
+            color: inherit; padding: 12px 24px; margin: 20px 10px;
+            border-radius: 8px; font-size: 18px; cursor: pointer;
         }
 
         /* Color Picker */
         .color-picker-bar {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(255, 255, 255, 0.2);
-            padding: 10px;
-            border-radius: var(--border-radius);
-            display: flex;
-            gap: 10px;
-            z-index: 5;
-            transition: opacity 0.5s ease-in-out;
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+            background: var(--glass-background);
+            padding: 10px; border-radius: var(--border-radius); display: flex;
+            gap: 10px; z-index: 5; transition: opacity 0.5s ease-in-out;
+            border: var(--glass-border); backdrop-filter: var(--blur-effect);
         }
-        
-        .color-picker-bar.hidden {
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        .color-swatch {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            cursor: pointer;
-            border: 2px solid transparent;
-        }
-        
+        .color-picker-bar.hidden { opacity: 0; pointer-events: none; }
+        .color-swatch { width: 30px; height: 30px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: border-color 0.3s;}
         .color-swatch.active { border-color: #fff; }
-
         #custom-color-picker { opacity: 0; width: 0; height: 0; position: absolute; }
     </style>
 </head>
 <body>
 
     <div class="app-container">
+        <div class="icon-sidebar">
+            <button id="calendar-toggle-btn">🗓️</button>
+        </div>
         <div class="main-content">
-            <header>
-                <h1 id="month-year">August 2025</h1>
-                <div class="calendar-nav">
-                    <button id="prev-month">&lt;</button>
-                    <button id="next-month">&gt;</button>
-                </div>
-            </header>
-            <div class="calendar-grid"></div>
+            <div id="welcome-view">
+                <h2>Welcome</h2>
+                <p>Select a task or open the calendar to get started.</p>
+            </div>
+            <div id="calendar-view">
+                <header>
+                    <h1 id="month-year">August 2025</h1>
+                    <div class="calendar-nav">
+                        <button id="prev-month">&lt;</button>
+                        <button id="next-month">&gt;</button>
+                    </div>
+                </header>
+                <div class="calendar-grid"></div>
+            </div>
         </div>
         <div class="task-sidebar">
              <div class="task-card">
                  <form id="new-task-form">
                     <h3>New Task</h3>
-                     <input type="text" id="task-name" placeholder="What?" required>
+                     <input type="text" id="task-name" placeholder="What is your focus?" required>
                      <input type="time" id="task-time" required>
                      <textarea id="task-notes" placeholder="Notes..."></textarea>
                      <input type="number" id="task-duration" placeholder="Duration (minutes)" required>
@@ -288,18 +316,23 @@
     </div>
 
     <div class="color-picker-bar">
-        <div class="color-swatch active" style="background-color: #007aff;" data-color="#007aff"></div>
+        <div class="color-swatch active" style="background-color: #ba2a51;" data-color="#ba2a51"></div>
         <div class="color-swatch" style="background-color: #ff3b30;" data-color="#ff3b30"></div>
         <div class="color-swatch" style="background-color: #34c759;" data-color="#34c759"></div>
         <div class="color-swatch" style="background-color: #ff9500;" data-color="#ff9500"></div>
         <label for="custom-color-picker" class="color-swatch" style="background: conic-gradient(red, yellow, lime, aqua, blue, magenta, red); display: flex; align-items: center; justify-content: center; font-size: 20px; color: white;">+</label>
-        <input type="color" id="custom-color-picker" value="#007aff">
+        <input type="color" id="custom-color-picker" value="#ba2a51">
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const appContainer = document.querySelector('.app-container');
             const colorPickerBar = document.querySelector('.color-picker-bar');
+
+            // View elements
+            const calendarView = document.getElementById('calendar-view');
+            const welcomeView = document.getElementById('welcome-view');
+            const calendarToggleBtn = document.getElementById('calendar-toggle-btn');
 
             // Calendar elements
             const monthYearEl = document.getElementById('month-year');
@@ -330,6 +363,11 @@
             let currentDate = new Date(2025, 7, 26);
             let tasks = [];
             let timerInterval;
+
+            function toggleCalendar() {
+                const isVisible = calendarView.classList.toggle('visible');
+                welcomeView.style.display = isVisible ? 'none' : 'block';
+            }
             
             function renderCalendar() {
                 calendarGrid.innerHTML = '';
@@ -371,7 +409,7 @@
                     taskItem.innerHTML = `
                         <div>
                             <strong>${task.name}</strong>
-                            <p style="font-size: 0.9em; color: #555;">${task.time} - ${task.duration} min</p>
+                            <p style="font-size: 0.9em; color: rgba(255,255,255,0.7);">${task.time} - ${task.duration} min</p>
                         </div>
                         <div>
                            <button class="start-focus" data-index="${index}">Focus</button>
@@ -398,10 +436,11 @@
                     const totalDuration = task.duration * 60;
                     let timeRemaining = totalDuration;
                     
-                    const currentColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color');
+                    const currentColor = document.documentElement.style.getPropertyValue('--primary-color');
                     colorFillBg.style.backgroundColor = currentColor;
                     colorFillBg.style.height = '0%';
                     focusContent.classList.remove('dark-text');
+                    focusContent.style.color = '#333';
                     
                     focusTaskNameEl.textContent = task.name;
                     focusTimerEl.textContent = formatTime(timeRemaining);
@@ -423,7 +462,7 @@
                             endFocusSession();
                         }
                     }, 1000);
-                }, 500); // Wait for fade-out transition
+                }, 500);
             }
             
             function endFocusSession() {
@@ -433,7 +472,7 @@
                 setTimeout(() => {
                     appContainer.classList.remove('hidden');
                     colorPickerBar.classList.remove('hidden');
-                }, 500); // Wait for fade-out transition
+                }, 500);
             }
 
             taskForm.addEventListener('submit', (e) => {
@@ -460,11 +499,15 @@
             
             prevMonthBtn.addEventListener('click', () => { currentDate.setMonth(currentDate.getMonth() - 1); renderCalendar(); });
             nextMonthBtn.addEventListener('click', () => { currentDate.setMonth(currentDate.getMonth() + 1); renderCalendar(); });
+            calendarToggleBtn.addEventListener('click', toggleCalendar);
 
             colorSwatches.forEach(swatch => {
                 swatch.addEventListener('click', (e) => {
                     if(e.target.dataset.color) {
-                       document.documentElement.style.setProperty('--primary-color', e.target.dataset.color);
+                       const color = e.target.dataset.color;
+                       document.documentElement.style.setProperty('--primary-color', color);
+                       const translucentColor = color + '4a'; // Append alpha hex
+                       document.documentElement.style.setProperty('--primary-color-translucent', translucentColor);
                        document.querySelector('.color-swatch.active')?.classList.remove('active');
                        e.target.classList.add('active');
                     }
@@ -472,7 +515,10 @@
             });
 
             customColorPicker.addEventListener('input', (e) => {
-                 document.documentElement.style.setProperty('--primary-color', e.target.value);
+                 const color = e.target.value;
+                 document.documentElement.style.setProperty('--primary-color', color);
+                 const translucentColor = color + '4a'; // Append alpha hex
+                 document.documentElement.style.setProperty('--primary-color-translucent', translucentColor);
             });
             
             renderCalendar();
