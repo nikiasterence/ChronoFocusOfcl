@@ -3,20 +3,24 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <link rel="icon" href="Chronofocus.png" type="image/x-icon">
-  <title>Chorono Focus</title>
+  <link rel="icon" href="Chronofocus.png" type="image/x-icon">
+  <title>Chrono Focus</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
-      --background-start: #a7b9c3;
-      --background-end: #e2c2d4;
-      --primary-accent: #89CFF0;
-      --secondary-accent: #F4C2C2;
-      --text-primary: #1d1d1f;
-      --text-secondary: #86868b;
-      --border-color: rgba(255, 255, 255, 0.4);
-      --shadow-color: rgba(0, 0, 0, 0.1);
-      --shadow-light: rgba(0, 0, 0, 0.05);
+      /* New Cozy & Zen Color Palette */
+      --background-start: #f5e6d3; /* Creamy Beige */
+      --background-end: #d5c6e0;   /* Gentle Lavender */
+      --primary-accent: #a6c4b9;   /* Muted Sage */
+      --secondary-accent: #e8b4a9; /* Warm Peach */
+      --text-primary: #4a403a;     /* Soft Dark Brown */
+      --text-secondary: #8e8076;    /* Lighter Brown */
+      --border-color: rgba(74, 64, 58, 0.2);
+      --shadow-color: rgba(74, 64, 58, 0.1);
+      --shadow-light: rgba(74, 64, 58, 0.05);
       --border-radius-large: 28px;
       --border-radius-medium: 22px;
       --border-radius-small: 16px;
@@ -25,7 +29,7 @@
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, Oxygen, sans-serif;
+      font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
     }
 
     body {
@@ -37,14 +41,14 @@
       position: relative;
     }
 
-    /* Cat Preloader Styles */
+    /* Cat Preloader Styles (unchanged) */
     #preloader {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: #f3c7fc;
+      background: #67c66d;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -57,69 +61,18 @@
       pointer-events: none;
     }
 
-    .cat-loader {
-      width: 150px;
-      height: 150px;
-      position: relative;
-    }
-
-    .cat-loader-inner {
-      width: 100%;
-      height: 100%;
-      animation: rotate 2s linear infinite;
-    }
-
-    .cat-loader-inner .cat-face {
-      width: 100%;
-      height: 100%;
-      background: #333;
-      border-radius: 50%;
-      position: absolute;
-    }
-
-    .cat-loader-inner .ear {
-      position: absolute;
-      top: -15%;
-      width: 50%;
-      height: 50%;
-      background: #333;
-      border-radius: 5px 50% 5px 5px;
-    }
-
-    .cat-loader-inner .ear-left {
-      left: 0;
-      transform: rotate(-45deg);
-    }
-
-    .cat-loader-inner .ear-right {
-      right: 0;
-      transform: rotate(45deg);
-    }
-
-    @keyframes rotate {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-    }
-
-
-    /* Existing CSS (with theme improvements) */
-    body::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: radial-gradient(circle at 10% 20%, rgba(255, 223, 223, 0.6) 0%, transparent- 20%),
-                  radial-gradient(circle at 90% 80%, rgba(207, 196, 255, 0.5) 0%, transparent 20%);
-      pointer-events: none;
-      z-index: -1;
-    }
+    .cat-loader { width: 150px; height: 150px; position: relative; }
+    .cat-loader-inner { width: 100%; height: 100%; animation: rotate 2s linear infinite; }
+    .cat-loader-inner .cat-face { width: 100%; height: 100%; background: #333; border-radius: 50%; position: absolute; }
+    .cat-loader-inner .ear { position: absolute; top: -15%; width: 50%; height: 50%; background: #333; border-radius: 5px 50% 5px 5px; }
+    .cat-loader-inner .ear-left { left: 0; transform: rotate(-45deg); }
+    .cat-loader-inner .ear-right { right: 0; transform: rotate(45deg); }
+    @keyframes rotate { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
     .app {
       max-width: 1000px;
       margin: 0 auto;
-      background: rgba(255, 255, 255, 0.6);
+      background: rgba(255, 255, 255, 0.5);
       backdrop-filter: blur(40px);
       -webkit-backdrop-filter: blur(40px);
       border-radius: var(--border-radius-large);
@@ -130,7 +83,7 @@
       overflow: hidden;
     }
 
-    /* --- MODIFIED/NEW CSS FOR SPOTIFY PLAYER --- */
+    /* Spotify Player */
     .spotify-player-draggable {
         position: fixed;
         bottom: 20px;
@@ -143,38 +96,17 @@
         border-radius: 18px;
         box-shadow: 0 8px 32px var(--shadow-color);
         transition: box-shadow 0.3s ease;
-        overflow: hidden; /* Keeps the iframe corners rounded */
+        overflow: hidden;
     }
-
-    .spotify-player-draggable:hover {
-        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
-    }
-
-    .spotify-header {
-        padding: 8px;
-        color: var(--text-primary);
-        text-align: center;
-        cursor: move;
-        font-size: 0.9rem;
-        font-weight: 500;
-        background: rgba(255, 255, 255, 0.2);
-    }
-
-    .spotify-header i {
-        margin-right: 5px;
-    }
+    .spotify-player-draggable:hover { box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2); }
+    .spotify-header { padding: 8px; color: var(--text-primary); text-align: center; cursor: move; font-size: 0.9rem; font-weight: 500; background: rgba(255, 255, 255, 0.2); }
+    .spotify-header i { margin-right: 5px; }
+    .spotify-player-draggable iframe { display: block; }
     
-    .spotify-player-draggable iframe {
-        display: block; /* Removes any default bottom spacing */
-    }
-    /* --- END OF MODIFICATIONS --- */
-
     .app-header h1 {
         font-size: 3.2rem;
         font-weight: 800;
-        background: linear-gradient(135deg, var(--primary-accent) 0%, var(--secondary-accent) 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
+        color: var(--text-primary);
         margin-bottom: 8px;
         letter-spacing: -0.8px;
       }
@@ -190,9 +122,7 @@
       }
       
       .task-section {
-        background: rgba(255, 255, 255, 0.4);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
+        background: rgba(255, 255, 255, 0.2);
         padding: 25px;
         border-radius: var(--border-radius-medium);
         margin-bottom: 35px;
@@ -215,32 +145,26 @@
         grid-template-columns: 1fr auto auto;
         gap: 15px;
         margin-bottom: 25px;
-        position: relative;
-        z-index: 1;
       }
       
       input[type="text"], input[type="number"], select {
         padding: 18px 22px;
-        background: rgba(255, 255, 255, 0.7);
-        border: 1px solid rgba(255, 255, 255, 0.9);
+        background: rgba(255, 255, 255, 0.5);
+        border: 1px solid var(--border-color);
         border-radius: var(--border-radius-small);
         font-size: 1.1rem;
         color: var(--text-primary);
-        transition: all 0.3s ease;
+        transition: all 0.4s ease;
         box-shadow: 0 4px 12px var(--shadow-light);
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
       }
       
-      input::placeholder {
-        color: rgba(29, 29, 31, 0.4);
-      }
+      input::placeholder { color: var(--text-secondary); }
       
       input:focus, select:focus {
-        border-color: rgba(110, 68, 255, 0.4);
+        border-color: var(--primary-accent);
         outline: none;
-        background: rgba(255, 255, 255, 0.9);
-        box-shadow: 0 0 0 4px rgba(110, 68, 255, 0.1), 0 4px 12px var(--shadow-light);
+        background: rgba(255, 255, 255, 0.7);
+        box-shadow: 0 0 0 4px rgba(166, 196, 185, 0.3), 0 4px 12px var(--shadow-light);
       }
       
       /* Main Navigation Buttons */
@@ -253,14 +177,12 @@
       
       .main-nav-button {
         padding: 40px 25px;
-        background: rgba(255, 255, 255, 0.5);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
+        background: rgba(255, 255, 255, 0.3);
         border-radius: 24px;
         text-align: center;
         border: 1px solid var(--border-color);
         transition: all 0.4s ease;
-        box-shadow: 0 10px 40px var(--shadow-color);
+        box-shadow: 0 10px 40px var(--shadow-light);
         cursor: pointer;
         position: relative;
         overflow: hidden;
@@ -274,40 +196,25 @@
       
       .main-nav-button:hover {
         transform: translateY(-10px) scale(1.03);
-        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+        box-shadow: 0 20px 50px var(--shadow-color);
+        background: rgba(255, 255, 255, 0.5);
       }
       
       .main-nav-button i {
         font-size: 2.8rem;
         margin-bottom: 18px;
+        color: var(--primary-accent);
       }
       
-      .main-nav-button h2 {
-        font-size: 1.9rem;
-        font-weight: 700;
+      .main-nav-button h2 { font-size: 1.9rem; font-weight: 700; }
+      
+      .shining { animation: subtleGlow 4s infinite ease-in-out; }
+      
+      @keyframes subtleGlow {
+          0%, 100% { box-shadow: 0 10px 40px var(--shadow-light); }
+          50% { box-shadow: 0 10px 50px 0px rgba(166, 196, 185, 0.5); }
       }
       
-      .shining::after {
-        content: '';
-        position: absolute;
-        top: -50%;
-        left: -50%;
-        width: 200%;
-        height: 200%;
-        background: linear-gradient(to right,
-                    rgba(255, 255, 255, 0) 0%,
-                    rgba(255, 255, 255, 0.4) 50%,
-                    rgba(255, 255, 255, 0) 100%);
-        transform: rotate(30deg);
-        animation: shine 3s infinite;
-      }
-      
-      @keyframes shine {
-        0% { transform: translateX(-100%) rotate(30deg); }
-        100% { transform: translateX(100%) rotate(30deg); }
-      }
-      
-      /* Logo Bar */
       .logo-bar {
           display: flex;
           justify-content: center;
@@ -315,127 +222,49 @@
           gap: 25px;
           margin-bottom: 40px;
           padding: 20px;
-          background: rgba(255, 255, 255, 0.4);
-          backdrop-filter: blur(15px);
-          -webkit-backdrop-filter: blur(15px);
+          background: rgba(255, 255, 255, 0.2);
           border-radius: var(--border-radius-medium);
           border: 1px solid var(--border-color);
       }
       
-      .logo-item {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          gap: 10px;
-          color: var(--text-primary);
-          text-decoration: none;
-          transition: all 0.3s ease;
-          padding: 15px 25px;
-          border-radius: 18px;
-      }
+      .logo-item { display: flex; flex-direction: column; align-items: center; gap: 10px; color: var(--text-primary); text-decoration: none; transition: all 0.3s ease; padding: 15px 25px; border-radius: 18px; }
+      .logo-item:hover { transform: translateY(-5px) scale(1.05); background: rgba(255, 255, 255, 0.4); box-shadow: 0 10px 25px var(--shadow-light); }
+      .logo-icon { width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; font-size: 2rem; color: var(--primary-accent); }
       
-      .logo-item:hover {
-          transform: translateY(-5px) scale(1.05);
-          background: rgba(255, 255, 255, 0.5);
-          box-shadow: 0 10px 25px var(--shadow-light);
-      }
-      
-      .logo-icon {
-          width: 50px;
-          height: 50px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-size: 2rem;
-          color: var(--primary-accent);
-      }
-      
-      /* Task List */
-      #taskList {
-          list-style-type: none;
-      }
-      
+      #taskList { list-style-type: none; }
       #taskList li {
           display: flex;
           justify-content: space-between;
           align-items: center;
           padding: 20px;
-          background: rgba(255, 255, 255, 0.5);
-          backdrop-filter: blur(15px);
-          -webkit-backdrop-filter: blur(15px);
+          background: rgba(255, 255, 255, 0.3);
           border-radius: 18px;
           margin-bottom: 15px;
           border: 1px solid var(--border-color);
-          transition: all 0.3s ease;
+          transition: all 0.4s ease;
           animation: fadeIn 0.5s ease-out;
           position: relative;
-          overflow: hidden;
-      }
-      
-      #taskList li::before {
-          content: '';
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 5px;
-          height: 100%;
-          background: linear-gradient(to bottom, var(--primary-accent), var(--secondary-accent));
-          opacity: 0;
-          transition: opacity 0.3s ease;
       }
       
       #taskList li:hover {
-          background: rgba(255, 255, 255, 0.7);
+          background: rgba(255, 255, 255, 0.6);
           transform: translateX(5px);
           box-shadow: 0 8px 20px var(--shadow-light);
       }
+
+      .task-info { flex: 1; display: flex; flex-direction: column; gap: 5px; }
+      .task-text { font-size: 1.1rem; color: var(--text-primary); transition: all 0.3s ease; font-weight: 600; }
+      .task-time { font-size: 0.9rem; color: var(--text-secondary); display: flex; align-items: center; gap: 5px; }
       
-      #taskList li:hover::before {
-          opacity: 1;
-      }
+      .completed .task-text, .completed .task-time { text-decoration: line-through; opacity: 0.6; }
       
-      .task-info {
-          flex: 1;
-          display: flex;
-          flex-direction: column;
-          gap: 5px;
-      }
+      .task-actions { display: flex; gap: 10px; }
       
-      .task-text {
-          font-size: 1.1rem;
-          color: var(--text-primary);
-          transition: all 0.3s ease;
-          font-weight: 500;
-      }
-      
-      .task-time {
-          font-size: 0.9rem;
-          color: rgba(29, 29, 31, 0.7);
-          display: flex;
-          align-items: center;
-          gap: 5px;
-      }
-      
-      .completed .task-text {
-          text-decoration: line-through;
-          opacity: 0.6;
-      }
-      
-      .completed .task-time {
-          opacity: 0.6;
-      }
-      
-      .task-actions {
-          display: flex;
-          gap: 10px;
-      }
-      
-      /* iOS Style Buttons */
       button {
           padding: 18px 28px;
-          background: rgba(255, 255, 255, 0.7);
+          background: rgba(255, 255, 255, 0.5);
           color: var(--text-primary);
-          border: 1px solid rgba(255, 255, 255, 0.9);
+          border: 1px solid var(--border-color);
           border-radius: var(--border-radius-small);
           cursor: pointer;
           font-weight: 600;
@@ -444,169 +273,60 @@
           display: flex;
           align-items: center;
           gap: 8px;
-          backdrop-filter: blur(10px);
-          -webkit-backdrop-filter: blur(10px);
       }
       
-      button:hover {
-          transform: translateY(-3px);
-          box-shadow: 0 8px 20px var(--shadow-color);
-          background: rgba(255, 255, 255, 0.9);
-      }
+      button:hover { transform: translateY(-3px); box-shadow: 0 8px 20px var(--shadow-color); background: rgba(255, 255, 255, 0.7); }
+      button:active { transform: translateY(0); box-shadow: 0 4px 15px var(--shadow-light); }
       
-      button:active {
-          transform: translateY(0);
-          box-shadow: 0 4px 15px var(--shadow-light);
-      }
-      
-      .task-actions button {
-          padding: 12px 20px;
-          font-size: 0.9rem;
-          border-radius: 14px;
-      }
-      
-      .complete-btn {
-          background: rgba(0, 184, 148, 0.2);
-          border: 1px solid rgba(0, 184, 148, 0.3);
-      }
-      
-      .delete-btn {
-          background: rgba(255, 118, 117, 0.2);
-          border: 1px solid rgba(255, 118, 117, 0.3);
-      }
-      
+      .task-actions button { padding: 12px 20px; font-size: 0.9rem; border-radius: 14px; background: rgba(255, 255, 255, 0.3); }
+      .complete-btn:hover { background: rgba(166, 196, 185, 0.4); }
+      .delete-btn:hover { background: rgba(232, 180, 169, 0.4); }
+
       /* Timer Section */
-      .timer-section {
-          background: rgba(255, 255, 255, 0.5);
-          backdrop-filter: blur(15px);
-          -webkit-backdrop-filter: blur(15px);
-          padding: 30px;
-          border-radius: var(--border-radius-medium);
-          margin-bottom: 35px;
-          border: 1px solid var(--border-color);
-          box-shadow: 0 8px 20px var(--shadow-light);
-      }
+      .timer-section { background: rgba(255, 255, 255, 0.3); padding: 30px; border-radius: var(--border-radius-medium); margin-bottom: 35px; border: 1px solid var(--border-color); box-shadow: 0 8px 20px var(--shadow-light); }
+      .timer-section h2 { color: var(--text-primary); margin-bottom: 25px; font-size: 1.6rem; display: flex; align-items: center; gap: 12px; font-weight: 700; }
+      .timer { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; }
+      .timer > div { background: rgba(255, 255, 255, 0.4); padding: 25px; border-radius: 20px; text-align: center; border: 1px solid var(--border-color); transition: transform 0.4s ease; box-shadow: 0 8px 20px var(--shadow-light); }
+      .timer > div:hover { transform: translateY(-5px); box-shadow: 0 12px 25px var(--shadow-color); }
+      .timer h3 { margin-bottom: 20px; color: var(--text-primary); font-size: 1.4rem; display: flex; align-items: center; justify-content: center; gap: 10px; font-weight: 600; }
+      .timer-input { margin-bottom: 20px; }
+      .timer-input input { width: 100%; max-width: 200px; text-align: center; }
+      .timer p { font-size: 2.8rem; font-weight: bold; color: var(--primary-accent); margin-top: 20px; text-shadow: 0 2px 10px rgba(166, 196, 185, 0.2); font-family: 'SF Mono', 'Courier New', monospace; }
+      .progress-container { width: 100%; height: 8px; background: rgba(255, 255, 255, 0.4); border-radius: 4px; margin-top: 20px; overflow: hidden; box-shadow: inset 0 2px 8px var(--shadow-light); }
+      .progress-bar { height: 100%; background: linear-gradient(to right, var(--primary-accent), var(--secondary-accent)); border-radius: 4px; width: 0%; transition: width 1s linear; }
       
-      .timer-section h2 {
-          color: var(--text-primary);
-          margin-bottom: 25px;
-          font-size: 1.6rem;
-          display: flex;
-          align-items: center;
-          gap: 12px;
-          font-weight: 700;
+      /* New Pomodoro Section Link */
+      .pomodoro-link {
+        display: block; /* Makes the anchor tag a block element */
+        margin-top: 40px;
+        text-align: center;
+        grid-column: 1 / -1; /* Make it span full width if in a grid */
       }
-      
-      .timer {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 25px;
+      .pomodoro-link .main-nav-button {
+          margin: 0 auto;
+          max-width: 400px; /* Control max width */
       }
-      
-      .timer > div {
-          background: rgba(255, 255, 255, 0.5);
-          backdrop-filter: blur(15px);
-          -webkit-backdrop-filter: blur(15px);
-          padding: 25px;
-          border-radius: 20px;
-          text-align: center;
-          border: 1px solid var(--border-color);
-          transition: transform 0.3s ease;
-          box-shadow: 0 8px 20px var(--shadow-light);
-      }
-      
-      .timer > div:hover {
-          transform: translateY(-5px);
-          box-shadow: 0 12px 25px rgba(0, 0, 0, 0.08);
-      }
-      
-      .timer h3 {
-          margin-bottom: 20px;
-          color: var(--text-primary);
-          font-size: 1.4rem;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 10px;
-          font-weight: 600;
-      }
-      
-      .timer-input {
-          margin-bottom: 20px;
-      }
-      
-      .timer-input input {
-          width: 100%;
-          max-width: 200px;
-          text-align: center;
-      }
-      
-      .timer p {
-          font-size: 2.8rem;
-          font-weight: bold;
-          color: var(--primary-accent);
-          margin-top: 20px;
-          text-shadow: 0 2px 10px rgba(110, 68, 255, 0.2);
-          font-family: 'SF Mono', 'Courier New', monospace;
-      }
-      
-      .progress-container {
-          width: 100%;
-          height: 8px;
-          background: rgba(255, 255, 255, 0.6);
-          border-radius: 4px;
-          margin-top: 20px;
-          overflow: hidden;
-          box-shadow: inset 0 2px 8px var(--shadow-light);
-      }
-      
-      .progress-bar {
-          height: 100%;
-          background: linear-gradient(to right, var(--primary-accent), var(--secondary-accent));
-          border-radius: 4px;
-          width: 0%;
-          transition: width 1s linear;
-      }
-      
+
+
       /* Animations */
-      @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(10px); }
-          to { opacity: 1; transform: translateY(0); }
-      }
-      
-      @keyframes pulse {
-          0% { box-shadow: 0 0 0 0 rgba(110, 68, 255, 0.4); }
-          70% { box-shadow: 0 0 0 15px rgba(110, 68, 255, 0); }
-          100% { box-shadow: 0 0 0 0 rgba(110, 68, 255, 0); }
-      }
-      
-      .pulse {
-          animation: pulse 2s infinite;
-      }
-      
-      /* Responsive design */
-      @media (max-width: 768px) {
-          .main-nav, .timer, .task-box {
-              grid-template-columns: 1fr;
-          }
-          
-          .app {
-              padding: 20px;
-          }
-          
-          .logo-bar {
-              flex-direction: column;
-              gap: 20px;
-          }
-      }
+      @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+      @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(166, 196, 185, 0.4); } 70% { box-shadow: 0 0 0 15px rgba(166, 196, 185, 0); } 100% { box-shadow: 0 0 0 0 rgba(166, 196, 185, 0); } }
+      .pulse { animation: pulse 2s infinite; }
       
       /* Water bubble effects */
       .bubble {
-          position: absolute;
-          border-radius: 50%;
-          background: rgba(255, 255, 255, 0.4);
-          pointer-events: none;
-          z-index: -2;
+        position: absolute;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.3); /* Softer bubbles */
+        pointer-events: none;
+        z-index: -2;
+        animation: float 25s infinite ease-in-out;
+      }
+      @keyframes float {
+          0% { transform: translateY(0); opacity: 0; }
+          10% { opacity: 1; }
+          90% { opacity: 1; }
+          100% { transform: translateY(-100vh); opacity: 0; }
       }
       
       /* Notification toast */
@@ -615,277 +335,212 @@
           bottom: 20px;
           right: 20px;
           padding: 18px 28px;
-          background: rgba(255, 255, 255, 0.9);
+          background: rgba(255, 255, 255, 0.8);
           backdrop-filter: blur(10px);
-          -webkit-backdrop-filter: blur(10px);
           color: var(--text-primary);
           border-radius: 14px;
-          box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+          box-shadow: 0 10px 25px var(--shadow-color);
           border: 1px solid var(--border-color);
           transform: translateY(100px);
           opacity: 0;
-          transition: all 0.5s ease;
+          transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
           z-index: 1000;
           font-weight: 600;
           display: flex;
           align-items: center;
           gap: 10px;
       }
+      .toast.show { transform: translateY(0); opacity: 1; }
       
-      .toast.show {
-          transform: translateY(0);
-          opacity: 1;
-      }
-      
-      /* Time Picker Styles */
-      .time-picker {
-          display: flex;
-          gap: 10px;
-          align-items: center;
-      }
-      
-      .time-picker select {
-          padding: 12px 15px;
-          border-radius: 12px;
+      .time-picker { display: flex; gap: 10px; align-items: center; }
+      .time-picker select { padding: 12px 15px; border-radius: 12px; }
+
+      /* Responsive design */
+      @media (max-width: 768px) {
+          .main-nav, .timer, .task-box { grid-template-columns: 1fr; }
+          .app { padding: 20px; }
+          .logo-bar { flex-direction: column; gap: 20px; }
       }
       
   </style>
 </head>
 <body>
 
-  <!-- Cat Preloader -->
   <div id="preloader">
-    <div class="cat-loader">
-      <div class="cat-loader-inner">
-        <div class="cat-face"></div>
-        <div class="ear ear-left"></div>
-        <div class="ear ear-right"></div>
-      </div>
-    </div>
+    <div class="cat-loader"><div class="cat-loader-inner"><div class="cat-face"></div><div class="ear ear-left"></div><div class="ear ear-right"></div></div></div>
   </div>
-
-
-  <!-- Animated bubbles -->
-  <div class="bubbles"></div>
+  
+  <div class="bubbles-container"></div>
+  
   <div class="app">
-    <!-- App Header -->
     <div class="app-header">
       <h1>Chrono Focus</h1>
       <p>Your premium productivity companion</p>
     </div>
-    <!-- Task Manager at Top -->
-<div class="task-section">
-  <h2><i class="fas fa-tasks"></i> Task Manager</h2>
-  
-  <div class="task-box">
-    <input id="taskInput" type="text" placeholder="Enter a new task..." />
-    <div class="time-picker">
-      <select id="taskHours">
-        <option value="0">0h</option>
-        <option value="1">1h</option>
-        <option value="2">2h</option>
-      </select>
-      <select id="taskMinutes">
-        <option value="0">0m</option>
-        <option value="5">5m</option>
-        <option value="10">10m</option>
-        <option value="15">15m</option>
-        <option value="20">20m</option>
-        <option value="25">25m</option>
-        <option value="30">30m</option>
-        <option value="45">45m</option>
-      </select>
+
+    <div class="task-section">
+      <h2><i class="fas fa-tasks"></i> Task Manager</h2>
+      <div class="task-box">
+        <input id="taskInput" type="text" placeholder="Enter a new task..." />
+        <div class="time-picker">
+          <select id="taskHours"><option value="0">0h</option><option value="1">1h</option><option value="2">2h</option></select>
+          <select id="taskMinutes"><option value="0">0m</option><option value="5">5m</option><option value="10">10m</option><option value="15">15m</option><option value="20">20m</option><option value="25">25m</option><option value="30">30m</option><option value="45">45m</option></select>
+        </div>
+        <button onclick="addTask()"><i class="fas fa-plus"></i> Add Task</button>
+      </div>
+      <ul id="taskList"></ul>
     </div>
-    <button onclick="addTask()"><i class="fas fa-plus"></i> Add Task</button>
+
+    <div class="main-nav">
+      <a href="page2.html" class="main-nav-button shining"><i class="fas fa-graduation-cap"></i><h2>Study Materials</h2></a>
+      <a href="page9.html" class="main-nav-button"><i class="fas fa-dharmachakra"></i><h2>Deep Focus</h2></a>
+    </div>
+
+    <div class="logo-bar">
+      <a href="https://talk.shapes.inc/chat/new?with=optichain" target="_blank" class="logo-item"><div class="logo-icon"><i class="fas fa-robot"></i></div><span>AI Assistant</span></a>
+      <a href="page12.html" class="logo-item study-news-btn"><div class="logo-icon"><i class="fas fa-newspaper"></i></div><span>Study News BD</span></a>
+    </div>
+
+    <div class="spotify-player-draggable" id="draggableSpotifyPlayer">
+        <div class="spotify-header"><i class="fas fa-arrows-alt"></i><span>Music Player</span></div>
+        <iframe style="border-radius:0 0 12px 12px;" src="https://open.spotify.com/embed/playlist/2YC8NnwfXuNJxZMDdIehkK?utm_source=generator" width="300" height="80" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
+    </div>
+
+    <div class="timer-section">
+      <h2><i class="fas fa-clock"></i> Focus Timers</h2>
+      <div class="timer">
+        <div>
+          <h3><i class="fas fa-hourglass-start"></i> Focus Timer</h3>
+          <div class="timer-input"><input id="focusInput" type="number" placeholder="Minutes" min="1" max="120" /></div>
+          <button onclick="startFocus()"><i class="fas fa-play"></i> Start Focus</button>
+          <p id="focusTime">25:00</p>
+          <div class="progress-container"><div id="focusProgress" class="progress-bar"></div></div>
+        </div>
+        <div>
+          <h3><i class="fas fa-couch"></i> Rest Timer</h3>
+          <div class="timer-input"><input id="restInput" type="number" placeholder="Minutes" min="1" max="30" /></div>
+          <button onclick="startRest()"><i class="fas fa-play"></i> Start Rest</button>
+          <p id="restTime">05:00</p>
+          <div class="progress-container"><div id="restProgress" class="progress-bar"></div></div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- New Pomodoro Section Link -->
+    <a href="page13.html" class="main-nav-button pomodoro-link">
+        <i class="fas fa-seedling"></i>
+        <h2>Pomodoro</h2>
+    </a>
+
   </div>
-  
-  <ul id="taskList"></ul>
-</div>
-
-<!-- Main Navigation Buttons -->
-<div class="main-nav">
-  <a href="page2.html" class="main-nav-button shining">
-    <i class="fas fa-graduation-cap"></i>
-    <h2>Study Materials</h2>
-  </a>
-  <a href="page9.html" class="main-nav-button">
-    <i class="fas fa-dharmachakra"></i>
-    <h2>Deep Focus</h2>
-  </a>
-</div>
-
-<!-- Logo Bar -->
-<div class="logo-bar">
-
-  <a href="https://talk.shapes.inc/chat/new?with=optichain" target="_blank" class="logo-item">
-    <div class="logo-icon">
-      <i class="fas fa-robot"></i>
-    </div>
-    <span>AI Assistant</span>
-  </a>
-  <a href="page12.html" class="logo-item study-news-btn">
-    <div class="logo-icon">
-      <i class="fas fa-newspaper"></i>
-    </div>
-    <span>Study News BD</span>
-  </a>
-</div>
-
-<!-- Draggable Spotify Player -->
-<div class="spotify-player-draggable" id="draggableSpotifyPlayer">
-    <div class="spotify-header">
-        <i class="fas fa-arrows-alt"></i>
-        <span>Music Player</span>
-    </div>
-    <iframe style="border-radius:0 0 12px 12px;" src="https://open.spotify.com/embed/playlist/2YC8NnwfXuNJxZMDdIehkK?utm_source=generator" width="300" height="80" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
-</div>
-
-
-<!-- Timer Section -->
-<div class="timer-section">
-  <h2><i class="fas fa-clock"></i> Focus Timers</h2>
-  
-  <div class="timer">
-    <div>
-      <h3><i class="fas fa-hourglass-start"></i> Focus Timer</h3>
-      <div class="timer-input">
-        <input id="focusInput" type="number" placeholder="Minutes" min="1" max="120" />
-      </div>
-      <button onclick="startFocus()"><i class="fas fa-play"></i> Start Focus</button>
-      <p id="focusTime">25:00</p>
-      <div class="progress-container">
-        <div id="focusProgress" class="progress-bar"></div>
-      </div>
-    </div>
-
-    <div>
-      <h3><i class="fas fa-couch"></i> Rest Timer</h3>
-      <div class="timer-input">
-        <input id="restInput" type="number" placeholder="Minutes" min="1" max="30" />
-      </div>
-      <button onclick="startRest()"><i class="fas fa-play"></i> Start Rest</button>
-      <p id="restTime">05:00</p>
-      <div class="progress-container">
-        <div id="restProgress" class="progress-bar"></div>
-      </div>
-    </div>
-  </div>
-</div>
-</div>
-  <!-- Toast Notification -->
   <div id="toast" class="toast"></div>
-  <script>
-  window.addEventListener('load', () => {
-      const preloader = document.getElementById('preloader');
-      setTimeout(() => {
-        preloader.classList.add('hide');
-      }, 2000); // Or longer if you want to admire the cat
+
+<script>
+    // --- APP INITIALIZATION ---
+    window.addEventListener('load', () => {
+        const preloader = document.getElementById('preloader');
+        setTimeout(() => {
+            preloader.classList.add('hide');
+        }, 1500);
+        
+        createBubbles();
+        loadTasks(); // Load tasks from localStorage
+        dragElement(document.getElementById("draggableSpotifyPlayer"));
     });
 
-    // Create animated bubbles in background
-    function createBubbles() {
-      const bubblesContainer = document.querySelector('.bubbles');
-      if (!bubblesContainer) return;
-      const bubblesCount = 15;
-      
-      for (let i = 0; i < bubblesCount; i++) {
-        const bubble = document.createElement('div');
-        bubble.classList.add('bubble');
-        
-        // Random size and position
-        const size = Math.random() * 100 + 20;
-        const posX = Math.random() * 100;
-        const posY = Math.random() * 100;
-        
-        bubble.style.width = `${size}px`;
-        bubble.style.height = `${size}px`;
-        bubble.style.left = `${posX}%`;
-        bubble.style.top = `${posY}%`;
-        
-        // Animation
-        bubble.style.animation = `
-          float ${Math.random() * 15 + 10}s infinite ease-in-out,
-          fade ${Math.random() * 10 + 10}s infinite ease-in-out
-        `;
-        bubble.style.animationDelay = `${Math.random() * 5}s`;
-        
-        bubblesContainer.appendChild(bubble);
-      }
-    }
-    
-    // Show toast notification
-    function showToast(message, duration = 3000) {
-      const toast = document.getElementById('toast');
-      toast.innerHTML = `<i class="fas fa-bell"></i> ${message}`;
-      toast.classList.add('show');
-      
-      setTimeout(() => {
-        toast.classList.remove('show');
-      }, duration);
-    }
-    
-    // Task functionality with time setting and reminders
     let taskTimers = {};
+
+    // --- BUBBLE ANIMATION ---
+    function createBubbles() {
+        const container = document.querySelector('.bubbles-container');
+        if (!container) return;
+        for (let i = 0; i < 15; i++) {
+            const bubble = document.createElement('div');
+            bubble.classList.add('bubble');
+            const size = Math.random() * 80 + 20;
+            bubble.style.width = `${size}px`;
+            bubble.style.height = `${size}px`;
+            bubble.style.left = `${Math.random() * 100}%`;
+            bubble.style.animationDelay = `${Math.random() * 10}s`;
+            container.appendChild(bubble);
+        }
+    }
+
+    // --- TOAST NOTIFICATION ---
+    function showToast(message, duration = 3000) {
+        const toast = document.getElementById('toast');
+        toast.innerHTML = `<i class="fas fa-bell"></i> ${message}`;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), duration);
+    }
+
+    // --- TASK MANAGEMENT (WITH LOCALSTORAGE) ---
+    function getTasks() {
+        return JSON.parse(localStorage.getItem('chronoFocusTasks')) || [];
+    }
+
+    function saveTasks(tasks) {
+        localStorage.setItem('chronoFocusTasks', JSON.stringify(tasks));
+    }
+
+    function renderTask(task) {
+        const taskList = document.getElementById('taskList');
+        const li = document.createElement('li');
+        li.setAttribute('id', task.id);
+        if (task.completed) {
+            li.classList.add('completed');
+        }
+
+        let timeText = '';
+        if (task.hours > 0 || task.minutes > 0) {
+            timeText = [task.hours > 0 ? `${task.hours}h` : '', task.minutes > 0 ? `${task.minutes}m` : ''].join(' ').trim();
+        }
+
+        li.innerHTML = `
+            <div class="task-info">
+                <div class="task-text">${task.text}</div>
+                ${timeText ? `<div class="task-time"><i class="fas fa-clock"></i> ${timeText}</div>` : ''}
+            </div>
+            <div class="task-actions">
+                <button class="complete-btn" onclick="toggleCompleteTask('${task.id}')" ${task.completed ? 'disabled' : ''}><i class="fas fa-check"></i> ${task.completed ? 'Completed' : 'Done'}</button>
+                <button class="delete-btn" onclick="deleteTask('${task.id}')"><i class="fas fa-trash"></i> Delete</button>
+            </div>
+        `;
+        taskList.appendChild(li);
+    }
+
+    function loadTasks() {
+        const tasks = getTasks();
+        document.getElementById('taskList').innerHTML = ''; // Clear list before loading
+        tasks.forEach(task => renderTask(task));
+    }
     
     function addTask() {
       const taskInput = document.getElementById('taskInput');
       const taskHours = document.getElementById('taskHours');
       const taskMinutes = document.getElementById('taskMinutes');
-      const taskText = taskInput.value.trim();
+      const text = taskInput.value.trim();
       
-      if (taskText === '') {
+      if (text === '') {
         taskInput.focus();
         showToast('Please enter a task!');
         return;
       }
+
+      const tasks = getTasks();
+      const newTask = {
+          id: 'task-' + Date.now(),
+          text: text,
+          hours: parseInt(taskHours.value),
+          minutes: parseInt(taskMinutes.value),
+          completed: false
+      };
       
-      const hours = parseInt(taskHours.value);
-      const minutes = parseInt(taskMinutes.value);
-      const totalMinutes = (hours * 60) + minutes;
-      let timeText = '';
+      tasks.push(newTask);
+      saveTasks(tasks);
+      renderTask(newTask);
       
-      if (hours > 0 && minutes > 0) {
-        timeText = `${hours}h ${minutes}m`;
-      } else if (hours > 0) {
-        timeText = `${hours}h`;
-      } else if (minutes > 0) {
-        timeText = `${minutes}m`;
-      }
-      
-      const taskList = document.getElementById('taskList');
-      const li = document.createElement('li');
-      const taskId = 'task-' + Date.now();
-      
-      li.setAttribute('id', taskId);
-      li.innerHTML = `
-        <div class="task-info">
-          <div class="task-text">${taskText}</div>
-          ${timeText ? `<div class="task-time"><i class="fas fa-clock"></i> ${timeText}</div>` : ''}
-        </div>
-        <div class="task-actions">
-          <button class="complete-btn" onclick="completeTask('${taskId}')"><i class="fas fa-check"></i> Done</button>
-          <button class="delete-btn" onclick="deleteTask('${taskId}')"><i class="fas fa-trash"></i> Delete</button>
-        </div>
-      `;
-      
-      taskList.appendChild(li);
-      
-      // Set reminder if time is specified
-      if (totalMinutes > 0) {
-        const reminderTime = totalMinutes * 60 * 1000; // Convert to milliseconds
-        taskTimers[taskId] = setTimeout(() => {
-          const taskElement = document.getElementById(taskId);
-          if(taskElement) {
-            showToast(`Time's up for: ${taskText}`);
-            taskElement.classList.add('pulse');
-            setTimeout(() => {
-              taskElement.classList.remove('pulse');
-            }, 5000);
-          }
-        }, reminderTime);
-      }
-      
-      // Auto-set focus timer if time is specified
+      const totalMinutes = (newTask.hours * 60) + newTask.minutes;
       if (totalMinutes > 0) {
         document.getElementById('focusInput').value = totalMinutes;
         showToast(`Focus timer set to ${totalMinutes} minutes`);
@@ -899,42 +554,39 @@
       showToast('Task added successfully!');
     }
     
-    function completeTask(taskId) {
-      const li = document.getElementById(taskId);
-      li.classList.add('completed');
-      
-      // Clear the reminder if it exists
-      if (taskTimers[taskId]) {
-        clearTimeout(taskTimers[taskId]);
-        delete taskTimers[taskId];
-      }
-      
-      const completeBtn = li.querySelector('.complete-btn');
-      completeBtn.disabled = true;
-      completeBtn.innerHTML = '<i class="fas fa-check"></i> Completed';
-      
-      showToast('Task completed! Great job!');
+    function toggleCompleteTask(taskId) {
+        let tasks = getTasks();
+        const taskIndex = tasks.findIndex(t => t.id === taskId);
+        if (taskIndex > -1) {
+            tasks[taskIndex].completed = !tasks[taskIndex].completed;
+            saveTasks(tasks);
+            loadTasks(); // Re-render the entire list
+            if (tasks[taskIndex].completed) {
+                showToast('Task completed! Great job!');
+            }
+        }
     }
     
     function deleteTask(taskId) {
-      const li = document.getElementById(taskId);
-      
-      // Clear the reminder if it exists
-      if (taskTimers[taskId]) {
-        clearTimeout(taskTimers[taskId]);
-        delete taskTimers[taskId];
-      }
-      
-      li.style.opacity = '0';
-      li.style.transform = 'translateX(50px)';
-      
-      setTimeout(() => {
-        li.remove();
-        showToast('Task deleted');
-      }, 500);
+        let tasks = getTasks();
+        tasks = tasks.filter(t => t.id !== taskId);
+        saveTasks(tasks);
+
+        const li = document.getElementById(taskId);
+        if (li) {
+            li.style.opacity = '0';
+            li.style.transform = 'translateX(50px)';
+            setTimeout(() => {
+                li.remove();
+                showToast('Task deleted');
+            }, 500);
+        }
     }
+
+    // Event listener for Enter key
+    document.getElementById('taskInput').addEventListener('keypress', e => { if (e.key === 'Enter') addTask(); });
     
-    // Timer functionality
+    // --- TIMER FUNCTIONALITY ---
     let focusInterval, restInterval;
     let focusSeconds = 25 * 60, restSeconds = 5 * 60;
     let focusTotal = 25 * 60, restTotal = 5 * 60;
@@ -952,8 +604,6 @@
       focusInterval = setInterval(() => {
         focusSeconds--;
         updateFocusTime();
-        
-        // Update progress bar
         const progress = ((focusTotal - focusSeconds) / focusTotal) * 100;
         updateProgress('focusProgress', progress);
         
@@ -961,11 +611,9 @@
           clearInterval(focusInterval);
           showToast('Focus time completed! 🎉 Time for a break!');
           document.getElementById('focusProgress').style.width = '100%';
-          
-          // Pulse animation for completion
-          const focusTimer = document.querySelector('.timer > div:first-child');
-          focusTimer.classList.add('pulse');
-          setTimeout(() => focusTimer.classList.remove('pulse'), 4000);
+          const timerDiv = document.querySelector('#focusTime').closest('div');
+          timerDiv.classList.add('pulse');
+          setTimeout(() => timerDiv.classList.remove('pulse'), 4000);
         }
       }, 1000);
     }
@@ -983,8 +631,6 @@
       restInterval = setInterval(() => {
         restSeconds--;
         updateRestTime();
-        
-        // Update progress bar
         const progress = ((restTotal - restSeconds) / restTotal) * 100;
         updateProgress('restProgress', progress);
         
@@ -992,121 +638,53 @@
           clearInterval(restInterval);
           showToast('Rest time completed! ⏰ Back to work!');
           document.getElementById('restProgress').style.width = '100%';
-          
-          // Pulse animation for completion
-          const restTimer = document.querySelector('.timer > div:last-child');
-          restTimer.classList.add('pulse');
-          setTimeout(() => restTimer.classList.remove('pulse'), 4000);
+          const timerDiv = document.querySelector('#restTime').closest('div');
+          timerDiv.classList.add('pulse');
+          setTimeout(() => timerDiv.classList.remove('pulse'), 4000);
         }
       }, 1000);
     }
     
+    const pad = num => num.toString().padStart(2, '0');
     function updateFocusTime() {
-      const minutes = Math.floor(focusSeconds / 60);
-      const seconds = focusSeconds % 60;
-      document.getElementById('focusTime').textContent = 
-        `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        document.getElementById('focusTime').textContent = `${pad(Math.floor(focusSeconds / 60))}:${pad(focusSeconds % 60)}`;
     }
-    
     function updateRestTime() {
-      const minutes = Math.floor(restSeconds / 60);
-      const seconds = restSeconds % 60;
-      document.getElementById('restTime').textContent = 
-        `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        document.getElementById('restTime').textContent = `${pad(Math.floor(restSeconds / 60))}:${pad(restSeconds % 60)}`;
     }
-    
     function updateProgress(elementId, percentage) {
       document.getElementById(elementId).style.width = `${percentage}%`;
     }
     
-    // Allow adding task with Enter key
-    document.getElementById('taskInput').addEventListener('keypress', function(e) {
-      if (e.key === 'Enter') {
-        addTask();
-      }
-    });
-    
-    // Initialize the app
-    window.onload = function() {
-      createBubbles();
-      
-      // Add some example tasks
-      const exampleTasks = [
-        { text: "Complete math assignment", hours: 2, minutes: 0 },
-        { text: "Review chemistry notes", hours: 0, minutes: 45 },
-        { text: "Read history chapter", hours: 1, minutes: 30 }
-      ];
-      
-      exampleTasks.forEach(task => {
-        const taskList = document.getElementById('taskList');
-        const li = document.createElement('li');
-        const taskId = 'task-' + Date.now() + Math.random();
-        
-        let timeText = '';
-        if (task.hours > 0 && task.minutes > 0) {
-          timeText = `${task.hours}h ${task.minutes}m`;
-        } else if (task.hours > 0) {
-          timeText = `${task.hours}h`;
-        } else if (task.minutes > 0) {
-          timeText = `${task.minutes}m`;
-        }
-        
-        li.setAttribute('id', taskId);
-        li.innerHTML = `
-          <div class="task-info">
-            <div class="task-text">${task.text}</div>
-            ${timeText ? `<div class="task-time"><i class="fas fa-clock"></i> ${timeText}</div>` : ''}
-          </div>
-          <div class="task-actions">
-            <button class="complete-btn" onclick="completeTask('${taskId}')"><i class="fas fa-check"></i> Done</button>
-            <button class="delete-btn" onclick="deleteTask('${taskId}')"><i class="fas fa-trash"></i> Delete</button>
-          </div>
-        `;
-        
-        taskList.appendChild(li);
-      });
-      
-      // --- Initialize Draggable Player ---
-      dragElement(document.getElementById("draggableSpotifyPlayer"));
-    };
-
-    // --- NEW DRAGGABLE ELEMENT SCRIPT ---
+    // --- DRAGGABLE PLAYER SCRIPT ---
     function dragElement(elmnt) {
         var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-        if (document.querySelector("#" + elmnt.id + " .spotify-header")) {
-            // if present, the header is where you move the DIV from:
-            document.querySelector("#" + elmnt.id + " .spotify-header").onmousedown = dragMouseDown;
+        const header = document.querySelector("#" + elmnt.id + " .spotify-header");
+        if (header) {
+            header.onmousedown = dragMouseDown;
         } else {
-            // otherwise, move the DIV from anywhere inside the DIV:
             elmnt.onmousedown = dragMouseDown;
         }
 
         function dragMouseDown(e) {
-            e = e || window.event;
             e.preventDefault();
-            // get the mouse cursor position at startup:
             pos3 = e.clientX;
             pos4 = e.clientY;
             document.onmouseup = closeDragElement;
-            // call a function whenever the cursor moves:
             document.onmousemove = elementDrag;
         }
 
         function elementDrag(e) {
-            e = e || window.event;
             e.preventDefault();
-            // calculate the new cursor position:
             pos1 = pos3 - e.clientX;
             pos2 = pos4 - e.clientY;
             pos3 = e.clientX;
             pos4 = e.clientY;
-            // set the element's new position:
             elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
             elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
         }
 
         function closeDragElement() {
-            // stop moving when mouse button is released:
             document.onmouseup = null;
             document.onmousemove = null;
         }
