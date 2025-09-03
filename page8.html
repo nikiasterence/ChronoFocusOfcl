@@ -1,1 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
+    <title>Advanced Draw Board</title>
+    
+    <!-- Icons from Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- jsPDF library for creating PDFs, loaded from a CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
+    <style>
+        /* --- 1. General Setup --- */
+        :root {
+            --primary-color: #6a11cb;
+            --secondary-color: #2575fc;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html, body {
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+            position: fixed;
+            background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- 2. Main Layout --- */
+        .app-container {
+            display: flex;
+            flex: 1;
+            height: 100%;
+            flex-direction: column;
+        }
+        
+        .toolbar {
+            padding: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            flex-shrink: 0;
+            z-index: 100;
+        }
+
+        .whiteboard {
+            flex-grow: 1;
+            position: relative;
+            background-color: #f0f0f0;
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* --- 3. Toolbar Elements --- */
+        .tool-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px;
+            background-color: rgba(0,0,0,0.05);
+            border-radius: 12px;
+        }
+
+        .tool-button {
+            width: 40px; height: 40px; border-radius: 10px; border: none;
+            background: transparent; cursor: pointer; transition: all 0.2s ease;
+            font-size: 18px; color: #555; display: grid; place-items: center;
+        }
+        
+        .tool-button:hover { background: rgba(0,0,0,0.1); }
+        .tool-button.active { background: var(--primary-color); color: white; }
+        
+        /* Custom styling for the color input */
+        #color-picker {
+            width: 38px; height: 38px; border: none; padding: 0;
+            border-radius: 10px; background-color: transparent; cursor: pointer;
+        }
+        #color-picker::-webkit-color-swatch { border: 2px solid rgba(0,0,0,0.2); border-radius: 8px; }
+
+        .pen-size-group {
+            display: flex; align-items: center; gap: 8px;
+        }
+        #pen-size { width: 100px; }
+
+        /* Page navigation styles */
+        .page-controls { font-weight: 500; color: var(--primary-color); }
+        #page-indicator { min-width: 60px; text-align: center; }
+
+        /* --- 4. Modals and Panels --- */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.5); z-index: 1000;
+            display: flex; justify-content: center; align-items: center;
+            opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+        }
+        .modal-overlay.visible { opacity: 1; pointer-events: all; }
+
+        .modal-content {
+            background: white; padding: 20px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            display: flex; flex-direction: column; gap: 10px; min-width: 280px;
+        }
+        .modal-content h3 { margin-bottom: 10px; }
+        .modal-content input {
+            padding: 10px; border: 1px solid #ccc; border-radius: 8px; font-size: 16px;
+        }
+        .modal-content button {
+            padding: 10px; border-radius: 8px; border: none; font-weight: 600; cursor: pointer;
+            background: var(--primary-color); color: white;
+        }
+        
+        /* Sticker Panel */
+        #sticker-panel {
+            position: absolute; bottom: 20px; left: 50%;
+            transform: translateX(-50%);
+            padding: 10px; background: white; border-radius: 16px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+            display: flex; gap: 10px; z-index: 50;
+            opacity: 0; pointer-events: none; transition: all 0.3s ease;
+        }
+        #sticker-panel.visible { opacity: 1; pointer-events: all; transform: translate(-50%, 0); }
+        .sticker-option { font-size: 32px; cursor: pointer; transition: transform 0.2s; }
+        .sticker-option:hover { transform: scale(1.2); }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <!-- Main Toolbar -->
+        <div class="toolbar">
+            <div class="tool-group">
+                <button class="tool-button active" data-tool="pen" title="Pen"><i class="fas fa-pen"></i></button>
+                <button class="tool-button" data-tool="eraser" title="Eraser"><i class="fas fa-eraser"></i></button>
+                <button class="tool-button" data-tool="text" title="Add Text"><i class="fas fa-font"></i></button>
+                <button class="tool-button" data-tool="sticker" title="Add Sticker"><i class="fas fa-smile"></i></button>
+            </div>
+
+            <div class="tool-group">
+                <input type="color" id="color-picker" value="#000000" title="Select Color">
+            </div>
+
+            <div class="tool-group pen-size-group">
+                <i class="fas fa-circle" style="font-size: 8px;"></i>
+                <input type="range" id="pen-size" min="1" max="100" value="5" title="Pen Size">
+                <i class="fas fa-circle" style="font-size: 18px;"></i>
+            </div>
+
+            <div class="tool-group page-controls">
+                <button class="tool-button" id="prev-page" title="Previous Page"><i class="fas fa-chevron-left"></i></button>
+                <span id="page-indicator">1 / 1</span>
+                <button class="tool-button" id="next-page" title="Next Page"><i class="fas fa-chevron-right"></i></button>
+            </div>
+            
+            <div class="tool-group">
+                <button class="tool-button" id="download-png" title="Download as PNG"><i class="fas fa-file-image"></i></button>
+                <button class="tool-button" id="download-pdf" title="Download Text as PDF"><i class="fas fa-file-pdf"></i></button>
+                <button class="tool-button" id="clear-btn" title="Clear Canvas"><i class="fas fa-trash-alt"></i></button>
+            </div>
+        </div>
+        
+        <!-- Whiteboard area -->
+        <div class="whiteboard">
+            <canvas id="canvas"></canvas>
+            <div id="sticker-panel">
+                <span class="sticker-option" data-sticker="⭐">⭐</span>
+                <span class="sticker-option" data-sticker="❤️">❤️</span>
+                <span class="sticker-option" data-sticker="💡">💡</span>
+                <span class="sticker-option" data-sticker="👍">👍</span>
+                <span class="sticker-option" data-sticker="✔️">✔️</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal for Text Input -->
+    <div id="text-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h3>Add Text</h3>
+            <input type="text" id="text-input" placeholder="Type here...">
+            <button id="add-text-btn">Add Text</button>
+        </div>
+    </div>
+
+
+    <script>
+        // Use jsPDF from the global window object after loading it from CDN
+        const { jsPDF } = window.jspdf;
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            class AdvancedWhiteboard {
+                constructor(canvasId) {
+                    this.canvas = document.getElementById(canvasId);
+                    this.ctx = this.canvas.getContext('2d');
+                    
+                    // STATE MANAGEMENT
+                    this.isDrawing = false;
+                    this.currentTool = 'pen';
+                    this.currentColor = '#000000';
+                    this.penSize = 5;
+                    this.lastX = 0; this.lastY = 0;
+
+                    // PAGE MANAGEMENT
+                    this.pages = [this.createBlankPage()]; // Start with one page
+                    this.currentPageIndex = 0;
+
+                    // Text tool state
+                    this.textCoords = { x: 0, y: 0 };
+                    
+                    // Sticker state
+                    this.selectedSticker = null;
+
+                    this.init();
+                }
+
+                createBlankPage() {
+                    return {
+                        drawing: null, // Stores canvas.toDataURL()
+                        texts: []      // Stores { text, x, y, color, size } objects
+                    };
+                }
+
+                init() {
+                    this.resizeCanvas();
+                    window.addEventListener('resize', () => this.resizeCanvas());
+
+                    // Standard Drawing Events (Mouse & Touch)
+                    this.canvas.addEventListener('mousedown', (e) => this.handleStart(e));
+                    this.canvas.addEventListener('mousemove', (e) => this.handleMove(e));
+                    this.canvas.addEventListener('mouseup', () => this.handleEnd());
+                    this.canvas.addEventListener('mouseout', () => this.handleEnd());
+
+                    this.canvas.addEventListener('touchstart', (e) => this.handleStart(e), { passive: false });
+                    this.canvas.addEventListener('touchmove', (e) => this.handleMove(e), { passive: false });
+                    this.canvas.addEventListener('touchend', () => this.handleEnd());
+
+                    this.setupUI();
+                    this.updatePageIndicator();
+                }
+
+                // --- CANVAS & PAGE LOGIC ---
+
+                resizeCanvas() {
+                    this.saveCurrentPage(); // Save before resizing
+                    this.canvas.width = this.canvas.parentElement.offsetWidth;
+                    this.canvas.height = this.canvas.parentElement.offsetHeight;
+                    this.loadPage(this.currentPageIndex); // Reload after resizing
+                }
+
+                loadPage(index) {
+                    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+                    const page = this.pages[index];
+
+                    if (page && page.drawing) {
+                        const img = new Image();
+                        img.src = page.drawing;
+                        img.onload = () => { this.ctx.drawImage(img, 0, 0); };
+                    }
+                }
+                
+                saveCurrentPage() {
+                    if (this.pages[this.currentPageIndex]) {
+                        this.pages[this.currentPageIndex].drawing = this.canvas.toDataURL();
+                    }
+                }
+
+                changePage(direction) {
+                    this.saveCurrentPage();
+                    if (direction === 'next') {
+                        this.currentPageIndex++;
+                        // If it's a new page, create it
+                        if (this.currentPageIndex === this.pages.length) {
+                            this.pages.push(this.createBlankPage());
+                        }
+                    } else if (direction === 'prev' && this.currentPageIndex > 0) {
+                        this.currentPageIndex--;
+                    }
+                    this.loadPage(this.currentPageIndex);
+                    this.updatePageIndicator();
+                }
+                
+                updatePageIndicator() {
+                    document.getElementById('page-indicator').textContent = `${this.currentPageIndex + 1} / ${this.pages.length}`;
+                }
+
+                // --- COORDINATE & EVENT HANDLING ---
+
+                getCoordinates(event) {
+                    event.preventDefault();
+                    const rect = this.canvas.getBoundingClientRect();
+                    if (event.touches && event.touches.length > 0) {
+                        return [event.touches[0].clientX - rect.left, event.touches[0].clientY - rect.top];
+                    }
+                    return [event.clientX - rect.left, event.clientY - rect.top];
+                }
+
+                handleStart(e) {
+                    const [x, y] = this.getCoordinates(e);
+
+                    switch (this.currentTool) {
+                        case 'pen':
+                        case 'eraser':
+                            this.isDrawing = true;
+                            [this.lastX, this.lastY] = [x, y];
+                            break;
+                        case 'text':
+                            this.textCoords = { x, y };
+                            this.showTextModal(true);
+                            break;
+                        case 'sticker':
+                            if (this.selectedSticker) {
+                                this.addSticker(this.selectedSticker, x, y);
+                                this.selectedSticker = null; // Reset after placing
+                            }
+                            break;
+                    }
+                }
+                
+                handleMove(e) {
+                    if (!this.isDrawing || (this.currentTool !== 'pen' && this.currentTool !== 'eraser')) return;
+                    this.draw(e);
+                }
+
+                handleEnd() {
+                    if (this.isDrawing) {
+                        this.isDrawing = false;
+                        this.saveCurrentPage();
+                    }
+                }
+                
+                // --- DRAWING & CONTENT ADDITION ---
+
+                draw(event) {
+                    const [x, y] = this.getCoordinates(event);
+                    this.ctx.globalCompositeOperation = this.currentTool === 'eraser' ? 'destination-out' : 'source-over';
+                    this.ctx.strokeStyle = this.currentColor;
+                    this.ctx.lineWidth = this.penSize;
+                    this.ctx.lineCap = 'round';
+                    this.ctx.lineJoin = 'round';
+                    
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(this.lastX, this.lastY);
+                    this.ctx.lineTo(x, y);
+                    this.ctx.stroke();
+                    [this.lastX, this.lastY] = [x, y];
+                }
+
+                addText(text) {
+                    const { x, y } = this.textCoords;
+                    const size = Math.max(20, this.penSize * 2);
+                    this.ctx.globalCompositeOperation = 'source-over';
+                    this.ctx.fillStyle = this.currentColor;
+                    this.ctx.font = `bold ${size}px sans-serif`;
+                    this.ctx.fillText(text, x, y);
+
+                    // Save text for PDF export
+                    this.pages[this.currentPageIndex].texts.push({ text, x, y, color: this.currentColor, size });
+                    this.saveCurrentPage();
+                }
+                
+                addSticker(sticker, x, y) {
+                    const size = Math.max(50, this.penSize * 4);
+                    this.ctx.globalCompositeOperation = 'source-over';
+                    this.ctx.font = `${size}px sans-serif`;
+                    this.ctx.fillText(sticker, x, y);
+                    this.saveCurrentPage();
+                }
+
+                // --- UI SETUP & CONTROLS ---
+
+                setupUI() {
+                    // Tool Selection
+                    const toolButtons = document.querySelectorAll('.tool-button');
+                    toolButtons.forEach(button => {
+                        button.addEventListener('click', () => {
+                            // Don't treat action buttons like tools
+                            if (button.id.startsWith('download') || button.id === 'clear-btn' || button.id.includes('page')) return;
+                            
+                            document.querySelector('.tool-button.active').classList.remove('active');
+                            button.classList.add('active');
+                            this.currentTool = button.dataset.tool;
+                            
+                            // Show/hide sticker panel
+                            document.getElementById('sticker-panel').classList.toggle('visible', this.currentTool === 'sticker');
+                        });
+                    });
+                    
+                    // Color Picker
+                    document.getElementById('color-picker').addEventListener('input', (e) => {
+                        this.currentColor = e.target.value;
+                    });
+                    
+                    // Pen Size
+                    document.getElementById('pen-size').addEventListener('input', (e) => {
+                        this.penSize = e.target.value;
+                    });
+                    
+                    // Page Navigation
+                    document.getElementById('prev-page').addEventListener('click', () => this.changePage('prev'));
+                    document.getElementById('next-page').addEventListener('click', () => this.changePage('next'));
+
+                    // Download Buttons
+                    document.getElementById('download-png').addEventListener('click', () => this.downloadAsPNG());
+                    document.getElementById('download-pdf').addEventListener('click', () => this.downloadTextAsPDF());
+                    
+                    // Clear Canvas
+                    document.getElementById('clear-btn').addEventListener('click', () => {
+                        if (confirm('Are you sure you want to clear this entire page?')) {
+                            this.pages[this.currentPageIndex] = this.createBlankPage();
+                            this.loadPage(this.currentPageIndex);
+                        }
+                    });
+
+                    // Text Modal Logic
+                    this.textModal = document.getElementById('text-modal');
+                    this.textInput = document.getElementById('text-input');
+                    document.getElementById('add-text-btn').addEventListener('click', () => {
+                        if (this.textInput.value) {
+                            this.addText(this.textInput.value);
+                            this.showTextModal(false);
+                        }
+                    });
+                    this.textModal.addEventListener('click', (e) => {
+                        if (e.target === this.textModal) this.showTextModal(false); // Close on overlay click
+                    });
+                    
+                    // Sticker Panel Logic
+                    document.querySelectorAll('.sticker-option').forEach(sticker => {
+                        sticker.addEventListener('click', () => {
+                            this.selectedSticker = sticker.dataset.sticker;
+                            // Optionally, make it clearer that a sticker is selected
+                        });
+                    });
+                }
+                
+                showTextModal(visible) {
+                    this.textModal.classList.toggle('visible', visible);
+                    if (visible) {
+                        this.textInput.value = '';
+                        this.textInput.focus();
+                    }
+                }
+                
+                // --- DOWNLOAD FUNCTIONALITY ---
+
+                downloadAsPNG() {
+                    const link = document.createElement('a');
+                    link.download = `whiteboard-page-${this.currentPageIndex + 1}.png`;
+                    link.href = this.canvas.toDataURL('image/png');
+                    link.click();
+                }
+
+                downloadTextAsPDF() {
+                    const textsOnPage = this.pages[this.currentPageIndex].texts;
+                    if (textsOnPage.length === 0) {
+                        alert("No text on this page to create a PDF.");
+                        return;
+                    }
+
+                    const doc = new jsPDF();
+                    doc.text("Texts from Whiteboard Page " + (this.currentPageIndex + 1), 10, 10);
+                    
+                    textsOnPage.forEach(textItem => {
+                        // jsPDF uses points, canvas uses pixels. This is a rough approximation.
+                        const pdfX = textItem.x * 0.264583;
+                        const pdfY = textItem.y * 0.264583;
+
+                        doc.setTextColor(textItem.color);
+                        doc.setFontSize(textItem.size * 0.75); // Adjust font size for PDF
+                        doc.text(textItem.text, pdfX, pdfY);
+                    });
+
+                    doc.save(`whiteboard-text-page-${this.currentPageIndex + 1}.pdf`);
+                }
+            }
+            
+            // Launch the application
+            new AdvancedWhiteboard('canvas');
+        });
+    </script>
+</body>
+</html>
