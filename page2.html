@@ -7,8 +7,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
+            /* Theme will be dynamically set by JS */
             --primary-glow: #9b59b6;
             --secondary-glow: #3498db;
+            --tertiary-glow: #e74c3c;
             --background: #ffc1d7;
             --text-primary: #ffffff;
             --text-secondary: rgba(255, 255, 255, 0.7);
@@ -24,238 +26,191 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
         }
 
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 5px;
+            height: 5px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.4);
+        }
+
         body {
             min-height: 100vh;
             background-color: var(--background);
             display: flex;
             justify-content: center;
-            /* align-items: center; <-- REMOVED this to allow content to start from the top */
             padding: 20px;
-            /* overflow: hidden; <-- REMOVED this to enable scrolling */
             position: relative;
             color: var(--text-primary);
-            flex-direction: column; /* Added to stack content vertically */
-            align-items: center; /* Re-added to center the children */
-            gap: 20px; /* Added for spacing between elements */
-            padding-bottom: 150px; /* Added padding to prevent dock from covering content */
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            padding-bottom: 150px;
+            transition: background-color 0.8s ease;
+            overflow-x: hidden;
         }
 
         .aurora-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -2;
-            overflow: hidden;
+            position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: -2; overflow: hidden;
         }
 
         .aurora-item {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(100px);
-            opacity: 0;
-            animation: aurora-glow 15s infinite alternate;
+            position: absolute; border-radius: 50%;
+            filter: blur(120px); opacity: 0;
+            transition: background-color 0.8s ease;
         }
 
         .aurora-item:nth-child(1) {
-            width: 500px;
-            height: 500px;
-            background: var(--primary-glow);
-            top: 10%;
-            left: 10%;
-            animation-delay: 0s;
+            width: 500px; height: 500px;
+            background: var(--primary-glow); top: 10%; left: 10%;
+            animation: aurora-glow-1 20s infinite alternate ease-in-out;
         }
 
         .aurora-item:nth-child(2) {
-            width: 400px;
-            height: 400px;
-            background: var(--secondary-glow);
-            bottom: 5%;
-            right: 5%;
-            animation-delay: 3s;
+            width: 450px; height: 450px;
+            background: var(--secondary-glow); bottom: 5%; right: 5%;
+            animation: aurora-glow-2 25s infinite alternate ease-in-out;
         }
 
         .aurora-item:nth-child(3) {
-            width: 300px;
-            height: 300px;
-            background: #e74c3c;
-            top: 50%;
-            left: 50%;
-            animation-delay: 6s;
-            transform: translate(-50%, -50%);
+            width: 350px; height: 350px;
+            background: var(--tertiary-glow); top: 50%; left: 50%;
+            animation: aurora-glow-3 18s infinite alternate ease-in-out;
+        }
+        
+        .aurora-item:nth-child(4) {
+            width: 300px; height: 300px;
+            background: var(--primary-glow); top: 25%; right: 20%;
+            animation: aurora-glow-2 22s infinite alternate-reverse ease-in-out;
         }
 
-        @keyframes aurora-glow {
-            0% { transform: scale(1) translate(0, 0); opacity: 0.3; }
-            100% { transform: scale(1.5) translate(20px, -20px); opacity: 0.6; }
+        @keyframes aurora-glow-1 {
+            0% { transform: scale(1) translate(0, 0) rotate(0deg); opacity: 0.3; }
+            100% { transform: scale(1.6) translate(40px, -40px) rotate(90deg); opacity: 0.6; }
+        }
+        @keyframes aurora-glow-2 {
+            0% { transform: scale(1) translate(0, 0) rotate(0deg); opacity: 0.4; }
+            100% { transform: scale(1.4) translate(-30px, 50px) rotate(-90deg); opacity: 0.7; }
+        }
+        @keyframes aurora-glow-3 {
+            0% { transform: scale(1) translate(-50%, -50%) rotate(0deg); opacity: 0.35; }
+            100% { transform: scale(1.5) translate(-40%, -60%) rotate(180deg); opacity: 0.65; }
         }
 
         .app {
-            width: 95%;
-            max-width: 550px;
-            background: var(--glass-bg);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
-            border-radius: 30px;
-            padding: 40px;
-            box-shadow: 0 16px 64px var(--shadow-color);
-            border: 1px solid var(--glass-border);
-            text-align: center;
-            position: relative;
-            z-index: 1;
+            width: 95%; max-width: 550px; background: var(--glass-bg);
+            backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+            border-radius: 30px; padding: 40px; box-shadow: 0 16px 64px var(--shadow-color);
+            border: 1px solid var(--glass-border); text-align: center;
+            position: relative; z-index: 1;
         }
 
         h1 {
-            font-size: 3rem;
-            margin-bottom: 30px;
-            text-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 15px;
+            font-size: 3rem; margin-bottom: 30px; display: flex;
+            justify-content: center; align-items: center; gap: 15px;
             font-weight: 700;
-        }
-
-        .tip-container {
-            min-height: 180px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            margin: 30px 0;
-            padding: 25px;
-            background: var(--glass-bg);
-            border-radius: 20px;
-            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.2);
-            transition: all 0.4s ease;
-            border: 1px solid var(--glass-border);
-            position: relative;
+            /* Animation Removed */
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
         }
         
-        #tip {
-            font-size: 1.3rem;
-            line-height: 1.7;
-            text-shadow: 0 1px 3px var(--shadow-color);
-            font-weight: 500;
+        .tip-container {
+            min-height: 180px; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; margin: 30px 0; padding: 25px;
+            background: var(--glass-bg); border-radius: 20px;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.2); transition: all 0.4s ease;
+            border: 1px solid var(--glass-border); position: relative;
         }
+        
+        #tip { font-size: 1.3rem; line-height: 1.7; text-shadow: 0 1px 3px var(--shadow-color); font-weight: 500; }
 
         .copy-tip-btn {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background: rgba(255,255,255,0.2);
-            border: none;
-            color: var(--text-primary);
-            padding: 8px 10px;
-            border-radius: 8px;
-            cursor: pointer;
-            opacity: 0.5;
-            transition: all 0.3s;
+            position: absolute; top: 15px; right: 15px;
+            background: rgba(255,255,255,0.2); border: none; color: var(--text-primary);
+            padding: 8px 10px; border-radius: 8px; cursor: pointer; opacity: 0.5; transition: all 0.3s;
         }
-
-        .tip-container:hover .copy-tip-btn {
-            opacity: 1;
-        }
+        .tip-container:hover .copy-tip-btn { opacity: 1; }
 
         .caffeine-counter {
-            margin-top: 20px;
-            padding: 20px;
-            background: var(--glass-bg);
-            border-radius: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.2);
+            margin-top: 20px; padding: 20px; background: var(--glass-bg);
+            border-radius: 20px; display: flex; justify-content: space-between;
+            align-items: center; box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.2);
             border: 1px solid var(--glass-border);
         }
-        
-        .caffeine-display {
-            font-size: 1.2rem;
-            font-weight: bold;
-        }
-        
-        .caffeine-warning {
-            color: #ff6b6b;
-            font-size: 0.9rem;
-            margin-top: 5px;
-            display: none;
-        }
-        
+        .caffeine-display { font-size: 1.2rem; font-weight: bold; }
+        .caffeine-warning { color: #ff6b6b; font-size: 0.9rem; margin-top: 5px; display: none; }
         .reset-btn {
-            padding: 10px 18px;
-            font-size: 0.9rem;
-            border-radius: 12px;
-            background: var(--glass-bg);
-            color: var(--text-secondary);
-            border: 1px solid var(--glass-border);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            padding: 10px 18px; font-size: 0.9rem; border-radius: 12px;
+            background: var(--glass-bg); color: var(--text-secondary);
+            border: 1px solid var(--glass-border); cursor: pointer;
+            display: flex; align-items: center; gap: 8px;
             transition: all 0.3s ease;
         }
+        .reset-btn:hover { background: rgba(255,255,255,0.3); color: var(--text-primary); }
         
-        .reset-btn:hover {
-            background: rgba(255,255,255,0.3);
-            color: var(--text-primary);
-        }
-        
+        /* DOCK STYLES */
         .dock {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            align-items: flex-end;
-            padding: 15px;
-            background: rgba(0, 0, 0, 0.2);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-radius: 28px;
+            position: fixed; display: flex;
+            align-items: center; padding: 10px; background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
             box-shadow: 0 12px 40px var(--shadow-color);
-            border: 1px solid var(--glass-border);
-            z-index: 100;
+            border: 1px solid var(--glass-border); z-index: 100;
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
         }
-        
-        .dock-icon {
-            width: 65px;
-            height: 65px;
-            margin: 0 10px;
-            border-radius: 18px;
-            display: flex;
+        /* Positions */
+        .dock.dock-bottom {
+            bottom: 30px; left: 50%; border-radius: 28px;
+            flex-direction: row; align-items: flex-end;
+            transform: translateX(-50%);
+        }
+        .dock.dock-left {
+            left: 20px; top: 50%; border-radius: 28px;
             flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.2s ease-in-out;
-            position: relative;
-            color: white;
-            font-size: 1.6rem;
+            transform: translateY(-50%);
+        }
+        .dock.dock-right {
+            right: 20px; top: 50%; border-radius: 28px;
+            flex-direction: column;
+            transform: translateY(-50%);
+        }
+
+        .dock-icon {
+            width: 65px; height: 65px; border-radius: 18px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            cursor: pointer; transition: all 0.2s ease-in-out; position: relative;
+            color: white; font-size: 1.6rem;
             box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+            text-decoration: none; flex-shrink: 0;
         }
+        .dock.dock-bottom .dock-icon { margin: 0 8px; }
+        .dock.dock-left .dock-icon, .dock.dock-right .dock-icon { margin: 8px 0; }
         
-        .dock-icon:hover {
-            transform: translateY(-12px) scale(1.1);
-            box-shadow: 0 12px 25px rgba(0,0,0,0.4);
-        }
-        
+        .dock-icon:hover { transform: translateY(-12px) scale(1.1); box-shadow: 0 12px 25px rgba(0,0,0,0.4); }
+        .dock.dock-left .dock-icon:hover { transform: translateX(12px) scale(1.1); }
+        .dock.dock-right .dock-icon:hover { transform: translateX(-12px) scale(1.1); }
+
         .dock-icon-label {
-            position: absolute;
-            bottom: -30px;
-            font-size: 0.8rem;
-            color: var(--text-primary);
-            text-shadow: 0 1px 5px var(--shadow-color);
-            opacity: 0;
-            transition: opacity 0.3s;
-            white-space: nowrap;
-            font-weight: 500;
+            position: absolute; font-size: 0.8rem;
+            color: var(--text-primary); text-shadow: 0 1px 5px var(--shadow-color);
+            opacity: 0; transition: opacity 0.3s, transform 0.3s;
+            white-space: nowrap; font-weight: 500;
         }
-        
-        .dock-icon:hover .dock-icon-label {
-            opacity: 1;
-        }
-        
+        .dock-icon:hover .dock-icon-label { opacity: 1; }
+
+        .dock.dock-bottom .dock-icon-label { bottom: -30px; }
+        .dock.dock-left .dock-icon-label { left: 120%; top: 50%; transform: translateY(-50%); }
+        .dock.dock-right .dock-icon-label { right: 120%; top: 50%; transform: translateY(-50%); }
+
         /* Dock Icon Gradients */
         .dock-tip { background: linear-gradient(135deg, #ff7b00, #ff5500); }
         .dock-study { background: linear-gradient(135deg, #ff0000, #cc0000); }
@@ -263,104 +218,95 @@
         .dock-caffeine { background: linear-gradient(135deg, #4cc9f0, #4895ef); }
         .dock-periodic { background: linear-gradient(135deg, #560bad, #7209b7); }
         .dock-solar { background: linear-gradient(135deg, #f9c74f, #f9844a); }
-        .dock-favorite { background: linear-gradient(135deg, #ffd166, #ff9e00); }
-        .dock-home { background: linear-gradient(135deg, #06d6a0, #048a81); }
         .dock-puzzle { background: linear-gradient(135deg, #118ab2, #073b4c); }
         .dock-draw { background: linear-gradient(135deg, #ff9e00, #ff5400); }
         .dock-whiteboard { background: linear-gradient(135deg, #e0e0e0, #bdbdbd); }
         .dock-books { background: linear-gradient(135deg, #8d6e63, #6d4c41); }
         .dock-moodly { background: linear-gradient(135deg, #f8bbd0, #ec407a); }
         .dock-optichain { background: linear-gradient(135deg, #80deea, #00acc1); }
+        .dock-pomodoro { background: linear-gradient(135deg, #FF6347, #FF4500); }
+        .dock-deep-focus { background: linear-gradient(135deg, #1E90FF, #00008B); }
 
-        
-        /* Favorite Modal Styles */
-        .modal {
-            position: fixed; top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(10px);
-            display: flex; justify-content: center; align-items: center;
-            z-index: 1000;
-            opacity: 0; visibility: hidden;
-            transition: all 0.3s ease;
+        /* SETTINGS AND THEME CONTROLS */
+        .app-controls {
+            position: absolute; top: 20px; right: 25px;
+            z-index: 10; display: flex; gap: 15px;
         }
-        
-        .modal.active { opacity: 1; visibility: visible; }
-        
-        .modal-content {
-            width: 90%; max-width: 600px;
-            background: var(--glass-bg);
-            padding: 30px;
-            border-radius: 20px;
-            border: 1px solid var(--glass-border);
-            max-height: 80vh;
-            overflow-y: auto;
+        .control-group { position: relative; }
+        .control-icon { font-size: 1.5rem; cursor: pointer; transition: transform 0.3s, color 0.3s; }
+        .control-group:hover .control-icon { transform: scale(1.1) rotate(15deg); color: var(--secondary-glow); }
+        .control-options {
+            position: absolute; top: 120%; right: 0;
+            background: var(--glass-bg); border: 1px solid var(--glass-border);
+            border-radius: 12px; padding: 8px;
+            display: flex; gap: 8px; opacity: 0;
+            visibility: hidden; transform: translateY(10px);
+            transition: all 0.3s; backdrop-filter: blur(10px);
         }
+        .control-group:hover .control-options { opacity: 1; visibility: visible; transform: translateY(0); }
+        .theme-dot {
+            width: 25px; height: 25px; border-radius: 50%;
+            background: var(--theme-bg, #fff); cursor: pointer;
+            border: 2px solid rgba(255,255,255,0.5); transition: transform 0.2s;
+        }
+        .theme-dot:hover { transform: scale(1.15); }
+        .pos-btn {
+            background: rgba(255,255,255,0.1); border: 1px solid transparent;
+            color: var(--text-primary); padding: 5px 10px; border-radius: 8px;
+            cursor: pointer; transition: all 0.3s; font-size: 0.9rem;
+        }
+        .pos-btn:hover, .pos-btn.active { background: rgba(255,255,255,0.3); border-color: var(--glass-border); }
 
-        .modal-header {
-            display: flex; justify-content: space-between; align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .close-modal {
-            background: transparent; border: none; color: white;
-            font-size: 2rem; cursor: pointer;
-        }
-        
-        #favorites-list { list-style: none; }
-        #favorites-list li {
-            background: rgba(0,0,0,0.2);
-            padding: 15px; border-radius: 10px;
-            margin-bottom: 10px;
-            font-size: 1.1rem;
-        }
-
+        /* RESPONSIVE DOCK FIXES */
         @media (max-width: 900px) {
-            .dock {
+            .dock.dock-bottom {
                 width: 90%;
                 overflow-x: auto;
                 justify-content: flex-start;
-                padding: 10px 15px;
+                padding-left: 15px;
+                padding-right: 15px;
             }
         }
-        
+        @media (max-height: 750px) { /* Adjust vertical dock for shorter screens */
+            .dock.dock-left, .dock.dock-right {
+                max-height: 80vh;
+                overflow-y: auto;
+                padding-top: 15px;
+                padding-bottom: 15px;
+            }
+        }
         @media (max-width: 600px) {
             .app { padding: 25px; }
             h1 { font-size: 2.2rem; }
             #tip { font-size: 1.1rem; }
             .caffeine-counter { flex-direction: column; gap: 15px; }
-        }
 
+            .dock-icon { /* Make icons smaller on mobile */
+                width: 55px;
+                height: 55px;
+                font-size: 1.4rem;
+                border-radius: 15px;
+            }
+             .dock.dock-bottom .dock-icon { margin: 0 5px; }
+             .dock.dock-left .dock-icon, .dock.dock-right .dock-icon { margin: 5px 0; }
+        }
     </style>
 </head>
 <body>
     <div class="aurora-container">
-        <div class="aurora-item"></div>
-        <div class="aurora-item"></div>
-        <div class="aurora-item"></div>
+        <div class="aurora-item"></div><div class="aurora-item"></div>
+        <div class="aurora-item"></div><div class="aurora-item"></div>
     </div>
 
-    <div class="dock">
-        <div class="dock-icon dock-tip" onclick="newTip()">
-            <i class="fas fa-lightbulb"></i>
-            <div class="dock-icon-label">New Tip</div>
-        </div>
-        <div class="dock-icon dock-study" onclick="openStudyWithMe()">
-            <i class="fab fa-youtube"></i>
-            <div class="dock-icon-label">Study With Me</div>
-        </div>
+    <div class="dock dock-bottom">
+        <div class="dock-icon dock-tip" onclick="newTip()"><i class="fas fa-lightbulb"></i><div class="dock-icon-label">New Tip</div></div>
+        <div class="dock-icon dock-study" onclick="openStudyWithMe()"><i class="fab fa-youtube"></i><div class="dock-icon-label">Study With Me</div></div>
         <a href="page10.html" class="dock-icon dock-measure"><i class="fas fa-ruler-combined"></i><div class="dock-icon-label">Measure</div></a>
-        <div class="dock-icon dock-caffeine" onclick="addCaffeine()">
-            <i class="fas fa-coffee"></i>
-            <div class="dock-icon-label">Add Caffeine</div>
-        </div>
+        <div class="dock-icon dock-caffeine" onclick="addCaffeine()"><i class="fas fa-coffee"></i><div class="dock-icon-label">Add Caffeine</div></div>
+        <a href="page13.html" class="dock-icon dock-pomodoro"><i class="fas fa-hourglass-start"></i><div class="dock-icon-label">Pomodoro</div></a>
+        <a href="page9.html" class="dock-icon dock-deep-focus"><i class="fas fa-brain"></i><div class="dock-icon-label">Deep Focus</div></a>
         <a href="page5.html" class="dock-icon dock-periodic"><i class="fas fa-atom"></i><div class="dock-icon-label">Periodic Table</div></a>
         <a href="page6.html" class="dock-icon dock-solar"><i class="fas fa-globe"></i><div class="dock-icon-label">Solar System</div></a>
-        <div class="dock-icon dock-favorite" onclick="markFavorite()">
-            <i class="far fa-star"></i>
-            <div class="dock-icon-label">Favorites</div>
-        </div>
-        <a href="index.html" class="dock-icon dock-home"><i class="fas fa-home"></i><div class="dock-icon-label">Home</div></a>
         <a href="page7.html" class="dock-icon dock-puzzle"><i class="fas fa-puzzle-piece"></i><div class="dock-icon-label">Puzzles</div></a>
         <a href="page4.html" class="dock-icon dock-draw"><i class="fas fa-pen"></i><div class="dock-icon-label">Draw Calc</div></a>
         <a href="page8.html" class="dock-icon dock-whiteboard"><i class="fas fa-chalkboard"></i><div class="dock-icon-label">White Board</div></a>
@@ -370,6 +316,27 @@
     </div>
 
     <div class="app">
+        <div class="app-controls">
+             <div class="control-group">
+                <i class="fas fa-cog control-icon"></i>
+                <div class="control-options">
+                    <button class="pos-btn" data-pos="left">Left</button>
+                    <button class="pos-btn active" data-pos="bottom">Bottom</button>
+                    <button class="pos-btn" data-pos="right">Right</button>
+                </div>
+            </div>
+            <div class="control-group">
+                <i class="fas fa-palette control-icon"></i>
+                <div class="control-options">
+                    <div class="theme-dot" style="--theme-bg: #ffc1d7;" data-theme="cosmic-pink"></div>
+                    <div class="theme-dot" style="--theme-bg: #1a1a2e;" data-theme="midnight-blue"></div>
+                    <div class="theme-dot" style="--theme-bg: #4b6a4a;" data-theme="forest-green"></div>
+                    <div class="theme-dot" style="--theme-bg: #fb8500;" data-theme="golden-hour"></div>
+                    <div class="theme-dot" style="--theme-bg: #2d00f7;" data-theme="synthwave"></div>
+                </div>
+            </div>
+        </div>
+
         <h1><i class="fas fa-brain"></i> StudyVERSE</h1>
         <div class="tip-container">
             <button class="copy-tip-btn" onclick="copyTip()"><i class="fas fa-copy"></i></button>
@@ -384,46 +351,17 @@
         </div>
     </div>
     
-    <div class="modal" id="favorites-modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2><i class="fas fa-star"></i> Favorite Tips</h2>
-                <button class="close-modal" onclick="closeFavorites()">&times;</button>
-            </div>
-            <ul id="favorites-list">
-                 <!-- Favorite tips will be loaded here -->
-            </ul>
-        </div>
-    </div>
-
-  
-    
     <script>
-        const tips = [
-            "Break your study time into 25-minute intervals with the Pomodoro Technique.",
-            "Use active recall by testing yourself, not just rereading notes.",
-            "Explain what you've learned to someone else to solidify your understanding.",
-            "Create a dedicated, distraction-free study zone.",
-            "Use flashcards for key terms and concepts.",
-            "Review material consistently, a little bit each day.",
-            "Prioritize sleep; it's crucial for memory consolidation.",
-            "Stay hydrated and eat nutritious brain food.",
-            "Use mind maps to visualize connections between ideas.",
-            "Take short, regular breaks to avoid burnout."
-        ];
-        
-        let favorites = JSON.parse(localStorage.getItem('favoriteTips')) || [];
+        const tips = [ "Break your study time into 25-minute intervals with the Pomodoro Technique.", "Use active recall by testing yourself, not just rereading notes.", "Explain what you've learned to someone else to solidify your understanding.", "Create a dedicated, distraction-free study zone.", "Use flashcards for key terms and concepts.", "Review material consistently, a little bit each day.", "Prioritize sleep; it's crucial for memory consolidation.", "Stay hydrated and eat nutritious brain food.", "Use mind maps to visualize connections between ideas.", "Take short, regular breaks to avoid burnout." ];
         let caffeineIntake = 0;
         
         const tipElement = document.getElementById("tip");
         const caffeineCountEl = document.getElementById("caffeine-count");
         const caffeineWarningEl = document.getElementById("caffeine-warning");
-        const favoritesModal = document.getElementById("favorites-modal");
-        const favoritesListEl = document.getElementById("favorites-list");
+        const dockElement = document.querySelector(".dock");
+        const posButtons = document.querySelectorAll('.pos-btn');
 
-        function playSound(url) {
-            new Audio(url).play();
-        }
+        function playSound(url) { new Audio(url).play(); }
         
         function newTip() {
             playSound('https://www.soundjay.com/buttons/sounds/button-16.mp3');
@@ -432,115 +370,92 @@
                 let randomIndex = Math.floor(Math.random() * tips.length);
                 const newTip = tips[randomIndex];
                 tipElement.textContent = newTip;
-                localStorage.setItem('currentTip', newTip); // Save the new tip
+                localStorage.setItem('currentTip', newTip);
                 tipElement.style.opacity = 1;
             }, 300);
         }
         
-        function copyTip() {
-            navigator.clipboard.writeText(tipElement.textContent).then(() => {
-                playSound('https://www.soundjay.com/buttons/sounds/button-7.mp3');
-                alert("Tip copied to clipboard!");
-            });
-        }
+        function copyTip() { navigator.clipboard.writeText(tipElement.textContent).then(() => { playSound('https://www.soundjay.com/buttons/sounds/button-7.mp3'); alert("Tip copied to clipboard!"); }); }
         
-        function openStudyWithMe() {
-            window.open('page3.html', '_blank');
-        }
-
-        function markFavorite() {
-            playSound('https://www.soundjay.com/buttons/sounds/button-3.mp3');
-            const currentTip = tipElement.textContent;
-            if (currentTip.includes("Welcome!")) return; // Don't save the welcome message
-
-            if (!favorites.includes(currentTip)) {
-                favorites.push(currentTip);
-                localStorage.setItem('favoriteTips', JSON.stringify(favorites));
-                alert("Tip added to favorites!");
-            } else {
-                alert("This tip is already in your favorites.");
-            }
-        }
-        
-        function openFavorites() {
-            favoritesModal.classList.add('active');
-            renderFavorites();
-        }
-
-        function renderFavorites() {
-            favoritesListEl.innerHTML = '';
-            if (favorites.length === 0) {
-                favoritesListEl.innerHTML = '<li>No favorite tips saved yet.</li>';
-            } else {
-                favorites.forEach(tip => {
-                    const li = document.createElement('li');
-                    li.textContent = tip;
-                    favoritesListEl.appendChild(li);
-                });
-            }
-        }
-        
-        function closeFavorites() {
-            favoritesModal.classList.remove('active');
-        }
+        function openStudyWithMe() { window.open('page3.html', '_blank'); }
 
         function addCaffeine() {
-            const caffeineAmount = Math.floor(Math.random() * 81) + 40; // Approx a cup of coffee
-            caffeineIntake += caffeineAmount;
-            localStorage.setItem('caffeineIntake', caffeineIntake); // Save caffeine count
+            caffeineIntake += Math.floor(Math.random() * 81) + 40;
+            localStorage.setItem('caffeineIntake', caffeineIntake);
             updateCaffeineDisplay();
         }
         
         function resetCaffeine() {
             caffeineIntake = 0;
-            localStorage.setItem('caffeineIntake', caffeineIntake); // Save reset count
+            localStorage.setItem('caffeineIntake', caffeineIntake);
             updateCaffeineDisplay();
         }
 
         function updateCaffeineDisplay() {
             caffeineCountEl.textContent = caffeineIntake;
-            caffeineWarningEl.style.display = 'none'; // Hide by default
-
-            if (caffeineIntake >= 400) {
-                caffeineWarningEl.style.display = "block";
-                caffeineWarningEl.textContent = "⚠️ Daily max exceeded!";
-            } else if (caffeineIntake >= 300) {
-                caffeineWarningEl.style.display = "block";
-                caffeineWarningEl.textContent = "Max recommended: 400mg";
-            }
+            caffeineWarningEl.style.display = 'none';
+            if (caffeineIntake >= 400) { caffeineWarningEl.style.display = "block"; caffeineWarningEl.textContent = "⚠️ Daily max exceeded!"; }
+            else if (caffeineIntake >= 300) { caffeineWarningEl.style.display = "block"; caffeineWarningEl.textContent = "Max recommended: 400mg"; }
         }
+        
+        // --- THEME SWITCHER LOGIC ---
+        const themes = { "cosmic-pink": { "--primary-glow": "#9b59b6", "--secondary-glow": "#3498db", "--tertiary-glow": "#e74c3c", "--background": "#ffc1d7", "--text-primary": "#ffffff", "--glass-bg": "rgba(255, 255, 255, 0.05)", "--glass-border": "rgba(255, 255, 255, 0.2)", }, "midnight-blue": { "--primary-glow": "#0f3460", "--secondary-glow": "#533483", "--tertiary-glow": "#1e90ff", "--background": "#1a1a2e", "--text-primary": "#e0e0e0", "--glass-bg": "rgba(0, 0, 0, 0.1)", "--glass-border": "rgba(255, 255, 255, 0.15)", }, "forest-green": { "--primary-glow": "#9dcb99", "--secondary-glow": "#52aa9f", "--tertiary-glow": "#4d7c8a", "--background": "#4b6a4a", "--text-primary": "#f0f0f0", "--glass-bg": "rgba(0, 0, 0, 0.1)", "--glass-border": "rgba(255, 255, 255, 0.1)", }, "golden-hour": { "--primary-glow": "#ffb703", "--secondary-glow": "#d00000", "--tertiary-glow": "#e85d04", "--background": "#fb8500", "--text-primary": "#ffffff", "--glass-bg": "rgba(0, 0, 0, 0.1)", "--glass-border": "rgba(255, 255, 255, 0.2)", }, "synthwave": { "--primary-glow": "#f20089", "--secondary-glow": "#00f5d4", "--tertiary-glow": "#e500a4", "--background": "#2d00f7", "--text-primary": "#ffffff", "--glass-bg": "rgba(0, 0, 0, 0.15)", "--glass-border": "rgba(255, 255, 255, 0.1)", } };
+        function setTheme(themeName) {
+            const selectedTheme = themes[themeName]; if (!selectedTheme) return;
+            for (const [key, value] of Object.entries(selectedTheme)) { document.documentElement.style.setProperty(key, value); }
+            localStorage.setItem('studyVerseTheme', themeName);
+        }
+        document.querySelectorAll(".theme-dot").forEach(dot => { dot.addEventListener('click', () => setTheme(dot.dataset.theme)); });
+
+        // --- DOCK POSITION LOGIC ---
+        function setDockPosition(position) {
+            const validPositions = ['left', 'bottom', 'right'];
+            if (!validPositions.includes(position)) position = 'bottom'; // Default
+
+            dockElement.classList.remove('dock-left', 'dock-bottom', 'dock-right');
+            dockElement.classList.add(`dock-${position}`);
+
+            posButtons.forEach(btn => btn.classList.toggle('active', btn.dataset.pos === position));
+            localStorage.setItem('studyVerseDockPosition', position);
+        }
+
+        posButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const position = btn.dataset.pos;
+                setDockPosition(position);
+            });
+        });
 
         // --- LOAD SAVED STATE ON STARTUP ---
         function loadState() {
             // Load Caffeine
             const savedCaffeine = localStorage.getItem('caffeineIntake');
-            if (savedCaffeine !== null) {
-                caffeineIntake = parseInt(savedCaffeine, 10);
-                updateCaffeineDisplay();
-            }
+            if (savedCaffeine !== null) { caffeineIntake = parseInt(savedCaffeine, 10); updateCaffeineDisplay(); }
 
             // Load last tip
             const savedTip = localStorage.getItem('currentTip');
-            if (savedTip) {
-                tipElement.textContent = savedTip;
-            }
+            if (savedTip) { tipElement.textContent = savedTip; }
+
+            // Load saved theme
+            const savedTheme = localStorage.getItem('studyVerseTheme');
+            setTheme(savedTheme && themes[savedTheme] ? savedTheme : 'cosmic-pink');
+
+            // Load saved dock position
+            const savedDockPos = localStorage.getItem('studyVerseDockPosition');
+            setDockPosition(savedDockPos || 'bottom');
         }
         
         document.addEventListener("DOMContentLoaded", () => {
-            // Load any saved data from the previous session
             loadState();
-
-            // Animate the app entrance
             const app = document.querySelector(".app");
-            app.style.opacity = 0;
-            app.style.transform = "translateY(20px)";
+            app.style.opacity = 0; app.style.transform = "translateY(20px)";
             setTimeout(() => {
                 app.style.transition = "opacity 0.5s, transform 0.5s";
-                app.style.opacity = 1;
-                app.style.transform = "translateY(0)";
+                app.style.opacity = 1; app.style.transform = "translateY(0)";
             }, 100);
         });
-
     </script>
+</body>
+</html>
 </body>
 </html>
