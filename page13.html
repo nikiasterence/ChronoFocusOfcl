@@ -22,6 +22,35 @@
             --radius-m: 50px;
         }
 
+        /* Dark Theme */
+        body.dark-theme {
+            --primary-grad-start: #89f7fe;
+            --primary-grad-end: #66a6ff;
+            --text-color: #e0e0e0;
+            --text-color-light: #9e9e9e;
+            --bg-color-start: #121212;
+            --bg-color-end: #1a232f;
+            --glass-bg: rgba(26, 35, 47, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --shadow-color: rgba(0, 0, 0, 0.2);
+            --shadow-color-hover: rgba(0, 0, 0, 0.3);
+        }
+
+        /* Forest Theme */
+        body.forest-theme {
+            --primary-grad-start: #56ab2f;
+            --primary-grad-end: #a8e063;
+            --text-color: #2c3e50;
+            --text-color-light: #34495e;
+            --bg-color-start: #e8f5e9;
+            --bg-color-end: #c8e6c9;
+            --glass-bg: rgba(255, 255, 255, 0.75);
+            --glass-border: rgba(255, 255, 255, 0.5);
+            --shadow-color: rgba(44, 62, 80, 0.15);
+            --shadow-color-hover: rgba(44, 62, 80, 0.2);
+        }
+
+
         * {
             margin: 0;
             padding: 0;
@@ -34,15 +63,14 @@
             min-height: 100vh;
             display: flex;
             justify-content: center;
-            align-items: center;
-            padding: 20px;
+            padding: 40px 20px;
             color: var(--text-color);
-            overflow: hidden;
+            transition: background 0.5s ease;
         }
         
         body::before {
             content: '';
-            position: absolute;
+            position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
             background: linear-gradient(135deg, #a777e3, #6e8efb, #f5f7fa);
             background-size: 400% 400%;
@@ -61,7 +89,7 @@
             width: 100%;
             max-width: 800px;
             background: var(--glass-bg);
-            backdrop-filter: blur(20px);
+            backdrop-filter: blur(25px);
             border-radius: var(--radius-xl);
             border: 1px solid var(--glass-border);
             box-shadow: 0 15px 35px var(--shadow-color);
@@ -119,7 +147,7 @@
         }
 
         .btn-primary { background: linear-gradient(135deg, var(--primary-grad-start), var(--primary-grad-end)); color: white; }
-        .btn-secondary { background: rgba(255, 255, 255, 0.8); color: var(--primary-grad-start); border: 1px solid var(--glass-border); }
+        .btn-secondary { background: var(--glass-bg); color: var(--primary-grad-start); border: 1px solid var(--glass-border); }
         .btn:hover { transform: translateY(-3px); box-shadow: 0 8px 20px var(--shadow-color-hover); }
         .btn:active { transform: translateY(-1px); box-shadow: 0 4px 10px var(--shadow-color-hover); }
 
@@ -130,16 +158,6 @@
         .card { background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: var(--radius-l); padding: 25px; margin-bottom: 30px; box-shadow: 0 5px 15px var(--shadow-color); }
         .card h2 { font-size: 1.5rem; margin-bottom: 20px; color: var(--primary-grad-start); display: flex; align-items: center; gap: 10px; }
         
-        .tracks { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 20px; }
-        .track { padding: 10px 20px; background: rgba(255, 255, 255, 0.7); border-radius: var(--radius-m); cursor: pointer; transition: all 0.3s ease; border: 1px solid transparent; font-weight: 500; }
-        .track.active { background: linear-gradient(135deg, var(--primary-grad-start), var(--primary-grad-end)); color: white; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); }
-        .track:hover:not(.active) { border-color: var(--primary-grad-start); }
-
-        .player-controls { display: flex; align-items: center; gap: 15px; }
-        .volume-control { display: flex; align-items: center; gap: 10px; flex: 1; }
-        .volume-slider { flex: 1; -webkit-appearance: none; height: 6px; border-radius: 3px; background: #ddd; outline: none; transition: opacity 0.2s; }
-        .volume-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%; background: var(--primary-grad-start); cursor: pointer; }
-
         .progress-container { width: 100%; height: 8px; background: rgba(0, 0, 0, 0.05); border-radius: 4px; margin: 20px 0; overflow: hidden; }
         .progress-bar { height: 100%; width: 0%; background: linear-gradient(135deg, var(--primary-grad-start), var(--primary-grad-end)); border-radius: 4px; transition: width 0.5s ease; }
         
@@ -147,19 +165,28 @@
         
         .quote { text-align: center; font-style: italic; color: var(--text-color-light); margin-top: 20px; padding: 15px; border-radius: var(--radius-l); background: rgba(0, 0, 0, 0.03); font-size: 0.95rem; }
         
-        .study-material-btn {
-            display: flex;
-            justify-content: center;
-            width: 100%;
-            margin-top: 20px;
-            padding-top: 15px;
-            padding-bottom: 15px;
-            font-size: 1.2rem;
-        }
-
-        .settings-btn { position: absolute; top: 20px; right: 20px; background: none; border: none; font-size: 1.5rem; color: var(--text-color-light); cursor: pointer; transition: all 0.2s ease; }
+        .settings-btn { position: absolute; top: 20px; right: 20px; background: none; border: none; font-size: 1.5rem; color: var(--text-color-light); cursor: pointer; transition: all 0.2s ease; z-index: 1001;}
         .settings-btn:hover { color: var(--text-color); transform: rotate(45deg); }
         
+        /* Music Player Styles */
+        .playlist { max-height: 150px; overflow-y: auto; margin-bottom: 20px; }
+        .track { padding: 10px 20px; background: rgba(255, 255, 255, 0.7); border-radius: var(--radius-m); cursor: pointer; transition: all 0.3s ease; border: 1px solid transparent; font-weight: 500; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .track.active { background: linear-gradient(135deg, var(--primary-grad-start), var(--primary-grad-end)); color: white; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); }
+        .track:hover:not(.active) { border-color: var(--primary-grad-start); }
+        .add-song-form { display: flex; gap: 10px; margin-top: 15px; }
+        .add-song-form input { flex-grow: 1; padding: 10px; border-radius: 8px; border: 1px solid var(--glass-border); background: rgba(255, 255, 255, 0.8); }
+
+        /* To-Do List Styles */
+        #todo-list { list-style: none; padding: 0; }
+        #todo-list li { display: flex; align-items: center; padding: 12px 5px; border-bottom: 1px solid var(--glass-border); }
+        #todo-list li:last-child { border-bottom: none; }
+        #todo-list input[type="checkbox"] { margin-right: 15px; width: 18px; height: 18px; }
+        #todo-list .task-text { flex-grow: 1; color: var(--text-color); }
+        #todo-list .task-text.completed { text-decoration: line-through; color: var(--text-color-light); }
+        #todo-list .delete-task-btn { background: none; border: none; color: var(--text-color-light); cursor: pointer; font-size: 1rem; }
+        #new-task-input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--glass-border); background: rgba(255, 255, 255, 0.8); margin-top: 15px; }
+
+
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); backdrop-filter: blur(5px); display: flex; justify-content: center; align-items: center; opacity: 0; visibility: hidden; transition: all 0.3s ease; z-index: 1000; }
         .modal-overlay.active { opacity: 1; visibility: visible; }
         .modal { background: var(--glass-bg); padding: 30px; border-radius: var(--radius-l); box-shadow: 0 10px 30px rgba(0,0,0,0.2); width: 90%; max-width: 400px; transform: scale(0.95); transition: all 0.3s ease; }
@@ -167,13 +194,13 @@
         .modal h2 { margin-bottom: 20px; text-align: center; }
         .form-group { margin-bottom: 15px; }
         .form-group label { display: block; margin-bottom: 5px; color: var(--text-color-light); }
-        .form-group input { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--glass-border); background: rgba(255, 255, 255, 0.8); font-size: 1rem; }
+        .form-group input, .form-group select { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--glass-border); background: rgba(255, 255, 255, 0.8); font-size: 1rem; }
         .modal-footer { display: flex; justify-content: flex-end; gap: 10px; margin-top: 25px; }
         
-        @media (max-width: 768px) { .container { padding: 20px; } .timer-display { font-size: 4rem; } .btn { padding: 10px 20px; } }
+        @media (max-width: 768px) { .container { padding: 20px; margin: 20px 0;} .timer-display { font-size: 4rem; } .btn { padding: 10px 20px; } }
     </style>
 </head>
-<body>
+<body class="cozy-theme">
     <div class="container">
         <button class="settings-btn" id="settings-btn"><i class="fas fa-cog"></i></button>
 
@@ -204,28 +231,28 @@
         </div>
         
         <div class="card">
+            <h2><i class="fas fa-tasks"></i> Tasks For This Session</h2>
+            <ul id="todo-list"></ul>
+            <input type="text" id="new-task-input" placeholder="Add a new task...">
+        </div>
+
+        <div class="card">
             <h2><i class="fas fa-music"></i> Focus Sounds</h2>
-            <div class="tracks">
-                <div class="track" data-track="rain">Rain</div>
-                <div class="track" data-track="forest">Forest</div>
-                <div class="track" data-track="cafe">Coffee Shop</div>
-                <div class="track" data-track="lofi">Lofi Beats</div>
-            </div>
+            <div class="playlist" id="playlist"></div>
             <div class="player-controls">
+                <button class="btn btn-secondary" id="prev-track-btn"><i class="fas fa-step-backward"></i></button>
                 <button class="btn btn-secondary" id="play-music-btn"><i class="fas fa-play"></i></button>
-                <div class="volume-control">
-                    <i class="fas fa-volume-down"></i>
-                    <input type="range" class="volume-slider" id="volume-slider" min="0" max="1" step="0.01" value="0.5">
-                    <i class="fas fa-volume-up"></i>
-                </div>
+                <button class="btn btn-secondary" id="next-track-btn"><i class="fas fa-step-forward"></i></button>
+                <input type="range" class="volume-slider" id="volume-slider" min="0" max="1" step="0.01" value="0.5">
+            </div>
+            <div class="add-song-form">
+                <input type="text" id="song-name-input" placeholder="Song Name">
+                <input type="text" id="song-url-input" placeholder="Song URL (.mp3)">
+                <button class="btn btn-primary" id="add-song-btn"><i class="fas fa-plus"></i></button>
             </div>
         </div>
         
         <div class="quote" id="quote">"The journey of a thousand miles begins with a single step."</div>
-        
-        <a href="page2.html" class="btn btn-primary study-material-btn">
-            <i class="fas fa-book-open"></i> Study Material
-        </a>
     </div>
     
     <div class="modal-overlay" id="settings-modal">
@@ -243,6 +270,14 @@
                 <label for="long-break-duration">Long Break (minutes)</label>
                 <input type="number" id="long-break-duration" min="1">
             </div>
+            <div class="form-group">
+                <label for="theme-selector">Theme</label>
+                <select id="theme-selector">
+                    <option value="cozy-theme">Cozy</option>
+                    <option value="dark-theme">Dark</option>
+                    <option value="forest-theme">Forest</option>
+                </select>
+            </div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" id="cancel-settings-btn">Cancel</button>
                 <button class="btn btn-primary" id="save-settings-btn">Save</button>
@@ -252,50 +287,43 @@
 
     <script>
     document.addEventListener('DOMContentLoaded', () => {
-        const CONSTANTS = {
-            STORAGE_KEYS: {
-                SETTINGS: 'chronoPomodoroSettings',
-                SESSION_COUNT: 'chronoPomodoroSessionCount',
-            },
-            QUOTES: [
-                "The journey of a thousand miles begins with a single step.", "Focus on being productive instead of busy.",
-                "The secret of getting ahead is getting started.", "Quality is not an act, it is a habit.",
-                "The harder you work for something, the greater you'll feel when you achieve it.", "Don't stop when you're tired. Stop when you're done.",
-                "Your time is limited, don't waste it living someone else's life.", "The best way to predict the future is to create it."
-            ],
-            AUDIO_TRACKS: {
-                rain: "https://assets.mixkit.co/sfx/preview/mixkit-light-rain-looping-1253.mp3",
-                forest: "https://assets.mixkit.co/sfx/preview/mixkit-forest-at-night-1232.mp3",
-                cafe: "https://assets.mixkit.co/sfx/preview/mixkit-country-cafe-ambience-103.mp3",
-                lofi: "https://assets.mixkit.co/music/preview/mixkit-lofi-chill-15.mp3"
-            }
-        };
-
         const App = {
             state: {
                 timerWorker: null,
-                settings: { pomodoro: 25, shortBreak: 5, longBreak: 15 },
+                settings: { pomodoro: 25, shortBreak: 5, longBreak: 15, theme: 'cozy-theme' },
                 mode: 'pomodoro',
                 isRunning: false,
                 sessionCount: 0,
                 longBreakInterval: 4,
                 remainingTime: 0,
                 initialTime: 0,
+                playlist: [
+                    { name: "Rain", url: "https://assets.mixkit.co/sfx/preview/mixkit-light-rain-looping-1253.mp3" },
+                    { name: "Forest", url: "https://assets.mixkit.co/sfx/preview/mixkit-forest-at-night-1232.mp3" },
+                    { name: "Coffee Shop", url: "https://assets.mixkit.co/sfx/preview/mixkit-country-cafe-ambience-103.mp3" },
+                    { name: "Lofi Beats", url: "https://assets.mixkit.co/music/preview/mixkit-lofi-chill-15.mp3" }
+                ],
+                currentTrackIndex: 0,
+                isMusicPlaying: false,
+                todos: [],
             },
 
             init() {
                 this.initTimerWorker();
                 Settings.load();
-                this.state.sessionCount = parseInt(localStorage.getItem(CONSTANTS.STORAGE_KEYS.SESSION_COUNT) || '0');
-                
-                this.switchMode(this.state.mode, false); // Initialize with default mode
+                TodoList.load();
+
+                this.switchMode(this.state.mode, false);
 
                 UI.init();
                 AudioPlayer.init();
+                TodoList.init();
                 this.addEventListeners();
                 
                 UI.updateMode(this.state.mode);
                 UI.updateSessionCount(this.state.sessionCount);
+                ThemeManager.apply(this.state.settings.theme);
+
                 Notification.requestPermission();
             },
             
@@ -371,12 +399,12 @@
                 let nextMode = 'pomodoro';
                 if (this.state.mode === 'pomodoro') {
                     this.state.sessionCount++;
-                    localStorage.setItem(CONSTANTS.STORAGE_KEYS.SESSION_COUNT, this.state.sessionCount);
+                    localStorage.setItem('chronoPomodoroSessionCount', this.state.sessionCount);
                     UI.updateSessionCount(this.state.sessionCount);
                     nextMode = this.state.sessionCount % this.state.longBreakInterval === 0 ? 'longBreak' : 'shortBreak';
                 }
                 this.switchMode(nextMode);
-                this.toggleTimer(); // Auto-start next timer
+                this.toggleTimer();
             },
 
             switchMode(newMode, shouldReset = true) {
@@ -406,8 +434,18 @@
                 saveSettingsBtn: document.getElementById('save-settings-btn'), cancelSettingsBtn: document.getElementById('cancel-settings-btn'),
                 durationInputs: {
                     pomodoro: document.getElementById('pomodoro-duration'), shortBreak: document.getElementById('short-break-duration'), longBreak: document.getElementById('long-break-duration')
-                }
+                },
+                themeSelector: document.getElementById('theme-selector'),
+                playlist: document.getElementById('playlist'),
+                todoList: document.getElementById('todo-list'),
+                newTaskInput: document.getElementById('new-task-input'),
             },
+            QUOTES: [
+                "The journey of a thousand miles begins with a single step.", "Focus on being productive instead of busy.",
+                "The secret of getting ahead is getting started.", "Quality is not an act, it is a habit.",
+                "The harder you work for something, the greater you'll feel when you achieve it.", "Don't stop when you're tired. Stop when you're done.",
+                "Your time is limited, don't waste it living someone else's life.", "The best way to predict the future is to create it."
+            ],
             init() {
                 this.elements.settingsBtn.addEventListener('click', () => this.toggleModal(true));
                 this.elements.cancelSettingsBtn.addEventListener('click', () => this.toggleModal(false));
@@ -428,7 +466,7 @@
             updateProgressBar(percentage) { this.elements.progressBar.style.width = `${percentage}%`; },
             updateStartButton(isRunning) { this.elements.startBtn.innerHTML = isRunning ? '<i class="fas fa-pause"></i> Pause' : '<i class="fas fa-play"></i> Start'; },
             updateMode(activeMode) { this.elements.modeBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.mode === activeMode)); },
-            updateQuote() { this.elements.quote.textContent = `"${CONSTANTS.QUOTES[Math.floor(Math.random() * CONSTANTS.QUOTES.length)]}"`; },
+            updateQuote() { this.elements.quote.textContent = `"${this.QUOTES[Math.floor(Math.random() * this.QUOTES.length)]}"`; },
             updateSessionCount(count) { this.elements.sessionCount.textContent = `Sessions: ${count}`; },
             updateNextModeDisplay(currentMode, sessionCount, longBreakInterval) {
                  if (currentMode === 'pomodoro') {
@@ -442,6 +480,7 @@
                     for (const mode in this.elements.durationInputs) {
                         this.elements.durationInputs[mode].value = App.state.settings[mode];
                     }
+                    this.elements.themeSelector.value = App.state.settings.theme;
                 }
             }
         };
@@ -449,59 +488,183 @@
         const AudioPlayer = {
             audio: new Audio(),
             notificationSound: new Audio('https://assets.mixkit.co/sfx/preview/mixkit-positive-notification-951.mp3'),
-            elements: { playBtn: document.getElementById('play-music-btn'), volumeSlider: document.getElementById('volume-slider'), tracks: document.querySelectorAll('.track') },
-            state: { currentTrack: 'rain', isPlaying: false, },
+            elements: { 
+                playBtn: document.getElementById('play-music-btn'), 
+                volumeSlider: document.getElementById('volume-slider'),
+                prevBtn: document.getElementById('prev-track-btn'),
+                nextBtn: document.getElementById('next-track-btn'),
+                addSongBtn: document.getElementById('add-song-btn'),
+                songNameInput: document.getElementById('song-name-input'),
+                songUrlInput: document.getElementById('song-url-input'),
+             },
             init() {
-                this.elements.tracks.forEach(track => track.addEventListener('click', (e) => this.selectTrack(e.target.dataset.track)));
                 this.elements.playBtn.addEventListener('click', () => this.togglePlay());
                 this.elements.volumeSlider.addEventListener('input', (e) => this.setVolume(e.target.value));
-                this.elements.tracks[0].classList.add('active');
+                this.elements.nextBtn.addEventListener('click', () => this.changeTrack(1));
+                this.elements.prevBtn.addEventListener('click', () => this.changeTrack(-1));
+                this.elements.addSongBtn.addEventListener('click', () => this.addSong());
+                this.audio.addEventListener('ended', () => this.changeTrack(1));
+                this.renderPlaylist();
                 this.setVolume(this.elements.volumeSlider.value);
             },
-            selectTrack(trackName) {
-                this.state.currentTrack = trackName;
-                this.elements.tracks.forEach(t => t.classList.toggle('active', t.dataset.track === trackName));
-                if (this.state.isPlaying) { this.play(); }
+            renderPlaylist() {
+                UI.elements.playlist.innerHTML = '';
+                App.state.playlist.forEach((track, index) => {
+                    const trackEl = document.createElement('div');
+                    trackEl.className = 'track';
+                    trackEl.textContent = track.name;
+                    trackEl.dataset.index = index;
+                    if (index === App.state.currentTrackIndex) {
+                        trackEl.classList.add('active');
+                    }
+                    trackEl.addEventListener('click', () => {
+                        this.selectTrack(index);
+                    });
+                    UI.elements.playlist.appendChild(trackEl);
+                });
             },
-            togglePlay() { this.state.isPlaying = !this.state.isPlaying; this.state.isPlaying ? this.play() : this.pause(); },
+            selectTrack(index) {
+                App.state.currentTrackIndex = index;
+                if (App.state.isMusicPlaying) { this.play(); }
+                this.renderPlaylist();
+            },
+            changeTrack(direction) {
+                const newIndex = App.state.currentTrackIndex + direction;
+                if(newIndex < 0) {
+                    App.state.currentTrackIndex = App.state.playlist.length -1;
+                } else if (newIndex >= App.state.playlist.length) {
+                    App.state.currentTrackIndex = 0;
+                } else {
+                    App.state.currentTrackIndex = newIndex;
+                }
+                this.selectTrack(App.state.currentTrackIndex);
+            },
+            togglePlay() { 
+                App.state.isMusicPlaying = !App.state.isMusicPlaying; 
+                App.state.isMusicPlaying ? this.play() : this.pause(); 
+            },
             async play() {
                 try {
-                    this.audio.src = CONSTANTS.AUDIO_TRACKS[this.state.currentTrack];
-                    this.audio.loop = true;
+                    this.audio.src = App.state.playlist[App.state.currentTrackIndex].url;
+                    this.audio.loop = false;
                     await this.audio.play();
                     this.elements.playBtn.innerHTML = '<i class="fas fa-pause"></i>';
-                    this.state.isPlaying = true;
+                    App.state.isMusicPlaying = true;
+                    this.renderPlaylist();
                 } catch (err) {
                     console.error("Audio play failed:", err);
-                    this.state.isPlaying = false;
+                    App.state.isMusicPlaying = false;
                     this.elements.playBtn.innerHTML = '<i class="fas fa-play"></i>';
                 }
             },
             pause() {
                 this.audio.pause();
                 this.elements.playBtn.innerHTML = '<i class="fas fa-play"></i>';
-                this.state.isPlaying = false;
+                App.state.isMusicPlaying = false;
             },
             setVolume(value) { this.audio.volume = value; this.notificationSound.volume = value; },
-            playNotificationSound() { this.notificationSound.play().catch(e => console.error("Notification sound failed:", e)); }
+            playNotificationSound() { this.notificationSound.play().catch(e => console.error("Notification sound failed:", e)); },
+            addSong(){
+                const name = this.elements.songNameInput.value.trim();
+                const url = this.elements.songUrlInput.value.trim();
+                if(name && url) {
+                    App.state.playlist.push({name, url});
+                    this.renderPlaylist();
+                    Settings.save(); // Save the new playlist
+                    this.elements.songNameInput.value = '';
+                    this.elements.songUrlInput.value = '';
+                }
+            }
         };
 
         const Settings = {
             load() {
-                const savedSettings = JSON.parse(localStorage.getItem(CONSTANTS.STORAGE_KEYS.SETTINGS));
-                if (savedSettings) { App.state.settings = savedSettings; }
+                const savedSettings = JSON.parse(localStorage.getItem('chronoPomodoroSettings'));
+                if (savedSettings) { 
+                    App.state.settings = { ...App.state.settings, ...savedSettings };
+                }
+                const savedPlaylist = JSON.parse(localStorage.getItem('chronoPomodoroPlaylist'));
+                 if (savedPlaylist) { 
+                    App.state.playlist = savedPlaylist;
+                }
+                App.state.sessionCount = parseInt(localStorage.getItem('chronoPomodoroSessionCount') || '0');
             },
             save() {
                 App.state.settings.pomodoro = parseInt(UI.elements.durationInputs.pomodoro.value) || 25;
                 App.state.settings.shortBreak = parseInt(UI.elements.durationInputs.shortBreak.value) || 5;
                 App.state.settings.longBreak = parseInt(UI.elements.durationInputs.longBreak.value) || 15;
+                App.state.settings.theme = UI.elements.themeSelector.value;
 
-                localStorage.setItem(CONSTANTS.STORAGE_KEYS.SETTINGS, JSON.stringify(App.state.settings));
+                localStorage.setItem('chronoPomodoroSettings', JSON.stringify(App.state.settings));
+                localStorage.setItem('chronoPomodoroPlaylist', JSON.stringify(App.state.playlist));
+                
+                ThemeManager.apply(App.state.settings.theme);
                 UI.toggleModal(false);
-                App.switchMode(App.state.mode); // Refresh timer with new settings
+                App.switchMode(App.state.mode);
             }
         };
         
+        const TodoList = {
+            init() {
+                UI.elements.newTaskInput.addEventListener('keypress', e => {
+                    if (e.key === 'Enter') this.addTask();
+                });
+                this.render();
+            },
+            load() {
+                const savedTodos = JSON.parse(localStorage.getItem('chronoPomodoroTodos'));
+                if (savedTodos) App.state.todos = savedTodos;
+            },
+            save() {
+                localStorage.setItem('chronoPomodoroTodos', JSON.stringify(App.state.todos));
+            },
+            addTask() {
+                const text = UI.elements.newTaskInput.value.trim();
+                if (text) {
+                    App.state.todos.push({ text, completed: false, id: Date.now() });
+                    UI.elements.newTaskInput.value = '';
+                    this.save();
+                    this.render();
+                }
+            },
+            toggleTask(id) {
+                const todo = App.state.todos.find(t => t.id === id);
+                if (todo) todo.completed = !todo.completed;
+                this.save();
+                this.render();
+            },
+            deleteTask(id) {
+                App.state.todos = App.state.todos.filter(t => t.id !== id);
+                this.save();
+                this.render();
+            },
+            render() {
+                UI.elements.todoList.innerHTML = '';
+                if(App.state.todos.length === 0) {
+                     UI.elements.todoList.innerHTML = '<li>No tasks yet. Add one below!</li>';
+                     return;
+                }
+
+                App.state.todos.forEach(todo => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `
+                        <input type="checkbox" ${todo.completed ? 'checked' : ''}>
+                        <span class="task-text ${todo.completed ? 'completed' : ''}">${todo.text}</span>
+                        <button class="delete-task-btn"><i class="fas fa-trash"></i></button>
+                    `;
+                    li.querySelector('input').addEventListener('change', () => this.toggleTask(todo.id));
+                    li.querySelector('button').addEventListener('click', () => this.deleteTask(todo.id));
+                    UI.elements.todoList.appendChild(li);
+                });
+            }
+        }
+
+        const ThemeManager = {
+            apply(themeName) {
+                document.body.className = themeName;
+            }
+        };
+
         const Notification = {
             permission: "default",
             requestPermission() {
