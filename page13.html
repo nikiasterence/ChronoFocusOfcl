@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chrono Pomodoro - Study Verse</title>
+    <title>CozyTuStudios Pomodoro</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -21,42 +21,35 @@
             --radius-l: 20px;
             --radius-m: 50px;
         }
-
-        /* Dark Theme */
-        body.dark-theme {
-            --primary-grad-start: #89f7fe;
-            --primary-grad-end: #66a6ff;
-            --text-color: #e0e0e0;
-            --text-color-light: #9e9e9e;
-            --bg-color-start: #121212;
-            --bg-color-end: #1a232f;
-            --glass-bg: rgba(26, 35, 47, 0.7);
-            --glass-border: rgba(255, 255, 255, 0.1);
-            --shadow-color: rgba(0, 0, 0, 0.2);
-            --shadow-color-hover: rgba(0, 0, 0, 0.3);
+        
+        /* --- 5 New Aura Themes --- */
+        body.theme-aura-lavender {
+            --primary-grad-start: #b19cd9; --primary-grad-end: #d8bfd8;
+            --text-color: #4b3f5c; --text-color-light: #6a5a7d;
+            --bg-color-start: #ede7f6; --bg-color-end: #d1c4e9;
+        }
+        body.theme-aura-peach {
+            --primary-grad-start: #ffcba4; --primary-grad-end: #ffdead;
+            --text-color: #7b4a2d; --text-color-light: #9a6a4d;
+            --bg-color-start: #fff3e0; --bg-color-end: #ffe0b2;
+        }
+        body.theme-aura-mint {
+            --primary-grad-start: #98ff98; --primary-grad-end: #b4eeb4;
+            --text-color: #2e6b2e; --text-color-light: #4c8b4c;
+            --bg-color-start: #e8f5e9; --bg-color-end: #c8e6c9;
+        }
+        body.theme-aura-sky {
+            --primary-grad-start: #87ceeb; --primary-grad-end: #add8e6;
+            --text-color: #2c5c74; --text-color-light: #4c7c94;
+            --bg-color-start: #e1f5fe; --bg-color-end: #b3e5fc;
+        }
+        body.theme-aura-rose {
+            --primary-grad-start: #ffb6c1; --primary-grad-end: #ffc0cb;
+            --text-color: #8b5f65; --text-color-light: #a97f85;
+            --bg-color-start: #fff0f1; --bg-color-end: #ffe4e1;
         }
 
-        /* Forest Theme */
-        body.forest-theme {
-            --primary-grad-start: #56ab2f;
-            --primary-grad-end: #a8e063;
-            --text-color: #2c3e50;
-            --text-color-light: #34495e;
-            --bg-color-start: #e8f5e9;
-            --bg-color-end: #c8e6c9;
-            --glass-bg: rgba(255, 255, 255, 0.75);
-            --glass-border: rgba(255, 255, 255, 0.5);
-            --shadow-color: rgba(44, 62, 80, 0.15);
-            --shadow-color-hover: rgba(44, 62, 80, 0.2);
-        }
-
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif; }
 
         body {
             background: linear-gradient(135deg, var(--bg-color-start), var(--bg-color-end));
@@ -66,86 +59,62 @@
             padding: 40px 20px;
             color: var(--text-color);
             transition: background 0.5s ease;
+            position: relative;
         }
         
+        /* Background Image pseudo-element */
         body::before {
             content: '';
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: linear-gradient(135deg, #a777e3, #6e8efb, #f5f7fa);
-            background-size: 400% 400%;
-            animation: cozy-background 20s ease infinite;
-            z-index: -1;
-            opacity: 0.3;
-        }
-
-        @keyframes cozy-background {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        .container {
-            width: 100%;
-            max-width: 800px;
-            background: var(--glass-bg);
-            backdrop-filter: blur(25px);
-            border-radius: var(--radius-xl);
-            border: 1px solid var(--glass-border);
-            box-shadow: 0 15px 35px var(--shadow-color);
-            padding: 40px;
-            animation: fadeIn 1s ease-out;
-            position: relative;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+            background-size: cover;
+            background-position: center;
+            transition: background-image 0.5s ease-in-out, opacity 0.5s ease-in-out;
+            z-index: -2;
+            opacity: 0;
         }
         
-        header { text-align: center; margin-bottom: 30px; }
+        body.bg-city::before { background-image: url('https://images.pexels.com/photos/1722183/pexels-photo-1722183.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'); opacity: 0.9; }
+        body.bg-forest::before { background-image: url('https://images.pexels.com/photos/1528641/pexels-photo-1528641.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'); opacity: 0.9; }
+        body.bg-beach::before { background-image: url('https://images.pexels.com/photos/3601425/pexels-photo-3601425.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'); opacity: 0.9; }
+        body.bg-cafe::before { background-image: url('https://images.pexels.com/photos/1324709/pexels-photo-1324709.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'); opacity: 0.9; }
 
-        h1 {
-            font-size: 2.8rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, var(--primary-grad-start), var(--primary-grad-end));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 5px;
+        body::after {
+            content: '';
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(135deg, var(--bg-color-start), var(--bg-color-end));
+            z-index: -1;
+            opacity: 0.85; /* Overlay for text readability */
+        }
+        
+        .container {
+            width: 100%; max-width: 800px;
+            background: var(--glass-bg); backdrop-filter: blur(25px);
+            border-radius: var(--radius-xl); border: 1px solid var(--glass-border);
+            box-shadow: 0 15px 35px var(--shadow-color); padding: 40px;
+            animation: fadeIn 1s ease-out; position: relative;
         }
 
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .header-controls { display: flex; justify-content: space-between; align-items: center; position: absolute; top: 20px; right: 20px; left: 20px; }
+        .header-left-controls { display: flex; gap: 10px; }
+        
+        header { text-align: center; margin-bottom: 30px; margin-top: 40px; }
+        h1 {
+            font-size: 2.8rem; font-weight: 700;
+            background: linear-gradient(135deg, var(--primary-grad-start), var(--primary-grad-end));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            margin-bottom: 5px;
+        }
         .tagline { color: var(--text-color-light); font-size: 1.1rem; }
 
         .timer-container { display: flex; flex-direction: column; align-items: center; margin-bottom: 30px; }
-
-        .timer-display {
-            font-size: 5.5rem;
-            font-weight: 700;
-            color: var(--text-color);
-            margin: 15px 0;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            transition: transform 0.2s ease-out;
-        }
-        
+        .timer-display { font-size: 5.5rem; font-weight: 700; color: var(--text-color); margin: 15px 0; text-shadow: 0 2px 10px rgba(0, 0, 0, 0.05); transition: transform 0.2s ease-out; }
         .timer-display.tick { transform: scale(1.02); }
-
         .timer-controls { display: flex; justify-content: center; gap: 15px; margin-bottom: 20px; width: 100%; }
 
-        .btn {
-            padding: 12px 28px;
-            border: none;
-            border-radius: var(--radius-m);
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            box-shadow: 0 5px 15px var(--shadow-color);
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-
+        .btn { padding: 12px 28px; border: none; border-radius: var(--radius-m); font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s ease; box-shadow: 0 5px 15px var(--shadow-color); text-decoration: none; display: inline-flex; align-items: center; gap: 8px; }
         .btn-primary { background: linear-gradient(135deg, var(--primary-grad-start), var(--primary-grad-end)); color: white; }
         .btn-secondary { background: var(--glass-bg); color: var(--primary-grad-start); border: 1px solid var(--glass-border); }
         .btn:hover { transform: translateY(-3px); box-shadow: 0 8px 20px var(--shadow-color-hover); }
@@ -165,17 +134,15 @@
         
         .quote { text-align: center; font-style: italic; color: var(--text-color-light); margin-top: 20px; padding: 15px; border-radius: var(--radius-l); background: rgba(0, 0, 0, 0.03); font-size: 0.95rem; }
         
-        .settings-btn { position: absolute; top: 20px; right: 20px; background: none; border: none; font-size: 1.5rem; color: var(--text-color-light); cursor: pointer; transition: all 0.2s ease; z-index: 1001;}
-        .settings-btn:hover { color: var(--text-color); transform: rotate(45deg); }
-        
+        .icon-btn { background: none; border: none; font-size: 1.5rem; color: var(--text-color-light); cursor: pointer; transition: all 0.2s ease; z-index: 1001; padding: 5px;}
+        .icon-btn:hover { color: var(--text-color); transform: scale(1.1); }
+
         /* Music Player Styles */
         .playlist { max-height: 150px; overflow-y: auto; margin-bottom: 20px; }
         .track { padding: 10px 20px; background: rgba(255, 255, 255, 0.7); border-radius: var(--radius-m); cursor: pointer; transition: all 0.3s ease; border: 1px solid transparent; font-weight: 500; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
         .track.active { background: linear-gradient(135deg, var(--primary-grad-start), var(--primary-grad-end)); color: white; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); }
         .track:hover:not(.active) { border-color: var(--primary-grad-start); }
-        .add-song-form { display: flex; gap: 10px; margin-top: 15px; }
-        .add-song-form input { flex-grow: 1; padding: 10px; border-radius: 8px; border: 1px solid var(--glass-border); background: rgba(255, 255, 255, 0.8); }
-
+        
         /* To-Do List Styles */
         #todo-list { list-style: none; padding: 0; }
         #todo-list li { display: flex; align-items: center; padding: 12px 5px; border-bottom: 1px solid var(--glass-border); }
@@ -200,12 +167,17 @@
         @media (max-width: 768px) { .container { padding: 20px; margin: 20px 0;} .timer-display { font-size: 4rem; } .btn { padding: 10px 20px; } }
     </style>
 </head>
-<body class="cozy-theme">
+<body>
     <div class="container">
-        <button class="settings-btn" id="settings-btn"><i class="fas fa-cog"></i></button>
+        <div class="header-controls">
+            <div class="header-left-controls">
+                 <a href="page2.html" class="btn btn-secondary"><i class="fas fa-book-open"></i> Study Material</a>
+            </div>
+            <button class="icon-btn" id="settings-btn" aria-label="Settings"><i class="fas fa-cog"></i></button>
+        </div>
 
         <header>
-            <h1>Chrono Pomodoro</h1>
+            <h1>CozyTuStudios Pomodoro</h1>
             <p class="tagline">Focus on your study verse with our zen cozy timer</p>
         </header>
         
@@ -228,6 +200,7 @@
         <div class="timer-controls">
             <button class="btn btn-primary" id="start-btn"><i class="fas fa-play"></i> Start</button>
             <button class="btn btn-secondary" id="reset-btn"><i class="fas fa-redo"></i> Reset</button>
+            <button class="btn btn-secondary" id="fullscreen-btn" aria-label="Toggle Fullscreen"><i class="fas fa-expand"></i></button>
         </div>
         
         <div class="card">
@@ -240,15 +213,7 @@
             <h2><i class="fas fa-music"></i> Focus Sounds</h2>
             <div class="playlist" id="playlist"></div>
             <div class="player-controls">
-                <button class="btn btn-secondary" id="prev-track-btn"><i class="fas fa-step-backward"></i></button>
-                <button class="btn btn-secondary" id="play-music-btn"><i class="fas fa-play"></i></button>
-                <button class="btn btn-secondary" id="next-track-btn"><i class="fas fa-step-forward"></i></button>
-                <input type="range" class="volume-slider" id="volume-slider" min="0" max="1" step="0.01" value="0.5">
-            </div>
-            <div class="add-song-form">
-                <input type="text" id="song-name-input" placeholder="Song Name">
-                <input type="text" id="song-url-input" placeholder="Song URL (.mp3)">
-                <button class="btn btn-primary" id="add-song-btn"><i class="fas fa-plus"></i></button>
+                 <!-- Removed music player controls as per request -->
             </div>
         </div>
         
@@ -270,12 +235,24 @@
                 <label for="long-break-duration">Long Break (minutes)</label>
                 <input type="number" id="long-break-duration" min="1">
             </div>
-            <div class="form-group">
+             <div class="form-group">
                 <label for="theme-selector">Theme</label>
                 <select id="theme-selector">
-                    <option value="cozy-theme">Cozy</option>
-                    <option value="dark-theme">Dark</option>
-                    <option value="forest-theme">Forest</option>
+                    <option value="theme-aura-lavender">Lavender Aura</option>
+                    <option value="theme-aura-peach">Peach Aura</option>
+                    <option value="theme-aura-mint">Mint Aura</option>
+                    <option value="theme-aura-sky">Sky Aura</option>
+                    <option value="theme-aura-rose">Rose Aura</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="background-selector">Background</label>
+                <select id="background-selector">
+                    <option value="none">None</option>
+                    <option value="bg-city">City</option>
+                    <option value="bg-forest">Forest</option>
+                    <option value="bg-beach">Beach</option>
+                    <option value="bg-cafe">Cafe</option>
                 </select>
             </div>
             <div class="modal-footer">
@@ -290,21 +267,16 @@
         const App = {
             state: {
                 timerWorker: null,
-                settings: { pomodoro: 25, shortBreak: 5, longBreak: 15, theme: 'cozy-theme' },
-                mode: 'pomodoro',
-                isRunning: false,
-                sessionCount: 0,
-                longBreakInterval: 4,
-                remainingTime: 0,
-                initialTime: 0,
+                settings: { pomodoro: 25, shortBreak: 5, longBreak: 15, theme: 'theme-aura-lavender', background: 'none' },
+                mode: 'pomodoro', isRunning: false, sessionCount: 0, longBreakInterval: 4,
+                remainingTime: 0, initialTime: 0,
                 playlist: [
-                    { name: "Rain", url: "https://assets.mixkit.co/sfx/preview/mixkit-light-rain-looping-1253.mp3" },
-                    { name: "Forest", url: "https://assets.mixkit.co/sfx/preview/mixkit-forest-at-night-1232.mp3" },
-                    { name: "Coffee Shop", url: "https://assets.mixkit.co/sfx/preview/mixkit-country-cafe-ambience-103.mp3" },
-                    { name: "Lofi Beats", url: "https://assets.mixkit.co/music/preview/mixkit-lofi-chill-15.mp3" }
+                    { name: "Empty Mind", url: "https://assets.mixkit.co/music/preview/mixkit-empty-mind-118.mp3" },
+                    { name: "Lofi Chill", url: "https://assets.mixkit.co/music/preview/mixkit-lofi-chill-15.mp3" },
+                    { name: "Just Relax", url: "https://assets.mixkit.co/music/preview/mixkit-just-relax-111.mp3" },
+                    { name: "Summer Fun", url: "https://assets.mixkit.co/music/preview/mixkit-summer-fun-13.mp3" }
                 ],
-                currentTrackIndex: 0,
-                isMusicPlaying: false,
+                currentTrackIndex: 0, isMusicPlaying: false,
                 todos: [],
             },
 
@@ -312,7 +284,6 @@
                 this.initTimerWorker();
                 Settings.load();
                 TodoList.load();
-
                 this.switchMode(this.state.mode, false);
 
                 UI.init();
@@ -322,8 +293,7 @@
                 
                 UI.updateMode(this.state.mode);
                 UI.updateSessionCount(this.state.sessionCount);
-                ThemeManager.apply(this.state.settings.theme);
-
+                ThemeManager.apply(this.state.settings.theme, this.state.settings.background);
                 Notification.requestPermission();
             },
             
@@ -339,15 +309,10 @@
                                 remainingTime--;
                                 self.postMessage({ type: 'tick', time: remainingTime });
                                 if (remainingTime <= 0) {
-                                    clearInterval(timerId);
-                                    timerId = null;
-                                    self.postMessage({ type: 'complete' });
+                                    clearInterval(timerId); timerId = null; self.postMessage({ type: 'complete' });
                                 }
                             }, 1000);
-                        } else if (command === 'pause') {
-                            clearInterval(timerId);
-                            timerId = null;
-                        }
+                        } else if (command === 'pause') { clearInterval(timerId); timerId = null; }
                     };
                 `;
                 const workerBlob = new Blob([workerScript], { type: 'application/javascript' });
@@ -360,24 +325,19 @@
                     this.state.remainingTime = time;
                     UI.updateDisplay(this.state.remainingTime);
                     UI.updateProgressBar(((this.state.initialTime - this.state.remainingTime) / this.state.initialTime) * 100);
-                } else if (type === 'complete') {
-                    this.onComplete();
-                }
+                } else if (type === 'complete') { this.onComplete(); }
             },
 
             addEventListeners() {
                 UI.elements.startBtn.addEventListener('click', () => this.toggleTimer());
                 UI.elements.resetBtn.addEventListener('click', () => this.resetTimer());
+                UI.elements.fullscreenBtn.addEventListener('click', () => UI.toggleFullScreen());
                 UI.elements.modeBtns.forEach(btn => btn.addEventListener('click', (e) => this.switchMode(e.target.dataset.mode)));
             },
 
             toggleTimer() {
                 this.state.isRunning = !this.state.isRunning;
-                if (this.state.isRunning) {
-                    this.state.timerWorker.postMessage({ command: 'start', seconds: this.state.remainingTime });
-                } else {
-                    this.state.timerWorker.postMessage({ command: 'pause' });
-                }
+                this.state.timerWorker.postMessage({ command: this.state.isRunning ? 'start' : 'pause', seconds: this.state.remainingTime });
                 UI.updateStartButton(this.state.isRunning);
             },
             
@@ -391,60 +351,48 @@
             },
 
             onComplete() {
-                this.state.isRunning = false;
-                UI.updateStartButton(false);
+                this.state.isRunning = false; UI.updateStartButton(false);
                 Notification.show(`${this.state.mode.replace(/([A-Z])/g, ' $1')} finished!`);
                 AudioPlayer.playNotificationSound();
-
                 let nextMode = 'pomodoro';
                 if (this.state.mode === 'pomodoro') {
-                    this.state.sessionCount++;
-                    localStorage.setItem('chronoPomodoroSessionCount', this.state.sessionCount);
+                    this.state.sessionCount++; localStorage.setItem('cozyPomodoroSessionCount', this.state.sessionCount);
                     UI.updateSessionCount(this.state.sessionCount);
                     nextMode = this.state.sessionCount % this.state.longBreakInterval === 0 ? 'longBreak' : 'shortBreak';
                 }
-                this.switchMode(nextMode);
-                this.toggleTimer();
+                this.switchMode(nextMode); this.toggleTimer();
             },
 
-            switchMode(newMode, shouldReset = true) {
-                this.state.mode = newMode;
-                this.state.isRunning = false;
+            switchMode(newMode) {
+                this.state.mode = newMode; this.state.isRunning = false;
                 this.state.timerWorker.postMessage({ command: 'pause' });
-
-                this.state.initialTime = this.state.settings[newMode] * 60;
-                this.state.remainingTime = this.state.initialTime;
+                this.state.initialTime = this.state.settings[newMode] * 60; this.state.remainingTime = this.state.initialTime;
                 
-                UI.updateMode(newMode);
-                UI.updateDisplay(this.state.remainingTime);
-                UI.updateProgressBar(0);
-                UI.updateStartButton(false);
+                UI.updateMode(newMode); UI.updateDisplay(this.state.remainingTime);
+                UI.updateProgressBar(0); UI.updateStartButton(false);
                 UI.updateNextModeDisplay(this.state.mode, this.state.sessionCount, this.state.longBreakInterval);
-                if(shouldReset) UI.updateQuote();
+                UI.updateQuote();
             }
         };
 
         const UI = {
             elements: {
                 timerDisplay: document.getElementById('timer'), startBtn: document.getElementById('start-btn'),
-                resetBtn: document.getElementById('reset-btn'), modeBtns: document.querySelectorAll('.mode-btn'),
-                progressBar: document.getElementById('progress-bar'), quote: document.getElementById('quote'),
-                sessionCount: document.getElementById('session-count'), nextModeDisplay: document.getElementById('next-mode'),
-                settingsBtn: document.getElementById('settings-btn'), settingsModal: document.getElementById('settings-modal'),
-                saveSettingsBtn: document.getElementById('save-settings-btn'), cancelSettingsBtn: document.getElementById('cancel-settings-btn'),
-                durationInputs: {
-                    pomodoro: document.getElementById('pomodoro-duration'), shortBreak: document.getElementById('short-break-duration'), longBreak: document.getElementById('long-break-duration')
-                },
-                themeSelector: document.getElementById('theme-selector'),
-                playlist: document.getElementById('playlist'),
-                todoList: document.getElementById('todo-list'),
+                resetBtn: document.getElementById('reset-btn'), fullscreenBtn: document.getElementById('fullscreen-btn'),
+                modeBtns: document.querySelectorAll('.mode-btn'), progressBar: document.getElementById('progress-bar'),
+                quote: document.getElementById('quote'), sessionCount: document.getElementById('session-count'),
+                nextModeDisplay: document.getElementById('next-mode'), settingsBtn: document.getElementById('settings-btn'),
+                settingsModal: document.getElementById('settings-modal'), saveSettingsBtn: document.getElementById('save-settings-btn'),
+                cancelSettingsBtn: document.getElementById('cancel-settings-btn'),
+                durationInputs: { pomodoro: document.getElementById('pomodoro-duration'), shortBreak: document.getElementById('short-break-duration'), longBreak: document.getElementById('long-break-duration') },
+                themeSelector: document.getElementById('theme-selector'), backgroundSelector: document.getElementById('background-selector'),
+                playlist: document.getElementById('playlist'), todoList: document.getElementById('todo-list'),
                 newTaskInput: document.getElementById('new-task-input'),
             },
             QUOTES: [
                 "The journey of a thousand miles begins with a single step.", "Focus on being productive instead of busy.",
                 "The secret of getting ahead is getting started.", "Quality is not an act, it is a habit.",
-                "The harder you work for something, the greater you'll feel when you achieve it.", "Don't stop when you're tired. Stop when you're done.",
-                "Your time is limited, don't waste it living someone else's life.", "The best way to predict the future is to create it."
+                "The harder you work for something, the greater you'll feel when you achieve it."
             ],
             init() {
                 this.elements.settingsBtn.addEventListener('click', () => this.toggleModal(true));
@@ -457,17 +405,15 @@
                 const secs = (seconds % 60).toString().padStart(2, '0');
                 const timeString = `${mins}:${secs}`;
                 
-                this.elements.timerDisplay.textContent = timeString;
-                document.title = `${timeString} - Chrono Pomodoro`;
-
+                this.elements.timerDisplay.textContent = timeString; document.title = `${timeString} - CozyTuStudios Pomodoro`;
                 this.elements.timerDisplay.classList.add('tick');
                 setTimeout(() => this.elements.timerDisplay.classList.remove('tick'), 200);
             },
-            updateProgressBar(percentage) { this.elements.progressBar.style.width = `${percentage}%`; },
+            updateProgressBar(p) { this.elements.progressBar.style.width = `${p}%`; },
             updateStartButton(isRunning) { this.elements.startBtn.innerHTML = isRunning ? '<i class="fas fa-pause"></i> Pause' : '<i class="fas fa-play"></i> Start'; },
             updateMode(activeMode) { this.elements.modeBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.mode === activeMode)); },
             updateQuote() { this.elements.quote.textContent = `"${this.QUOTES[Math.floor(Math.random() * this.QUOTES.length)]}"`; },
-            updateSessionCount(count) { this.elements.sessionCount.textContent = `Sessions: ${count}`; },
+            updateSessionCount(c) { this.elements.sessionCount.textContent = `Sessions: ${c}`; },
             updateNextModeDisplay(currentMode, sessionCount, longBreakInterval) {
                  if (currentMode === 'pomodoro') {
                     const isLongBreakNext = (sessionCount + 1) % longBreakInterval === 0;
@@ -477,181 +423,79 @@
             toggleModal(show) {
                 this.elements.settingsModal.classList.toggle('active', show);
                 if (show) {
-                    for (const mode in this.elements.durationInputs) {
-                        this.elements.durationInputs[mode].value = App.state.settings[mode];
-                    }
+                    for (const mode in this.elements.durationInputs) this.elements.durationInputs[mode].value = App.state.settings[mode];
                     this.elements.themeSelector.value = App.state.settings.theme;
+                    this.elements.backgroundSelector.value = App.state.settings.background;
                 }
+            },
+            toggleFullScreen() {
+                if (!document.fullscreenElement) {
+                    document.documentElement.requestFullscreen().catch(err => alert(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`));
+                    this.elements.fullscreenBtn.innerHTML = '<i class="fas fa-compress"></i>';
+                } else { document.exitFullscreen(); this.elements.fullscreenBtn.innerHTML = '<i class="fas fa-expand"></i>'; }
             }
         };
 
         const AudioPlayer = {
             audio: new Audio(),
             notificationSound: new Audio('https://assets.mixkit.co/sfx/preview/mixkit-positive-notification-951.mp3'),
-            elements: { 
-                playBtn: document.getElementById('play-music-btn'), 
-                volumeSlider: document.getElementById('volume-slider'),
-                prevBtn: document.getElementById('prev-track-btn'),
-                nextBtn: document.getElementById('next-track-btn'),
-                addSongBtn: document.getElementById('add-song-btn'),
-                songNameInput: document.getElementById('song-name-input'),
-                songUrlInput: document.getElementById('song-url-input'),
-             },
-            init() {
-                this.elements.playBtn.addEventListener('click', () => this.togglePlay());
-                this.elements.volumeSlider.addEventListener('input', (e) => this.setVolume(e.target.value));
-                this.elements.nextBtn.addEventListener('click', () => this.changeTrack(1));
-                this.elements.prevBtn.addEventListener('click', () => this.changeTrack(-1));
-                this.elements.addSongBtn.addEventListener('click', () => this.addSong());
-                this.audio.addEventListener('ended', () => this.changeTrack(1));
-                this.renderPlaylist();
-                this.setVolume(this.elements.volumeSlider.value);
-            },
+            init() { this.renderPlaylist(); },
             renderPlaylist() {
                 UI.elements.playlist.innerHTML = '';
                 App.state.playlist.forEach((track, index) => {
                     const trackEl = document.createElement('div');
-                    trackEl.className = 'track';
-                    trackEl.textContent = track.name;
-                    trackEl.dataset.index = index;
-                    if (index === App.state.currentTrackIndex) {
-                        trackEl.classList.add('active');
-                    }
-                    trackEl.addEventListener('click', () => {
-                        this.selectTrack(index);
-                    });
+                    trackEl.className = 'track'; trackEl.textContent = track.name; trackEl.dataset.index = index;
+                    if (index === App.state.currentTrackIndex) trackEl.classList.add('active');
+                    trackEl.addEventListener('click', () => this.selectTrack(index));
                     UI.elements.playlist.appendChild(trackEl);
                 });
             },
-            selectTrack(index) {
+            async selectTrack(index) {
                 App.state.currentTrackIndex = index;
-                if (App.state.isMusicPlaying) { this.play(); }
+                this.audio.src = App.state.playlist[index].url;
+                try {
+                    await this.audio.play(); App.state.isMusicPlaying = true;
+                } catch(e) { console.error("Audio playback failed.", e); App.state.isMusicPlaying = false; }
                 this.renderPlaylist();
             },
-            changeTrack(direction) {
-                const newIndex = App.state.currentTrackIndex + direction;
-                if(newIndex < 0) {
-                    App.state.currentTrackIndex = App.state.playlist.length -1;
-                } else if (newIndex >= App.state.playlist.length) {
-                    App.state.currentTrackIndex = 0;
-                } else {
-                    App.state.currentTrackIndex = newIndex;
-                }
-                this.selectTrack(App.state.currentTrackIndex);
-            },
-            togglePlay() { 
-                App.state.isMusicPlaying = !App.state.isMusicPlaying; 
-                App.state.isMusicPlaying ? this.play() : this.pause(); 
-            },
-            async play() {
-                try {
-                    this.audio.src = App.state.playlist[App.state.currentTrackIndex].url;
-                    this.audio.loop = false;
-                    await this.audio.play();
-                    this.elements.playBtn.innerHTML = '<i class="fas fa-pause"></i>';
-                    App.state.isMusicPlaying = true;
-                    this.renderPlaylist();
-                } catch (err) {
-                    console.error("Audio play failed:", err);
-                    App.state.isMusicPlaying = false;
-                    this.elements.playBtn.innerHTML = '<i class="fas fa-play"></i>';
-                }
-            },
-            pause() {
-                this.audio.pause();
-                this.elements.playBtn.innerHTML = '<i class="fas fa-play"></i>';
-                App.state.isMusicPlaying = false;
-            },
-            setVolume(value) { this.audio.volume = value; this.notificationSound.volume = value; },
             playNotificationSound() { this.notificationSound.play().catch(e => console.error("Notification sound failed:", e)); },
-            addSong(){
-                const name = this.elements.songNameInput.value.trim();
-                const url = this.elements.songUrlInput.value.trim();
-                if(name && url) {
-                    App.state.playlist.push({name, url});
-                    this.renderPlaylist();
-                    Settings.save(); // Save the new playlist
-                    this.elements.songNameInput.value = '';
-                    this.elements.songUrlInput.value = '';
-                }
-            }
         };
 
         const Settings = {
             load() {
-                const savedSettings = JSON.parse(localStorage.getItem('chronoPomodoroSettings'));
-                if (savedSettings) { 
-                    App.state.settings = { ...App.state.settings, ...savedSettings };
-                }
-                const savedPlaylist = JSON.parse(localStorage.getItem('chronoPomodoroPlaylist'));
-                 if (savedPlaylist) { 
-                    App.state.playlist = savedPlaylist;
-                }
-                App.state.sessionCount = parseInt(localStorage.getItem('chronoPomodoroSessionCount') || '0');
+                const savedSettings = JSON.parse(localStorage.getItem('cozyPomodoroSettings'));
+                if (savedSettings) App.state.settings = { ...App.state.settings, ...savedSettings };
+                App.state.sessionCount = parseInt(localStorage.getItem('cozyPomodoroSessionCount') || '0');
             },
             save() {
                 App.state.settings.pomodoro = parseInt(UI.elements.durationInputs.pomodoro.value) || 25;
                 App.state.settings.shortBreak = parseInt(UI.elements.durationInputs.shortBreak.value) || 5;
                 App.state.settings.longBreak = parseInt(UI.elements.durationInputs.longBreak.value) || 15;
                 App.state.settings.theme = UI.elements.themeSelector.value;
-
-                localStorage.setItem('chronoPomodoroSettings', JSON.stringify(App.state.settings));
-                localStorage.setItem('chronoPomodoroPlaylist', JSON.stringify(App.state.playlist));
-                
-                ThemeManager.apply(App.state.settings.theme);
+                App.state.settings.background = UI.elements.backgroundSelector.value;
+                localStorage.setItem('cozyPomodoroSettings', JSON.stringify(App.state.settings));
+                ThemeManager.apply(App.state.settings.theme, App.state.settings.background);
                 UI.toggleModal(false);
                 App.switchMode(App.state.mode);
             }
         };
         
         const TodoList = {
-            init() {
-                UI.elements.newTaskInput.addEventListener('keypress', e => {
-                    if (e.key === 'Enter') this.addTask();
-                });
-                this.render();
-            },
-            load() {
-                const savedTodos = JSON.parse(localStorage.getItem('chronoPomodoroTodos'));
-                if (savedTodos) App.state.todos = savedTodos;
-            },
-            save() {
-                localStorage.setItem('chronoPomodoroTodos', JSON.stringify(App.state.todos));
-            },
+            init() { UI.elements.newTaskInput.addEventListener('keypress', e => { if (e.key === 'Enter') this.addTask(); }); this.render(); },
+            load() { const s = JSON.parse(localStorage.getItem('cozyPomodoroTodos')); if (s) App.state.todos = s; },
+            save() { localStorage.setItem('cozyPomodoroTodos', JSON.stringify(App.state.todos)); },
             addTask() {
                 const text = UI.elements.newTaskInput.value.trim();
-                if (text) {
-                    App.state.todos.push({ text, completed: false, id: Date.now() });
-                    UI.elements.newTaskInput.value = '';
-                    this.save();
-                    this.render();
-                }
+                if (text) { App.state.todos.push({ text, completed: false, id: Date.now() }); UI.elements.newTaskInput.value = ''; this.save(); this.render(); }
             },
-            toggleTask(id) {
-                const todo = App.state.todos.find(t => t.id === id);
-                if (todo) todo.completed = !todo.completed;
-                this.save();
-                this.render();
-            },
-            deleteTask(id) {
-                App.state.todos = App.state.todos.filter(t => t.id !== id);
-                this.save();
-                this.render();
-            },
+            toggleTask(id) { const todo = App.state.todos.find(t => t.id === id); if (todo) todo.completed = !todo.completed; this.save(); this.render(); },
+            deleteTask(id) { App.state.todos = App.state.todos.filter(t => t.id !== id); this.save(); this.render(); },
             render() {
                 UI.elements.todoList.innerHTML = '';
-                if(App.state.todos.length === 0) {
-                     UI.elements.todoList.innerHTML = '<li>No tasks yet. Add one below!</li>';
-                     return;
-                }
-
+                if (App.state.todos.length === 0) { UI.elements.todoList.innerHTML = '<li>No tasks yet. Add one below!</li>'; return; }
                 App.state.todos.forEach(todo => {
                     const li = document.createElement('li');
-                    li.innerHTML = `
-                        <input type="checkbox" ${todo.completed ? 'checked' : ''}>
-                        <span class="task-text ${todo.completed ? 'completed' : ''}">${todo.text}</span>
-                        <button class="delete-task-btn"><i class="fas fa-trash"></i></button>
-                    `;
+                    li.innerHTML = `<input type="checkbox" ${todo.completed ? 'checked' : ''}><span class="task-text ${todo.completed ? 'completed' : ''}">${todo.text}</span><button class="delete-task-btn"><i class="fas fa-trash"></i></button>`;
                     li.querySelector('input').addEventListener('change', () => this.toggleTask(todo.id));
                     li.querySelector('button').addEventListener('click', () => this.deleteTask(todo.id));
                     UI.elements.todoList.appendChild(li);
@@ -660,26 +504,13 @@
         }
 
         const ThemeManager = {
-            apply(themeName) {
-                document.body.className = themeName;
-            }
+            apply(theme, background) { document.body.className = `${theme} ${background}`; }
         };
 
         const Notification = {
             permission: "default",
-            requestPermission() {
-                if ('Notification' in window) {
-                    window.Notification.requestPermission().then(perm => this.permission = perm);
-                }
-            },
-            show(message) {
-                if ('Notification' in window && this.permission === "granted") {
-                    new window.Notification("Chrono Pomodoro", {
-                        body: message,
-                        icon: "https://img.icons8.com/plasticine/100/000000/tomato.png"
-                    });
-                }
-            }
+            requestPermission() { if ('Notification' in window) { window.Notification.requestPermission().then(perm => this.permission = perm); } },
+            show(message) { if ('Notification' in window && this.permission === "granted") new window.Notification("CozyTuStudios Pomodoro", { body: message, icon: "https://img.icons8.com/plasticine/100/000000/tomato.png" }); }
         };
         
         App.init();
