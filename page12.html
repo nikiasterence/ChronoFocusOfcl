@@ -3,340 +3,299 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Varitus News</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>A Moment of Motivation | cozytustudios</title>
+    
+    <!-- Google Fonts for an elegant, cozy feel -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Raleway:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+
     <style>
-        * {
+        /* CSS is now inside the HTML for a single-file solution */
+
+        /* ----- Base & Thematic Styling ----- */
+        :root {
+            --background-color: #ffe8ba; /* Soft cream background */
+            --primary-text-color: #3d352e; /* Deep, warm brown */
+            --card-background: #ffffff; /* Clean white for cards */
+            --accent-color-1: #c9a992;   /* Muted terracotta */
+            --accent-color-2: #8a7e78;   /* Soft, dusty brown */
+            --shadow-color: rgba(0, 0, 0, 0.08);
+            
+            --font-heading: 'Playfair Display', serif;
+            --font-body: 'Raleway', sans-serif;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--background-color);
+            background-image: url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23c9a992" fill-opacity="0.05"%3E%3Cpath d="M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');
+            font-family: var(--font-body);
+            color: var(--primary-text-color);
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
+            line-height: 1.7;
+            font-weight: 300;
         }
         
+        /* Fade-in Animation on Load */
         body {
-            background: #f8f9fa;
-            color: #333;
-            min-height: 100vh;
-            padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
-            overflow-x: hidden;
-            line-height: 1.6;
+           opacity: 0;
+           animation: fadeIn 1s ease-in-out forwards;
         }
         
-        /* Minimal Intro */
-        #intro {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #f8f9fa;
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+
+        /* ----- Header and Title Section ----- */
+        .main-header {
+            text-align: center;
+            padding: 5rem 1.5rem 3rem;
+        }
+
+        .main-header h1 {
+            font-family: var(--font-heading);
+            font-size: clamp(2.5rem, 5vw, 4rem); /* Responsive font size */
+            font-style: italic;
+            font-weight: 500;
+            color: var(--primary-text-color);
+            margin: 0;
+            opacity: 0;
+            animation: slideInDown 1s ease-out 0.3s forwards;
+        }
+
+        /* ----- "Quote of the Day" Special Section ----- */
+        .quote-of-the-day-container {
+            padding: 2rem 1.5rem;
+            text-align: center;
             display: flex;
             justify-content: center;
             align-items: center;
-            flex-direction: column;
-            z-index: 1000;
-            transition: opacity 0.5s ease-out;
+            opacity: 0;
+            animation: fadeIn 1s ease-in-out 0.6s forwards;
         }
-        
-        .logo {
-            font-size: 2.2rem;
-            font-weight: 700;
-            color: #2c3e50;
-            text-align: center;
-            margin-bottom: 10px;
-            letter-spacing: -0.5px;
+
+        .quote-of-the-day {
+            background-color: var(--card-background);
+            border: 1px solid rgba(0,0,0,0.05);
+            border-left: 5px solid var(--accent-color-1);
+            max-width: 800px;
+            padding: 2rem 2.5rem;
+            box-shadow: 0 10px 30px -10px var(--shadow-color);
+            border-radius: 8px;
+            text-align: left;
         }
-        
-        .subtitle {
+
+        .quote-of-the-day-title {
+            font-family: var(--font-body);
+            font-weight: 600;
             font-size: 0.9rem;
-            color: #7f8c8d;
+            color: var(--accent-color-1);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin: 0 0 1rem;
+        }
+
+        .quote-of-the-day blockquote {
+            font-family: var(--font-heading);
+            font-size: clamp(1.4rem, 2.5vw, 1.8rem);
+            font-weight: 600;
+            margin: 0;
+            font-style: italic;
+            color: var(--primary-text-color);
+        }
+
+        .quote-of-the-day cite {
+            display: block;
+            margin-top: 1rem;
+            text-align: right;
             font-weight: 400;
-            margin-bottom: 30px;
+            color: var(--accent-color-2);
         }
-        
-        .loading-bar {
-            width: 120px;
-            height: 2px;
-            background: #e0e0e0;
-            border-radius: 1px;
-            overflow: hidden;
-        }
-        
-        .loading-progress {
-            height: 100%;
-            width: 0%;
-            background: #3498db;
-            transition: width 4s ease-in-out;
-        }
-        
-        /* Main App */
-        #app {
-            display: none;
-            padding: 20px;
-            max-width: 1000px;
+
+        /* ----- Main Quote Collection ----- */
+        .quote-collection {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 2rem;
+            padding: 3rem 1.5rem;
+            max-width: 1400px;
             margin: 0 auto;
         }
         
-        .app-header {
-            text-align: center;
-            margin-bottom: 40px;
-            padding: 20px 0;
-            border-bottom: 1px solid #eaeaea;
+        .quote-card {
+            background: var(--card-background);
+            padding: 2.5rem 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px -5px var(--shadow-color);
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+            border-top: 4px solid transparent; /* Prepare for hover effect */
+            
+            /* Animation for cards loading in sequence */
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.5s ease-out forwards;
         }
+
+        /* Individual Card Animations */
+        /* Assign staggered animation delay using nth-child */
+        .quote-card:nth-child(1) { animation-delay: 0.8s; }
+        .quote-card:nth-child(2) { animation-delay: 0.9s; }
+        .quote-card:nth-child(3) { animation-delay: 1.0s; }
+        /* Add more if needed, or handle with JS */
         
-        .app-title {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: #2c3e50;
-            margin-bottom: 5px;
-            letter-spacing: -0.5px;
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
-        
-        .app-subtitle {
-            color: #7f8c8d;
-            font-size: 0.9rem;
+        @keyframes slideInDown {
+            from { transform: translateY(-30px); opacity: 0;}
+            to { transform: translateY(0); opacity: 1;}
+        }
+
+
+        .quote-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 35px -10px rgba(0, 0, 0, 0.12);
+            border-top-color: var(--accent-color-1);
+        }
+
+        .quote-card blockquote {
+            font-size: 1.15rem;
+            margin: 0 0 1rem 0;
             font-weight: 400;
+            position: relative;
         }
         
-        /* News Grid */
-        .news-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
+        /* A subtle quote icon for decoration */
+        .quote-card blockquote::before {
+            content: '“';
+            font-family: var(--font-heading);
+            position: absolute;
+            top: -20px;
+            left: -15px;
+            font-size: 3rem;
+            color: var(--accent-color-1);
+            opacity: 0.2;
         }
-        
-        .news-card {
-            background: #ffffff;
-            border-radius: 12px;
-            overflow: hidden;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            border: 1px solid #f0f0f0;
-        }
-        
-        .news-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-        }
-        
-        .news-image {
-            width: 100%;
-            height: 160px;
-            object-fit: cover;
-            border-bottom: 1px solid #f0f0f0;
-        }
-        
-        .news-content {
-            padding: 20px;
-        }
-        
-        .news-category {
-            display: inline-block;
-            padding: 4px 10px;
-            border-radius: 12px;
-            font-size: 0.7rem;
-            font-weight: 600;
-            margin-bottom: 12px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: #fff;
-        }
-        
-        .category-education {
-            background: #3498db;
-        }
-        
-        .category-admission {
-            background: #e74c3c;
-        }
-        
-        .category-exam {
-            background: #9b59b6;
-        }
-        
-        .category-technology {
-            background: #2ecc71;
-        }
-        
-        .news-title {
-            font-size: 1.1rem;
-            font-weight: 600;
-            margin-bottom: 12px;
-            color: #2c3e50;
-            line-height: 1.4;
-        }
-        
-        .news-summary {
-            color: #34495e;
+
+
+        .quote-card cite {
+            display: block;
+            text-align: right;
             font-size: 0.9rem;
-            line-height: 1.5;
-            margin-bottom: 15px;
+            font-weight: 500;
+            color: var(--accent-color-2);
         }
-        
-        .news-meta {
-            display: flex;
-            justify-content: space-between;
-            color: #7f8c8d;
-            font-size: 0.8rem;
-            padding-top: 15px;
-            border-top: 1px solid #f0f0f0;
-        }
-        
-        .studio-credit {
+
+        /* ----- Footer Styling ----- */
+        .main-footer {
             text-align: center;
-            color: #7f8c8d;
-            font-size: 0.8rem;
-            margin-top: 40px;
-            padding: 15px;
-        }
-        
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .news-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .logo {
-                font-size: 1.8rem;
-            }
-            
-            .app-title {
-                font-size: 1.5rem;
-            }
-        }
-        
-        /* Animation for news cards */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .news-card {
-            animation: fadeIn 0.4s ease-out;
+            padding: 3rem 1.5rem;
+            margin-top: 4rem;
+            color: var(--accent-color-2);
+            font-size: 0.9rem;
         }
     </style>
 </head>
 <body>
-    <!-- Minimal Intro -->
-    <div id="intro">
-        <div class="logo">Varitus</div>
-        <div class="subtitle">Education News • 2025</div>
-        <div class="loading-bar">
-            <div class="loading-progress" id="loadingProgress"></div>
+
+    <header class="main-header">
+        <h1>Don't lose motivation</h1>
+    </header>
+
+    <main>
+        <section class="quote-of-the-day-container">
+            <article id="qotd" class="quote-of-the-day">
+                <!-- JavaScript will inject the "Quote of the Day" here -->
+            </article>
+        </section>
+
+        <!-- Container for the quote cards that JavaScript will populate -->
+        <div id="quote-grid" class="quote-collection">
+            <!-- JavaScript will inject the shuffled quotes here -->
         </div>
-    </div>
-    
-    <!-- Main App -->
-    <div id="app">
-        <div class="app-header">
-            <div class="app-title">Varitus Education News</div>
-            <div class="app-subtitle">Latest updates for students • 2025</div>
-        </div>
-        
-        <div class="news-grid" id="news-container">
-            <!-- News cards will be generated here -->
-        </div>
-        
-        <div class="studio-credit">
-            Made by Cozytustudios
-        </div>
-    </div>
+    </main>
+
+    <footer class="main-footer">
+        <p>&copy; 2025 | Made by cozytustudios</p>
+    </footer>
 
     <script>
-        // Updated 2025 news data
-        const newsData = [
-            {
-                title: "Digital University Admissions Begin Nationwide",
-                summary: "Bangladesh's first fully digital university admission process starts today. All applications will be processed through the new National Education Portal.",
-                category: "Admission",
-                date: "Jan 15, 2025",
-                image: "https://images.unsplash.com/photo-1543269865-cbf427effbad?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
-            },
-            {
-                title: "AI-Based Learning Mandatory in All Schools",
-                summary: "The Education Ministry announces AI-integrated curriculum will be implemented in all secondary schools by the end of 2025.",
-                category: "Technology",
-                date: "Feb 3, 2025",
-                image: "https://images.unsplash.com/photo-1677442135135-416f8aa26a5b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
-            },
-            {
-                title: "National Digital Literacy Exam Results Published",
-                summary: "Over 92% of students pass the first national digital literacy assessment, showing significant improvement from 2023's 68% pass rate.",
-                category: "Exam",
-                date: "Mar 22, 2025",
-                image: "https://images.unsplash.com/photo-1546410531-bb4caa6b424d?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
-            },
-            {
-                title: "Free Tablet Distribution for College Students",
-                summary: "Government begins phase 3 of its digital education initiative, providing free learning tablets to all college students nationwide.",
-                category: "Education",
-                date: "Apr 5, 2025",
-                image: "https://images.unsplash.com/photo-1542744094-3a31f272c490?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
-            },
-            {
-                title: "VR Classrooms Implemented in 500 Schools",
-                summary: "The education ministry's pilot program for virtual reality classrooms shows promising results, with student engagement increasing by 45%.",
-                category: "Technology",
-                date: "May 18, 2025",
-                image: "https://images.unsplash.com/photo-1585076641399-5c06d1b3365f?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
-            },
-            {
-                title: "New STEM Scholarship Program Announced",
-                summary: "Applications open for the 2025-26 National STEM Scholarship program, offering full tuition for 10,000 students in science and technology fields.",
-                category: "Education",
-                date: "Jun 9, 2025",
-                image: "https://images.unsplash.com/photo-1501504905252-473c47e087f8?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
-            }
-        ];
+        // All necessary JavaScript is right here.
+        document.addEventListener('DOMContentLoaded', () => {
+            const quotes = [
+                { text: "Success is not final, failure is not fatal: it is the courage to continue that counts.", author: "Winston Churchill" },
+                { text: "Believe you can and you're halfway there.", author: "Theodore Roosevelt" },
+                { text: "The secret of getting ahead is getting started.", author: "Mark Twain" },
+                { text: "It always seems impossible until it's done.", author: "Nelson Mandela" },
+                { text: "The future belongs to those who believe in the beauty of their dreams.", author: "Eleanor Roosevelt" },
+                { text: "The only way to do great work is to love what you do.", author: "Steve Jobs" },
+                { text: "Perseverance is not a long race; it is many short races one after the other.", author: "Walter Elliot" },
+                { text: "The harder you work for something, the greater you'll feel when you achieve it.", author: "Anonymous" },
+                { text: "Don't let what you cannot do interfere with what you can do.", author: "John Wooden" },
+                { text: "Success is the sum of small efforts, repeated day in and day out.", author: "Robert Collier" },
+                { text: "You are never too old to set another goal or to dream a new dream.", author: "C.S. Lewis" },
+                { text: "The expert in anything was once a beginner.", author: "Helen Hayes" },
+                { text: "A little progress each day adds up to big results.", author: "Satya Nani" },
+                { text: "Strive for progress, not perfection.", author: "Anonymous" },
+                { text: "It does not matter how slowly you go as long as you do not stop.", author: "Confucius" },
+                { text: "The way to get started is to quit talking and begin doing.", author: "Walt Disney" },
+                { text: "I find that the harder I work, the more luck I seem to have.", author: "Thomas Jefferson" },
+                { text: "Our greatest weakness lies in giving up. The most certain way to succeed is always to try just one more time.", author: "Thomas A. Edison" },
+                { text: "If you can dream it, you can do it.", author: "Walt Disney" },
+                { text: "You just can't beat the person who never gives up.", author: "Babe Ruth" },
+                { text: "Fall seven times and stand up eight.", author: "Japanese Proverb" },
+                { text: "What you get by achieving your goals is not as important as what you become by achieving your goals.", author: "Zig Ziglar" },
+                { text: "There are no shortcuts to any place worth going.", author: "Beverly Sills" },
+                { text: "Action is the foundational key to all success.", author: "Pablo Picasso" },
+                { text: "The journey of a thousand miles begins with a single step.", author: "Lao Tzu" },
+                { text: "I am not a product of my circumstances. I am a product of my decisions.", author: "Stephen Covey" },
+                { text: "The mind is not a vessel to be filled, but a fire to be kindled.", author: "Plutarch" },
+                { text: "The best way to predict your future is to create it.", author: "Abraham Lincoln" },
+                { text: "The beautiful thing about learning is that no one can take it away from you.", author: "B.B. King" },
+                { text: "Genius is 1% inspiration, 99% perspiration.", author: "Thomas Edison" },
+            ];
 
-        // Generate news cards
-        function generateNewsCards() {
-            const newsContainer = document.getElementById('news-container');
-            newsContainer.innerHTML = '';
+            // 1. Shuffle the quotes array randomly
+            const shuffledQuotes = quotes.sort(() => Math.random() - 0.5);
+
+            // 2. Select the "Quote of the Day"
+            const qotd = shuffledQuotes[0]; // Take the first one from the shuffled array
+            const qotdContainer = document.getElementById('qotd');
+            qotdContainer.innerHTML = `
+                <h2 class="quote-of-the-day-title">A Thought for Today</h2>
+                <blockquote>${qotd.text}</blockquote>
+                <cite>— ${qotd.author}</cite>
+            `;
+
+            // 3. Populate the main quote grid with the rest of the quotes
+            const gridContainer = document.getElementById('quote-grid');
+            const mainQuotes = shuffledQuotes.slice(1); // The rest of the quotes
             
-            newsData.forEach((news, index) => {
-                const card = document.createElement('div');
-                card.className = 'news-card';
-                card.style.animationDelay = `${index * 0.1}s`;
-                
-                card.innerHTML = `
-                    <img src="${news.image}" alt="${news.title}" class="news-image">
-                    <div class="news-content">
-                        <span class="news-category category-${news.category.toLowerCase()}">${news.category}</span>
-                        <h3 class="news-title">${news.title}</h3>
-                        <p class="news-summary">${news.summary}</p>
-                        <div class="news-meta">
-                            <span><i class="far fa-calendar"></i> ${news.date}</span>
-                            <span><i class="far fa-newspaper"></i> Brief</span>
-                        </div>
+            let cardHTML = '';
+            let animationDelay = 1.0; // Start animation delay after header/qotd animations
+
+            mainQuotes.forEach(quote => {
+                animationDelay += 0.05; // Increment delay for each card for a nice staggered effect
+                cardHTML += `
+                    <div class="quote-card" style="animation-delay: ${animationDelay}s;">
+                        <blockquote>${quote.text}</blockquote>
+                        <cite>— ${quote.author}</cite>
                     </div>
                 `;
-                
-                newsContainer.appendChild(card);
             });
-        }
 
-        // Initialize the app
-        function initApp() {
-            // Start loading animation
-            document.getElementById('loadingProgress').style.width = '100%';
-            
-            generateNewsCards();
-            
-            // Simulate loading time
-            setTimeout(() => {
-                document.getElementById('intro').style.opacity = '0';
-                document.getElementById('app').style.display = 'block';
-                
-                setTimeout(() => {
-                    document.getElementById('intro').style.display = 'none';
-                }, 500);
-            }, 2500);
-        }
-
-        // Start the app when page loads
-        window.onload = initApp;
+            gridContainer.innerHTML = cardHTML;
+        });
     </script>
 </body>
 </html>
