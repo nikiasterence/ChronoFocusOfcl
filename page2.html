@@ -13,10 +13,10 @@
             --tertiary-glow: #e74c3c;
             --background: #ffc1d7;
             --text-primary: #ffffff;
-            --text-secondary: rgba(255, 255, 255, 0.7);
-            --glass-bg: rgba(255, 255, 255, 0.05);
-            --glass-border: rgba(255, 255, 255, 0.2);
-            --shadow-color: rgba(0, 0, 0, 0.3);
+            --text-secondary: rgba(255, 255, 255, 0.8);
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.25);
+            --shadow-color: rgba(0, 0, 0, 0.35);
         }
 
         * {
@@ -67,7 +67,7 @@
 
         .aurora-item {
             position: absolute; border-radius: 50%;
-            filter: blur(120px); opacity: 0;
+            filter: blur(150px); opacity: 0;
             transition: background-color 0.8s ease;
         }
 
@@ -97,20 +97,20 @@
 
         @keyframes aurora-glow-1 {
             0% { transform: scale(1) translate(0, 0) rotate(0deg); opacity: 0.3; }
-            100% { transform: scale(1.6) translate(40px, -40px) rotate(90deg); opacity: 0.6; }
+            100% { transform: scale(1.6) translate(40px, -40px) rotate(90deg); opacity: 0.5; }
         }
         @keyframes aurora-glow-2 {
             0% { transform: scale(1) translate(0, 0) rotate(0deg); opacity: 0.4; }
-            100% { transform: scale(1.4) translate(-30px, 50px) rotate(-90deg); opacity: 0.7; }
+            100% { transform: scale(1.4) translate(-30px, 50px) rotate(-90deg); opacity: 0.6; }
         }
         @keyframes aurora-glow-3 {
             0% { transform: scale(1) translate(-50%, -50%) rotate(0deg); opacity: 0.35; }
-            100% { transform: scale(1.5) translate(-40%, -60%) rotate(180deg); opacity: 0.65; }
+            100% { transform: scale(1.5) translate(-40%, -60%) rotate(180deg); opacity: 0.55; }
         }
 
         .app {
             width: 95%; max-width: 550px; background: var(--glass-bg);
-            backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+            backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
             border-radius: 30px; padding: 40px; box-shadow: 0 16px 64px var(--shadow-color);
             border: 1px solid var(--glass-border); text-align: center;
             position: relative; z-index: 1;
@@ -120,19 +120,22 @@
             font-size: 3rem; margin-bottom: 30px; display: flex;
             justify-content: center; align-items: center; gap: 15px;
             font-weight: 700;
-            /* Animation Removed */
-            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+            text-shadow: 0 3px 15px rgba(0, 0, 0, 0.3);
         }
         
         .tip-container {
             min-height: 180px; display: flex; flex-direction: column;
             align-items: center; justify-content: center; margin: 30px 0; padding: 25px;
-            background: var(--glass-bg); border-radius: 20px;
+            background: rgba(0,0,0,0.1); border-radius: 20px;
             box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.2); transition: all 0.4s ease;
             border: 1px solid var(--glass-border); position: relative;
         }
         
-        #tip { font-size: 1.3rem; line-height: 1.7; text-shadow: 0 1px 3px var(--shadow-color); font-weight: 500; }
+        #tip { 
+            font-size: 1.3rem; line-height: 1.7; 
+            text-shadow: 0 2px 8px var(--shadow-color); 
+            font-weight: 500; 
+        }
 
         .copy-tip-btn {
             position: absolute; top: 15px; right: 15px;
@@ -148,7 +151,7 @@
             border: 1px solid var(--glass-border);
         }
         .caffeine-display { font-size: 1.2rem; font-weight: bold; }
-        .caffeine-warning { color: #ff6b6b; font-size: 0.9rem; margin-top: 5px; display: none; }
+        .caffeine-warning { color: #ff6b6b; font-size: 0.9rem; margin-top: 5px; display: none; font-weight: bold; }
         .reset-btn {
             padding: 10px 18px; font-size: 0.9rem; border-radius: 12px;
             background: var(--glass-bg); color: var(--text-secondary);
@@ -161,8 +164,8 @@
         /* DOCK STYLES */
         .dock {
             position: fixed; display: flex;
-            align-items: center; padding: 10px; background: rgba(0, 0, 0, 0.2);
-            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            align-items: center; padding: 10px; background: rgba(0, 0, 0, 0.25);
+            backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
             box-shadow: 0 12px 40px var(--shadow-color);
             border: 1px solid var(--glass-border); z-index: 100;
             transition: all 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
@@ -185,23 +188,32 @@
         }
 
         .dock-icon {
-            width: 65px; height: 65px; border-radius: 18px;
+            border-radius: 18px;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             cursor: pointer; transition: all 0.2s ease-in-out; position: relative;
-            color: white; font-size: 1.6rem;
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+            color: white; 
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2), inset 0 1px 1px rgba(255,255,255,0.2);
             text-decoration: none; flex-shrink: 0;
         }
+
+        /* Dock Size classes */
+        .dock.size-small .dock-icon { width: 50px; height: 50px; font-size: 1.2rem; }
+        .dock.size-medium .dock-icon { width: 65px; height: 65px; font-size: 1.6rem; }
+        .dock.size-large .dock-icon { width: 80px; height: 80px; font-size: 2rem; }
+
         .dock.dock-bottom .dock-icon { margin: 0 8px; }
         .dock.dock-left .dock-icon, .dock.dock-right .dock-icon { margin: 8px 0; }
         
-        .dock-icon:hover { transform: translateY(-12px) scale(1.1); box-shadow: 0 12px 25px rgba(0,0,0,0.4); }
-        .dock.dock-left .dock-icon:hover { transform: translateX(12px) scale(1.1); }
-        .dock.dock-right .dock-icon:hover { transform: translateX(-12px) scale(1.1); }
+        .dock-icon:hover { transform: translateY(-12px) scale(1.15); box-shadow: 0 12px 30px rgba(0,0,0,0.5), inset 0 1px 1px rgba(255,255,255,0.2); }
+        .dock.dock-left .dock-icon:hover { transform: translateX(12px) scale(1.15); }
+        .dock.dock-right .dock-icon:hover { transform: translateX(-12px) scale(1.15); }
+
+        /* REMOVED: Styles for secondary and expanded dock, as it's now always visible */
 
         .dock-icon-label {
             position: absolute; font-size: 0.8rem;
-            color: var(--text-primary); text-shadow: 0 1px 5px var(--shadow-color);
+            color: var(--text-primary); 
+            text-shadow: 0 1px 5px rgba(0,0,0,0.7);
             opacity: 0; transition: opacity 0.3s, transform 0.3s;
             white-space: nowrap; font-weight: 500;
         }
@@ -226,6 +238,51 @@
         .dock-optichain { background: linear-gradient(135deg, #80deea, #00acc1); }
         .dock-pomodoro { background: linear-gradient(135deg, #FF6347, #FF4500); }
         .dock-deep-focus { background: linear-gradient(135deg, #1E90FF, #00008B); }
+        .dock-focus { background: linear-gradient(135deg, #8338ec, #3a86ff); }
+        .dock-motivation { background: linear-gradient(135deg, #fb5607, #ff006e); }
+        .dock-task { background: linear-gradient(135deg, #2196f3, #673ab7); }
+
+        /* Focus Submenu Styles */
+        .focus-submenu {
+            position: absolute;
+            bottom: 120%; 
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px);
+            border-radius: 15px;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            border: 1px solid var(--glass-border);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+        .dock-icon.dock-focus:hover .focus-submenu {
+            opacity: 1;
+            visibility: visible;
+            bottom: 130%;
+        }
+        .focus-submenu-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 15px;
+            border-radius: 10px;
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+        .focus-submenu-item:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        .focus-submenu-item i {
+            width: 20px;
+            text-align: center;
+        }
 
         /* SETTINGS AND THEME CONTROLS */
         .app-controls {
@@ -233,15 +290,17 @@
             z-index: 10; display: flex; gap: 15px;
         }
         .control-group { position: relative; }
-        .control-icon { font-size: 1.5rem; cursor: pointer; transition: transform 0.3s, color 0.3s; }
+        .control-icon { font-size: 1.5rem; cursor: pointer; transition: transform 0.3s, color 0.3s; text-shadow: 0 2px 5px rgba(0,0,0,0.3); }
         .control-group:hover .control-icon { transform: scale(1.1) rotate(15deg); color: var(--secondary-glow); }
         .control-options {
             position: absolute; top: 120%; right: 0;
-            background: var(--glass-bg); border: 1px solid var(--glass-border);
+            background: rgba(0,0,0,0.2); 
+            border: 1px solid var(--glass-border);
             border-radius: 12px; padding: 8px;
             display: flex; gap: 8px; opacity: 0;
             visibility: hidden; transform: translateY(10px);
-            transition: all 0.3s; backdrop-filter: blur(10px);
+            transition: all 0.3s; backdrop-filter: blur(15px);
+            min-width: max-content; 
         }
         .control-group:hover .control-options { opacity: 1; visibility: visible; transform: translateY(0); }
         .theme-dot {
@@ -250,12 +309,17 @@
             border: 2px solid rgba(255,255,255,0.5); transition: transform 0.2s;
         }
         .theme-dot:hover { transform: scale(1.15); }
-        .pos-btn {
+        .pos-btn, .size-btn { 
             background: rgba(255,255,255,0.1); border: 1px solid transparent;
             color: var(--text-primary); padding: 5px 10px; border-radius: 8px;
             cursor: pointer; transition: all 0.3s; font-size: 0.9rem;
         }
-        .pos-btn:hover, .pos-btn.active { background: rgba(255,255,255,0.3); border-color: var(--glass-border); }
+        .pos-btn:hover, .size-btn:hover { background: rgba(255,255,255,0.3); }
+        .pos-btn.active, .size-btn.active { 
+            background: rgba(255,255,255,0.4); 
+            border-color: rgba(255,255,255,0.5);
+            color: #fff;
+        }
 
         /* RESPONSIVE DOCK FIXES */
         @media (max-width: 900px) {
@@ -267,7 +331,7 @@
                 padding-right: 15px;
             }
         }
-        @media (max-height: 750px) { /* Adjust vertical dock for shorter screens */
+        @media (max-height: 750px) { 
             .dock.dock-left, .dock.dock-right {
                 max-height: 80vh;
                 overflow-y: auto;
@@ -281,12 +345,10 @@
             #tip { font-size: 1.1rem; }
             .caffeine-counter { flex-direction: column; gap: 15px; }
 
-            .dock-icon { /* Make icons smaller on mobile */
-                width: 55px;
-                height: 55px;
-                font-size: 1.4rem;
-                border-radius: 15px;
-            }
+            .dock.size-small .dock-icon { width: 50px; height: 50px; font-size: 1.2rem; }
+            .dock.size-medium .dock-icon { width: 55px; height: 55px; font-size: 1.4rem; }
+            .dock.size-large .dock-icon { width: 60px; height: 60px; font-size: 1.5rem; }
+
              .dock.dock-bottom .dock-icon { margin: 0 5px; }
              .dock.dock-left .dock-icon, .dock.dock-right .dock-icon { margin: 5px 0; }
         }
@@ -298,13 +360,23 @@
         <div class="aurora-item"></div><div class="aurora-item"></div>
     </div>
 
-    <div class="dock dock-bottom">
+    <!-- MODIFIED: Dock icons are now all visible by default. The 'secondary' class and the 'More' button have been removed. -->
+    <div class="dock dock-bottom size-medium">
         <div class="dock-icon dock-tip" onclick="newTip()"><i class="fas fa-lightbulb"></i><div class="dock-icon-label">New Tip</div></div>
+        <a href="#" class="dock-icon dock-motivation"><i class="fas fa-fist-raised"></i><div class="dock-icon-label">Motivation</div></a>
+        <!-- MODIFIED: Task button now links to page1.html -->
+        <a href="page1.html" class="dock-icon dock-task"><i class="fas fa-tasks"></i><div class="dock-icon-label">Tasks</div></a>
+        <div class="dock-icon dock-focus">
+            <i class="fas fa-bullseye"></i>
+            <div class="dock-icon-label">Focus</div>
+            <div class="focus-submenu">
+                <a href="page13.html" class="focus-submenu-item"><i class="fas fa-hourglass-start"></i> Pomodoro</a>
+                <a href="page9.html" class="focus-submenu-item"><i class="fas fa-brain"></i> Deep Focus</a>
+            </div>
+        </div>
         <div class="dock-icon dock-study" onclick="openStudyWithMe()"><i class="fab fa-youtube"></i><div class="dock-icon-label">Study With Me</div></div>
         <a href="page10.html" class="dock-icon dock-measure"><i class="fas fa-ruler-combined"></i><div class="dock-icon-label">Measure</div></a>
         <div class="dock-icon dock-caffeine" onclick="addCaffeine()"><i class="fas fa-coffee"></i><div class="dock-icon-label">Add Caffeine</div></div>
-        <a href="page13.html" class="dock-icon dock-pomodoro"><i class="fas fa-hourglass-start"></i><div class="dock-icon-label">Pomodoro</div></a>
-        <a href="page9.html" class="dock-icon dock-deep-focus"><i class="fas fa-brain"></i><div class="dock-icon-label">Deep Focus</div></a>
         <a href="page5.html" class="dock-icon dock-periodic"><i class="fas fa-atom"></i><div class="dock-icon-label">Periodic Table</div></a>
         <a href="page6.html" class="dock-icon dock-solar"><i class="fas fa-globe"></i><div class="dock-icon-label">Solar System</div></a>
         <a href="page7.html" class="dock-icon dock-puzzle"><i class="fas fa-puzzle-piece"></i><div class="dock-icon-label">Puzzles</div></a>
@@ -317,6 +389,14 @@
 
     <div class="app">
         <div class="app-controls">
+             <div class="control-group">
+                <i class="fas fa-ruler-horizontal control-icon"></i>
+                <div class="control-options">
+                    <button class="size-btn" data-size="small">S</button>
+                    <button class="size-btn active" data-size="medium">M</button>
+                    <button class="size-btn" data-size="large">L</button>
+                </div>
+            </div>
              <div class="control-group">
                 <i class="fas fa-cog control-icon"></i>
                 <div class="control-options">
@@ -360,6 +440,7 @@
         const caffeineWarningEl = document.getElementById("caffeine-warning");
         const dockElement = document.querySelector(".dock");
         const posButtons = document.querySelectorAll('.pos-btn');
+        const sizeButtons = document.querySelectorAll('.size-btn');
 
         function playSound(url) { new Audio(url).play(); }
         
@@ -398,8 +479,7 @@
             else if (caffeineIntake >= 300) { caffeineWarningEl.style.display = "block"; caffeineWarningEl.textContent = "Max recommended: 400mg"; }
         }
         
-        // --- THEME SWITCHER LOGIC ---
-        const themes = { "cosmic-pink": { "--primary-glow": "#9b59b6", "--secondary-glow": "#3498db", "--tertiary-glow": "#e74c3c", "--background": "#ffc1d7", "--text-primary": "#ffffff", "--glass-bg": "rgba(255, 255, 255, 0.05)", "--glass-border": "rgba(255, 255, 255, 0.2)", }, "midnight-blue": { "--primary-glow": "#0f3460", "--secondary-glow": "#533483", "--tertiary-glow": "#1e90ff", "--background": "#1a1a2e", "--text-primary": "#e0e0e0", "--glass-bg": "rgba(0, 0, 0, 0.1)", "--glass-border": "rgba(255, 255, 255, 0.15)", }, "forest-green": { "--primary-glow": "#9dcb99", "--secondary-glow": "#52aa9f", "--tertiary-glow": "#4d7c8a", "--background": "#4b6a4a", "--text-primary": "#f0f0f0", "--glass-bg": "rgba(0, 0, 0, 0.1)", "--glass-border": "rgba(255, 255, 255, 0.1)", }, "golden-hour": { "--primary-glow": "#ffb703", "--secondary-glow": "#d00000", "--tertiary-glow": "#e85d04", "--background": "#fb8500", "--text-primary": "#ffffff", "--glass-bg": "rgba(0, 0, 0, 0.1)", "--glass-border": "rgba(255, 255, 255, 0.2)", }, "synthwave": { "--primary-glow": "#f20089", "--secondary-glow": "#00f5d4", "--tertiary-glow": "#e500a4", "--background": "#2d00f7", "--text-primary": "#ffffff", "--glass-bg": "rgba(0, 0, 0, 0.15)", "--glass-border": "rgba(255, 255, 255, 0.1)", } };
+        const themes = { "cosmic-pink": { "--primary-glow": "#9b59b6", "--secondary-glow": "#3498db", "--tertiary-glow": "#e74c3c", "--background": "#ffc1d7", "--text-primary": "#ffffff", "--glass-bg": "rgba(255, 255, 255, 0.1)", "--glass-border": "rgba(255, 255, 255, 0.25)", }, "midnight-blue": { "--primary-glow": "#0f3460", "--secondary-glow": "#533483", "--tertiary-glow": "#1e90ff", "--background": "#1a1a2e", "--text-primary": "#e0e0e0", "--glass-bg": "rgba(0, 0, 0, 0.2)", "--glass-border": "rgba(255, 255, 255, 0.15)", }, "forest-green": { "--primary-glow": "#9dcb99", "--secondary-glow": "#52aa9f", "--tertiary-glow": "#4d7c8a", "--background": "#4b6a4a", "--text-primary": "#f0f0f0", "--glass-bg": "rgba(0, 0, 0, 0.2)", "--glass-border": "rgba(255, 255, 255, 0.15)", }, "golden-hour": { "--primary-glow": "#ffb703", "--secondary-glow": "#d00000", "--tertiary-glow": "#e85d04", "--background": "#fb8500", "--text-primary": "#ffffff", "--glass-bg": "rgba(0, 0, 0, 0.2)", "--glass-border": "rgba(255, 255, 255, 0.2)", }, "synthwave": { "--primary-glow": "#f20089", "--secondary-glow": "#00f5d4", "--tertiary-glow": "#e500a4", "--background": "#2d00f7", "--text-primary": "#ffffff", "--glass-bg": "rgba(0, 0, 0, 0.2)", "--glass-border": "rgba(255, 255, 255, 0.15)", } };
         function setTheme(themeName) {
             const selectedTheme = themes[themeName]; if (!selectedTheme) return;
             for (const [key, value] of Object.entries(selectedTheme)) { document.documentElement.style.setProperty(key, value); }
@@ -407,10 +487,9 @@
         }
         document.querySelectorAll(".theme-dot").forEach(dot => { dot.addEventListener('click', () => setTheme(dot.dataset.theme)); });
 
-        // --- DOCK POSITION LOGIC ---
         function setDockPosition(position) {
             const validPositions = ['left', 'bottom', 'right'];
-            if (!validPositions.includes(position)) position = 'bottom'; // Default
+            if (!validPositions.includes(position)) position = 'bottom'; 
 
             dockElement.classList.remove('dock-left', 'dock-bottom', 'dock-right');
             dockElement.classList.add(`dock-${position}`);
@@ -421,28 +500,44 @@
 
         posButtons.forEach(btn => {
             btn.addEventListener('click', () => {
-                const position = btn.dataset.pos;
-                setDockPosition(position);
+                setDockPosition(btn.dataset.pos);
             });
         });
 
-        // --- LOAD SAVED STATE ON STARTUP ---
+        function setDockSize(size) {
+            const validSizes = ['small', 'medium', 'large'];
+            if (!validSizes.includes(size)) size = 'medium'; 
+
+            dockElement.classList.remove('size-small', 'size-medium', 'size-large');
+            dockElement.classList.add(`size-${size}`);
+
+            sizeButtons.forEach(btn => btn.classList.toggle('active', btn.dataset.size === size));
+            localStorage.setItem('studyVerseDockSize', size);
+        }
+
+        sizeButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                setDockSize(btn.dataset.size);
+            });
+        });
+
+        // REMOVED: The toggleDock() function is no longer needed.
+
         function loadState() {
-            // Load Caffeine
             const savedCaffeine = localStorage.getItem('caffeineIntake');
             if (savedCaffeine !== null) { caffeineIntake = parseInt(savedCaffeine, 10); updateCaffeineDisplay(); }
 
-            // Load last tip
             const savedTip = localStorage.getItem('currentTip');
             if (savedTip) { tipElement.textContent = savedTip; }
 
-            // Load saved theme
             const savedTheme = localStorage.getItem('studyVerseTheme');
             setTheme(savedTheme && themes[savedTheme] ? savedTheme : 'cosmic-pink');
 
-            // Load saved dock position
             const savedDockPos = localStorage.getItem('studyVerseDockPosition');
             setDockPosition(savedDockPos || 'bottom');
+
+            const savedDockSize = localStorage.getItem('studyVerseDockSize');
+            setDockSize(savedDockSize || 'medium');
         }
         
         document.addEventListener("DOMContentLoaded", () => {
@@ -455,7 +550,5 @@
             }, 100);
         });
     </script>
-</body>
-</html>
 </body>
 </html>
