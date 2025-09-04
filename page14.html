@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cozy Study Break Companion</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #ffdfd3 0%, #fec8d8 50%, #d9d2e9 100%);
+            color: #5d4954;
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.85);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+        
+        header {
+            text-align: center;
+            padding: 30px 20px;
+            background: linear-gradient(135deg, #957dad 0%, #d291bc 100%);
+            border-radius: 15px;
+            color: white;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .intro {
+            padding: 25px;
+            text-align: center;
+            font-size: 1.1rem;
+            background: rgba(255, 248, 248, 0.7);
+            border-radius: 15px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(255, 200, 216, 0.5);
+        }
+        
+        .exercise-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 25px;
+            padding: 10px;
+        }
+        
+        .exercise {
+            background: linear-gradient(135deg, #fff 0%, #f9f5ff 100%);
+            border-radius: 18px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+            width: 320px;
+            padding: 25px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(210, 145, 188, 0.3);
+        }
+        
+        .exercise:hover {
+            transform: translateY(-7px);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .exercise::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, #d291bc, #957dad);
+        }
+        
+        .exercise h3 {
+            color: #957dad;
+            margin-bottom: 18px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid rgba(210, 145, 188, 0.3);
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .exercise h3 i {
+            color: #d291bc;
+        }
+        
+        .exercise-content {
+            min-height: 200px;
+        }
+        
+        .timer {
+            font-size: 2.2rem;
+            text-align: center;
+            margin: 20px 0;
+            color: #957dad;
+            font-weight: bold;
+            font-family: 'Courier New', monospace;
+            background: rgba(249, 245, 255, 0.7);
+            padding: 10px;
+            border-radius: 10px;
+        }
+        
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #957dad 0%, #d291bc 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            margin-top: 20px;
+            transition: all 0.3s;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn:hover {
+            background: linear-gradient(135deg, #d291bc 0%, #957dad 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .math-problem {
+            font-size: 1.7rem;
+            text-align: center;
+            margin: 20px 0;
+            color: #7c5295;
+            font-weight: bold;
+        }
+        
+        .answer-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0d0e6;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            text-align: center;
+            transition: border 0.3s;
+            background: rgba(255, 253, 252, 0.8);
+        }
+        
+        .answer-input:focus {
+            outline: none;
+            border: 2px solid #d291bc;
+            box-shadow: 0 0 0 3px rgba(210, 145, 188, 0.3);
+        }
+        
+        .stretch-demo {
+            width: 100%;
+            height: 150px;
+            margin: 15px auto;
+            background: linear-gradient(135deg, #f8e6ee 0%, #e9e2f4 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #7c5295;
+            font-size: 1.2rem;
+            text-align: center;
+            padding: 15px;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(210, 145, 188, 0.2);
+        }
+        
+        .result {
+            text-align: center;
+            margin-top: 15px;
+            font-weight: bold;
+            min-height: 30px;
+            padding: 8px;
+            border-radius: 8px;
+        }
+        
+        .cozy-element {
+            background: linear-gradient(135deg, #f8e6ee 0%, #e9e2f4 100%);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 15px 0;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(210, 145, 188, 0.2);
+        }
+        
+        .cozy-timer {
+            font-size: 2.5rem;
+            color: #957dad;
+            margin: 15px 0;
+            font-weight: bold;
+        }
+        
+        .cozy-instructions {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        
+        .cozy-btn {
+            background: linear-gradient(135deg, #a78bbb 0%, #c895c2 100%);
+        }
+        
+        .cozy-btn:hover {
+            background: linear-gradient(135deg, #c895c2 0%, #a78bbb 100%);
+        }
+        
+        .visualization {
+            text-align: center;
+            padding: 15px;
+        }
+        
+        .visualization img {
+            max-width: 100%;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        footer {
+            text-align: center;
+            padding: 25px;
+            background: rgba(255, 248, 248, 0.7);
+            border-radius: 15px;
+            color: #7c5295;
+            font-size: 0.95rem;
+            margin-top: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(255, 200, 216, 0.5);
+        }
+        
+        .heart {
+            color: #e6739f;
+        }
+        
+        @media (max-width: 768px) {
+            .exercise-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .exercise {
+                width: 100%;
+                max-width: 400px;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-book-open"></i> Cozy Study Break Companion</h1>
+            <p class="subtitle">Gentle exercises to refresh your mind and soul during study sessions</p>
+        </header>
+        
+        <div class="intro">
+            <p>Taking mindful breaks is essential for effective learning. These cozy exercises will help you recharge without losing focus. Try one every 25-30 minutes for best results.</p>
+        </div>
+        
+        <div class="exercise-container">
+            <div class="exercise">
+                <h3><i class="fas fa-brain"></i> Quick Math Challenge</h3>
+                <div class="exercise-content">
+                    <p>Solve this quick math problem to give your brain a gentle workout:</p>
+                    <div class="math-problem" id="math-problem">7 × 8 = ?</div>
+                    <input type="number" class="answer-input" id="math-answer" placeholder="Enter answer">
+                    <button class="btn" id="check-math">Check Answer</button>
+                    <div class="result" id="math-result"></div>
+                </div>
+            </div>
+            
+            <div class="exercise">
+                <h3><i class="fas fa-child"></i> Gentle Stretch</h3>
+                <div class="exercise-content">
+                    <p>Follow along with this gentle stretch to relieve tension:</p>
+                    <div class="stretch-demo" id="stretch-demo">Neck Rolls</div>
+                    <div class="timer" id="stretch-timer">15</div>
+                    <button class="btn" id="start-stretch">Start Stretching</button>
+                </div>
+            </div>
+            
+            <div class="exercise">
+                <h3><i class="fas fa-mug-hot"></i> Tea Time Mindfulness</h3>
+                <div class="exercise-content">
+                    <div class="cozy-element">
+                        <p class="cozy-instructions">Imagine enjoying a warm cup of tea. Notice the aroma, warmth, and flavor.</p>
+                        <div class="cozy-timer" id="tea-timer">1:00</div>
+                        <button class="btn cozy-btn" id="start-tea">Begin Tea Meditation</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="exercise">
+                <h3><i class="fas fa-cloud"></i> Visualization Break</h3>
+                <div class="exercise-content">
+                    <div class="visualization">
+                        <p>Close your eyes and picture yourself in a peaceful place:</p>
+                        <div class="stretch-demo">A cozy library • A quiet forest • A serene beach</div>
+                        <div class="timer" id="visualization-timer">1:00</div>
+                        <button class="btn" id="start-visualization">Start Visualization</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="exercise">
+                <h3><i class="fas fa-music"></i> Sound Therapy</h3>
+                <div class="exercise-content">
+                    <div class="cozy-element">
+                        <p class="cozy-instructions">Listen to calming sounds. Focus on the gentle tones.</p>
+                        <div class="cozy-timer" id="sound-timer">2:00</div>
+                        <button class="btn cozy-btn" id="start-sound">Play Nature Sounds</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="exercise">
+                <h3><i class="fas fa-lightbulb"></i> Positive Affirmation</h3>
+                <div class="exercise-content">
+                    <div class="cozy-element">
+                        <p class="cozy-instructions">Repeat to yourself:</p>
+                        <div class="stretch-demo" style="font-style: italic;">"I am capable and focused. My mind absorbs information easily."</div>
+                        <div class="timer" id="affirmation-timer">0:30</div>
+                        <button class="btn" id="start-affirmation">Begin Affirmation</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Remember to take regular breaks while studying - it helps with retention and prevents burnout.</p>
+            <p>Made with <span class="heart">❤</span> for students everywhere</p>
+        </footer>
+    </div>
+
+    <script>
+        // Math Challenge
+        const mathProblem = document.getElementById('math-problem');
+        const mathAnswer = document.getElementById('math-answer');
+        const checkMathBtn = document.getElementById('check-math');
+        const mathResult = document.getElementById('math-result');
+        
+        let num1, num2, correctAnswer;
+        
+        function generateMathProblem() {
+            num1 = Math.floor(Math.random() * 12) + 1;
+            num2 = Math.floor(Math.random() * 12) + 1;
+            correctAnswer = num1 * num2;
+            
+            mathProblem.textContent = `${num1} × ${num2} = ?`;
+            mathAnswer.value = '';
+            mathResult.textContent = '';
+        }
+        
+        checkMathBtn.addEventListener('click', function() {
+            const userAnswer = parseInt(mathAnswer.value);
+            
+            if (isNaN(userAnswer)) {
+                mathResult.textContent = 'Please enter a number';
+                mathResult.style.color = '#e6739f';
+            } else if (userAnswer === correctAnswer) {
+                mathResult.textContent = 'Correct! Well done!';
+                mathResult.style.color = '#7c5295';
+                
+                // Generate a new problem after a short delay
+                setTimeout(generateMathProblem, 1500);
+            } else {
+                mathResult.textContent = `Incorrect. Try again!`;
+                mathResult.style.color = '#e6739f';
+            }
+        });
+        
+        // Initialize the first math problem
+        generateMathProblem();
+        
+        // Stretch Exercise
+        const stretchDemo = document.getElementById('stretch-demo');
+        const stretchTimer = document.getElementById('stretch-timer');
+        const startStretchBtn = document.getElementById('start-stretch');
+        
+        const stretches = [
+            "Neck Rolls: Slowly tilt your head side to side",
+            "Shoulder Shrugs: Lift shoulders up and down gently",
+            "Seated Twist: Gently twist your torso while seated",
+            "Wrist Circles: Rotate your wrists in circular motions",
+            "Forward Fold: Bend forward and let your arms hang loose"
+        ];
+        
+        let stretchInterval;
+        let stretchCount = 15;
+        let isStretching = false;
+        let currentStretch = 0;
+        
+        startStretchBtn.addEventListener('click', function() {
+            if (isStretching) {
+                clearInterval(stretchInterval);
+                isStretching = false;
+                startStretchBtn.textContent = 'Start Stretching';
+                stretchCount = 15;
+                stretchTimer.textContent = stretchCount;
+            } else {
+                isStretching = true;
+                startStretchBtn.textContent = 'Stop Stretching';
+                stretchDemo.textContent = stretches[currentStretch];
+                
+                stretchInterval = setInterval(function() {
+                    stretchCount--;
+                    
+                    if (stretchCount === 0) {
+                        stretchCount = 15;
+                        currentStretch = (currentStretch + 1) % stretches.length;
+                        stretchDemo.textContent = stretches[currentStretch];
+                    }
+                    
+                    stretchTimer.textContent = stretchCount;
+                }, 1000);
+            }
+        });
+        
+        // Tea Meditation
+        const teaTimer = document.getElementById('tea-timer');
+        const startTeaBtn = document.getElementById('start-tea');
+        
+        let teaInterval;
+        let teaCount = 60;
+        let isTeaTime = false;
+        
+        startTeaBtn.addEventListener('click', function() {
+            if (isTeaTime) {
+                clearInterval(teaInterval);
+                isTeaTime = false;
+                startTeaBtn.textContent = 'Begin Tea Meditation';
+                teaCount = 60;
+                teaTimer.textContent = '1:00';
+            } else {
+                isTeaTime = true;
+                startTeaBtn.textContent = 'Stop Meditation';
+                
+                teaInterval = setInterval(function() {
+                    teaCount--;
+                    
+                    const minutes = Math.floor(teaCount / 60);
+                    const seconds = teaCount % 60;
+                    
+                    teaTimer.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                    
+                    if (teaCount === 0) {
+                        clearInterval(teaInterval);
+                        isTeaTime = false;
+                        startTeaBtn.textContent = 'Begin Tea Meditation';
+                        teaCount = 60;
+                        teaTimer.textContent = '1:00';
+                    }
+                }, 1000);
+            }
+        });
+        
+        // Visualization
+        const visualizationTimer = document.getElementById('visualization-timer');
+        const startVisualizationBtn = document.getElementById('start-visualization');
+        
+        let visualizationInterval;
+        let visualizationCount = 60;
+        let isVisualizing = false;
+        
+        startVisualizationBtn.addEventListener('click', function() {
+            if (isVisualizing) {
+                clearInterval(visualizationInterval);
+                isVisualizing = false;
+                startVisualizationBtn.textContent = 'Start Visualization';
+                visualizationCount = 60;
+                visualizationTimer.textContent = '1:00';
+            } else {
+                isVisualizing = true;
+                startVisualizationBtn.textContent = 'Stop Visualization';
+                
+                visualizationInterval = setInterval(function() {
+                    visualizationCount--;
+                    
+                    const minutes = Math.floor(visualizationCount / 60);
+                    const seconds = visualizationCount % 60;
+                    
+                    visualizationTimer.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                    
+                    if (visualizationCount === 0) {
+                        clearInterval(visualizationInterval);
+                        isVisualizing = false;
+                        startVisualizationBtn.textContent = 'Start Visualization';
+                        visualizationCount = 60;
+                        visualizationTimer.textContent = '1:00';
+                    }
+                }, 1000);
+            }
+        });
+        
+        // Sound Therapy
+        const soundTimer = document.getElementById('sound-timer');
+        const startSoundBtn = document.getElementById('start-sound');
+        
+        let soundInterval;
+        let soundCount = 120;
+        let isSoundPlaying = false;
+        
+        startSoundBtn.addEventListener('click', function() {
+            if (isSoundPlaying) {
+                clearInterval(soundInterval);
+                isSoundPlaying = false;
+                startSoundBtn.textContent = 'Play Nature Sounds';
+                soundCount = 120;
+                soundTimer.textContent = '2:00';
+            } else {
+                isSoundPlaying = true;
+                startSoundBtn.textContent = 'Stop Sounds';
+                
+                soundInterval = setInterval(function() {
+                    soundCount--;
+                    
+                    const minutes = Math.floor(soundCount / 60);
+                    const seconds = soundCount % 60;
+                    
+                    soundTimer.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                    
+                    if (soundCount === 0) {
+                        clearInterval(soundInterval);
+                        isSoundPlaying = false;
+                        startSoundBtn.textContent = 'Play Nature Sounds';
+                        soundCount = 120;
+                        soundTimer.textContent = '2:00';
+                    }
+                }, 1000);
+            }
+        });
+        
+        // Affirmation
+        const affirmationTimer = document.getElementById('affirmation-timer');
+        const startAffirmationBtn = document.getElementById('start-affirmation');
+        
+        let affirmationInterval;
+        let affirmationCount = 30;
+        let isAffirming = false;
+        
+        startAffirmationBtn.addEventListener('click', function() {
+            if (isAffirming) {
+                clearInterval(affirmationInterval);
+                isAffirming = false;
+                startAffirmationBtn.textContent = 'Begin Affirmation';
+                affirmationCount = 30;
+                affirmationTimer.textContent = '0:30';
+            } else {
+                isAffirming = true;
+                startAffirmationBtn.textContent = 'Stop Affirmation';
+                
+                affirmationInterval = setInterval(function() {
+                    affirmationCount--;
+                    
+                    const minutes = Math.floor(affirmationCount / 60);
+                    const seconds = affirmationCount % 60;
+                    
+                    affirmationTimer.textContent = `0:${seconds.toString().padStart(2, '0')}`;
+                    
+                    if (affirmationCount === 0) {
+                        clearInterval(affirmationInterval);
+                        isAffirming = false;
+                        startAffirmationBtn.textContent = 'Begin Affirmation';
+                        affirmationCount = 30;
+                        affirmationTimer.textContent = '0:30';
+                    }
+                }, 1000);
+            }
+        });
+    </script>
+</body>
+</html>
