@@ -132,6 +132,8 @@ body {
   cursor: pointer;
   color: var(--text-primary);
   text-decoration: none;
+  position: relative;
+  overflow: hidden;
 }
 .dock-button:hover {
   transform: translateY(-8px);
@@ -157,6 +159,33 @@ body {
 }
 .dock-button h2 { font-size: 1.1rem; font-weight: 600; margin: 0; }
 .dock-button p { font-size: 0.85rem; color: var(--text-secondary); }
+
+/* --- Shiny/Glow Effect for Study Button --- */
+.study-tools {
+    animation: pulseGlow 2.5s infinite ease-out;
+}
+.study-tools::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -150%;
+    width: 75%;
+    height: 100%;
+    background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0) 100%);
+    transform: skewX(-25deg);
+    animation: shine 5s infinite linear;
+}
+
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 0 15px rgba(var(--primary-rgb), 0.2); }
+  50% { box-shadow: 0 0 25px 8px rgba(var(--primary-rgb), 0.4); }
+}
+
+@keyframes shine {
+  0% { left: -150%; }
+  50% { left: 150%; }
+  100% { left: 150%; }
+}
   
 /* --- General Section Styling --- */
 .section {
@@ -226,7 +255,7 @@ input:focus, select:focus {
 /* --- Task Input --- */
 .task-input-grid {
   display: grid;
-  grid-template-columns: 1fr auto auto auto auto;
+  grid-template-columns: 1fr auto auto;
   gap: 15px;
   align-items: center;
   margin-bottom: 20px;
@@ -370,7 +399,7 @@ li.completed {
   body { padding: 15px; }
   .section { padding: 20px; }
   .task-input-grid { grid-template-columns: 1fr; }
-  .task-input-grid > * { width: 100%; }
+  .task-input-grid > * { width: 100%; margin-bottom: 10px; }
 }
 </style>
 </head>
@@ -382,10 +411,10 @@ li.completed {
 <h1>Chrono Focus</h1>
 <p>Your calm and cozy productivity partner.</p>
 <div class="color-palette" id="colorPalette">
-<div class="color-swatch active" style="background-color: #d8683f;" data-theme="default" title="Mocha"></div>
-<div class="color-swatch" style="background-color: #4a964d;" data-theme="theme-sage" title="Sage"></div>
-<div class="color-swatch" style="background-color: #dc5373;" data-theme="theme-rose" title="Rose"></div>
-<div class="color-swatch" style="background-color: #1b3546;" data-theme="theme-mist" title="Mist"></div>
+<div class="color-swatch active" style="background-color: #8D6E63;" data-theme="default" title="Mocha"></div>
+<div class="color-swatch" style="background-color: #819A82;" data-theme="theme-sage" title="Sage"></div>
+<div class="color-swatch" style="background-color: #C597A2;" data-theme="theme-rose" title="Rose"></div>
+<div class="color-swatch" style="background-color: #8FACC0;" data-theme="theme-mist" title="Mist"></div>
 </div>
 </header>
 
@@ -425,8 +454,6 @@ li.completed {
 
 <div class="task-input-grid">
 <input id="taskInput" type="text" placeholder="e.g., Read a chapter of a book..." />
-<input id="taskDate" type="date" title="Due Date" />
-<input id="taskTime" type="time" title="Due Time" />
 <select id="taskIcon" title="Task Category">
 <option value="fas fa-thumbtack">📌 General</option>
 <option value="fas fa-book">📖 Study</option>
@@ -448,9 +475,6 @@ li.completed {
 <div id="toast" class="toast"></div>
 
 <script>
-// ALL JAVASCRIPT LOGIC REMAINS UNCHANGED FROM THE PREVIOUS VERSION.
-// IT IS ALREADY OPTIMIZED FOR THE TASK MANAGER'S FUNCTIONALITY.
-
 document.addEventListener('DOMContentLoaded', () => {
     initializeTheme();
     loadTasks();
@@ -499,15 +523,8 @@ function loadTasks() {
     const taskList = document.getElementById('taskList');
     taskList.innerHTML = '';
 
-    // Advanced sorting: by completion, then by date/time
-    tasks.sort((a, b) => {
-        if (a.completed !== b.completed) return a.completed - b.completed;
-        const dateTimeA = a.date && a.time ? `${a.date}T${a.time}` : a.date || '';
-        const dateTimeB = b.date && b.time ? `${b.date}T${b.time}` : b.date || '';
-        if (dateTimeA && !dateTimeB) return -1;
-        if (!dateTimeA && dateTimeB) return 1;
-        return dateTimeA.localeCompare(dateTimeB);
-    });
+    // Sort by completion status
+    tasks.sort((a, b) => a.completed - b.completed);
 
     const filteredTasks = tasks.filter(task => {
         if (currentFilter === 'active') return !task.completed;
@@ -517,7 +534,7 @@ function loadTasks() {
 
     if (filteredTasks.length === 0) {
         const placeholder = document.createElement('li');
-        placeholder.style.cssText = 'justify-content: center; color: var(--text-secondary); background: transparent;';
+        placeholder.style.cssText = 'justify-content: center; color: var(--text-secondary); background: transparent; border: 1px dashed var(--border-color); box-shadow: none;';
         placeholder.textContent = 'No tasks here. Add one to get started!';
         taskList.appendChild(placeholder);
     } else {
@@ -534,26 +551,11 @@ function renderTask(task) {
         li.classList.add('completed');
     }
 
-    let dateTimeText = '';
-    if (task.date) {
-        const taskDate = new Date(task.date + 'T00:00:00'); // Mitigate timezone issues
-        dateTimeText = taskDate.toLocaleDateDateString(undefined, {
-            weekday: 'short', month: 'short', day: 'numeric'
-        });
-    }
-    if (task.time) {
-        let [hours, minutes] = task.time.split(':');
-        let ampm = +hours >= 12 ? 'PM' : 'AM';
-        hours = +hours % 12 || 12;
-        dateTimeText += ` at ${hours}:${minutes} ${ampm}`;
-    }
-
     li.innerHTML = `
         <div class="task-info-container">
             <div class="task-icon-container"><i class="${task.icon}"></i></div>
             <div class="task-details" ondblclick="editTask('${task.id}')">
                 <div class="task-text">${task.text}</div>
-                ${dateTimeText ? `<div class="task-datetime"><i class="far fa-calendar-alt"></i> ${dateTimeText}</div>` : ''}
             </div>
         </div>
         <div class="task-actions">
@@ -576,8 +578,6 @@ function addTask() {
     const newTask = {
         id: 'task-' + Date.now(),
         text: taskInput.value.trim(),
-        date: document.getElementById('taskDate').value,
-        time: document.getElementById('taskTime').value,
         icon: document.getElementById('taskIcon').value,
         completed: false
     };
@@ -587,8 +587,6 @@ function addTask() {
     
     // Reset form
     taskInput.value = '';
-    document.getElementById('taskDate').value = '';
-    document.getElementById('taskTime').value = '';
     taskInput.focus();
 
     showToast('Task added successfully!');
@@ -617,9 +615,9 @@ function toggleCompleteTask(taskId) {
 function editTask(taskId) {
     let tasks = getTasks();
     const task = tasks.find(t => t.id === taskId);
-    if(task) {
+    if(task && !task.completed) { // Prevent editing of completed tasks
         const newText = prompt('Enter the new task text:', task.text);
-        if (newText && newText.trim() !== '') {
+        if (newText && newText.trim() !== '' && newText.trim() !== task.text) {
             task.text = newText.trim();
             saveTasks(tasks);
             loadTasks();
