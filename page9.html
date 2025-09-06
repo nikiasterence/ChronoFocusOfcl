@@ -11,28 +11,25 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            /* Light Theme (Default) - Cozy & Soft */
+            /* Light Theme (Default) */
             --primary-color: #c55f73;
-            --primary-color-translucent: rgba(197, 95, 115, 0.15);
-            --background-gradient-start: #fdf6f6;
-            --background-gradient-end: #ead6d9;
+            --primary-color-translucent: rgb(255, 250, 251);
             --text-color: #3e3234;
             --text-color-light: #8e7f81;
             --glass-background: rgba(255, 255, 255, 0.7);
             --glass-border: 1px solid rgba(0, 0, 0, 0.08);
-            --input-background: rgba(0, 0, 0, 0.05);
+            --input-background: rgba(77, 62, 62, 0.05);
             --button-hover-background: rgba(0, 0, 0, 0.1);
             --shadow-color: rgba(90, 75, 78, 0.1);
             --border-radius: 18px;
             --blur-effect: blur(16px);
+            --completed-color: #34c759;
         }
 
         body.dark-mode {
-            /* Dark Theme - Cozy & Warm */
+            /* Dark Theme */
             --primary-color: #d16b7f;
-            --primary-color-translucent: rgba(209, 107, 127, 0.2);
-            --background-gradient-start: #1a202c;
-            --background-gradient-end: #2d3748;
+            --primary-color-translucent: rgba(255, 232, 237, 0.2);
             --text-color: #e2e8f0;
             --text-color-light: #a0aec0;
             --glass-background: rgba(45, 55, 72, 0.5);
@@ -40,11 +37,11 @@
             --input-background: rgba(255, 255, 255, 0.1);
             --button-hover-background: rgba(255, 255, 255, 0.2);
             --shadow-color: rgba(0, 0, 0, 0.25);
+            --completed-color: #4ade80;
         }
 
         body {
             font-family: 'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-image: linear-gradient(135deg, var(--background-gradient-start) 0%, var(--background-gradient-end) 100%);
             margin: 0;
             display: flex;
             justify-content: center;
@@ -52,6 +49,44 @@
             height: 100vh;
             color: var(--text-color);
             transition: background 0.4s ease, color 0.4s ease;
+            overflow: hidden;
+            background: #121212;
+        }
+
+        .aurora {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            background-image:
+                radial-gradient(ellipse at 20% 25%, var(--primary-color) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 15%, #5a5ae6 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 85%, #ad41a4 0%, transparent 50%),
+                radial-gradient(ellipse at 25% 90%, #4690ad 0%, transparent 50%);
+            background-color: #fff4f4;
+            opacity: 0.3;
+            filter: blur(100px);
+            animation: aurora-flow 20s infinite alternate;
+        }
+
+        body.dark-mode .aurora {
+            background-color: #f8faff;
+            opacity: 0.5;
+        }
+
+        body:not(.dark-mode) .aurora {
+            background-color: #fdf6f6;
+            opacity: 0.5;
+        }
+
+        @keyframes aurora-flow {
+            0% { transform: scale(1, 1) rotate(0deg); }
+            25% { transform: scale(1.3, 1.1) rotate(2deg); }
+            50% { transform: scale(1.5, 1.2) rotate(5deg); }
+            75% { transform: scale(1.3, 1.1) rotate(-2deg); }
+            100% { transform: scale(1, 1) rotate(0deg); }
         }
 
         .app-container {
@@ -67,6 +102,7 @@
             display: flex;
             overflow: hidden;
             transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out, background 0.4s ease;
+            z-index: 2;
         }
 
         .app-container.hidden {
@@ -83,7 +119,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 15px; /* Added spacing */
+            gap: 15px;
         }
 
         .icon-sidebar button {
@@ -100,163 +136,446 @@
             justify-content: center;
         }
 
-        .icon-sidebar button svg {
-            width: 24px;
-            height: 24px;
-            fill: var(--text-color);
-        }
-
-        .icon-sidebar button:hover {
-            background: var(--button-hover-background);
-            transform: scale(1.1);
-        }
-
-        .main-content {
-            flex-grow: 1;
-            padding: 30px;
-            display: flex;
-            flex-direction: column;
-            overflow-y: auto;
-        }
-
-        #calendar-view { display: none; flex-direction: column; height: 100%; }
-        #calendar-view.visible { display: flex; }
-
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 10px;
-            margin-bottom: 20px;
-        }
-
-        header h1 { text-shadow: 0 1px 2px var(--shadow-color); }
-
-        .calendar-nav button { background: none; border: none; font-size: 28px; cursor: pointer; color: var(--text-color); transition: transform 0.2s ease; }
-        .calendar-nav button:hover { transform: scale(1.2); }
-
-        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; text-align: center; flex-grow: 1; }
-        .calendar-grid div { padding: 10px; border-radius: 12px; cursor: pointer; transition: background-color 0.3s ease; position: relative; }
-        .calendar-grid .day-name { font-weight: 600; color: var(--text-color-light); }
-        .calendar-grid div:not(.day-name):hover { background: var(--button-hover-background); }
-        .calendar-grid .today { background-color: var(--primary-color-translucent); color: var(--primary-color); font-weight: 600; border: 1px solid var(--primary-color); }
-        .calendar-grid .task-dot { position: absolute; top: 5px; right: 5px; width: 8px; height: 8px; background-color: var(--primary-color); border-radius: 50%; }
-
-        #welcome-view { text-align: center; margin: auto; }
-        #welcome-view h2 { font-size: 2.5em; font-weight: 500; text-shadow: 0 1px 2px var(--shadow-color); }
-        #welcome-view p { color: var(--text-color-light); }
-
-        .task-sidebar {
-            width: 320px; flex-shrink: 0; background: transparent; padding: 20px;
-            border-left: var(--glass-border); display: flex; flex-direction: column;
-            overflow-y: auto;
-        }
-
-        .task-card {
-            background: var(--glass-background);
-            padding: 20px; border-radius: var(--border-radius);
-            margin-bottom: 20px;
-        }
-
-        #new-task-form h3 { margin-top: 0; }
+        .icon-sidebar button svg { width: 24px; height: 24px; fill: var(--text-color); }
+        .icon-sidebar button:hover { background: var(--button-hover-background); transform: scale(1.1); }
         
-        #new-task-form .icon-picker {
-            display: flex;
-            justify-content: space-around;
-            margin-bottom: 15px;
+        .main-content { 
+            flex-grow: 1; 
+            padding: 30px; 
+            display: flex; 
+            flex-direction: column; 
+            overflow-y: auto; 
         }
         
-        #new-task-form .icon-picker i {
-            font-size: 18px;
+        #calendar-view { 
+            display: none; 
+            flex-direction: column; 
+            height: 100%; 
+        }
+        
+        #calendar-view.visible { 
+            display: flex; 
+        }
+
+        header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            padding: 0 10px; 
+            margin-bottom: 20px; 
+        }
+        
+        header h1 { 
+            text-shadow: 0 1px 2px var(--shadow-color); 
+        }
+        
+        .calendar-nav button { 
+            background: none; 
+            border: none; 
+            font-size: 28px; 
+            cursor: pointer; 
+            color: var(--text-color); 
+            transition: transform 0.2s ease; 
+        }
+        
+        .calendar-nav button:hover { 
+            transform: scale(1.2); 
+        }
+        
+        .calendar-grid { 
+            display: grid; 
+            grid-template-columns: repeat(7, 1fr); 
+            gap: 10px; 
+            text-align: center; 
+            flex-grow: 1; 
+        }
+        
+        .calendar-grid div { 
+            padding: 10px; 
+            border-radius: 12px; 
+            cursor: pointer; 
+            transition: background-color 0.3s ease; 
+            position: relative; 
+            min-height: 60px;
+        }
+        
+        .calendar-grid .day-name { 
+            font-weight: 600; 
+            color: var(--text-color-light); 
+        }
+        
+        .calendar-grid .calendar-day:not(.day-name):hover { 
+            background: var(--button-hover-background); 
+        }
+        
+        .calendar-grid .today { 
+            background-color: var(--primary-color-translucent); 
+            color: var(--primary-color); 
+            font-weight: 600; 
+            border: 1px solid var(--primary-color); 
+        }
+        
+        .calendar-grid .selected { 
+            background-color: var(--primary-color-translucent); 
+            border: 1px solid var(--primary-color); 
+        }
+        
+        .calendar-grid .has-tasks::after { 
+            content: ''; 
+            position: absolute; 
+            bottom: 8px; 
+            left: 50%; 
+            transform: translateX(-50%); 
+            width: 6px; 
+            height: 6px; 
+            background-color: var(--primary-color); 
+            border-radius: 50%; 
+        }
+        
+        .calendar-grid .has-completed-tasks::after { 
+            background-color: var(--completed-color); 
+        }
+
+        #welcome-view { 
+            text-align: center; 
+            margin: auto; 
+        }
+        
+        #welcome-view h2 { 
+            font-size: 2.5em; 
+            font-weight: 500; 
+            text-shadow: 0 1px 2px var(--shadow-color); 
+        }
+        
+        #welcome-view p { 
+            color: var(--text-color-light); 
+        }
+
+        .task-sidebar { 
+            width: 350px; 
+            flex-shrink: 0; 
+            background: transparent; 
+            padding: 20px; 
+            border-left: var(--glass-border); 
+            display: flex; 
+            flex-direction: column; 
+            overflow-y: auto; 
+        }
+        
+        .task-card { 
+            background: var(--glass-background); 
+            padding: 20px; 
+            border-radius: var(--border-radius); 
+            margin-bottom: 20px; 
+        }
+
+        #new-task-form h3 { 
+            margin-top: 0; 
+        }
+        
+        #new-task-form .time-inputs { 
+            display: flex; 
+            gap: 10px; 
+        }
+        
+        #new-task-form input, 
+        #new-task-form textarea, 
+        #new-task-form button, 
+        #new-task-form #task-date { 
+            width: 100%; 
+            padding: 12px; 
+            margin-bottom: 10px; 
+            border-radius: 10px; 
+            border: none; 
+            box-sizing: border-box; 
+            background: var(--input-background); 
+            color: var(--text-color); 
+        }
+        
+        #new-task-form input::placeholder, 
+        #new-task-form textarea::placeholder { 
+            color: var(--text-color-light); 
+        }
+
+        .duration-inputs {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .duration-inputs input {
+            flex: 1;
+        }
+
+        .or-divider { 
+            text-align: center; 
+            margin: 10px 0; 
+            color: var(--text-color-light); 
+            font-size: 0.9em; 
+        }
+
+        #new-task-form button[type="submit"] { 
+            background-color: var(--primary-color); 
+            font-size: 16px; 
+            cursor: pointer; 
+            color: white; 
+            transition: background-color 0.3s ease; 
+        }
+        
+        #new-task-form button[type="submit"]:hover { 
+            background-color: #d87086; 
+        }
+
+        #task-list .task-item { 
+            display: flex; 
+            align-items: center; 
+            margin-bottom: 10px; 
+            padding-bottom: 10px; 
+            border-bottom: 1px solid var(--glass-border); 
+            transition: opacity 0.3s ease;
+        }
+        
+        #task-list .task-item:last-child { 
+            border-bottom: none; 
+        }
+        
+        #task-list .task-item-content { 
+            flex-grow: 1; 
+        }
+        
+        #task-list .task-item-icon { 
+            margin-right: 15px; 
+            font-size: 20px; 
+            color: var(--primary-color); 
+        }
+        
+        #task-list .task-item button { 
+            background: none; 
+            border: none; 
+            cursor: pointer; 
+            padding: 5px; 
+            color: var(--text-color); 
+            font-size: 16px;
+        }
+        
+        #task-list .task-item-meta { 
+            font-size: 0.9em; 
+            color: var(--text-color-light); 
+        }
+        
+        #task-list .task-notes { 
+            font-size: 0.85em; 
+            color: var(--text-color-light); 
+            margin-top: 5px; 
+        }
+        
+        #task-list .start-focus { 
+            font-weight: bold; 
+            color: var(--primary-color); 
+        }
+        
+        #task-list .task-item.completed {
+            opacity: 0.7;
+        }
+        
+        #task-list .task-item.completed .task-item-content {
+            text-decoration: line-through;
+        }
+        
+        #task-list .task-item.completed .task-item-icon {
+            color: var(--completed-color);
+        }
+
+        .focus-view-container { 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100vw; 
+            height: 100vh; 
+            display: none; 
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: center; 
+            z-index: 1000; 
+            opacity: 0; 
+            transition: opacity 0.5s ease-in-out; 
+        }
+        
+        .focus-view-container.visible { 
+            display: flex; 
+            opacity: 1; 
+        }
+        
+        .color-fill-bg { 
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 0; 
+            z-index: -1; 
+            transition: height 1s linear, background-color 0.4s ease; 
+        }
+        
+        .focus-content { 
+            text-align: center; 
+            color: #fff; 
+        }
+        
+        #focus-task-icon { 
+            font-size: 3em; 
+            margin-bottom: 10px; 
+            text-shadow: 0 2px 8px rgba(0,0,0,0.3); 
+        }
+        
+        .focus-content h2 { 
+            font-size: 3em; 
+            font-weight: 500; 
+        }
+        
+        #focus-timer { 
+            font-size: 7em; 
+            margin: 20px 0; 
+            font-weight: 300; 
+            letter-spacing: 2px; 
+        }
+        
+        .focus-view-container p { 
+            font-size: 1.5em; 
+            letter-spacing: 2px; 
+            text-transform: uppercase; 
+        }
+        
+        .focus-controls button { 
+            background: rgba(255, 242, 242, 0.1); 
+            border: 1px solid rgba(255, 255, 255, 0.3); 
+            color: white; 
+            padding: 12px 24px; 
+            margin: 10px; 
+            border-radius: 8px; 
+            font-size: 18px; 
+            cursor: pointer; 
+            transition: background 0.3s; 
+            min-width: 160px; 
+        }
+        
+        .focus-controls button:hover { 
+            background: rgba(255, 241, 241, 0.2); 
+        }
+        
+        .pomodoro-info {
+            margin-top: 20px;
+            font-size: 1.2em;
+        }
+        
+        .pomodoro-session {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 5px 15px;
+            border-radius: 20px;
+            margin-top: 10px;
+        }
+
+        #spotify-player { 
+            position: fixed; 
+            bottom: 20px; 
+            right: 20px; 
+            border-radius: 12px; 
+            transition: opacity 0.3s, transform 0.3s; 
+            opacity: 0; 
+            transform: translateY(20px); 
+            pointer-events: none; 
+        }
+        
+        #spotify-player.visible { 
+            opacity: 1; 
+            transform: translateY(0); 
+            pointer-events: all; 
+        }
+
+        .color-picker-bar { 
+            position: fixed; 
+            bottom: 20px; 
+            left: 50%; 
+            transform: translateX(-50%); 
+            background: var(--glass-background); 
+            padding: 10px; 
+            border-radius: var(--border-radius); 
+            display: flex; 
+            gap: 10px; 
+            z-index: 5; 
+            transition: opacity 0.5s ease-in-out; 
+            border: var(--glass-border); 
+            backdrop-filter: var(--blur-effect); 
+        }
+        
+        .color-picker-bar.hidden { 
+            opacity: 0; 
+            pointer-events: none; 
+        }
+        
+        .color-swatch { 
+            width: 30px; 
+            height: 30px; 
+            border-radius: 50%; 
+            cursor: pointer; 
+            border: 2px solid transparent; 
+            transition: border-color 0.3s, transform 0.3s; 
+        }
+        
+        .color-swatch:hover { 
+            transform: scale(1.1); 
+        }
+        
+        .color-swatch.active { 
+            border-color: var(--text-color); 
+            transform: scale(1.15); 
+        }
+        
+        #custom-color-picker { 
+            opacity: 0; 
+            width: 0; 
+            height: 0; 
+            position: absolute; 
+        }
+        
+        .pomodoro-button {
+            margin-top: 20px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
             cursor: pointer;
-            padding: 8px;
-            border-radius: 50%;
-            transition: all 0.3s ease;
-            color: var(--text-color-light);
+            font-weight: 500;
+            transition: background-color 0.3s;
         }
-
-        #new-task-form .icon-picker i.selected {
-            background-color: var(--primary-color-translucent);
-            color: var(--primary-color);
-            transform: scale(1.2);
+        
+        .pomodoro-button:hover {
+            background-color: #d87086;
         }
-
-
-        #new-task-form input, #new-task-form textarea, #new-task-form button, #new-task-form #task-date {
-            width: 100%; padding: 12px; margin-bottom: 10px;
-            border-radius: 10px; border: none; box-sizing: border-box;
-            background: var(--input-background); color: var(--text-color);
-        }
-        #new-task-form input::placeholder, #new-task-form textarea::placeholder {
-             color: var(--text-color-light);
-        }
-
-        .duration-recommendations { display: flex; justify-content: space-between; margin-bottom: 10px; }
-        .duration-recommendations button {
-            width: 31%; background: var(--input-background);
-            border: none; color: var(--text-color); padding: 8px;
-            border-radius: 8px; cursor: pointer; transition: background 0.3s;
-        }
-         .duration-recommendations button:hover { background: var(--button-hover-background); }
-
-        #new-task-form button[type="submit"] { background-color: var(--primary-color); font-size: 16px; cursor: pointer; color: white; transition: background-color 0.3s ease; }
-        #new-task-form button[type="submit"]:hover { background-color: #d87086; }
-
-        #task-list .task-item { display: flex; align-items: center; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid var(--glass-border); }
-        #task-list .task-item:last-child { border-bottom: none; }
-        #task-list .task-item-content { flex-grow: 1; }
-        #task-list .task-item-icon { margin-right: 15px; font-size: 20px; color: var(--primary-color); }
-        #task-list .task-item button { background: none; border: none; cursor: pointer; padding: 5px; color: var(--text-color); font-size: 16px;}
-        #task-list .task-item-meta { font-size: 0.9em; color: var(--text-color-light); }
-        #task-list .task-notes { font-size: 0.85em; color: var(--text-color-light); margin-top: 5px; }
-        #task-list .start-focus { font-weight: bold; color: var(--primary-color); }
-
-        .focus-view-container {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 1000;
-            opacity: 0; transition: opacity 0.5s ease-in-out;
-        }
-        .focus-view-container.visible { display: flex; opacity: 1; }
-        .color-fill-bg { position: absolute; top: 0; left: 0; width: 100%; height: 0; background-color: var(--primary-color); z-index: -1; transition: height 1s linear; }
-        .focus-content { text-align: center; color: #fff; }
-        #focus-task-icon { font-size: 3em; margin-bottom: 10px; text-shadow: 0 2px 8px rgba(0,0,0,0.3); }
-        .focus-content h2 { font-size: 3em; font-weight: 500; }
-        #focus-timer { font-size: 7em; margin: 20px 0; font-weight: 300; letter-spacing: 2px; }
-        .focus-view-container p { font-size: 1.5em; letter-spacing: 2px; text-transform: uppercase; }
-        .focus-controls button { background: rgba(0,0,0,0.1); border: 1px solid rgba(255, 255, 255, 0.3); color: white; padding: 12px 24px; margin: 10px; border-radius: 8px; font-size: 18px; cursor: pointer; transition: background 0.3s; min-width: 160px; }
-        .focus-controls button:hover { background: rgba(0,0,0,0.2); }
-
-        #spotify-player { position: fixed; bottom: 20px; right: 20px; border-radius: 12px; transition: opacity 0.3s, transform 0.3s; opacity: 0; transform: translateY(20px); pointer-events: none; }
-        #spotify-player.visible { opacity: 1; transform: translateY(0); pointer-events: all; }
-
-        .color-picker-bar {
-            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
-            background: var(--glass-background); padding: 10px;
-            border-radius: var(--border-radius); display: flex; gap: 10px; z-index: 5;
-            transition: opacity 0.5s ease-in-out; border: var(--glass-border); backdrop-filter: var(--blur-effect);
-        }
-        .color-picker-bar.hidden { opacity: 0; pointer-events: none; }
-        .color-swatch { width: 30px; height: 30px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: border-color 0.3s; }
-        .color-swatch.active { border-color: var(--text-color); }
-        #custom-color-picker { opacity: 0; width: 0; height: 0; position: absolute; }
     </style>
 </head>
 <body>
 
+    <div class="aurora"></div>
+
     <div class="app-container">
         <div class="icon-sidebar">
-            <button id="calendar-toggle-btn" title="Toggle Calendar">
+             <button id="calendar-toggle-btn" title="Toggle Calendar">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 3H21C21.5523 3 22 3.44772 22 4V20C22 20.5523 21.5523 21 21 21H3C2.44772 21 2 20.5523 2 20V4C2 3.44772 2.44772 3 3 3H7V1H9V3H15V1H17V3ZM4 9V19H20V9H4ZM6 11H8V13H6V11ZM11 11H13V13H11V11ZM16 11H18V13H16V11Z"></path></svg>
             </button>
              <button id="theme-toggle-btn" title="Toggle Theme">
                 <svg id="theme-icon-moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="currentColor" d="M17.293 15.88A.5.5 0 0 0 17 15.5h-.01a.5.5 0 0 1-.5-.5c0-2.822-2.28-5.101-5.101-5.101a.5.5 0 0 1-.5-.5v-.01a.5.5 0 0 0-.38-.493A8.001 8.001 0 0 0 4 12c0 4.411 3.589 8 8 8a8.003 8.003 0 0 0 5.88-2.707.5.5 0 0 0-.294-.813zM12 18a6 6 0 1 1 0-12a6 6 0 0 1 0 12z"/></svg>
                 <svg id="theme-icon-sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" style="display:none;"><path fill="currentColor" d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM12 15c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zM12 2a10 10 0 1 0 0 20a10 10 0 0 0 0-20zM1 12C1 5.93 5.93 1 12 1s11 4.93 11 11-4.93 11-11 11S1 18.07 1 12zm11 5a4 4 0 1 0 0-8a4 4 0 0 0 0 8z"/></svg>
             </button>
+            <button id="pomodoro-mode-btn" title="Pomodoro Technique">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8zm-1-9V7h2v6h-2zm0 4v-2h2v2h-2z"/></svg>
+            </button>
         </div>
         <div class="main-content">
             <div id="welcome-view">
-                <h2>Welcome</h2>
+                <h2>Welcome to Focus Timer</h2>
                 <p>Select a task or open the calendar to get started.</p>
+                <button class="pomodoro-button" id="pomodoro-btn">Try Pomodoro Technique</button>
             </div>
             <div id="calendar-view">
                 <header>
@@ -273,13 +592,6 @@
              <div class="task-card">
                  <form id="new-task-form">
                     <h3>New Task</h3>
-                    <div class="icon-picker">
-                        <i class="fas fa-book" data-icon="fas fa-book"></i>
-                        <i class="fas fa-code" data-icon="fas fa-code"></i>
-                        <i class="fas fa-dumbbell" data-icon="fas fa-dumbbell"></i>
-                        <i class="fas fa-brain" data-icon="fas fa-brain"></i>
-                        <i class="fas fa-briefcase selected" data-icon="fas fa-briefcase"></i>
-                    </div>
                      <input type="text" id="task-name" placeholder="What is your focus?" required list="task-suggestions">
                      <datalist id="task-suggestions">
                          <option value="Work on project">
@@ -287,16 +599,23 @@
                          <option value="Read a book">
                          <option value="Exercise">
                          <option value="Meditate">
+                         <option value="Coding session">
+                         <option value="Writing session">
+                         <option value="Language learning">
+                         <option value="Research">
+                         <option value="Planning">
                      </datalist>
                      <input type="date" id="task-date" required>
-                     <input type="time" id="task-time">
-                     <textarea id="task-notes" placeholder="Notes..."></textarea>
-                     <div class="duration-recommendations">
-                         <button type="button" class="duration-btn" data-duration="25">25 min</button>
-                         <button type="button" class="duration-btn" data-duration="45">45 min</button>
-                         <button type="button" class="duration-btn" data-duration="60">60 min</button>
+                      <div class="time-inputs">
+                        <input type="time" id="task-start-time" title="Start Time">
+                        <input type="time" id="task-end-time" title="End Time">
+                      </div>
+                      <div class="or-divider">OR</div>
+                     <div class="duration-inputs">
+                         <input type="number" id="task-hours" placeholder="Hours" min="0" max="12">
+                         <input type="number" id="task-minutes" placeholder="Minutes" min="0" max="59">
                      </div>
-                     <input type="number" id="task-duration" placeholder="Or custom duration (minutes)" required>
+                     <textarea id="task-notes" placeholder="Notes..."></textarea>
                      <button type="submit">Create Task</button>
                  </form>
              </div>
@@ -311,6 +630,10 @@
             <h2 id="focus-task-name"></h2>
             <div id="focus-timer">00:00:00</div>
             <p>Remaining</p>
+            <div class="pomodoro-info" id="pomodoro-info" style="display: none;">
+                <div>Pomodoro Session: <span id="current-pomodoro">1</span>/4</div>
+                <div class="pomodoro-session">Focus Time</div>
+            </div>
             <div class="focus-controls">
                 <button id="pause-resume-btn">Pause</button>
                 <button id="complete-btn">✓ End Session</button>
@@ -324,314 +647,494 @@
         <div class="color-swatch" style="background-color: #ff3b30;" data-color="#ff3b30"></div>
         <div class="color-swatch" style="background-color: #34c759;" data-color="#34c759"></div>
         <div class="color-swatch" style="background-color: #ff9500;" data-color="#ff9500"></div>
+        <div class="color-swatch" style="background-color: #5e5ce6;" data-color="#5e5ce6"></div>
+        <div class="color-swatch" style="background-color: #64d2ff;" data-color="#64d2ff"></div>
         <label for="custom-color-picker" class="color-swatch" style="background: conic-gradient(red, yellow, lime, aqua, blue, magenta, red); display: flex; align-items: center; justify-content: center; font-size: 20px; color: white;">+</label>
         <input type="color" id="custom-color-picker" value="#c55f73">
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // --- Element Selection ---
             const appContainer = document.querySelector('.app-container');
             const colorPickerBar = document.querySelector('.color-picker-bar');
-
-            // View elements
             const calendarView = document.getElementById('calendar-view');
             const welcomeView = document.getElementById('welcome-view');
             const calendarToggleBtn = document.getElementById('calendar-toggle-btn');
-
-            // Theme toggle elements
             const themeToggleBtn = document.getElementById('theme-toggle-btn');
+            const pomodoroModeBtn = document.getElementById('pomodoro-mode-btn');
+            const pomodoroBtn = document.getElementById('pomodoro-btn');
             const themeIconMoon = document.getElementById('theme-icon-moon');
             const themeIconSun = document.getElementById('theme-icon-sun');
-
-            // Calendar elements
             const monthYearEl = document.getElementById('month-year');
             const prevMonthBtn = document.getElementById('prev-month');
             const nextMonthBtn = document.getElementById('next-month');
             const calendarGrid = document.querySelector('.calendar-grid');
-
-            // Task elements
             const taskForm = document.getElementById('new-task-form');
             const taskNameInput = document.getElementById('task-name');
             const taskDateInput = document.getElementById('task-date');
-            const taskTimeInput = document.getElementById('task-time');
+            const taskStartTimeInput = document.getElementById('task-start-time');
+            const taskEndTimeInput = document.getElementById('task-end-time');
+            const taskHoursInput = document.getElementById('task-hours');
+            const taskMinutesInput = document.getElementById('task-minutes');
             const taskNotesInput = document.getElementById('task-notes');
-            const taskDurationInput = document.getElementById('task-duration');
             const taskListEl = document.getElementById('task-list');
-            const iconPicker = document.querySelector('.icon-picker');
-            
-            // Focus View elements
             const focusView = document.getElementById('focus-view');
             const colorFillBg = document.getElementById('color-fill-bg');
-            const focusContent = document.getElementById('focus-content');
             const focusTaskIconEl = document.getElementById('focus-task-icon');
             const focusTaskNameEl = document.getElementById('focus-task-name');
             const focusTimerEl = document.getElementById('focus-timer');
             const pauseResumeBtn = document.getElementById('pause-resume-btn');
             const completeBtn = document.getElementById('complete-btn');
             const spotifyPlayer = document.getElementById('spotify-player');
-
-            // Color Picker elements
-            const colorSwatches = document.querySelectorAll('.color-swatch');
             const customColorPicker = document.getElementById('custom-color-picker');
+            const pomodoroInfo = document.getElementById('pomodoro-info');
+            const currentPomodoroEl = document.getElementById('current-pomodoro');
 
-            let currentDate = new Date(2025, 8, 4); // Set to current date
+            // --- State Management ---
+            let currentDate = new Date();
+            let selectedDate = new Date();
             let tasks = [];
             let timerInterval;
-            let timeRemaining; // Store remaining seconds
+            let timeRemaining;
             let isPaused = false;
             let currentTaskName = '';
-
+            let totalDuration;
+            let currentTaskIndex = -1;
+            let isPomodoroMode = false;
+            let pomodoroCount = 0;
+            let isBreakTime = false;
+            let selectedCalendarDate = null;
 
             // --- Theme Management ---
-            function applyTheme(theme) {
-                if (theme === 'dark') {
-                    document.body.classList.add('dark-mode');
-                    themeIconMoon.style.display = 'none';
-                    themeIconSun.style.display = 'block';
-                } else {
-                    document.body.classList.remove('dark-mode');
-                    themeIconMoon.style.display = 'block';
-                    themeIconSun.style.display = 'none';
-                }
-            }
+            const applyTheme = (theme) => {
+                document.body.classList.toggle('dark-mode', theme === 'dark');
+                themeIconMoon.style.display = theme === 'dark' ? 'none' : 'block';
+                themeIconSun.style.display = theme === 'dark' ? 'block' : 'none';
+                localStorage.setItem('focusTimerTheme', theme);
+            };
 
-            function toggleTheme() {
-                const currentTheme = document.body.classList.contains('dark-mode') ? 'light' : 'dark';
-                localStorage.setItem('focusTimerTheme', currentTheme);
-                applyTheme(currentTheme);
-            }
+            const toggleTheme = () => {
+                const newTheme = document.body.classList.contains('dark-mode') ? 'light' : 'dark';
+                applyTheme(newTheme);
+            };
+
+            // --- Color Theme Customization ---
+            const setPrimaryColor = (color) => {
+                document.documentElement.style.setProperty('--primary-color', color);
+                const translucentColor = color + '26'; // Append alpha hex for ~15% opacity
+                document.documentElement.style.setProperty('--primary-color-translucent', translucentColor);
+                 localStorage.setItem('focusTimerColor', color);
+            };
+
+            document.querySelectorAll('.color-swatch').forEach(swatch => {
+                swatch.addEventListener('click', (e) => {
+                    const color = e.currentTarget.dataset.color;
+                    if (color) {
+                       setPrimaryColor(color);
+                       document.querySelector('.color-swatch.active')?.classList.remove('active');
+                       e.currentTarget.classList.add('active');
+                    }
+                });
+            });
+
+            customColorPicker.addEventListener('input', (e) => setPrimaryColor(e.target.value));
 
             // --- Task Persistence ---
-            function saveTasks() { localStorage.setItem('focusTimerTasks', JSON.stringify(tasks)); }
-            function loadTasks() {
+            const saveTasks = () => localStorage.setItem('focusTimerTasks', JSON.stringify(tasks));
+            const loadTasks = () => {
                 const storedTasks = localStorage.getItem('focusTimerTasks');
-                if (storedTasks) {
-                    tasks = JSON.parse(storedTasks);
-                }
-            }
+                tasks = storedTasks ? JSON.parse(storedTasks) : [];
+                
+                // Add completed property if not exists for backward compatibility
+                tasks = tasks.map(task => ({
+                    ...task,
+                    completed: task.completed || false
+                }));
+            };
 
-            function toggleCalendar() {
+            // --- Calendar Logic ---
+            const toggleCalendar = () => {
                 const isVisible = calendarView.classList.toggle('visible');
                 welcomeView.style.display = isVisible ? 'none' : 'block';
-            }
+            };
 
-            function renderCalendar() {
+            const renderCalendar = () => {
                 calendarGrid.innerHTML = '';
                 const year = currentDate.getFullYear();
                 const month = currentDate.getMonth();
                 monthYearEl.textContent = `${currentDate.toLocaleString('default', { month: 'long' })} ${year}`;
-                const daysOfWeek = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
-                daysOfWeek.forEach(day => {
+
+                ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].forEach(day => {
                     const dayEl = document.createElement('div');
                     dayEl.className = 'day-name';
                     dayEl.textContent = day;
                     calendarGrid.appendChild(dayEl);
                 });
+
                 const firstDayOfMonth = new Date(year, month, 1).getDay();
-                for (let i = 0; i < firstDayOfMonth; i++) calendarGrid.appendChild(document.createElement('div'));
+                for (let i = 0; i < firstDayOfMonth; i++) {
+                    calendarGrid.appendChild(document.createElement('div'));
+                }
+
                 const daysInMonth = new Date(year, month + 1, 0).getDate();
                 const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                
                 for (let day = 1; day <= daysInMonth; day++) {
                     const dayEl = document.createElement('div');
                     dayEl.textContent = day;
-                    if (day === today.getDate() && month === today.getMonth() && year === today.getFullYear()) {
+                    dayEl.classList.add('calendar-day');
+                    
+                    const dateStr = `${year}-${(month + 1).toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+                    dayEl.dataset.date = dateStr;
+                    
+                    const dateObj = new Date(year, month, day);
+                    dateObj.setHours(0, 0, 0, 0);
+                    
+                    // Check if it's today
+                    if (dateObj.getTime() === today.getTime()) {
                         dayEl.classList.add('today');
                     }
+                    
+                    // Check if it's selected
+                    if (selectedCalendarDate && dateObj.getTime() === selectedCalendarDate.getTime()) {
+                        dayEl.classList.add('selected');
+                    }
+                    
+                    // Check if there are tasks for this day
                     const tasksForDay = tasks.filter(task => {
                         const taskDate = new Date(task.date);
-                        return taskDate.getFullYear() === year && taskDate.getMonth() === month && taskDate.getDate() === day;
+                        taskDate.setHours(0, 0, 0, 0);
+                        return taskDate.getTime() === dateObj.getTime();
                     });
+                    
                     if (tasksForDay.length > 0) {
-                        const taskDot = document.createElement('div');
-                        taskDot.className = 'task-dot';
-                        dayEl.appendChild(taskDot);
+                        dayEl.classList.add('has-tasks');
+                        
+                        // Check if all tasks are completed
+                        const allCompleted = tasksForDay.every(task => task.completed);
+                        if (allCompleted) {
+                            dayEl.classList.add('has-completed-tasks');
+                        }
                     }
+                    
+                    dayEl.addEventListener('click', () => {
+                        document.querySelectorAll('.calendar-day.selected').forEach(el => {
+                            el.classList.remove('selected');
+                        });
+                        dayEl.classList.add('selected');
+                        
+                        selectedCalendarDate = new Date(year, month, day);
+                        taskDateInput.valueAsDate = selectedCalendarDate;
+                        renderTasksForDate(selectedCalendarDate);
+                    });
+                    
                     calendarGrid.appendChild(dayEl);
                 }
-            }
+            };
             
-            function renderTasks() {
-                taskListEl.innerHTML = '<h3>Today\'s Tasks</h3>';
-                if (tasks.length === 0) {
-                    taskListEl.innerHTML += '<p>No tasks yet. Add one!</p>';
+            // --- Automatic Icon Logic ---
+            const getIconForTask = (taskName) => {
+                const name = taskName.toLowerCase();
+                if (name.includes('study') || name.includes('exam') || name.includes('learn')) return 'fas fa-brain';
+                if (name.includes('work') || name.includes('project') || name.includes('meeting')) return 'fas fa-briefcase';
+                if (name.includes('read') || name.includes('book')) return 'fas fa-book';
+                if (name.includes('gym') || name.includes('run') || name.includes('sport') || name.includes('exercise')) return 'fas fa-dumbbell';
+                if (name.includes('rest') || name.includes('relax') || name.includes('break') || name.includes('meditate')) return 'fas fa-mug-hot';
+                if (name.includes('code') || name.includes('program')) return 'fas fa-code';
+                if (name.includes('write') || name.includes('journal')) return 'fas fa-pen';
+                if (name.includes('music') || name.includes('instrument')) return 'fas fa-music';
+                return 'fas fa-star'; // Default icon
+            }
+
+            // --- Task Rendering & Management ---
+            const renderTasksForDate = (date) => {
+                const dateStr = date.toISOString().split('T')[0];
+                taskListEl.innerHTML = `<h3>Tasks for ${date.toLocaleDateString()}</h3>`;
+                
+                const tasksForDate = tasks.filter(task => task.date === dateStr);
+                
+                if (tasksForDate.length === 0) {
+                    taskListEl.innerHTML += '<p>No tasks for this date. Add one!</p>';
                     return;
                 }
-                const sortedTasks = [...tasks].sort((a, b) => (a.time || '').localeCompare(b.time || ''));
+                
+                const sortedTasks = [...tasksForDate].sort((a, b) => (a.startTime || '').localeCompare(b.startTime || ''));
+                
                 sortedTasks.forEach((task, index) => {
+                    const originalIndex = tasks.findIndex(t => t === task);
                     const taskItem = document.createElement('div');
-                    taskItem.className = 'task-item';
-                    let taskMeta = task.duration ? `<p class="task-item-meta">${task.time ? task.time + ' - ' : ''}${task.duration} min</p>` : '';
+                    taskItem.className = `task-item ${task.completed ? 'completed' : ''}`;
+                    
+                    const timeInfo = task.startTime ? `${task.startTime}${task.endTime ? ' - ' + task.endTime : ''}` : '';
+                    const durationInfo = task.duration ? `${Math.floor(task.duration / 60)}h ${task.duration % 60}m` : '';
+                    const meta = `${timeInfo} ${timeInfo && durationInfo ? '•' : ''} ${durationInfo}`;
+                    
                     taskItem.innerHTML = `
-                        <div class="task-item-icon"><i class="${task.icon || 'fas fa-thumbtack'}"></i></div>
+                        <div class="task-item-icon"><i class="${task.icon}"></i></div>
                         <div class="task-item-content">
                             <strong>${task.name}</strong>
-                            ${taskMeta}
-                            <p class="task-notes">${task.notes || ''}</p>
+                             ${meta ? `<p class="task-item-meta">${meta}</p>` : ''}
+                             ${task.notes ? `<p class="task-notes">${task.notes}</p>` : ''}
                         </div>
                         <div>
-                           <button class="start-focus" data-index="${index}" title="Start Focus Session">Focus</button>
-                           <button class="delete-task" data-index="${index}" title="Delete Task">🗑️</button>
+                           ${!task.completed ? `<button class="start-focus" data-index="${originalIndex}" title="Start Focus Session" ${!task.duration ? 'disabled' : ''}><i class="fas fa-play"></i></button>` : ''}
+                           <button class="complete-task" data-index="${originalIndex}" title="${task.completed ? 'Mark as Incomplete' : 'Mark as Complete'}">${task.completed ? '<i class="fas fa-undo"></i>' : '<i class="fas fa-check"></i>'}</button>
+                           <button class="delete-task" data-index="${originalIndex}" title="Delete Task"><i class="fas fa-trash"></i></button>
                         </div>
                     `;
                     taskListEl.appendChild(taskItem);
                 });
-            }
+            };
 
-            function formatTime(seconds) {
+            const renderTasks = () => {
+                renderTasksForDate(selectedDate);
+            };
+            
+            // --- Focus Session Timer Logic ---
+            const formatTime = (seconds) => {
                 const h = Math.floor(seconds / 3600).toString().padStart(2, '0');
                 const m = Math.floor((seconds % 3600) / 60).toString().padStart(2, '0');
                 const s = (seconds % 60).toString().padStart(2, '0');
                 return `${h}:${m}:${s}`;
-            }
+            };
 
-            function startTimer() {
+            const startTimer = () => {
                 timerInterval = setInterval(() => {
+                    if (timeRemaining <= 0) {
+                        clearInterval(timerInterval);
+                        
+                        if (isPomodoroMode && !isBreakTime) {
+                            // Pomodoro session completed
+                            pomodoroCount++;
+                            currentPomodoroEl.textContent = pomodoroCount;
+                            
+                            if (pomodoroCount < 4) {
+                                // Start break time
+                                isBreakTime = true;
+                                timeRemaining = 5 * 60; // 5 minute break
+                                document.querySelector('.pomodoro-session').textContent = 'Break Time';
+                                startTimer();
+                                alert(`Pomodoro ${pomodoroCount} completed! Take a 5 minute break.`);
+                                return;
+                            } else {
+                                // All pomodoros completed
+                                alert(`Session completed! You've finished all 4 pomodoros. Take a longer break.`);
+                                pomodoroCount = 0;
+                                isPomodoroMode = false;
+                                isBreakTime = false;
+                            }
+                        } else if (isPomodoroMode && isBreakTime) {
+                            // Break time completed
+                            isBreakTime = false;
+                            document.querySelector('.pomodoro-session').textContent = 'Focus Time';
+                            timeRemaining = 25 * 60; // 25 minute focus
+                            startTimer();
+                            alert('Break time over! Starting next pomodoro.');
+                            return;
+                        } else {
+                            // Regular timer completed
+                            alert(`Session for "${currentTaskName}" completed!`);
+                            
+                            // Mark task as completed
+                            if (currentTaskIndex >= 0) {
+                                tasks[currentTaskIndex].completed = true;
+                                saveTasks();
+                            }
+                        }
+                        
+                        endFocusSession();
+                        return;
+                    }
+                    
                     timeRemaining--;
                     const formattedTime = formatTime(timeRemaining);
                     focusTimerEl.textContent = formattedTime;
                     document.title = `${formattedTime} - ${currentTaskName}`;
 
-                    const totalDuration = parseInt(tasks.find(t => t.name === currentTaskName)?.duration) * 60;
                     const percentageElapsed = ((totalDuration - timeRemaining) / totalDuration) * 100;
                     colorFillBg.style.height = `${percentageElapsed}%`;
-
-                    if (timeRemaining <= 0) {
-                        clearInterval(timerInterval);
-                        alert(`Session for "${currentTaskName}" completed!`);
-                        endFocusSession();
-                    }
                 }, 1000);
-            }
+            };
 
-            function startFocusSession(task) {
+            const startFocusSession = (task, index, isPomodoro = false) => {
                 appContainer.classList.add('hidden');
                 colorPickerBar.classList.add('hidden');
                 
                 setTimeout(() => {
                     focusView.classList.add('visible');
-                    timeRemaining = task.duration * 60;
+                    
+                    if (isPomodoro) {
+                        isPomodoroMode = true;
+                        pomodoroCount = 1;
+                        isBreakTime = false;
+                        totalDuration = 25 * 60; // 25 minutes
+                        pomodoroInfo.style.display = 'block';
+                        currentPomodoroEl.textContent = '1';
+                        document.querySelector('.pomodoro-session').textContent = 'Focus Time';
+                    } else {
+                        isPomodoroMode = false;
+                        totalDuration = task.duration * 60;
+                        pomodoroInfo.style.display = 'none';
+                    }
+                    
+                    timeRemaining = totalDuration;
                     currentTaskName = task.name;
+                    currentTaskIndex = index;
                     isPaused = false;
                     
-                    const currentColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color');
+                    const currentColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color').trim();
                     colorFillBg.style.backgroundColor = currentColor;
                     colorFillBg.style.height = '0%';
                     
-                    focusTaskIconEl.innerHTML = `<i class="${task.icon || 'fas fa-brain'}"></i>`;
+                    focusTaskIconEl.innerHTML = `<i class="${task.icon}"></i>`;
                     focusTaskNameEl.textContent = task.name;
                     focusTimerEl.textContent = formatTime(timeRemaining);
                     pauseResumeBtn.textContent = 'Pause';
                     
                     startTimer();
                 }, 500);
-            }
+            };
             
-            function togglePause() {
+            const togglePause = () => {
                 isPaused = !isPaused;
-                if (isPaused) {
-                    clearInterval(timerInterval);
-                    pauseResumeBtn.textContent = 'Resume';
-                     document.title = 'Paused | Focus Timer';
-                } else {
-                    startTimer();
-                    pauseResumeBtn.textContent = 'Pause';
-                }
-            }
+                pauseResumeBtn.textContent = isPaused ? 'Resume' : 'Pause';
+                document.title = isPaused ? 'Paused | Focus Timer' : `${formatTime(timeRemaining)} - ${currentTaskName}`;
+                if (isPaused) clearInterval(timerInterval); else startTimer();
+            };
 
-            function endFocusSession() {
+            const endFocusSession = () => {
                 clearInterval(timerInterval);
                 focusView.classList.remove('visible');
                 spotifyPlayer.classList.remove('visible');
                 document.title = 'Focus Timer';
+                isPomodoroMode = false;
+                pomodoroInfo.style.display = 'none';
 
                 setTimeout(() => {
                     appContainer.classList.remove('hidden');
                     colorPickerBar.classList.remove('hidden');
+                    renderTasks();
+                    renderCalendar();
                 }, 500);
-            }
+            };
 
-            // --- Event Listeners ---
-             iconPicker.addEventListener('click', e => {
-                if(e.target.tagName === 'I'){
-                    iconPicker.querySelector('.selected')?.classList.remove('selected');
-                    e.target.classList.add('selected');
-                }
-            });
-            
+            // --- Event Listeners Setup ---
             taskForm.addEventListener('submit', (e) => {
                 e.preventDefault();
-                const selectedIcon = iconPicker.querySelector('.selected')?.dataset.icon || 'fas fa-briefcase';
+                
+                let duration = 0;
+                const hours = parseInt(taskHoursInput.value) || 0;
+                const minutes = parseInt(taskMinutesInput.value) || 0;
+                duration = hours * 60 + minutes;
+                
+                const startTime = taskStartTimeInput.value;
+                const endTime = taskEndTimeInput.value;
+
+                if (!duration && startTime && endTime) {
+                    const start = new Date(`1970-01-01T${startTime}`);
+                    const end = new Date(`1970-01-01T${endTime}`);
+                    duration = Math.round((end - start) / 60000); // difference in minutes
+                }
+
+                if (!taskNameInput.value || (!duration || duration <= 0)) {
+                    alert("Please provide a task name and a valid duration (either through start/end times or manually).");
+                    return;
+                }
+
+                const dateStr = taskDateInput.value;
+                
                 tasks.push({
                     name: taskNameInput.value,
-                    date: taskDateInput.value,
-                    time: taskTimeInput.value,
+                    date: dateStr,
+                    startTime: startTime,
+                    endTime: endTime,
                     notes: taskNotesInput.value,
-                    duration: parseInt(taskDurationInput.value),
-                    icon: selectedIcon,
+                    duration: duration,
+                    icon: getIconForTask(taskNameInput.value),
+                    completed: false
                 });
+
                 saveTasks();
                 renderTasks();
                 renderCalendar();
                 taskForm.reset();
-                taskDateInput.valueAsDate = new Date(); // Reset date to today
-                 iconPicker.querySelector('.selected')?.classList.remove('selected');
-                iconPicker.querySelector('[data-icon="fas fa-briefcase"]').classList.add('selected'); // reset default icon
-            });
-
-            document.querySelectorAll('.duration-btn').forEach(button => {
-                button.addEventListener('click', (e) => { taskDurationInput.value = e.target.dataset.duration; });
+                taskDateInput.valueAsDate = selectedCalendarDate || new Date();
             });
 
             taskListEl.addEventListener('click', e => {
-                const target = e.target.closest('button');
-                if (!target) return;
-                const index = target.dataset.index;
-                if (target.classList.contains('delete-task')) {
-                    tasks.splice(index, 1);
+                const button = e.target.closest('button');
+                if (!button) return;
+                
+                const index = parseInt(button.dataset.index, 10);
+                
+                if (button.classList.contains('delete-task')) {
+                    if (confirm("Are you sure you want to delete this task?")) {
+                        tasks.splice(index, 1);
+                        saveTasks();
+                        renderTasks();
+                        renderCalendar();
+                    }
+                } else if (button.classList.contains('complete-task')) {
+                    tasks[index].completed = !tasks[index].completed;
                     saveTasks();
                     renderTasks();
                     renderCalendar();
-                } else if (target.classList.contains('start-focus')) {
-                    const sortedTasks = [...tasks].sort((a,b) => (a.time || '').localeCompare(b.time || ''));
-                    startFocusSession(sortedTasks[index]);
+                } else if (button.classList.contains('start-focus')) {
+                    startFocusSession(tasks[index], index);
                 }
             });
 
             pauseResumeBtn.addEventListener('click', togglePause);
             completeBtn.addEventListener('click', endFocusSession);
-            
-            prevMonthBtn.addEventListener('click', () => { currentDate.setMonth(currentDate.getMonth() - 1); renderCalendar(); });
-            nextMonthBtn.addEventListener('click', () => { currentDate.setMonth(currentDate.getMonth() + 1); renderCalendar(); });
+            prevMonthBtn.addEventListener('click', () => { 
+                currentDate.setMonth(currentDate.getMonth() - 1); 
+                renderCalendar(); 
+            });
+            nextMonthBtn.addEventListener('click', () => { 
+                currentDate.setMonth(currentDate.getMonth() + 1); 
+                renderCalendar(); 
+            });
             calendarToggleBtn.addEventListener('click', toggleCalendar);
             themeToggleBtn.addEventListener('click', toggleTheme);
-            
-            colorSwatches.forEach(swatch => {
-                swatch.addEventListener('click', (e) => {
-                    if (e.target.dataset.color) {
-                       const color = e.target.dataset.color;
-                       document.documentElement.style.setProperty('--primary-color', color);
-                       const translucentColor = color + '26'; // Append alpha for ~15% opacity
-                       document.documentElement.style.setProperty('--primary-color-translucent', translucentColor);
-                       document.querySelector('.color-swatch.active')?.classList.remove('active');
-                       e.target.classList.add('active');
-                    }
-                });
+            pomodoroModeBtn.addEventListener('click', () => {
+                startFocusSession({
+                    name: "Pomodoro Session",
+                    icon: "fas fa-clock"
+                }, -1, true);
             });
-
-            customColorPicker.addEventListener('input', (e) => {
-                 const color = e.target.value;
-                 document.documentElement.style.setProperty('--primary-color', color);
-                 const translucentColor = color + '26';
-                 document.documentElement.style.setProperty('--primary-color-translucent', translucentColor);
+            pomodoroBtn.addEventListener('click', () => {
+                // Redirect to pomodoro page
+                window.location.href = 'page13.html';
             });
 
             // --- Initial Load ---
-            const savedTheme = localStorage.getItem('focusTimerTheme') || 'light';
-            applyTheme(savedTheme);
-            loadTasks();
-            renderCalendar();
-            renderTasks();
-            taskDateInput.valueAsDate = new Date();
+            const initializeApp = () => {
+                const savedTheme = localStorage.getItem('focusTimerTheme') || 'light';
+                const savedColor = localStorage.getItem('focusTimerColor') || '#c55f73';
+
+                applyTheme(savedTheme);
+                setPrimaryColor(savedColor);
+
+                // Update active swatch
+                 document.querySelector('.color-swatch.active')?.classList.remove('active');
+                 const activeSwatch = document.querySelector(`.color-swatch[data-color="${savedColor}"]`);
+                 if(activeSwatch) activeSwatch.classList.add('active');
+
+                loadTasks();
+                renderCalendar();
+                
+                // Set initial date to today
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                selectedCalendarDate = today;
+                taskDateInput.valueAsDate = today;
+                
+                renderTasksForDate(today);
+            };
+
+            initializeApp();
         });
     </script>
 </body>
