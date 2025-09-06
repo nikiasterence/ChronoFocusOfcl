@@ -4,65 +4,29 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" href="Chronofocus.png" type="image/x-icon">
-<title>Chrono Focus - Cozy Edition</title>
+<title>Chrono Focus - The Ultimate Edition</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
-/* --- Default Cozy Mocha Palette --- */
---background: #F9F5F0; /* Soft Cream */
---surface: #FFFFFF; /* White */
---primary: #8D6E63; /* Warm Taupe */
---primary-rgb: 141, 110, 99; /* For RGBA glows */
---primary-light: #EFEBE9; /* Lighter Taupe */
---secondary: #BCAAA4; /* Muted Brown */
---text-primary: #5D4037; /* Dark, soft brown */
---text-secondary: #9E8D86; /* Lighter brown for subtitles */
+/* --- Default Theme (Cozy Mocha) --- */
+--primary: #8D6E63; --primary-rgb: 141, 110, 99;
+--background: #F9F5F0; --surface: #FFFFFF;
+--primary-light: #EFEBE9;
+--text-primary: #5D4037; --text-on-primary: #FFFFFF; --text-secondary: #9E8D86;
 --border-color: #E7E0D9;
---success: #66BB6A;
---danger: #EF5350;
-  --border-radius: 18px; /* Slightly rounder for a softer look */
-  --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+--shadow-color: rgba(93, 64, 55, 0.15);
+--success: #66BB6A; --danger: #EF5350;
+--border-radius: 20px;
+--transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+--aurora-1: #A89088; --aurora-2: #E3B396; --aurora-3: #9575CD;
 }
 
-/* --- Theme Palettes --- */
-body.theme-sage {
-  --background: #F0F4F0;
-  --primary: #819A82;
-  --primary-rgb: 129, 154, 130;
-  --primary-light: #E8EFE8;
-  --text-primary: #4F6150;
-  --text-secondary: #849385;
-  --border-color: #E2E8E2;
-}
-body.theme-rose {
-  --background: #FAF3F5;
-  --primary: #C597A2;
-  --primary-rgb: 197, 151, 162;
-  --primary-light: #F8ECED;
-  --text-primary: #7A5C63;
-  --text-secondary: #A68F96;
-  --border-color: #F1E5E7;
-}
-body.theme-mist {
-    --background: #EFF3F8;
-    --primary: #8FACC0;
-    --primary-rgb: 143, 172, 192;
-    --primary-light: #E8F0F5;
-    --text-primary: #526676;
-    --text-secondary: #8E9BA9;
-    --border-color: #E1E7ED;
-}
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
 
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'Poppins', sans-serif;
-}
+html { scroll-behavior: smooth; }
 
 body {
   background-color: var(--background);
@@ -70,586 +34,491 @@ body {
   min-height: 100vh;
   padding: 25px;
   overflow-x: hidden;
-  transition: var(--transition);
+  transition: background-color 0.5s ease, color 0.5s ease;
+  position: relative;
 }
+
+/* --- Living Aurora Background (ALWAYS ON) --- */
+.aurora-container {
+    position: fixed; top: 0; left: 0;
+    width: 100%; height: 100%; z-index: -2; overflow: hidden;
+    background-color: var(--background);
+    transition: background-color 0.5s ease;
+}
+.aurora-item {
+    position: absolute; border-radius: 50%;
+    filter: blur(180px); opacity: 0;
+    will-change: transform, opacity;
+    transition: background-color 1.5s ease;
+}
+.aurora-item:nth-child(1) { width: 600px; height: 600px; background: var(--aurora-1); top: -10%; left: -15%; animation: aurora-glow-1 22s infinite alternate ease-in-out; }
+.aurora-item:nth-child(2) { width: 550px; height: 550px; background: var(--aurora-2); bottom: -15%; right: -20%; animation: aurora-glow-2 28s infinite alternate ease-in-out; }
+.aurora-item:nth-child(3) { width: 450px; height: 450px; background: var(--aurora-3); top: 30%; left: 40%; animation: aurora-glow-3 20s infinite alternate ease-in-out; }
+@keyframes aurora-glow-1 { from { transform: scale(1) translate(0, 0) rotate(0deg); opacity: 0.6; } to { transform: scale(1.5) translate(80px, -60px) rotate(120deg); opacity: 0.8; } }
+@keyframes aurora-glow-2 { from { transform: scale(1) translate(0, 0) rotate(0deg); opacity: 0.5; } to { transform: scale(1.3) translate(-70px, 90px) rotate(-110deg); opacity: 0.7; } }
+@keyframes aurora-glow-3 { from { transform: scale(1) translate(-50%, -50%) rotate(0deg); opacity: 0.4; } to { transform: scale(1.6) translate(-40%, -60%) rotate(160deg); opacity: 0.6; } }
 
 .app {
-  max-width: 900px;
-  margin: 0 auto;
+    max-width: 900px;
+    margin: 0 auto;
+    z-index: 1;
+    position: relative;
+    padding-bottom: 50px; /* Ensures space for scrolling */
 }
 
-/* --- Header & Theme Picker --- */
-.app-header {
-  text-align: center;
-  margin-bottom: 40px;
-}
-.app-header h1 {
-  font-size: 2.8rem;
-  font-weight: 700;
-  color: var(--text-primary);
-  letter-spacing: -1px;
-}
-.app-header p {
-  color: var(--text-secondary);
-  font-size: 1.1rem;
-  margin-top: 5px;
-  margin-bottom: 25px;
-}
-.color-palette {
-  display: flex;
-  justify-content: center;
-  gap: 15px;
-}
-.color-swatch {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  cursor: pointer;
-  border: 2px solid rgba(0,0,0,0.05);
-  transition: var(--transition);
-}
-.color-swatch:hover { transform: scale(1.15); }
-.color-swatch.active {
-  box-shadow: 0 0 0 4px var(--background), 0 0 15px 5px rgba(var(--primary-rgb), 0.5);
+/* General Glassmorphism Style for All Sections */
+.glass-effect {
+    background: var(--surface);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    box-shadow: 0 8px 32px 0 var(--shadow-color);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    transition: var(--transition);
 }
 
+.app-header { text-align: center; margin-bottom: 40px; }
+.app-header h1 { font-size: 3rem; font-weight: 700; color: var(--text-primary); text-shadow: 0 0 30px var(--shadow-color); letter-spacing: -1.5px; }
+.app-header p { color: var(--text-secondary); font-size: 1.1rem; margin-top: 5px; }
 
-/* --- Dock / Navigation --- */
-.main-dock {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 20px;
-  margin-bottom: 40px;
-}
+.main-dock { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 40px; }
 .dock-button {
-  padding: 20px;
-  background: var(--surface);
-  border-radius: var(--border-radius);
-  text-align: center;
-  border: 1px solid var(--border-color);
-  transition: var(--transition);
-  box-shadow: 0 5px 20px rgba(var(--primary-rgb), 0.1);
-  cursor: pointer;
-  color: var(--text-primary);
-  text-decoration: none;
-  position: relative;
-  overflow: hidden;
+  padding: 20px; text-align: center; cursor: pointer; text-decoration: none; position: relative; overflow: hidden;
 }
-.dock-button:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 12px 30px rgba(var(--primary-rgb), 0.18);
-  border-color: rgba(var(--primary-rgb), 0.3);
-}
-.dock-button i {
-  font-size: 2rem;
-  margin-bottom: 12px;
-  color: var(--primary);
-  background-color: var(--primary-light);
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  transition: var(--transition);
-}
-.dock-button:hover i {
-  transform: scale(1.1) rotate(-5deg);
-  box-shadow: 0 0 15px rgba(var(--primary-rgb), 0.4);
-}
-.dock-button h2 { font-size: 1.1rem; font-weight: 600; margin: 0; }
+.dock-button:hover { transform: translateY(-8px) scale(1.02); box-shadow: 0 16px 40px 0 var(--shadow-color); border-color: rgba(var(--primary-rgb), 0.5); }
+.dock-button i { font-size: 2.2rem; margin-bottom: 12px; color: var(--primary); background-color: var(--primary-light); width: 65px; height: 65px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; transition: var(--transition); }
+.dock-button:hover i { transform: scale(1.1) rotate(-8deg); box-shadow: 0 0 25px rgba(var(--primary-rgb), 0.4); }
+.dock-button h2 { font-size: 1.1rem; font-weight: 600; color: var(--text-primary); margin: 0; }
 .dock-button p { font-size: 0.85rem; color: var(--text-secondary); }
 
-/* --- Shiny/Glow Effect for Study Button --- */
-.study-tools {
-    animation: pulseGlow 2.5s infinite ease-out;
-}
-.study-tools::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -150%;
-    width: 75%;
-    height: 100%;
-    background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0) 100%);
-    transform: skewX(-25deg);
-    animation: shine 5s infinite linear;
-}
-
+/* Special Dock Button Effect */
+.study-tools { animation: pulseGlow 2.5s infinite ease-out; }
 @keyframes pulseGlow {
-  0%, 100% { box-shadow: 0 0 15px rgba(var(--primary-rgb), 0.2); }
-  50% { box-shadow: 0 0 25px 8px rgba(var(--primary-rgb), 0.4); }
+  0%, 100% { box-shadow: 0 0 15px rgba(var(--primary-rgb), 0.2), 0 8px 32px var(--shadow-color); }
+  50% { box-shadow: 0 0 25px 8px rgba(var(--primary-rgb), 0.4), 0 8px 32px var(--shadow-color); }
 }
 
-@keyframes shine {
-  0% { left: -150%; }
-  50% { left: 150%; }
-  100% { left: 150%; }
-}
-  
-/* --- General Section Styling --- */
-.section {
-  background: var(--surface);
-  padding: 30px;
-  border-radius: var(--border-radius);
-  margin-bottom: 30px;
-  border: 1px solid var(--border-color);
-  box-shadow: 0 8px 30px rgba(var(--primary-rgb), 0.12);
-}
-.section-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 25px;
-}
-.section-header h2 {
-  color: var(--text-primary);
-  font-size: 1.5rem;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  font-weight: 600;
-  margin:0;
-}
-  
-/* --- General Button & Input Styling --- */
+.section { padding: 30px; margin-bottom: 30px; }
+.section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+.section-header h2 { font-size: 1.6rem; display: flex; align-items: center; gap: 12px; font-weight: 600; margin: 0; color: var(--text-primary); }
+
+/* --- Task Manager --- */
+.task-input-grid { display: grid; grid-template-columns: 1fr auto auto; gap: 15px; align-items: center; margin-bottom: 25px; }
 button {
-  padding: 12px 20px;
-  background: var(--primary);
-  color: #fff;
-  border: none;
-  border-radius: 14px;
-  cursor: pointer;
-  font-weight: 500;
-  font-size: 1rem;
-  transition: var(--transition);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  box-shadow: 0 5px 15px rgba(var(--primary-rgb), 0.2);
+  padding: 14px 22px; background: var(--primary); color: var(--text-on-primary); border: none; border-radius: 14px; cursor: pointer;
+  font-weight: 500; font-size: 1rem; transition: var(--transition); display: flex; align-items: center; justify-content: center;
+  gap: 8px; box-shadow: 0 5px 15px rgba(var(--primary-rgb), 0.25);
 }
-button:hover {
-  background: var(--text-primary);
-  box-shadow: 0 8px 20px rgba(var(--primary-rgb), 0.3);
-  transform: translateY(-3px);
-}
+button:hover { filter: brightness(1.1); box-shadow: 0 8px 25px rgba(var(--primary-rgb), 0.4); transform: translateY(-3px); }
+button:active { transform: translateY(-1px) scale(0.98); }
+
 input, select {
-  padding: 12px 18px;
-  background: var(--background);
-  border: 1px solid var(--border-color);
-  border-radius: 14px;
-  font-size: 1rem;
-  color: var(--text-primary);
-  transition: var(--transition);
-  width: 100%;
+  padding: 14px 18px; background: var(--background); border: 1px solid var(--border-color);
+  border-radius: 14px; font-size: 1rem; color: var(--text-primary); transition: var(--transition); width: 100%;
 }
 input::placeholder { color: var(--text-secondary); }
-input:focus, select:focus {
-  border-color: rgba(var(--primary-rgb), 0.5);
-  outline: none;
-  background: #fff;
-  box-shadow: 0 0 0 4px rgba(var(--primary-rgb), 0.1);
-}
-  
-/* --- Task Input --- */
-.task-input-grid {
-  display: grid;
-  grid-template-columns: 1fr auto auto;
-  gap: 15px;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
-/* --- Task Filters --- */
-.task-filters {
-  display: flex;
-  gap: 10px;
-}
-.task-filters button {
-  background: none;
-  color: var(--text-secondary);
-  box-shadow: none;
-  padding: 8px 15px;
-  font-weight: 500;
-  border: 1px solid var(--border-color);
-}
-.task-filters button:hover {
-  background-color: var(--primary-light);
-  color: var(--primary);
-}
-.task-filters button.active {
-  background: var(--primary-light);
-  color: var(--primary);
-  border-color: rgba(var(--primary-rgb), 0.3);
-}
-
-/* --- Task List --- */
+input:focus, select:focus { border-color: var(--primary); outline: none; background: var(--surface); box-shadow: 0 0 0 4px rgba(var(--primary-rgb), 0.1); }
 #taskList { list-style-type: none; }
 #taskList li {
-  display: flex;
-  align-items: center;
-  padding: 15px;
-  border-radius: 14px;
-  margin-bottom: 12px;
-  border: 1px solid var(--border-color);
-  transition: var(--transition);
-  animation: fadeIn 0.5s ease;
-  gap: 15px;
-  background: rgba(var(--primary-rgb), 0.02);
+  display: flex; align-items: center; padding: 15px; border-radius: 14px; margin-bottom: 12px;
+  border: 1px solid var(--border-color); transition: var(--transition); animation: fadeIn 0.5s ease; gap: 15px; background: rgba(var(--primary-rgb), 0.04);
 }
-#taskList li:hover {
-  background: var(--surface);
-  border-color: rgba(var(--primary-rgb), 0.3);
-  transform: scale(1.02);
-  box-shadow: 0 6px 15px rgba(var(--primary-rgb), 0.1);
-}
-.task-info-container {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    flex-grow: 1;
-}
-.task-icon-container {
-    font-size: 1.2rem;
-    color: var(--primary);
-    background-color: var(--primary-light);
-    width: 40px;
-    height: 40px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-}
-.task-details { flex-grow: 1; }
-.task-text {
-  font-size: 1rem;
-  font-weight: 500;
-  color: var(--text-primary);
-  cursor: pointer;
-}
-.task-datetime {
-  font-size: 0.85rem;
-  color: var(--text-secondary);
-  margin-top: 2px;
-}
-li.completed {
-    opacity: 0.7;
-    background: transparent;
-}
-.completed .task-text { text-decoration: line-through; }
-.completed:hover {
-    opacity: 1;
-}
-.task-actions {
-  display: flex;
-  gap: 10px;
-  opacity: 0;
-  transition: var(--transition);
-}
-#taskList li:hover .task-actions {
-  opacity: 1;
-}
+#taskList li:hover { transform: scale(1.02); border-color: rgba(var(--primary-rgb), 0.4); background: var(--primary-light); }
+.task-text { flex-grow: 1; font-weight: 500; color: var(--text-primary); cursor: pointer; }
+li.completed .task-text { text-decoration: line-through; opacity: 0.7; }
 .task-actions button {
-  background: none;
-  box-shadow: none;
-  color: var(--secondary);
-  width: 35px;
-  height: 35px;
-  padding: 0;
-  font-size: 1rem;
-  border-radius: 10px;
+  background: none; box-shadow: none; color: var(--text-secondary); width: 35px; height: 35px; padding: 0;
+  font-size: 1rem; border-radius: 10px;
 }
 .task-actions .complete-btn:hover { background: var(--primary-light); color: var(--success); }
 .task-actions .edit-btn:hover { background: var(--primary-light); color: var(--primary); }
 .task-actions .delete-btn:hover { background: rgba(239, 83, 80, 0.1); color: var(--danger); }
-  
-.completed .complete-btn {
-    color: var(--success);
-}
-  
-/* --- Toast Notification --- */
-.toast {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  padding: 15px 25px;
-  background: var(--surface);
-  color: var(--text-primary);
-  border-radius: 14px;
-  box-shadow: 0 10px 40px rgba(var(--primary-rgb), 0.2);
-  border: 1px solid var(--border-color);
-  transform: translateY(200%);
-  opacity: 0;
-  transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
-  z-index: 1000;
-  font-weight: 500;
-}
-.toast.show {
-  transform: translateY(0);
-  opacity: 1;
-}
-  
-/* --- Animations & Utilities --- */
+li.completed .complete-btn { color: var(--success); }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-/* --- Responsive Design --- */
+/* --- Calendar --- */
+.calendar-header { display: flex; justify-content: space-between; align-items: center; padding: 0 10px; margin-bottom: 20px; }
+.calendar-header h3 { font-size: 1.3rem; font-weight: 600; }
+.calendar-nav-btn { background: none; border: 1px solid var(--border-color); color: var(--text-secondary); }
+.calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; }
+.weekday { font-weight: 600; color: var(--text-secondary); font-size: 0.9rem; text-align: center; padding-bottom: 10px; }
+.day { padding: 10px; border-radius: 12px; cursor: pointer; transition: var(--transition); position: relative; border: 2px solid transparent; text-align: center; }
+.day:not(.other-month):hover { background: var(--primary-light); }
+.day.other-month { opacity: 0.4; pointer-events: none; }
+.day.today { font-weight: 700; border-color: var(--primary); }
+.day.selected { background: var(--primary); color: var(--text-on-primary) !important; box-shadow: 0 0 15px rgba(var(--primary-rgb), 0.5); transform: scale(1.05); }
+.day .task-indicator { position: absolute; bottom: 6px; left: 50%; transform: translateX(-50%); width: 5px; height: 5px; border-radius: 50%; background-color: var(--primary); }
+.day.selected .task-indicator { background-color: var(--text-on-primary); }
+
+/* --- Customize Section --- */
+.customize-toggle-container { text-align: center; margin: 40px auto 20px auto; }
+.customize-section {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  max-width: 900px; /* Match app width */
+  margin: 0 auto;
+  padding: 30px;
+  border-top-left-radius: 25px;
+  border-top-right-radius: 25px;
+  z-index: 1000;
+  transform: translateY(100%);
+  opacity: 0;
+  visibility: hidden;
+  transition: transform 0.5s ease-out, opacity 0.5s ease-out, visibility 0s 0.5s;
+  border-bottom: none;
+}
+.customize-section.visible { transform: translateY(0); opacity: 1; visibility: visible; transition: transform 0.5s ease-out, opacity 0.5s ease-out; }
+.customize-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+.close-customize-btn { font-size: 1.5rem; background: none; box-shadow: none; color: var(--text-primary); padding: 5px; }
+.color-palette { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; }
+.color-swatch { width: 32px; height: 32px; border-radius: 50%; cursor: pointer; border: 3px solid rgba(0,0,0,0.1); transition: var(--transition); }
+.color-swatch:hover { transform: scale(1.15); }
+.color-swatch.active { transform: scale(1.2); box-shadow: 0 0 0 4px var(--background), 0 0 15px 5px rgba(var(--primary-rgb), 0.5); }
+.customize-container { display: flex; align-items: center; gap: 20px; justify-content: center; margin-top: 25px; padding-top: 25px; border-top: 1px solid var(--border-color); }
+input[type="color"] { width: 50px; height: 50px; border: none; padding: 0; border-radius: 50%; cursor: pointer; background: transparent; }
+input[type="color"]::-webkit-color-swatch { border-radius: 50%; border: 2px solid var(--border-color); }
+
+.app-footer { text-align: center; padding: 20px; font-weight: 500; color: var(--text-secondary); letter-spacing: 1px; text-transform: uppercase; font-size: 0.9rem; }
+
+/* Responsive */
 @media (max-width: 768px) {
-  body { padding: 15px; }
-  .section { padding: 20px; }
-  .task-input-grid { grid-template-columns: 1fr; }
-  .task-input-grid > * { width: 100%; margin-bottom: 10px; }
+  .app-header h1 { font-size: 2.5rem; }
+  .task-input-grid { grid-template-columns: 1fr; gap: 10px; }
+  .task-input-grid > * { width: 100%; }
+  .calendar-grid { gap: 5px; } .day { padding: 5px; font-size: 0.9rem;}
 }
 </style>
 </head>
 <body>
 
+<div class="aurora-container">
+    <div class="aurora-item"></div><div class="aurora-item"></div><div class="aurora-item"></div>
+</div>
+
 <div class="app">
 
-<header class="app-header">
-<h1>Chrono Focus</h1>
-<p>Your calm and cozy productivity partner.</p>
-<div class="color-palette" id="colorPalette">
-<div class="color-swatch active" style="background-color: #8D6E63;" data-theme="default" title="Mocha"></div>
-<div class="color-swatch" style="background-color: #819A82;" data-theme="theme-sage" title="Sage"></div>
-<div class="color-swatch" style="background-color: #C597A2;" data-theme="theme-rose" title="Rose"></div>
-<div class="color-swatch" style="background-color: #8FACC0;" data-theme="theme-mist" title="Mist"></div>
-</div>
-</header>
+    <header class="app-header">
+        <h1>Chrono Focus</h1>
+        <p>Your calm and cozy productivity partner.</p>
+    </header>
 
-<nav class="main-dock">
-<a href="page13.html" class="dock-button">
-<i class="fas fa-seedling"></i>
-<div>
-<h2>Pomodoro</h2>
-<p>Focus Sprints</p>
-</div>
-</a>
-<a href="page2.html" class="dock-button study-tools">
-<i class="fas fa-graduation-cap"></i>
-<div>
-<h2>Study Materials</h2>
-<p>Tools & Resources</p>
-</div>
-</a>
-<a href="page9.html" class="dock-button">
-<i class="fas fa-dharmachakra"></i>
-<div>
-<h2>Deep Focus</h2>
-<p>Zen Mode</p>
-</div>
-</a>
-</nav>
+    <nav class="main-dock">
+        <a href="#" class="dock-button glass-effect"><i class="fas fa-seedling"></i><div><h2>Pomodoro</h2><p>Focus Sprints</p></div></a>
+        <a href="#" class="dock-button glass-effect study-tools"><i class="fas fa-graduation-cap"></i><div><h2>Study Materials</h2><p>Tools & Resources</p></div></a>
+        <a href="#" class="dock-button glass-effect"><i class="fas fa-dharmachakra"></i><div><h2>Deep Focus</h2><p>Zen Mode</p></div></a>
+    </nav>
 
-<section class="section task-section">
-<div class="section-header">
-<h2><i class="fas fa-tasks"></i> Task Manager</h2>
-<div class="task-filters" id="taskFilters">
-<button class="active" data-filter="all">All</button>
-<button data-filter="active">Active</button>
-<button data-filter="completed">Completed</button>
-</div>
-</div>
+    <section class="section glass-effect">
+        <div class="section-header">
+            <h2><i class="fas fa-tasks"></i> Task Manager</h2>
+        </div>
+        <div class="task-input-grid">
+            <input id="taskInput" type="text" placeholder="e.g., Finish project report..." />
+            <input id="taskDate" type="date" title="Task Date" />
+            <select id="taskIcon" title="Task Category">
+                <option value="fas fa-thumbtack">📌 General</option>
+                <option value="fas fa-book">📖 Study</option>
+                <option value="fas fa-briefcase">💼 Work</option>
+            </select>
+        </div>
+        <button id="addTaskBtn" style="width: 100%;"><i class="fas fa-plus"></i> Add Task for Selected Date</button>
+        <ul id="taskList"></ul>
+    </section>
 
-<div class="task-input-grid">
-<input id="taskInput" type="text" placeholder="e.g., Read a chapter of a book..." />
-<select id="taskIcon" title="Task Category">
-<option value="fas fa-thumbtack">📌 General</option>
-<option value="fas fa-book">📖 Study</option>
-<option value="fas fa-briefcase">💼 Work</option>
-<option value="fas fa-heartbeat">❤️ Health</option>
-<option value="fas fa-shopping-cart">🛒 Shopping</option>
-<option value="fas fa-home">🏠 Home</option>
-</select>
-<button onclick="addTask()"><i class="fas fa-plus"></i> Add Task</button>
+    <section class="section glass-effect">
+        <div class="calendar-header">
+            <button id="prevMonth" class="calendar-nav-btn"><i class="fas fa-chevron-left"></i></button>
+            <h3 id="monthYear"></h3>
+            <button id="nextMonth" class="calendar-nav-btn"><i class="fas fa-chevron-right"></i></button>
+        </div>
+        <div class="calendar-grid weekdays">
+            <div class="weekday">Sun</div> <div class="weekday">Mon</div> <div class="weekday">Tue</div>
+            <div class="weekday">Wed</div> <div class="weekday">Thu</div> <div class="weekday">Fri</div> <div class="weekday">Sat</div>
+        </div>
+        <div class="calendar-grid" id="calendarDays"></div>
+    </section>
+
+    <div class="customize-toggle-container">
+        <button id="openCustomizeBtn"><i class="fas fa-palette"></i> Customize Your Space</button>
+    </div>
+
 </div>
 
-<ul id="taskList">
-<!-- Tasks will be rendered here by JavaScript -->
-</ul>
+<footer class="app-footer">It's just the start</footer>
+
+<!-- Customize Panel (Hidden by default) -->
+<section class="customize-section glass-effect" id="customize-section">
+    <div class="customize-header">
+        <h2><i class="fas fa-palette"></i> Customize Your Theme</h2>
+        <button id="closeCustomizeBtn" class="close-customize-btn" title="Close"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="color-palette">
+        <div class="color-swatch" style="background-color: #8D6E63;" data-theme="mocha" title="Mocha"></div>
+        <div class="color-swatch" style="background-color: #819A82;" data-theme="sage" title="Sage"></div>
+        <div class="color-swatch" style="background-color: #C597A2;" data-theme="rose" title="Rose"></div>
+        <div class="color-swatch" style="background-color: #8FACC0;" data-theme="mist" title="Mist"></div>
+        <div class="color-swatch" style="background: #0A0514; border: 3px solid #C5A2FF;" data-theme="aura" title="Liquid Aurora"></div>
+    </div>
+    <div class="customize-container">
+        <p>Or create your own unique vibe with any color.</p>
+        <input type="color" id="customColorPicker" value="#8D6E63">
+    </div>
 </section>
-
-</div>
-
-<div id="toast" class="toast"></div>
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-    initializeTheme();
-    loadTasks();
-    setupEventListeners();
-});
 
-// --- STATE MANAGEMENT ---
-let currentFilter = 'all';
-
-// --- TOAST NOTIFICATION ---
-function showToast(message, duration = 3000) {
-    const toast = document.getElementById('toast');
-    toast.textContent = message;
-    toast.classList.add('show');
-    setTimeout(() => toast.classList.remove('show'), duration);
-}
-
-// --- THEME MANAGEMENT ---
-function initializeTheme() {
-    const savedTheme = localStorage.getItem('chronoFocusTheme') || 'default';
-    setTheme(savedTheme);
-}
-
-function setTheme(themeName) {
-    document.body.className = themeName === 'default' ? '' : themeName;
-    
-    document.querySelectorAll('.color-swatch').forEach(sw => sw.classList.remove('active'));
-    const activeSwatch = document.querySelector(`.color-swatch[data-theme="${themeName}"]`);
-    if(activeSwatch) activeSwatch.classList.add('active');
-
-    localStorage.setItem('chronoFocusTheme', themeName);
-}
-
-
-// --- TASK MANAGEMENT (LocalStorage) ---
-function getTasks() {
-    return JSON.parse(localStorage.getItem('chronoFocusTasks')) || [];
-}
-
-function saveTasks(tasks) {
-    localStorage.setItem('chronoFocusTasks', JSON.stringify(tasks));
-}
-
-function loadTasks() {
-    const tasks = getTasks();
-    const taskList = document.getElementById('taskList');
-    taskList.innerHTML = '';
-
-    // Sort by completion status
-    tasks.sort((a, b) => a.completed - b.completed);
-
-    const filteredTasks = tasks.filter(task => {
-        if (currentFilter === 'active') return !task.completed;
-        if (currentFilter === 'completed') return task.completed;
-        return true;
-    });
-
-    if (filteredTasks.length === 0) {
-        const placeholder = document.createElement('li');
-        placeholder.style.cssText = 'justify-content: center; color: var(--text-secondary); background: transparent; border: 1px dashed var(--border-color); box-shadow: none;';
-        placeholder.textContent = 'No tasks here. Add one to get started!';
-        taskList.appendChild(placeholder);
-    } else {
-        filteredTasks.forEach(renderTask);
-    }
-}
-
-
-function renderTask(task) {
-    const taskList = document.getElementById('taskList');
-    const li = document.createElement('li');
-    li.dataset.id = task.id;
-    if (task.completed) {
-        li.classList.add('completed');
-    }
-
-    li.innerHTML = `
-        <div class="task-info-container">
-            <div class="task-icon-container"><i class="${task.icon}"></i></div>
-            <div class="task-details" ondblclick="editTask('${task.id}')">
-                <div class="task-text">${task.text}</div>
-            </div>
-        </div>
-        <div class="task-actions">
-            <button class="complete-btn" onclick="toggleCompleteTask('${task.id}')" title="Complete Task"><i class="fas fa-check"></i></button>
-            <button class="edit-btn" onclick="editTask('${task.id}')" title="Edit Task"><i class="fas fa-pencil-alt"></i></button>
-            <button class="delete-btn" onclick="deleteTask('${task.id}')" title="Delete Task"><i class="fas fa-trash"></i></button>
-        </div>
-    `;
-    taskList.appendChild(li);
-}
-
-function addTask() {
-    const taskInput = document.getElementById('taskInput');
-    if (taskInput.value.trim() === '') {
-        showToast('Please enter a task description!');
-        return;
-    }
-
-    const tasks = getTasks();
-    const newTask = {
-        id: 'task-' + Date.now(),
-        text: taskInput.value.trim(),
-        icon: document.getElementById('taskIcon').value,
-        completed: false
+    // --- STATE MANAGEMENT ---
+    const state = {
+        tasks: [],
+        selectedDate: new Date(),
+        calendarDate: new Date(),
     };
-    tasks.push(newTask);
-    saveTasks(tasks);
-    loadTasks();
+    const root = document.documentElement;
+    const dom = {
+        taskList: document.getElementById('taskList'),
+        taskInput: document.getElementById('taskInput'),
+        taskDate: document.getElementById('taskDate'),
+        taskIcon: document.getElementById('taskIcon'),
+        calendarDays: document.getElementById('calendarDays'),
+        monthYear: document.getElementById('monthYear'),
+        customizePanel: document.getElementById('customize-section'),
+        customColorPicker: document.getElementById('customColorPicker'),
+    };
+
+    // --- UTILITY & COLOR FUNCTIONS ---
+    const toYYYYMMDD = (date) => new Date(date.getTime() - (date.getTimezoneOffset() * 60000)).toISOString().split("T")[0];
+
+    const hexToHsl = (hex) => {
+        const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+        let r = parseInt(result[1], 16) / 255;
+        let g = parseInt(result[2], 16) / 255;
+        let b = parseInt(result[3], 16) / 255;
+        const max = Math.max(r, g, b), min = Math.min(r, g, b);
+        let h, s, l = (max + min) / 2;
+        if (max === min) {
+            h = s = 0;
+        } else {
+            const d = max - min;
+            s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+            switch (max) {
+                case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+                case g: h = (b - r) / d + 2; break;
+                case b: h = (r - g) / d + 4; break;
+            }
+            h /= 6;
+        }
+        return [h * 360, s * 100, l * 100];
+    };
     
-    // Reset form
-    taskInput.value = '';
-    taskInput.focus();
+    const PREDEFINED_THEMES = {
+        mocha: { '--primary': '#8D6E63', '--primary-rgb': '141, 110, 99', '--background': '#F9F5F0', '--surface': 'rgba(255, 255, 255, 0.9)', '--primary-light': '#EFEBE9', '--text-primary': '#5D4037', '--text-on-primary': '#FFFFFF', '--text-secondary': '#9E8D86', '--border-color': 'rgba(93, 64, 55, 0.1)', '--shadow-color': 'rgba(93, 64, 55, 0.15)', '--aurora-1': '#A89088', '--aurora-2': '#E3B396', '--aurora-3': '#9575CD'},
+        sage: { '--primary': '#819A82', '--primary-rgb': '129, 154, 130', '--background': '#F0F4F0', '--surface': 'rgba(255, 255, 255, 0.9)', '--primary-light': '#E8EFE8', '--text-primary': '#4F6150', '--text-on-primary': '#FFFFFF', '--text-secondary': '#849385', '--border-color': 'rgba(79, 97, 80, 0.1)', '--shadow-color': 'rgba(79, 97, 80, 0.15)', '--aurora-1': '#92B493', '--aurora-2': '#D7E3D8', '--aurora-3': '#7EC4CF' },
+        rose: { '--primary': '#C597A2', '--primary-rgb': '197, 151, 162', '--background': '#FAF3F5', '--surface': 'rgba(255, 255, 255, 0.9)', '--primary-light': '#F8ECED', '--text-primary': '#7A5C63', '--text-on-primary': '#FFFFFF', '--text-secondary': '#A68F96', '--border-color': 'rgba(122, 92, 99, 0.1)', '--shadow-color': 'rgba(122, 92, 99, 0.15)', '--aurora-1': '#D6AAB4', '--aurora-2': '#FADADD', '--aurora-3': '#D291BC' },
+        mist: { '--primary': '#8FACC0', '--primary-rgb': '143, 172, 192', '--background': '#EFF3F8', '--surface': 'rgba(255, 255, 255, 0.9)', '--primary-light': '#E8F0F5', '--text-primary': '#526676', '--text-on-primary': '#FFFFFF', '--text-secondary': '#8E9BA9', '--border-color': 'rgba(82, 102, 118, 0.1)', '--shadow-color': 'rgba(82, 102, 118, 0.15)', '--aurora-1': '#A4C3D8', '--aurora-2': '#D9E3ED', '--aurora-3': '#9EADC8' },
+        aura: { '--primary': '#C5A2FF', '--primary-rgb': '197, 162, 255', '--background': '#0A0514', '--surface': 'rgba(45, 35, 70, 0.5)', '--primary-light': 'rgba(197, 162, 255, 0.15)', '--text-primary': '#FFFFFF', '--text-on-primary': '#0A0514', '--text-secondary': '#E3D6FF', '--border-color': 'rgba(197, 162, 255, 0.25)', '--shadow-color': 'rgba(10, 5, 20, 0.5)', '--aurora-1': '#9B51E0', '--aurora-2': '#30C5D2', '--aurora-3': '#D944C3'}
+    };
 
-    showToast('Task added successfully!');
-}
-
-function deleteTask(taskId) {
-    if (confirm('Are you sure you want to delete this task?')) {
-        let tasks = getTasks().filter(t => t.id !== taskId);
-        saveTasks(tasks);
-        loadTasks();
-        showToast('Task deleted.');
-    }
-}
-
-function toggleCompleteTask(taskId) {
-    let tasks = getTasks();
-    const task = tasks.find(t => t.id === taskId);
-    if (task) {
-        task.completed = !task.completed;
-        saveTasks(tasks);
-        loadTasks();
-        if(task.completed) showToast('Task completed! Great job! 🎉');
-    }
-}
-
-function editTask(taskId) {
-    let tasks = getTasks();
-    const task = tasks.find(t => t.id === taskId);
-    if(task && !task.completed) { // Prevent editing of completed tasks
-        const newText = prompt('Enter the new task text:', task.text);
-        if (newText && newText.trim() !== '' && newText.trim() !== task.text) {
-            task.text = newText.trim();
-            saveTasks(tasks);
-            loadTasks();
-            showToast('Task updated!');
-        }
-    }
-}
-
-
-// --- EVENT LISTENERS ---
-function setupEventListeners() {
-    document.getElementById('taskInput').addEventListener('keypress', e => {
-        if (e.key === 'Enter') addTask();
-    });
+    // --- THEME ENGINE ---
+    const applyTheme = (themeName) => {
+        const theme = PREDEFINED_THEMES[themeName] || PREDEFINED_THEMES.mocha;
+        Object.entries(theme).forEach(([key, value]) => root.style.setProperty(key, value));
+        document.querySelectorAll('.color-swatch').forEach(sw => sw.classList.toggle('active', sw.dataset.theme === themeName));
+        localStorage.setItem('chronoFocusTheme', themeName);
+        if (themeName !== 'custom') localStorage.removeItem('chronoFocusCustomColor');
+    };
     
-    document.getElementById('colorPalette').addEventListener('click', e => {
-        if(e.target.classList.contains('color-swatch')) {
-            setTheme(e.target.dataset.theme);
-        }
-    });
+    const applyCustomTheme = (hex) => {
+        const [h, s, l] = hexToHsl(hex);
+        const rgb = hex.match(/\w\w/g).map(x => parseInt(x, 16)).join(', ');
+        const isDark = l < 40;
 
-    document.getElementById('taskFilters').addEventListener('click', e => {
-        if (e.target.tagName === 'BUTTON') {
-            document.querySelectorAll('#taskFilters button').forEach(btn => btn.classList.remove('active'));
-            e.target.classList.add('active');
-            currentFilter = e.target.dataset.filter;
-            loadTasks();
-        }
-    });
-}
+        root.style.setProperty('--primary', hex);
+        root.style.setProperty('--primary-rgb', rgb);
+        root.style.setProperty('--primary-light', `hsla(${h}, ${s}%, ${l}%, 0.15)`);
+        root.style.setProperty('--background', `hsl(${h}, ${s * 0.5}%, ${isDark ? 10 : 97}%)`);
+        root.style.setProperty('--surface', `hsla(${h}, ${s * 0.3}%, ${isDark ? 15 : 100}%, 0.8)`);
+        root.style.setProperty('--text-primary', `hsl(${h}, ${s * 0.8}%, ${isDark ? 95 : 15}%)`);
+        root.style.setProperty('--text-on-primary', l > 60 ? `hsl(${h}, 50%, 10%)` : `hsl(${h}, 50%, 95%)`);
+        root.style.setProperty('--text-secondary', `hsl(${h}, ${s * 0.4}%, ${isDark ? 75 : 45}%)`);
+        root.style.setProperty('--border-color', `hsla(${h}, ${s * 0.5}%, ${isDark ? 80 : 20}%, 0.1)`);
+        root.style.setProperty('--shadow-color', `hsla(${h}, ${s}%, ${l-20}%, 0.2)`);
+        
+        // Dynamic aurora for custom colors
+        root.style.setProperty('--aurora-1', `hsl(${h}, ${s}%, ${l}%)`);
+        root.style.setProperty('--aurora-2', `hsl(${(h + 60) % 360}, ${s}%, ${l}%)`);
+        root.style.setProperty('--aurora-3', `hsl(${(h + 120) % 360}, ${s}%, ${l}%)`);
+        
+        document.querySelectorAll('.color-swatch').forEach(sw => sw.classList.remove('active'));
+        localStorage.setItem('chronoFocusTheme', 'custom');
+        localStorage.setItem('chronoFocusCustomColor', hex);
+    };
 
+    // --- CALENDAR LOGIC ---
+    const renderCalendar = () => {
+        const date = new Date(state.calendarDate);
+        date.setDate(1);
+        const month = date.getMonth();
+        const year = date.getFullYear();
+        dom.monthYear.innerText = `${date.toLocaleString('default', { month: 'long' })} ${year}`;
+
+        const lastDay = new Date(year, month + 1, 0).getDate();
+        const firstDayIndex = date.getDay();
+        const prevLastDay = new Date(year, month, 0).getDate();
+        dom.calendarDays.innerHTML = '';
+        
+        const tasksOnDates = new Set(state.tasks.map(t => t.date));
+        const todayStr = toYYYYMMDD(new Date());
+        const selectedStr = toYYYYMMDD(state.selectedDate);
+
+        let daysHtml = '';
+        for (let i = firstDayIndex; i > 0; i--) { daysHtml += `<div class="day other-month">${prevLastDay - i + 1}</div>`; }
+
+        for (let i = 1; i <= lastDay; i++) {
+            const dateStr = toYYYYMMDD(new Date(year, month, i));
+            const classes = `day ${dateStr === todayStr ? 'today' : ''} ${dateStr === selectedStr ? 'selected' : ''}`;
+            const indicator = tasksOnDates.has(dateStr) ? '<span class="task-indicator"></span>' : '';
+            daysHtml += `<div class="${classes}" data-date="${dateStr}">${i}${indicator}</div>`;
+        }
+        dom.calendarDays.innerHTML = daysHtml;
+    };
+
+    // --- TASK MANAGEMENT ---
+    const renderTasks = () => {
+        const selectedDateStr = toYYYYMMDD(state.selectedDate);
+        const tasksForDay = state.tasks.filter(task => task.date === selectedDateStr)
+                                       .sort((a, b) => a.completed - b.completed);
+        
+        dom.taskList.innerHTML = '';
+        if (tasksForDay.length === 0) {
+            dom.taskList.innerHTML = `<li style="justify-content: center; background: transparent; border-style: dashed;">No tasks scheduled for this day.</li>`;
+            return;
+        }
+
+        tasksForDay.forEach(task => {
+            const li = document.createElement('li');
+            li.className = task.completed ? 'completed' : '';
+            li.dataset.id = task.id;
+            li.innerHTML = `
+                <i class="${task.icon}" style="font-size: 1.2rem; color: var(--primary);"></i>
+                <div class="task-text">${task.text}</div>
+                <div class="task-actions">
+                    <button class="complete-btn" title="Complete"><i class="fas fa-check"></i></button>
+                    <button class="edit-btn" title="Edit"><i class="fas fa-pencil-alt"></i></button>
+                    <button class="delete-btn" title="Delete"><i class="fas fa-trash"></i></button>
+                </div>`;
+            dom.taskList.appendChild(li);
+        });
+    };
+
+    const addTask = () => {
+        const text = dom.taskInput.value.trim();
+        if (!text) { return; }
+        
+        state.tasks.push({
+            id: 'task-' + Date.now(), text,
+            date: toYYYYMMDD(state.selectedDate),
+            icon: dom.taskIcon.value, completed: false
+        });
+
+        dom.taskInput.value = '';
+        dom.taskInput.focus();
+        saveAndRender();
+    };
+
+    // --- GLOBAL SAVE & RENDER ---
+    const saveAndRender = () => {
+        // Save state to localStorage
+        localStorage.setItem('chronoFocusTasks', JSON.stringify(state.tasks));
+        localStorage.setItem('chronoFocusSelectedDate', state.selectedDate.toISOString());
+        
+        // Re-render the UI
+        renderCalendar();
+        renderTasks();
+    };
+
+    // --- EVENT LISTENERS ---
+    const setupEventListeners = () => {
+        // Customize Panel
+        document.getElementById('openCustomizeBtn').addEventListener('click', () => dom.customizePanel.classList.add('visible'));
+        document.getElementById('closeCustomizeBtn').addEventListener('click', () => dom.customizePanel.classList.remove('visible'));
+
+        // Theme Selection
+        document.querySelector('.color-palette').addEventListener('click', e => {
+            if (e.target.dataset.theme) applyTheme(e.target.dataset.theme);
+        });
+        dom.customColorPicker.addEventListener('input', (e) => applyCustomTheme(e.target.value));
+
+        // Calendar
+        dom.calendarDays.addEventListener('click', e => {
+            const dayEl = e.target.closest('.day:not(.other-month)');
+            if (dayEl) {
+                state.selectedDate = new Date(dayEl.dataset.date);
+                dom.taskDate.value = dayEl.dataset.date;
+                saveAndRender();
+            }
+        });
+        document.getElementById('prevMonth').addEventListener('click', () => { state.calendarDate.setMonth(state.calendarDate.getMonth() - 1); renderCalendar(); });
+        document.getElementById('nextMonth').addEventListener('click', () => { state.calendarDate.setMonth(state.calendarDate.getMonth() + 1); renderCalendar(); });
+
+        // Task Input
+        dom.taskDate.addEventListener('input', () => {
+             state.selectedDate = new Date(dom.taskDate.value);
+             saveAndRender();
+        });
+        document.getElementById('addTaskBtn').addEventListener('click', addTask);
+        dom.taskInput.addEventListener('keypress', e => { if (e.key === 'Enter') addTask(); });
+
+        // Task Actions (Delegation)
+        dom.taskList.addEventListener('click', e => {
+            const button = e.target.closest('button');
+            const li = e.target.closest('li');
+            if (!button || !li) return;
+            const task = state.tasks.find(t => t.id === li.dataset.id);
+            if (!task) return;
+
+            if (button.classList.contains('delete-btn')) {
+                state.tasks = state.tasks.filter(t => t.id !== task.id);
+            } else if (button.classList.contains('complete-btn')) {
+                task.completed = !task.completed;
+            } else if (button.classList.contains('edit-btn')) {
+                const newText = prompt('Enter new task text:', task.text);
+                if (newText && newText.trim()) task.text = newText.trim();
+            }
+            saveAndRender();
+        });
+    };
+
+    // --- INITIALIZATION ---
+    const init = () => {
+        // Load ALL saved data
+        const savedTasks = localStorage.getItem('chronoFocusTasks');
+        if (savedTasks) state.tasks = JSON.parse(savedTasks);
+        
+        const savedDate = localStorage.getItem('chronoFocusSelectedDate');
+        if (savedDate) {
+            state.selectedDate = new Date(savedDate);
+            state.calendarDate = new Date(savedDate);
+        }
+
+        const savedTheme = localStorage.getItem('chronoFocusTheme') || 'mocha';
+        if (savedTheme === 'custom') {
+            const customColor = localStorage.getItem('chronoFocusCustomColor') || '#8D6E63';
+            dom.customColorPicker.value = customColor;
+            applyCustomTheme(customColor);
+        } else {
+            applyTheme(savedTheme);
+        }
+        
+        dom.taskDate.value = toYYYYMMDD(state.selectedDate);
+        setupEventListeners();
+        saveAndRender(); // Initial render with all loaded data
+    };
+
+    init();
+});
 </script>
-
 </body>
 </html>
