@@ -4,18 +4,20 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Glassmorphic Unit Converter</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
 :root {
-  --accent1: #82aaff; /* Softer Blue */
-  --accent2: #c792ea; /* Lavender */
-  --accent3: #ffcb6b; /* Mellow Yellow */
+  --accent1: #82aaff;
+  --accent2: #c792ea;
+  --accent3: #ffcb6b;
   --text: #ffffff;
-  --text-dark: #6792bc; /* For inner elements */
+  --text-dark: #6792bc;
   --glass-bg: rgba(255, 255, 255, 0.25);
   --glass-border: rgba(255, 255, 255, 0.3);
   --blur: 20px;
   --shadow: 0 16px 40px rgba(0, 0, 0, 0.2);
   --transition: .4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  --theme-bg: #a8b9ff4d;
 }
 
 *{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;}
@@ -26,8 +28,9 @@ html, body {
     display: flex;
     justify-content: center;
     align-items: center;
-    background: #a8b9ff4d;
+    background: var(--theme-bg);
     overflow: hidden;
+    transition: background 1s ease;
 }
 
 body::before {
@@ -50,6 +53,16 @@ body::before {
 
 /* --- Cube Startup Animation --- */
 #startup-animation {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.8);
+  z-index: 1000;
   perspective: 1000px;
   opacity: 1;
   transition: opacity 1s ease;
@@ -64,8 +77,7 @@ body::before {
 }
 
 .cube.unfold {
-  animation: none; /* Stop rotation */
-  transform: scale(3); /* Enlarge while unfolding */
+  animation: unfold-cube 1.2s forwards cubic-bezier(0.68, -0.55, 0.27, 1.55);
 }
 
 .face {
@@ -78,7 +90,7 @@ body::before {
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 1.5rem;
+  font-size: 2.5rem;
   color: var(--text);
   font-weight: 300;
   transition: transform 1.2s cubic-bezier(0.68, -0.55, 0.27, 1.55);
@@ -91,20 +103,17 @@ body::before {
 .top    { transform: rotateX(90deg) translateZ(75px); }
 .bottom { transform: rotateX(-90deg) translateZ(75px); }
 
-/* Unfold transformations */
-.cube.unfold .front  { transform: rotateY(0deg) translateZ(200px); }
-.cube.unfold .back   { transform: rotateY(180deg) translateZ(200px); }
-.cube.unfold .right  { transform: rotateY(90deg) translateZ(200px); }
-.cube.unfold .left   { transform: rotateY(-90deg) translateZ(200px); }
-.cube.unfold .top    { transform: rotateX(90deg) translateZ(200px); }
-.cube.unfold .bottom { transform: rotateX(-90deg) translateZ(200px); }
-
 @keyframes rotate-cube {
   from { transform: rotateX(0deg) rotateY(0deg); }
   to { transform: rotateX(360deg) rotateY(360deg); }
 }
-/* --- End Cube Animation --- */
 
+@keyframes unfold-cube {
+  0% { transform: rotateX(45deg) rotateY(45deg) scale(1); }
+  50% { transform: rotateX(0deg) rotateY(0deg) scale(1.5); }
+  100% { transform: scale(20); opacity: 0; }
+}
+/* --- End Cube Animation --- */
 
 .page {
   display: none;
@@ -119,6 +128,8 @@ body::before {
   color: var(--text);
   transition: var(--transition);
   animation: fadeIn 0.8s ease forwards;
+  position: relative;
+  z-index: 1;
 }
 
 .active { display: block; }
@@ -149,6 +160,14 @@ h2 {
   backdrop-filter: blur(10px);
   transition: all .5s ease;
   font-size: 1.1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.menu-item i {
+  font-size: 1.8rem;
 }
 
 .menu-item:hover {
@@ -183,7 +202,6 @@ input::placeholder { color: rgba(255,255,255,0.7); }
 select { appearance: none; -webkit-appearance: none; background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M5%208l5%205%205-5%22%20stroke%3D%22%23ffffff%22%20stroke-width%3D%222%22%20fill%3D%22none%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22/%3E%3C/svg%3E'); background-repeat: no-repeat; background-position: right 15px center; }
 option { background: #3c3c78; color: var(--text); }
 
-
 input:focus, select:focus {
   transform: scale(1.02);
   box-shadow: 0 0 20px var(--accent1);
@@ -195,8 +213,13 @@ input:focus, select:focus {
   font-weight: bold;
 }
 
-.back-btn {
-  background: rgba(255,255,255,0.15);
+.btn-group {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.btn {
   padding: 14px;
   border: 1px solid var(--glass-border);
   border-radius: 15px;
@@ -204,13 +227,115 @@ input:focus, select:focus {
   font-weight: bold;
   color: var(--text);
   transition:.3s ease;
-  margin-bottom: 20px;
+  flex: 1;
+  text-align: center;
+}
+
+.back-btn {
+  background: rgba(255,255,255,0.15);
 }
 
 .back-btn:hover {
   transform: scale(1.05);
   background: var(--accent2);
   border-color: var(--accent2);
+}
+
+.orange-btn {
+  background: linear-gradient(135deg, #ff9a3d, #ff6b6b);
+  border: none;
+}
+
+.orange-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 15px rgba(255, 107, 107, 0.7);
+}
+
+.history-section {
+  margin-top: 30px;
+  max-height: 200px;
+  overflow-y: auto;
+  padding: 10px;
+  border-radius: 15px;
+  background: rgba(0,0,0,0.1);
+}
+
+.history-section h3 {
+  margin-bottom: 10px;
+  text-align: center;
+  font-weight: 500;
+}
+
+.history-item {
+  padding: 10px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  font-size: 0.9rem;
+}
+
+.history-item:last-child {
+  border-bottom: none;
+}
+
+.theme-selector {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  display: flex;
+  gap: 8px;
+  z-index: 10;
+  transition: transform 0.5s ease, opacity 0.5s ease;
+}
+
+.theme-selector.hidden {
+  transform: translateX(150px);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.theme-dot {
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid rgba(255,255,255,0.5);
+  transition: transform 0.3s ease;
+}
+
+.theme-dot:hover {
+  transform: scale(1.2);
+}
+
+.toggle-themes {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--glass-border);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  z-index: 11;
+  transition: all 0.3s ease;
+}
+
+.toggle-themes:hover {
+  transform: scale(1.1);
+  background: rgba(255,255,255,0.25);
+}
+
+.credit {
+  position: absolute;
+  bottom: 15px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 0.8rem;
+  opacity: 0.7;
 }
 
 @keyframes fadeIn {
@@ -221,9 +346,9 @@ input:focus, select:focus {
 @media (max-width:768px) {
   .menu-grid { grid-template-columns:1fr; }
   h2 { font-size:1.8rem; }
-  input, select, .menu-item, .back-btn { font-size:15px; padding:15px; }
+  input, select, .menu-item, .btn { font-size:15px; padding:15px; }
   .cube { width: 100px; height: 100px; }
-  .face { width: 100px; height: 100px; }
+  .face { width: 100px; height: 100px; font-size: 1.8rem; }
   .front, .back, .right, .left, .top, .bottom { transform-origin: 50px 50px; }
   .front  { transform: rotateY(0deg) translateZ(50px); }
   .back   { transform: rotateY(180deg) translateZ(50px); }
@@ -231,6 +356,21 @@ input:focus, select:focus {
   .left   { transform: rotateY(-90deg) translateZ(50px); }
   .top    { transform: rotateX(90deg) translateZ(50px); }
   .bottom { transform: rotateX(-90deg) translateZ(50px); }
+  .theme-selector {
+    top: 10px;
+    right: 10px;
+    flex-direction: column;
+  }
+  .theme-dot {
+    width: 20px;
+    height: 20px;
+  }
+  .toggle-themes {
+    top: 10px;
+    right: 10px;
+    width: 35px;
+    height: 35px;
+  }
 }
 
 </style>
@@ -240,31 +380,90 @@ input:focus, select:focus {
 <!-- Startup Animation -->
 <div id="startup-animation">
   <div class="cube">
-    <div class="face front">⇔</div>
-    <div class="face back">∑</div>
-    <div class="face right">∭</div>
-    <div class="face left">g</div>
-    <div class="face top">℃</div>
-    <div class="face bottom">Pa</div>
+    <div class="face front"><i class="fas fa-ruler"></i></div>
+    <div class="face back"><i class="fas fa-weight-hanging"></i></div>
+    <div class="face right"><i class="fas fa-temperature-high"></i></div>
+    <div class="face left"><i class="fas fa-tachometer-alt"></i></div>
+    <div class="face top"><i class="fas fa-bolt"></i></div>
+    <div class="face bottom"><i class="fas fa-compress-arrows-alt"></i></div>
   </div>
 </div>
 
 <div id="page1" class="page">
+  <div class="toggle-themes" onclick="toggleThemeSelector()">
+    <i class="fas fa-palette"></i>
+  </div>
+  
+  <div class="theme-selector hidden">
+    <div class="theme-dot" style="background: #ffc1d7;" data-theme="cosmic-pink"></div>
+    <div class="theme-dot" style="background: #1a1a2e;" data-theme="midnight-blue"></div>
+    <div class="theme-dot" style="background: #4b6a4a;" data-theme="forest-green"></div>
+    <div class="theme-dot" style="background: #fb8500;" data-theme="golden-hour"></div>
+    <div class="theme-dot" style="background: #2d00f7;" data-theme="synthwave"></div>
+  </div>
+  
   <h2>Choose a Converter</h2>
   <div class="menu-grid">
-    <div class="menu-item" onclick="openConverter('Length')">Length</div>
-    <div class="menu-item" onclick="openConverter('Area')">Area</div>
-    <div class="menu-item" onclick="openConverter('Volume')">Volume</div>
-    <div class="menu-item" onclick="openConverter('Mass')">Mass</div>
-    <div class="menu-item" onclick="openConverter('Temperature')">Temperature</div>
-    <div class="menu-item" onclick="openConverter('Speed')">Speed</div>
-    <div class="menu-item" onclick="openConverter('Pressure')">Pressure</div>
-    <div class="menu-item" onclick="openConverter('Power')">Power</div>
+    <div class="menu-item" onclick="openConverter('Length')">
+      <i class="fas fa-ruler"></i>
+      Length
+    </div>
+    <div class="menu-item" onclick="openConverter('Area')">
+      <i class="fas fa-border-all"></i>
+      Area
+    </div>
+    <div class="menu-item" onclick="openConverter('Volume')">
+      <i class="fas fa-cube"></i>
+      Volume
+    </div>
+    <div class="menu-item" onclick="openConverter('Mass')">
+      <i class="fas fa-weight-hanging"></i>
+      Mass
+    </div>
+    <div class="menu-item" onclick="openConverter('Temperature')">
+      <i class="fas fa-temperature-high"></i>
+      Temperature
+    </div>
+    <div class="menu-item" onclick="openConverter('Speed')">
+      <i class="fas fa-tachometer-alt"></i>
+      Speed
+    </div>
+    <div class="menu-item" onclick="openConverter('Pressure')">
+      <i class="fas fa-compress-arrows-alt"></i>
+      Pressure
+    </div>
+    <div class="menu-item" onclick="openConverter('Power')">
+      <i class="fas fa-bolt"></i>
+      Power
+    </div>
   </div>
+  
+  <div class="btn-group">
+    <div class="btn orange-btn" onclick="openCalculator()">
+      <i class="fas fa-calculator"></i> Ultra Calculator
+    </div>
+  </div>
+  
+  <div class="credit">Made by cozytustudios</div>
 </div>
 
 <div id="page2" class="page">
-  <button class="back-btn" onclick="goMenu()">← Back to Menu</button>
+  <div class="toggle-themes" onclick="toggleThemeSelector()">
+    <i class="fas fa-palette"></i>
+  </div>
+  
+  <div class="theme-selector hidden">
+    <div class="theme-dot" style="background: #ffc1d7;" data-theme="cosmic-pink"></div>
+    <div class="theme-dot" style="background: #1a1a2e;" data-theme="midnight-blue"></div>
+    <div class="theme-dot" style="background: #4b6a4a;" data-theme="forest-green"></div>
+    <div class="theme-dot" style="background: #fb8500;" data-theme="golden-hour"></div>
+    <div class="theme-dot" style="background: #2d00f7;" data-theme="synthwave"></div>
+  </div>
+  
+  <div class="btn-group">
+    <div class="btn back-btn" onclick="goMenu()">← Back to Menu</div>
+  </div>
+  
   <h2 id="conv-title"></h2>
   <div class="converter">
     <input type="number" id="conv-input" placeholder="Enter value">
@@ -272,9 +471,62 @@ input:focus, select:focus {
     <select id="conv-to"></select>
     <input type="text" id="conv-output" placeholder="Result" readonly>
   </div>
+  
+  <div class="history-section">
+    <h3>Conversion History</h3>
+    <div id="history-list"></div>
+  </div>
+  
+  <div class="credit">Made by cozytustudios</div>
 </div>
 
 <script>
+// Theme management
+const themes = {
+  'cosmic-pink': { bg: '#a8b9ff4d', accent1: '#ff8bb3', accent2: '#ff6b9d', accent3: '#ffcb6b' },
+  'midnight-blue': { bg: '#1a1a2e', accent1: '#0f3460', accent2: '#533483', accent3: '#e94560' },
+  'forest-green': { bg: '#4b6a4a', accent1: '#3a7d44', accent2: '#69b578', accent3: '#d0db97' },
+  'golden-hour': { bg: '#fb8500', accent1: '#ffb703', accent2: '#fd9e02', accent3: '#023047' },
+  'synthwave': { bg: '#2d00f7', accent1: '#6a00f4', accent2: '#8900f2', accent3: '#a100f2' }
+};
+
+// Initialize theme selector state
+let themeSelectorVisible = false;
+
+function toggleThemeSelector() {
+  const themeSelector = document.querySelector('.theme-selector');
+  themeSelectorVisible = !themeSelectorVisible;
+  
+  if (themeSelectorVisible) {
+    themeSelector.classList.remove('hidden');
+  } else {
+    themeSelector.classList.add('hidden');
+  }
+}
+
+// Apply theme and hide selector
+function applyTheme(themeName) {
+  const theme = themes[themeName];
+  
+  document.documentElement.style.setProperty('--accent1', theme.accent1);
+  document.documentElement.style.setProperty('--accent2', theme.accent2);
+  document.documentElement.style.setProperty('--accent3', theme.accent3);
+  document.documentElement.style.setProperty('--theme-bg', theme.bg);
+  document.body.style.background = theme.bg;
+  
+  // Hide theme selector after selection
+  themeSelectorVisible = false;
+  document.querySelector('.theme-selector').classList.add('hidden');
+}
+
+// Set up theme dots
+document.querySelectorAll('.theme-dot').forEach(dot => {
+  dot.addEventListener('click', (e) => {
+    const themeName = e.target.getAttribute('data-theme');
+    applyTheme(themeName);
+  });
+});
+
 // Startup Animation
 window.addEventListener('load', () => {
     const startupDiv = document.getElementById('startup-animation');
@@ -288,11 +540,12 @@ window.addEventListener('load', () => {
         setTimeout(() => {
             startupDiv.style.opacity = '0';
             showPage('page1');
-            startupDiv.style.display = 'none';
-        }, 1200); // This should match the CSS transition duration
-    }, 2500); // Initial time showing the rotating cube
+            setTimeout(() => {
+              startupDiv.style.display = 'none';
+            }, 1000);
+        }, 1200);
+    }, 2500);
 });
-
 
 // Navigation
 function showPage(id){
@@ -300,16 +553,45 @@ function showPage(id){
   document.getElementById(id).classList.add('active');
 }
 function goMenu(){ showPage('page1'); }
+
+function openCalculator() {
+  // This would navigate to the calculator page
+  alert("This would navigate to the Ultra Calculator page (page4.html)");
+}
+
+// History management
+let conversionHistory = [];
+
+function addToHistory(conversion) {
+  conversionHistory.unshift(conversion);
+  if (conversionHistory.length > 10) {
+    conversionHistory.pop();
+  }
+  updateHistoryDisplay();
+}
+
+function updateHistoryDisplay() {
+  const historyList = document.getElementById('history-list');
+  historyList.innerHTML = '';
+  
+  conversionHistory.forEach(item => {
+    const historyItem = document.createElement('div');
+    historyItem.className = 'history-item';
+    historyItem.textContent = `${item.value} ${item.from} = ${item.result} ${item.to}`;
+    historyList.appendChild(historyItem);
+  });
+}
+
 function openConverter(type){
   showPage('page2');
   document.getElementById('conv-title').innerText=type+' Converter';
   loadUnits(type);
 }
 
-// Units (no changes here, logic is the same)
+// Units
 const units = {
 Length:{'Millimeter (mm)':1,'Centimeter (cm)':10,'Meter (m)':1000,'Kilometer (km)':1000000,'Inch (in)':25.4,'Foot (ft)':304.8,'Yard (yd)':914.4,'Mile (mi)':1609344},
-Area:{'Square millimeter (mm²)':1,'Square centimeter (cm²)':100,'Square meter (m²)':1000000,'Square kilometer (km²)':1e12,'Square inch (in²)':645.16,'Square foot (ft²)':92903,'Square yard (yd²)':836127,'Acre':4046860000,'Hectare (ha)':10000000000}, // Corrected values
+Area:{'Square millimeter (mm²)':1,'Square centimeter (cm²)':100,'Square meter (m²)':1000000,'Square kilometer (km²)':1e12,'Square inch (in²)':645.16,'Square foot (ft²)':92903,'Square yard (yd²)':836127,'Acre':4046860000,'Hectare (ha)':10000000000},
 Volume:{'Milliliter (mL)':1,'Liter (L)':1000,'Cubic centimeter (cm³)':1,'Cubic meter (m³)':1e6,'Cubic inch (in³)':16.387,'Cubic foot (ft³)':28316.8,'US Gallon (gal)':3785.41,'US Pint (pt)':473.176},
 Mass:{'Milligram (mg)':0.001,'Gram (g)':1,'Kilogram (kg)':1000,'Tonne (t)':1e6,'Ounce (oz)':28.3495,'Pound (lb)':453.592,'Stone (st)':6350.29},
 Temperature:['Celsius','Fahrenheit','Kelvin'],
@@ -335,10 +617,10 @@ function loadUnits(type){
   
   document.getElementById('conv-input').value='';
   document.getElementById('conv-output').value='';
-  convert(); // Perform an initial conversion
+  updateHistoryDisplay();
 }
 
-// Conversion Logic (Made it more robust)
+// Conversion Logic
 document.getElementById('conv-input').addEventListener('input', convert);
 document.getElementById('conv-from').addEventListener('change', convert);
 document.getElementById('conv-to').addEventListener('change', convert);
@@ -373,7 +655,20 @@ function convert(){
     const factorTo = units[type][to];
     result = val * factorFrom / factorTo;
   }
-  outputEl.value = parseFloat(result.toPrecision(6));
+  
+  const formattedResult = parseFloat(result.toPrecision(6));
+  outputEl.value = formattedResult;
+  
+  // Add to history
+  if (inputEl.value && from && to) {
+    addToHistory({
+      type: type,
+      value: inputEl.value,
+      from: from,
+      to: to,
+      result: formattedResult
+    });
+  }
 }
 
 </script>
