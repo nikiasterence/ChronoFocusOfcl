@@ -10,12 +10,41 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
+      /* Light Mode Palette */
+      --bg-gradient-start: #ffcbbb;
+      --bg-gradient-mid1: #ffbcd5;
+      --bg-gradient-mid2: #ffcca3;
+      --bg-gradient-end: #a7b6ff;
       --text: #1a1a1a;
-      --muted: #4a4a4a;
+      --glass-bg: rgba(255, 255, 255, 0.25);
+      --glass-border: rgba(255, 255, 255, 0.3);
+      --shadow-color: rgba(31, 38, 135, 0.37);
+      --h1-color: #fff;
+      --p-color: rgba(255, 255, 255, 0.9);
+      --button-text: #fff;
+      --button-focus: rgba(37, 117, 252, 0.5);
       --accent-start: #d9b6ff;
       --accent-end: #94bbff;
-      --shadow-color: rgba(0, 0, 0, 0.1);
-      --border-color: rgba(255, 255, 255, 0.18);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        /* Dark Mode Palette */
+        --bg-gradient-start: #232D35;
+        --bg-gradient-mid1: #1d2b3a;
+        --bg-gradient-mid2: #2c3e50;
+        --bg-gradient-end: #1a2533;
+        --text: #EEEDE9;
+        --glass-bg: rgba(0, 0, 0, 0.25);
+        --glass-border: rgba(255, 255, 255, 0.15);
+        --shadow-color: rgba(0, 0, 0, 0.5);
+        --h1-color: #fff;
+        --p-color: rgba(255, 255, 255, 0.8);
+        --button-text: #fff;
+        --button-focus: rgba(130, 180, 255, 0.5);
+        --accent-start: #5a6b79;
+        --accent-end: #b48e69;
+      }
     }
 
     * {
@@ -30,7 +59,7 @@
       margin: 0;
       font-family: 'Inter', sans-serif;
       color: var(--text);
-      background: linear-gradient(-45deg, #ffcbbb, #ffbcd5, #ffcca3, #a7b6ff);
+      background: linear-gradient(-45deg, var(--bg-gradient-start), var(--bg-gradient-mid1), var(--bg-gradient-mid2), var(--bg-gradient-end));
       background-size: 400% 400%;
       animation: gradient 15s ease infinite;
       display: flex;
@@ -40,29 +69,77 @@
     }
 
     @keyframes gradient {
-      0% {
-        background-position: 0% 50%;
-      }
-      50% {
-        background-position: 100% 50%;
-      }
-      100% {
-        background-position: 0% 50%;
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    
+    /* --- Welcome Animation --- */
+    .welcome-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      z-index: 10;
+      /* Starts visible, then fades out */
+      animation: fadeOut 1s forwards;
+      animation-delay: 2.5s;
+    }
+
+    .welcome-message {
+      font-size: 28px;
+      font-weight: 600;
+      color: var(--h1-color);
+      text-shadow: 0 3px 10px rgba(0,0,0,0.3);
+      opacity: 0;
+      transform: translateY(20px);
+      /* Fades in and moves up */
+      animation: fadeInUp 1s forwards;
+      animation-delay: 0.5s;
+    }
+
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
       }
     }
+
+    @keyframes fadeOut {
+      to {
+        opacity: 0;
+        visibility: hidden; /* Hide it completely after animation */
+      }
+    }
+    /* --- End Welcome Animation --- */
 
     .container {
       width: min(90vw, 400px);
       padding: 48px;
+      background: var(--glass-bg);
       border-radius: 24px;
-      background: rgba(255, 255, 255, 0.15);
-      box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
-      border-radius: 24px;
-      border: 1px solid var(--border-color);
+      box-shadow: 0 8px 32px 0 var(--shadow-color);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
       text-align: center;
       z-index: 2;
+      transition: background 0.3s ease, border 0.3s ease, box-shadow 0.3s ease;
+      /* Start hidden, then fade in AFTER welcome animation */
+      opacity: 0;
+      animation: fadeIn 1s forwards;
+      animation-delay: 3s;
+    }
+
+    @keyframes fadeIn {
+      to {
+        opacity: 1;
+      }
     }
 
     header {
@@ -88,12 +165,13 @@
       font-size: 28px;
       margin: 0;
       font-weight: 600;
-      color: #fff;
+      color: var(--h1-color);
+      text-shadow: 0 2px 8px rgba(0,0,0,0.2);
     }
 
     p {
       margin: 12px 0 0;
-      color: rgba(255, 255, 255, 0.8);
+      color: var(--p-color);
       font-size: 16px;
       line-height: 1.5;
     }
@@ -107,7 +185,7 @@
       margin-top: 24px;
       font-size: 17px;
       font-weight: 600;
-      color: white;
+      color: var(--button-text);
       cursor: pointer;
       background: linear-gradient(135deg, var(--accent-start), var(--accent-end));
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
@@ -127,25 +205,25 @@
 
     .enter:focus {
       outline: none;
-      box-shadow: 0 0 0 4px rgba(37, 117, 252, 0.5);
+      box-shadow: 0 0 0 4px var(--button-focus);
     }
 
     .success {
       display: none;
       margin-top: 16px;
       font-size: 14px;
-      color: #fff;
+      color: var(--h1-color);
       font-weight: 500;
     }
 
     .footer {
       margin-top: 32px;
       font-size: 12px;
-      color: rgba(255, 255, 255, 0.7);
+      color: var(--p-color);
     }
 
     .footer a {
-      color: #fff;
+      color: var(--h1-color);
       text-decoration: none;
       font-weight: 500;
     }
@@ -156,6 +234,13 @@
   </style>
 </head>
 <body>
+
+  <!-- This container will show the welcome message first -->
+  <div class="welcome-container">
+    <div class="welcome-message">Welcome to Beta 3</div>
+  </div>
+
+  <!-- The main content, which appears after the welcome message -->
   <main class="container">
     <header>
       <div class="logo">⌛</div>
@@ -165,7 +250,7 @@
 
     <button class="enter" id="enterBtn">Enter</button>
     <div id="success" class="success">✓ Welcome back. Preparing your sanctuary…</div>
-    <div class="footer">© <span id="year"></span> Chrono Focus · Crafted by <a href="https://cozytusstudio-showcase-9bg3htb.gamma.site/cozytustudio?fbclid=IwY2xjawGEX-FleHRuA2FlbQIxMAABHTgq2JoSAmnpMjdzedvXYHAXZkEkt2t2umMFZErjjez1txBBg9GmBKrcNQ_aem_T23CFp6iYhA1q8eJuUu_5A" target="_blank">CozytuStudios Team</a></div>
+    <div class="footer">© <span id="year"></span> Chrono Focus · Crafted by <a href="https://cozytusstudio-showcase-9bg3htb.gamma.site/cozytustudio" target="_blank">CozytuStudios Team</a></div>
   </main>
 
   <script>
