@@ -312,23 +312,33 @@
         .dock.dock-left .dock-icon:hover { transform: translateX(10px) scale(1.15); }
         .dock.dock-right .dock-icon:hover { transform: translateX(-10px) scale(1.15); }
 
+        /* --- BUG FIX STARTS HERE --- */
         .dock-icon-label {
-            position: absolute; font-size: 0.75rem;
+            position: absolute; 
+            font-size: 0.75rem;
             color: var(--text-primary); 
             text-shadow: 0 1px 5px rgba(0,0,0,0.7);
-            opacity: 0; transition: opacity 0.3s, transform 0.3s;
-            white-space: nowrap; font-weight: 500;
+            opacity: 0; /* Makes the label invisible by default */
+            transition: opacity 0.3s, transform 0.3s;
+            white-space: nowrap; 
+            font-weight: 500;
             background: rgba(0, 0, 0, 0.7);
             padding: 4px 8px;
             border-radius: 6px;
+            pointer-events: none; /* This is the FIX: Prevents the label from interfering with the hover on the icon */
         }
-        .dock-icon:hover .dock-icon-label { opacity: 1; }
+
+        .dock-icon:hover .dock-icon-label {
+            opacity: 1; /* This rule now works reliably */
+        }
+        /* --- BUG FIX ENDS HERE --- */
+
 
         .dock.dock-bottom .dock-icon-label { bottom: -30px; }
         .dock.dock-left .dock-icon-label { left: 115%; top: 50%; transform: translateY(-50%); }
         .dock.dock-right .dock-icon-label { right: 115%; top: 50%; transform: translateY(-50%); }
-
-        /* Dock Icon Gradients - Improved with modern gradients */
+       
+        /* Dock Icon Gradients */
         .dock-tip { background: linear-gradient(135deg, #FF9A8B, #FF6A88, #FF99AC); }
         .dock-study { background: linear-gradient(135deg, #FAD961, #F76B1C); }
         .dock-measure { background: linear-gradient(135deg, #42E695, #3BB2B8); }
@@ -365,7 +375,6 @@
             z-index: 101;
         }
 
-        /* BUG FIX START: Responsive Focus Submenu positioning */
         .dock.dock-bottom .focus-submenu {
             bottom: 110%; 
             left: 50%;
@@ -398,7 +407,6 @@
             visibility: visible;
             right: 120%;
         }
-        /* BUG FIX END */
 
         .focus-submenu-item {
             display: flex;
@@ -537,7 +545,6 @@
         <div class="dock-icon dock-study" onclick="openStudyWithMe()"><i class="fab fa-youtube"></i><div class="dock-icon-label">Study With Me</div></div>
         <a href="page10.html" class="dock-icon dock-measure"><i class="fas fa-ruler-combined"></i><div class="dock-icon-label">Measure</div></a>
         <div class="dock-icon dock-caffeine" onclick="addCaffeine()"><i class="fas fa-coffee"></i><div class="dock-icon-label">Add Caffeine</div></div>
-        <!-- NEW: CozyNotes and Typing Test -->
         <a href="page5.html" class="dock-icon dock-cozynotes"><i class="fas fa-sticky-note"></i><div class="dock-icon-label">CozyNotes</div></a>
         <a href="page6.html" class="dock-icon dock-typing"><i class="fas fa-keyboard"></i><div class="dock-icon-label">Typing Test</div></a>
         <a href="page7.html" class="dock-icon dock-puzzle"><i class="fas fa-puzzle-piece"></i><div class="dock-icon-label">Puzzles</div></a>
@@ -574,10 +581,12 @@
                     <div class="theme-dot" style="--theme-bg: #2d2d39;" data-theme="deep-space"></div>
                     <div class="theme-dot" style="--theme-bg: #0f3b2d;" data-theme="forest-deep"></div>
                     <div class="theme-dot" style="--theme-bg: #2d00f7;" data-theme="synthwave"></div>
-                    <!-- NEW COZY COLORS ADDED HERE -->
                     <div class="theme-dot" style="--theme-bg: #4a3f35;" data-theme="cozy-mocha"></div>
                     <div class="theme-dot" style="--theme-bg: #ffeadb;" data-theme="sunset-peach"></div>
                     <div class="theme-dot" style="--theme-bg: #e6e6fa;" data-theme="lavender-dream"></div>
+                    <div class="theme-dot" style="--theme-bg: #1d2b53;" data-theme="oceanic-abyss"></div>
+                    <div class="theme-dot" style="--theme-bg: #7f1d1d;" data-theme="crimson-study"></div>
+                    <div class="theme-dot" style="--theme-bg: #fdf6e3;" data-theme="solarized-light"></div>
                 </div>
             </div>
         </div>
@@ -595,7 +604,6 @@
             <button class="reset-btn" onclick="resetCaffeine()"><i class="fas fa-redo"></i> Reset</button>
         </div>
         
-        <!-- NEW: Calendar with Study Tips -->
         <div class="calendar-container">
             <div class="calendar-header">
                 <h3>Study Calendar</h3>
@@ -714,47 +722,17 @@
         }
         
         const themes = { 
-            "cosmic-dark": { 
-                "--primary-glow": "#8A2BE2", "--secondary-glow": "#5D3FD3", "--tertiary-glow": "#9370DB", 
-                "--background": "#121212", "--text-primary": "#FFFFFF", "--glass-bg": "rgba(255, 255, 255, 0.08)", 
-                "--glass-border": "rgba(255, 255, 255, 0.15)", "--card-bg": "rgba(30, 30, 46, 0.7)", "--accent": "#BB86FC"
-            }, 
-            "midnight-blue": { 
-                "--primary-glow": "#0f3460", "--secondary-glow": "#533483", "--tertiary-glow": "#1e90ff", 
-                "--background": "#1a1a2e", "--text-primary": "#e0e0e0", "--glass-bg": "rgba(0, 0, 0, 0.2)", 
-                "--glass-border": "rgba(255, 255, 255, 0.15)", "--card-bg": "rgba(39, 39, 62, 0.7)", "--accent": "#4cc9f0"
-            }, 
-            "deep-space": { 
-                "--primary-glow": "#2d2d39", "--secondary-glow": "#4a4a5a", "--tertiary-glow": "#6d6d8a", 
-                "--background": "#2d2d39", "--text-primary": "#f0f0f0", "--glass-bg": "rgba(0, 0, 0, 0.2)", 
-                "--glass-border": "rgba(255, 255, 255, 0.15)", "--card-bg": "rgba(60, 60, 80, 0.7)", "--accent": "#a172ff"
-            }, 
-            "forest-deep": { 
-                "--primary-glow": "#0f3b2d", "--secondary-glow": "#1b5e45", "--tertiary-glow": "#2e8b56", 
-                "--background": "#0f3b2d", "--text-primary": "#e0f2e9", "--glass-bg": "rgba(0, 0, 0, 0.2)", 
-                "--glass-border": "rgba(255, 255, 255, 0.15)", "--card-bg": "rgba(40, 80, 60, 0.7)", "--accent": "#42e695"
-            }, 
-            "synthwave": { 
-                "--primary-glow": "#f20089", "--secondary-glow": "#00f5d4", "--tertiary-glow": "#e500a4", 
-                "--background": "#2d00f7", "--text-primary": "#ffffff", "--glass-bg": "rgba(0, 0, 0, 0.2)", 
-                "--glass-border": "rgba(255, 255, 255, 0.15)", "--card-bg": "rgba(80, 0, 200, 0.7)", "--accent": "#ff00ff"
-            },
-            // NEW COZY THEMES ADDED HERE
-            "cozy-mocha": {
-                "--primary-glow": "#c89f7f", "--secondary-glow": "#7c6a59", "--tertiary-glow": "#a5886e",
-                "--background": "#4a3f35", "--text-primary": "#f5f5dc", "--glass-bg": "rgba(245, 245, 220, 0.1)",
-                "--glass-border": "rgba(245, 245, 220, 0.2)", "--card-bg": "rgba(87, 72, 60, 0.7)", "--accent": "#e0cda9"
-            },
-            "sunset-peach": {
-                "--primary-glow": "#ffc0cb", "--secondary-glow": "#ffa07a", "--tertiary-glow": "#ffdab9",
-                "--background": "#ffeadb", "--text-primary": "#5c4033", "--glass-bg": "rgba(92, 64, 51, 0.08)",
-                "--glass-border": "rgba(92, 64, 51, 0.15)", "--card-bg": "rgba(255, 237, 224, 0.7)", "--accent": "#ff6b6b"
-            },
-            "lavender-dream": {
-                "--primary-glow": "#dda0dd", "--secondary-glow": "#d8bfd8", "--tertiary-glow": "#cbc3e3",
-                "--background": "#e6e6fa", "--text-primary": "#483d8b", "--glass-bg": "rgba(72, 61, 139, 0.08)",
-                "--glass-border": "rgba(72, 61, 139, 0.15)", "--card-bg": "rgba(238, 221, 255, 0.7)", "--accent": "#9370db"
-            }
+            "cosmic-dark": { "--primary-glow": "#8A2BE2", "--secondary-glow": "#5D3FD3", "--tertiary-glow": "#9370DB", "--background": "#121212", "--text-primary": "#FFFFFF", "--glass-bg": "rgba(255, 255, 255, 0.08)", "--glass-border": "rgba(255, 255, 255, 0.15)", "--card-bg": "rgba(30, 30, 46, 0.7)", "--accent": "#BB86FC" }, 
+            "midnight-blue": { "--primary-glow": "#0f3460", "--secondary-glow": "#533483", "--tertiary-glow": "#1e90ff", "--background": "#1a1a2e", "--text-primary": "#e0e0e0", "--glass-bg": "rgba(0, 0, 0, 0.2)", "--glass-border": "rgba(255, 255, 255, 0.15)", "--card-bg": "rgba(39, 39, 62, 0.7)", "--accent": "#4cc9f0" }, 
+            "deep-space": { "--primary-glow": "#2d2d39", "--secondary-glow": "#4a4a5a", "--tertiary-glow": "#6d6d8a", "--background": "#2d2d39", "--text-primary": "#f0f0f0", "--glass-bg": "rgba(0, 0, 0, 0.2)", "--glass-border": "rgba(255, 255, 255, 0.15)", "--card-bg": "rgba(60, 60, 80, 0.7)", "--accent": "#a172ff" }, 
+            "forest-deep": { "--primary-glow": "#0f3b2d", "--secondary-glow": "#1b5e45", "--tertiary-glow": "#2e8b56", "--background": "#0f3b2d", "--text-primary": "#e0f2e9", "--glass-bg": "rgba(0, 0, 0, 0.2)", "--glass-border": "rgba(255, 255, 255, 0.15)", "--card-bg": "rgba(40, 80, 60, 0.7)", "--accent": "#42e695" }, 
+            "synthwave": { "--primary-glow": "#f20089", "--secondary-glow": "#00f5d4", "--tertiary-glow": "#e500a4", "--background": "#2d00f7", "--text-primary": "#ffffff", "--glass-bg": "rgba(0, 0, 0, 0.2)", "--glass-border": "rgba(255, 255, 255, 0.15)", "--card-bg": "rgba(80, 0, 200, 0.7)", "--accent": "#ff00ff" },
+            "cozy-mocha": { "--primary-glow": "#c89f7f", "--secondary-glow": "#7c6a59", "--tertiary-glow": "#a5886e", "--background": "#4a3f35", "--text-primary": "#f5f5dc", "--glass-bg": "rgba(245, 245, 220, 0.1)", "--glass-border": "rgba(245, 245, 220, 0.2)", "--card-bg": "rgba(87, 72, 60, 0.7)", "--accent": "#e0cda9" },
+            "sunset-peach": { "--primary-glow": "#ffc0cb", "--secondary-glow": "#ffa07a", "--tertiary-glow": "#ffdab9", "--background": "#ffeadb", "--text-primary": "#5c4033", "--glass-bg": "rgba(92, 64, 51, 0.08)", "--glass-border": "rgba(92, 64, 51, 0.15)", "--card-bg": "rgba(255, 237, 224, 0.7)", "--accent": "#ff6b6b" },
+            "lavender-dream": { "--primary-glow": "#dda0dd", "--secondary-glow": "#d8bfd8", "--tertiary-glow": "#cbc3e3", "--background": "#e6e6fa", "--text-primary": "#483d8b", "--glass-bg": "rgba(72, 61, 139, 0.08)", "--glass-border": "rgba(72, 61, 139, 0.15)", "--card-bg": "rgba(238, 221, 255, 0.7)", "--accent": "#9370db" },
+            "oceanic-abyss": { "--primary-glow": "#1f4287", "--secondary-glow": "#071e3d", "--tertiary-glow": "#278ea5", "--background": "#1d2b53", "--text-primary": "#f0f8ff", "--glass-bg": "rgba(31, 66, 135, 0.1)", "--glass-border": "rgba(255, 255, 255, 0.15)", "--card-bg": "rgba(10, 25, 47, 0.7)", "--accent": "#21e6c1" },
+            "crimson-study": { "--primary-glow": "#dc2626", "--secondary-glow": "#b91c1c", "--tertiary-glow": "#f87171", "--background": "#7f1d1d", "--text-primary": "#fecaca", "--glass-bg": "rgba(254, 202, 202, 0.08)", "--glass-border": "rgba(254, 202, 202, 0.2)", "--card-bg": "rgba(153, 27, 27, 0.7)", "--accent": "#ef4444" },
+            "solarized-light": { "--primary-glow": "#eee8d5", "--secondary-glow": "#b58900", "--tertiary-glow": "#268bd2", "--background": "#fdf6e3", "--text-primary": "#657b83", "--glass-bg": "rgba(101, 123, 131, 0.08)", "--glass-border": "rgba(101, 123, 131, 0.15)", "--card-bg": "rgba(238, 232, 213, 0.7)", "--accent": "#d33682" }
         };
         
         function setTheme(themeName) {
@@ -809,38 +787,18 @@
             const now = new Date();
             const year = now.getFullYear();
             const month = now.getMonth();
-            
-            // Get first day of month and number of days in month
             const firstDay = new Date(year, month, 1).getDay();
             const daysInMonth = new Date(year, month + 1, 0).getDate();
-            
-            // Calendar headers
             const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-            
             let calendarHTML = '';
-            
-            // Add day headers
-            dayNames.forEach(day => {
-                calendarHTML += `<div class="calendar-day header">${day}</div>`;
-            });
-            
-            // Add empty cells for days before the first day of the month
-            for (let i = 0; i < firstDay; i++) {
-                calendarHTML += `<div class="calendar-day empty"></div>`;
-            }
-            
-            // Add days of the month
+            dayNames.forEach(day => { calendarHTML += `<div class="calendar-day header">${day}</div>`; });
+            for (let i = 0; i < firstDay; i++) { calendarHTML += `<div class="calendar-day empty"></div>`; }
             for (let day = 1; day <= daysInMonth; day++) {
                 const isToday = now.getDate() === day && now.getMonth() === month && now.getFullYear() === year;
-                const hasTip = Math.random() > 0.7; // 30% chance a day has a tip
-                
-                calendarHTML += `<div class="calendar-day ${isToday ? 'today' : 'normal'} ${hasTip ? 'has-tip' : ''}" 
-                    data-day="${day}" data-has-tip="${hasTip}">${day}</div>`;
+                const hasTip = Math.random() > 0.7; 
+                calendarHTML += `<div class="calendar-day ${isToday ? 'today' : 'normal'} ${hasTip ? 'has-tip' : ''}" data-day="${day}" data-has-tip="${hasTip}">${day}</div>`;
             }
-            
             calendarElement.innerHTML = calendarHTML;
-            
-            // Add event listeners to days with tips
             document.querySelectorAll('.calendar-day.has-tip').forEach(day => {
                 day.addEventListener('click', () => {
                     const dayNum = day.getAttribute('data-day');
@@ -858,7 +816,6 @@
         function toggleCalendar() {
             const calendarContent = document.getElementById('calendar-content');
             calendarVisible = !calendarVisible;
-            
             if (calendarVisible) {
                 calendarContent.style.display = 'block';
                 calendarToggleIcon.className = 'fas fa-chevron-up';
@@ -870,41 +827,27 @@
 
         function loadState() {
             const savedCaffeine = localStorage.getItem('caffeineIntake');
-            if (savedCaffeine !== null) { 
-                caffeineIntake = parseInt(savedCaffeine, 10); 
-                updateCaffeineDisplay(); 
-            }
-
+            if (savedCaffeine !== null) { caffeineIntake = parseInt(savedCaffeine, 10); updateCaffeineDisplay(); }
             const savedTip = localStorage.getItem('currentTip');
-            if (savedTip) { 
-                tipElement.textContent = savedTip; 
-            }
-
+            if (savedTip) { tipElement.textContent = savedTip; }
             const savedTheme = localStorage.getItem('studyVerseTheme');
             setTheme(savedTheme && themes[savedTheme] ? savedTheme : 'cosmic-dark');
-
             const savedDockPos = localStorage.getItem('studyVerseDockPosition');
             setDockPosition(savedDockPos || 'bottom');
-
             const savedDockSize = localStorage.getItem('studyVerseDockSize');
             setDockSize(savedDockSize || 'medium');
-            
-            // Generate the calendar
             generateCalendar();
         }
         
         document.addEventListener("DOMContentLoaded", () => {
             loadState();
             const app = document.querySelector(".app");
-            app.style.opacity = 0; 
-            app.style.transform = "translateY(20px)";
-            
+            app.style.opacity = 0; app.style.transform = "translateY(20px)";
             setTimeout(() => {
                 app.style.transition = "opacity 0.5s, transform 0.5s";
-                app.style.opacity = 1; 
-                app.style.transform = "translateY(0)";
+                app.style.opacity = 1; app.style.transform = "translateY(0)";
             }, 100);
         });
     </script>
 </body>
-</html></html>
+</html>
