@@ -1,925 +1,712 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cozynotes - Your Cozy Note-Taking App</title>
+    <title>Cozynotes Pro - Your Intelligent Writing Space</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code&family=Inter:wght@400;600;700&family=Lora&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         :root {
-            --primary: #8b5fbf;
-            --secondary: #9ec1cf;
-            --accent: #ff6b6b;
-            --background: #f5f7fa;
-            --text: #333;
-            --card-bg: #ffffff;
-            --shadow: rgba(0, 0, 0, 0.1);
-            --sidebar-width: 250px;
+            --background: #ffffff;
+            --sidebar-bg: #f5f5f7;
+            --text: #1d1d1f;
+            --text-secondary: #6e6e73;
+            --accent: #007aff; /* Apple-style Blue */
+            --border-color: #d2d2d7;
+            --shadow: rgba(0, 0, 0, 0.05);
+            --sidebar-width: 320px;
+            --border-radius: 12px;
+            --font-main: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        [data-theme="dark"] {
+            --background: #111111;
+            --sidebar-bg: #1d1d1f;
+            --text: #f5f5f7;
+            --text-secondary: #a1a1a6;
+            --border-color: #3a3a3c;
+            --shadow: rgba(0, 0, 0, 0.2);
         }
 
         body {
+            font-family: var(--font-main);
             background-color: var(--background);
             color: var(--text);
-            transition: all 0.3s ease;
-            min-height: 100vh;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 0;
-            border-bottom: 2px solid var(--shadow);
-            margin-bottom: 30px;
-            position: relative;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .logo i {
-            font-size: 2.5rem;
-            color: var(--primary);
-        }
-
-        .logo h1 {
-            font-size: 2.2rem;
-            font-weight: 700;
-            color: var(--primary);
-        }
-
-        .theme-selector {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            transition: all 0.3s ease;
-        }
-
-        .theme-selector.collapsed {
-            transform: translateX(calc(100% - 40px));
+            transition: background-color 0.3s ease, color 0.3s ease;
+            height: 100vh;
             overflow: hidden;
-        }
-
-        .theme-toggle {
-            background-color: var(--primary);
-            color: white;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            z-index: 10;
-            box-shadow: 0 3px 10px var(--shadow);
-        }
-
-        .theme-buttons {
-            display: flex;
-            gap: 10px;
-            background: var(--card-bg);
-            padding: 8px 12px;
-            border-radius: 30px;
-            box-shadow: 0 3px 10px var(--shadow);
-        }
-
-        .theme-btn {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            border: 2px solid var(--card-bg);
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-
-        .theme-btn:hover {
-            transform: scale(1.1);
-        }
-
-        .theme-btn.active {
-            border: 2px solid var(--text);
-        }
-
-        .theme-purple { background: linear-gradient(45deg, #8b5fbf, #6a3093); }
-        .theme-blue { background: linear-gradient(45deg, #9ec1cf, #6495ed); }
-        .theme-green { background: linear-gradient(45deg, #a1de93, #45a247); }
-        .theme-orange { background: linear-gradient(45deg, #ffb347, #ffcc33); }
-        .theme-pink { background: linear-gradient(45deg, #ff9a9e, #fad0c4); }
-
-        .main-content {
-            display: flex;
-            gap: 30px;
-        }
-
-        .sidebar {
-            flex: 0 0 var(--sidebar-width);
-            background-color: var(--card-bg);
-            border-radius: 15px;
-            padding: 20px;
-            box-shadow: 0 5px 15px var(--shadow);
             display: flex;
             flex-direction: column;
         }
 
-        .pages-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-
-        .pages-list {
-            list-style: none;
-            flex-grow: 1;
-            overflow-y: auto;
-            max-height: 400px;
-            margin-bottom: 15px;
-        }
-
-        .page-item {
-            padding: 12px 15px;
-            margin-bottom: 10px;
-            border-radius: 8px;
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: background-color 0.2s;
-            position: relative;
-        }
-
-        .page-item:hover {
-            background-color: var(--secondary);
-            color: white;
-        }
-
-        .page-item.active {
-            background-color: var(--primary);
-            color: white;
-        }
-
-        .page-item i {
-            opacity: 0.7;
-        }
-
-        .page-item .delete-page {
-            display: none;
+        /* --- Main Layout --- */
+        .main-container { display: flex; height: 100vh; width: 100%; }
+        .sidebar { flex: 0 0 var(--sidebar-width); background-color: var(--sidebar-bg); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; height: 100%; transition: margin-left 0.3s ease; }
+        body.sidebar-collapsed .sidebar { margin-left: calc(-1 * var(--sidebar-width)); }
+        .notes-area { flex: 1; display: flex; flex-direction: column; background-color: var(--background); height: 100%; }
+        .note-content-wrapper { flex: 1; display:flex; flex-direction:column; overflow-y: hidden; position: relative; }
+        .note-content { flex: 1; outline: none; font-size: 1rem; line-height: 1.7; max-width: 800px; margin: 0 auto; width: 100%; padding: 20px 30px; overflow-y: auto;}
+        .note-content:focus-within { box-shadow: 0 0 0 2px var(--accent); }
+        .drag-over-visual {
             position: absolute;
+            top: 10px;
+            left: 10px;
             right: 10px;
+            bottom: 10px;
+            border: 3px dashed var(--accent);
+            border-radius: var(--border-radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
             color: var(--accent);
-            background: rgba(255, 255, 255, 0.3);
-            width: 25px;
-            height: 25px;
-            border-radius: 50%;
+            background: rgba(0,122,255,0.1);
+            pointer-events: none;
+            z-index: 100;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .drag-over-visual.visible { opacity: 1; }
+
+        /* --- Sidebar --- */
+        .sidebar-header { padding: 15px 20px; display: flex; align-items: center; justify-content: space-between; }
+        .notes-list { list-style: none; flex-grow: 1; overflow-y: auto; }
+        .note-item { padding: 10px 20px; cursor: pointer; border-bottom: 1px solid var(--border-color); }
+        .note-item-title { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 0.95rem; }
+        .note-item-preview { font-size: 0.8rem; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-top: 4px; }
+        .note-item.active { background-color: var(--accent); color: #fff !important; }
+        .note-item.active .note-item-preview, .note-item.active .note-item-title { color: #fff; }
+        .sidebar-footer { padding: 10px 20px; text-align: center; font-size: 0.8rem; color: var(--text-secondary); }
+
+        /* --- Editor Header --- */
+        .notes-header { display: flex; align-items: center; justify-content: space-between; padding: 10px 20px; border-bottom: 1px solid var(--border-color); flex-shrink: 0; }
+        .header-controls button, .sidebar-header button { background: none; border: none; color: var(--text-secondary); font-size: 1.1rem; cursor: pointer; width: 34px; height: 34px; border-radius: 50%; display:inline-flex; align-items:center; justify-content:center; }
+        .header-controls button:hover, .sidebar-header button:hover { background-color: var(--border-color); }
+
+        /* --- Editor Toolbar --- */
+        #editor-toolbar {
             display: flex;
             align-items: center;
-            justify-content: center;
-        }
-
-        .page-item:hover .delete-page {
-            display: flex;
-        }
-
-        .add-page-btn {
-            background-color: var(--primary);
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 8px;
-            cursor: pointer;
-            width: 100%;
-            margin-top: auto;
-            font-weight: 600;
-            transition: background-color 0.2s;
-        }
-
-        .add-page-btn:hover {
-            background-color: var(--accent);
-        }
-
-        .notes-area {
-            flex: 1;
-            background-color: var(--card-bg);
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 5px 15px var(--shadow);
-            display: flex;
-            flex-direction: column;
-        }
-
-        .note-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 25px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid var(--shadow);
-        }
-
-        .note-title-area {
-            flex: 1;
-        }
-
-        .note-title {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: var(--primary);
-            border: none;
-            background: transparent;
-            width: 100%;
-            padding: 5px;
-            margin-bottom: 5px;
-        }
-
-        .note-title:focus {
-            outline: none;
-            background-color: rgba(139, 95, 191, 0.1);
-            border-radius: 5px;
-        }
-
-        .note-subject {
-            font-size: 1.2rem;
-            color: var(--secondary);
-            border: none;
-            background: transparent;
-            width: 100%;
-            padding: 5px;
-        }
-
-        .note-subject:focus {
-            outline: none;
-            background-color: rgba(158, 193, 207, 0.1);
-            border-radius: 5px;
-        }
-
-        .note-date {
-            font-size: 0.9rem;
-            color: #888;
-            margin-top: 5px;
-        }
-
-        .note-content {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            flex: 1;
-            overflow-y: auto;
-        }
-
-        .short-note {
-            border: none;
-            background-color: rgba(158, 193, 207, 0.1);
-            padding: 15px;
-            border-radius: 8px;
-            resize: none;
-            min-height: 80px;
-        }
-
-        .short-note:focus {
-            outline: 2px solid var(--secondary);
-        }
-
-        .long-note {
-            border: none;
-            background-color: rgba(139, 95, 191, 0.05);
-            padding: 15px;
-            border-radius: 8px;
-            resize: none;
-            min-height: 200px;
-            flex: 1;
-        }
-
-        .long-note:focus {
-            outline: 2px solid var(--primary);
-        }
-
-        .image-section {
-            margin-top: 20px;
-        }
-
-        .image-upload {
-            display: flex;
-            flex-direction: column;
             gap: 10px;
-        }
-
-        .upload-btn {
-            background-color: var(--secondary);
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            display: inline-block;
-            width: fit-content;
-        }
-
-        .upload-btn:hover {
-            background-color: var(--primary);
-        }
-
-        #imageInput {
-            display: none;
-        }
-
-        .uploaded-images {
-            display: flex;
+            padding: 8px 20px;
+            background: var(--sidebar-bg);
+            border-bottom: 1px solid var(--border-color);
             flex-wrap: wrap;
-            gap: 15px;
-            margin-top: 15px;
         }
+        #editor-toolbar select, #editor-toolbar button { background-color: var(--background); color: var(--text); border: 1px solid var(--border-color); border-radius: 6px; padding: 5px 8px; font-family: var(--font-main); font-size: 0.9rem;}
+        #editor-toolbar button { padding: 5px; width: 32px; height: 32px; font-size: 0.9rem; text-align: center; }
+        .toolbar-divider { width: 1px; height: 20px; background: var(--border-color); }
+        #highlight-picker-container { position: relative; }
+        #highlight-color { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+        #voice-dictation-btn.recording { color: red; }
+        #focus-mode-btn.active { color: var(--accent); }
+        .note-stats { margin-left: auto; font-size: 0.85rem; color: var(--text-secondary); }
 
-        .image-container {
-            position: relative;
-            max-width: 200px;
-        }
+        /* --- Note Content Styles --- */
+        .note-content a { color: var(--accent); text-decoration: underline; }
+        .note-content h1, .note-content h2, .note-content h3 { margin-bottom: 0.5em; }
+        .note-content h1 { font-size: 1.8em; } .note-content h2 { font-size: 1.4em; } .note-content h3 { font-size: 1.2em; }
+        .note-content p { margin-bottom: 1em; }
+        .note-content blockquote { border-left: 3px solid var(--accent); padding-left: 1em; margin: 1em 0; color: var(--text-secondary); font-style: italic;}
+        .note-content pre { background-color: var(--sidebar-bg); padding: 1em; border-radius: 8px; font-family: 'Fira Code', monospace; overflow-x: auto;}
+        .note-content img { max-width: 100%; height: auto; border-radius: 8px; margin: 1em 0; }
+        [contenteditable="true"]:empty:before { content: attr(placeholder); color: var(--text-secondary); pointer-events: none; display: block; }
+        .empty-state { display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; height: 100%; color: var(--text-secondary); user-select: none; }
+        .empty-state i { font-size: 4rem; margin-bottom: 20px; }
+        .empty-state.visible { display: flex; }
+        .focus-mode .note-content > *:not(:focus) { opacity: 0.4; }
+        .focus-mode .note-content > *:focus { opacity: 1; }
 
-        .uploaded-image {
-            max-width: 100%;
-            max-height: 150px;
-            border-radius: 8px;
-            border: 1px solid var(--shadow);
-        }
 
-        .delete-image {
-            position: absolute;
-            top: -10px;
-            right: -10px;
-            background: var(--accent);
-            color: white;
-            width: 25px;
-            height: 25px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-size: 14px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        }
+        /* --- Cozy AI --- */
+        #cozy-ai-btn { position: absolute; bottom: 20px; right: 30px; z-index: 10; font-size: 1.2rem; background: var(--sidebar-bg); border-radius: 50%; box-shadow: 0 4px 10px var(--shadow); width: 44px; height: 44px; border: 1px solid var(--border-color);}
 
-        .action-buttons {
-            display: flex;
-            justify-content: flex-end;
-            gap: 15px;
-            margin-top: 20px;
-        }
-
-        .save-btn, .delete-btn {
-            padding: 12px 25px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.2s;
-        }
-
-        .save-btn {
-            background-color: var(--primary);
-            color: white;
-        }
-
-        .save-btn:hover {
-            background-color: #7a4da6;
-        }
-
-        .delete-btn {
-            background-color: var(--accent);
-            color: white;
-        }
-
-        .delete-btn:hover {
-            background-color: #ff5252;
-        }
-
-        footer {
-            text-align: center;
-            margin-top: 40px;
-            padding: 20px;
-            color: var(--primary);
-            font-weight: 500;
-        }
-
-        .empty-state {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            flex: 1;
-            color: #888;
-        }
-
-        .empty-state i {
-            font-size: 3rem;
-            margin-bottom: 15px;
-            color: var(--secondary);
-        }
-
-        @media (max-width: 768px) {
-            .main-content {
-                flex-direction: column;
-            }
-            
-            .sidebar {
-                flex: 1;
-            }
-            
-            .theme-selector {
-                position: absolute;
-                right: 0;
-                top: 100%;
-                margin-top: 10px;
-                z-index: 100;
-            }
-            
-            .theme-selector.collapsed {
-                transform: translateX(calc(100% - 40px));
-            }
-            
-            .theme-buttons {
-                flex-wrap: wrap;
-                justify-content: center;
-                max-width: 180px;
-            }
-        }
+        /* --- Modal Styles --- */
+        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(5px); z-index: 1000; display: none; align-items: center; justify-content: center; }
+        .modal.visible { display: flex; }
+        .modal-content { background: var(--sidebar-bg); width: 90%; max-width: 550px; padding: 25px; border-radius: var(--border-radius); box-shadow: 0 10px 30px rgba(0,0,0,0.2); max-height: 80vh; overflow-y: auto;}
+        .modal-content h2 { margin-bottom: 20px; }
+        .modal-section { margin-bottom: 25px; }
+        .modal-section h3 { margin-bottom: 15px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px; color: var(--text-secondary);}
+        .modal-buttons { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
+        .modal-buttons button { padding: 8px 16px; border-radius: 8px; border: none; cursor: pointer; font-weight: 500;}
+        button.primary { background: var(--accent); color: #fff; }
+        button.secondary { background: var(--border-color); color: var(--text); }
+        .color-customizer, .theme-selector, .appearance-selector { display: flex; flex-wrap: wrap; gap: 15px; align-items: center;}
+        .color-input-group { display: flex; flex-direction: column; gap: 5px; }
+        .color-input-group label { font-size: 0.9rem; }
+        .color-input-group input[type="color"] { width: 60px; height: 30px; border: 1px solid var(--border-color); background: none; cursor: pointer; }
+        .theme-button { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--border-color); cursor: pointer; }
+        #ai-recommendations { list-style: none; }
+        #ai-recommendations li { background: var(--background); padding: 12px; border-radius: 8px; margin-bottom: 10px; cursor: pointer; transition: transform 0.2s ease; border: 1px solid var(--border-color); }
+        #ai-recommendations li:hover { transform: translateY(-2px); border-color: var(--accent); }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <div class="logo">
-                <i class="fas fa-book"></i>
-                <h1>Cozynotes</h1>
+    <div class="main-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>Notes</h2>
+                <button id="addNoteBtn" title="New Note"><i class="fas fa-plus"></i></button>
             </div>
-            <div class="theme-selector">
-                <div class="theme-toggle">
-                    <i class="fas fa-palette"></i>
+            <ul class="notes-list"></ul>
+            <div class="sidebar-footer"><span id="notesCount">0 Notes</span></div>
+        </aside>
+
+        <!-- Main Notes Area -->
+        <main class="notes-area">
+            <header class="notes-header">
+                <button class="sidebar-toggle"><i class="fas fa-bars"></i></button>
+                <div class="header-controls">
+                    <button id="deleteNoteBtn" title="Delete Note"><i class="fas fa-trash"></i></button>
+                    <button id="settingsBtn" title="Settings"><i class="fas fa-cog"></i></button>
                 </div>
-                <div class="theme-buttons">
-                    <div class="theme-btn theme-purple active" data-theme="purple"></div>
-                    <div class="theme-btn theme-blue" data-theme="blue"></div>
-                    <div class="theme-btn theme-green" data-theme="green"></div>
-                    <div class="theme-btn theme-orange" data-theme="orange"></div>
-                    <div class="theme-btn theme-pink" data-theme="pink"></div>
+            </header>
+
+            <div class="note-content-wrapper">
+                 <div class="drag-over-visual">
+                    <i class="fas fa-file-import"></i> &nbsp; Drop Image to Upload
+                 </div>
+                <div id="editor-toolbar">
+                    <select id="style-selector">
+                        <option value="p">Body</option>
+                        <option value="h1">Title</option>
+                        <option value="h2">Heading</option>
+                        <option value="h3">Subheading</option>
+                    </select>
+                    <select id="font-selector">
+                        <option value="Inter">Inter</option>
+                        <option value="Lora">Lora</option>
+                        <option value="Fira Code">Fira Code</option>
+                    </select>
+                    <div class="toolbar-divider"></div>
+                    <button data-command="bold"><i class="fas fa-bold"></i></button>
+                    <button data-command="italic"><i class="fas fa-italic"></i></button>
+                    <button data-command="underline"><i class="fas fa-underline"></i></button>
+                    <div class="toolbar-divider"></div>
+                    <button id="highlight-btn-container" title="Highlight Text">
+                         <i class="fas fa-highlighter"></i>
+                         <input type="color" id="highlight-color-picker" value="#ffff00" style="display:none">
+                    </button>
+                    <button data-command="insertUnorderedList"><i class="fas fa-list-ul"></i></button>
+                    <button data-command="insertOrderedList"><i class="fas fa-list-ol"></i></button>
+                    <button data-command="formatBlock" data-value="BLOCKQUOTE"><i class="fas fa-quote-left"></i></button>
+                    <button data-command="formatBlock" data-value="PRE"><i class="fas fa-code"></i></button>
+                    <button data-command="createLink"><i class="fas fa-link"></i></button>
+                    <button data-command="insertImage"><i class="fas fa-image"></i></button>
+                    <div class="toolbar-divider"></div>
+                     <button id="voice-dictation-btn" title="Start Dictation"><i class="fas fa-microphone"></i></button>
+                     <button id="focus-mode-btn" title="Focus Mode"><i class="fas fa-eye"></i></button>
+                     <div class="note-stats">
+                        <span id="word-count">0 words</span> | <span id="char-count">0 characters</span>
+                     </div>
+
                 </div>
+
+                <div class="note-content" contenteditable="true" placeholder="Start with a title, or drag an image here..."></div>
+
+                <div class="empty-state visible">
+                    <i class="fas fa-pen-fancy"></i>
+                    <h2>No Note Selected</h2>
+                    <p>Create a new note or select one from the list.</p>
+                </div>
+
+                <button id="cozy-ai-btn" title="Cozy AI Assistant"><i class="fas fa-wand-magic-sparkles"></i></button>
+                <input type="file" id="imageInput" accept="image/*" style="display: none;" />
             </div>
-        </header>
-
-        <div class="main-content">
-            <div class="sidebar">
-                <div class="pages-header">
-                    <h2>Your Pages</h2>
-                    <span class="pages-count">0 pages</span>
-                </div>
-                <ul class="pages-list">
-                    <!-- Pages will be added here dynamically -->
-                </ul>
-                <button class="add-page-btn">+ New Page</button>
-            </div>
-
-            <div class="notes-area">
-                <div class="note-header">
-                    <div class="note-title-area">
-                        <input type="text" class="note-title" placeholder="Note Title">
-                        <input type="text" class="note-subject" placeholder="Subject">
-                        <div class="note-date">Created: <span class="date-created">-</span> | Updated: <span class="date-updated">-</span></div>
-                    </div>
-                </div>
-
-                <div class="note-content">
-                    <textarea class="short-note" placeholder="Short description..."></textarea>
-                    
-                    <textarea class="long-note" placeholder="Write your detailed notes here..."></textarea>
-                    
-                    <div class="image-section">
-                        <div class="image-upload">
-                            <label for="imageInput" class="upload-btn">
-                                <i class="fas fa-image"></i> Upload Image
-                            </label>
-                            <input type="file" id="imageInput" accept="image/*" multiple>
-                            <div class="uploaded-images">
-                                <!-- Images will be added here dynamically -->
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="action-buttons">
-                    <button class="delete-btn">Delete Note</button>
-                    <button class="save-btn">Save Note</button>
-                </div>
-            </div>
-        </div>
-
-        <footer>
-            <p>Cozynotes &copy; 2023 | Your cozy companion for note-taking</p>
-        </footer>
+        </main>
     </div>
 
+    <!-- Modals -->
+    <div id="settingsModal" class="modal">
+        <div class="modal-content">
+            <h2><i class="fas fa-cog"></i> Settings</h2>
+            <div class="modal-section"><h3>Appearance</h3>
+                <div class="appearance-selector">
+                    <button id="lightModeBtn" class="secondary">Light</button>
+                    <button id="darkModeBtn" class="secondary">Dark</button>
+                </div>
+            </div>
+            <div class="modal-section"><h3>Theme Presets</h3>
+                <div class="theme-selector">
+                     <div title="Default Blue" data-colors='{"accent":"#007aff", "background":"#ffffff", "text":"#1d1d1f"}' class="theme-button" style="background:#007aff"></div>
+                     <div title="Forest Green" data-colors='{"accent":"#2E7D32", "background":"#F0F4F0", "text":"#1B2E1C"}' class="theme-button" style="background:#2E7D32"></div>
+                     <div title="Sunset Orange" data-colors='{"accent":"#FF9500", "background":"#1c1c1e", "text":"#ffffff"}' class="theme-button" style="background:#FF9500"></div>
+                     <div title="Rose Gold" data-colors='{"accent":"#E1BFA6", "background":"#2a2a2a", "text":"#FDF8F4"}' class="theme-button" style="background:#E1BFA6"></div>
+                </div>
+            </div>
+            <div class="modal-section"><h3>Custom Colors</h3>
+                <div class="color-customizer">
+                     <div class="color-input-group"><label for="accentColor">Accent</label><input type="color" id="accentColor"></div>
+                     <div class="color-input-group"><label for="bgColor">Background</label><input type="color" id="bgColor"></div>
+                     <div class="color-input-group"><label for="textColor">Text</label><input type="color" id="textColor"></div>
+                </div>
+            </div>
+            <div class="modal-buttons">
+                <button class="secondary" id="resetThemeBtn">Reset to Default</button>
+                <button class="primary" data-close-modal>Done</button>
+            </div>
+        </div>
+    </div>
+    <div id="aiModal" class="modal">
+        <div class="modal-content">
+             <h2><i class="fas fa-wand-magic-sparkles"></i> Cozy AI Suggestions</h2>
+             <div class="modal-section">
+                 <h3>Content Improvements</h3>
+                 <ul id="ai-recommendations">
+                     <!-- Dynamic Recommendations -->
+                 </ul>
+             </div>
+             <div class="modal-buttons">
+                 <button class="primary" data-close-modal>Close</button>
+             </div>
+        </div>
+    </div>
+
+
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Initialize the app
-            initApp();
-            
-            function initApp() {
-                // Theme switching functionality
-                setupThemeSelector();
-                
-                // Page management functionality
-                setupPageManagement();
-                
-                // Note editing functionality
-                setupNoteEditing();
-                
-                // Load data from localStorage
-                loadFromLocalStorage();
-            }
-            
-            function setupThemeSelector() {
-                const themeSelector = document.querySelector('.theme-selector');
-                const themeToggle = document.querySelector('.theme-toggle');
-                const themeButtons = document.querySelectorAll('.theme-btn');
-                const root = document.documentElement;
-                
-                // Toggle theme selector collapse
-                themeToggle.addEventListener('click', function() {
-                    themeSelector.classList.toggle('collapsed');
-                });
-                
-                // Handle theme selection
-                themeButtons.forEach(btn => {
-                    btn.addEventListener('click', function(e) {
-                        e.stopPropagation();
-                        const theme = this.getAttribute('data-theme');
-                        
-                        // Remove active class from all buttons
-                        themeButtons.forEach(b => b.classList.remove('active'));
-                        // Add active class to clicked button
-                        this.classList.add('active');
-                        
-                        // Change CSS variables based on theme
-                        switch(theme) {
-                            case 'purple':
-                                root.style.setProperty('--primary', '#8b5fbf');
-                                root.style.setProperty('--secondary', '#9ec1cf');
-                                root.style.setProperty('--accent', '#ff6b6b');
-                                break;
-                            case 'blue':
-                                root.style.setProperty('--primary', '#4a6fa5');
-                                root.style.setProperty('--secondary', '#6b9ac4');
-                                root.style.setProperty('--accent', '#5c80bc');
-                                break;
-                            case 'green':
-                                root.style.setProperty('--primary', '#5c8d89');
-                                root.style.setProperty('--secondary', '#74b49b');
-                                root.style.setProperty('--accent', '#a7d7c5');
-                                break;
-                            case 'orange':
-                                root.style.setProperty('--primary', '#ff9a76');
-                                root.style.setProperty('--secondary', '#ffbba9');
-                                root.style.setProperty('--accent', '#ff6b6b');
-                                break;
-                            case 'pink':
-                                root.style.setProperty('--primary', '#ff9c9c');
-                                root.style.setProperty('--secondary', '#ffc8c8');
-                                root.style.setProperty('--accent', '#ff7c7c');
-                                break;
-                        }
-                        
-                        // Save theme preference
-                        localStorage.setItem('cozynotes_theme', theme);
-                        
-                        // Collapse the theme selector after selection
-                        themeSelector.classList.add('collapsed');
-                    });
-                });
-                
-                // Load saved theme
-                const savedTheme = localStorage.getItem('cozynotes_theme') || 'purple';
-                document.querySelector(`.theme-btn[data-theme="${savedTheme}"]`).click();
-            }
-            
-            function setupPageManagement() {
-                const pagesList = document.querySelector('.pages-list');
-                const addPageBtn = document.querySelector('.add-page-btn');
-                const pagesCount = document.querySelector('.pages-count');
-                
-                // Add new page
-                addPageBtn.addEventListener('click', function() {
-                    const pageName = prompt('Enter a name for your new page:');
-                    if (pageName && pageName.trim() !== '') {
-                        addPage(pageName.trim());
-                    }
-                });
-                
-                // Function to add a page
-                function addPage(name) {
-                    const pageId = 'page_' + Date.now();
-                    const pageItem = document.createElement('li');
-                    pageItem.className = 'page-item';
-                    pageItem.setAttribute('data-id', pageId);
-                    pageItem.innerHTML = `
-                        <span>${name}</span>
-                        <div class="delete-page"><i class="fas fa-times"></i></div>
-                    `;
-                    
-                    // Add click event to select the page
-                    pageItem.addEventListener('click', function(e) {
-                        if (!e.target.closest('.delete-page')) {
-                            selectPage(pageId);
-                        }
-                    });
-                    
-                    // Add delete functionality
-                    const deleteBtn = pageItem.querySelector('.delete-page');
-                    deleteBtn.addEventListener('click', function(e) {
-                        e.stopPropagation();
-                        deletePage(pageId);
-                    });
-                    
-                    pagesList.appendChild(pageItem);
-                    updatePagesCount();
-                    
-                    // Select the new page
-                    selectPage(pageId);
-                    
-                    // Save to localStorage
-                    savePagesToLocalStorage();
-                }
-                
-                // Function to select a page
-                function selectPage(pageId) {
-                    // Remove active class from all pages
-                    document.querySelectorAll('.page-item').forEach(page => {
-                        page.classList.remove('active');
-                    });
-                    
-                    // Add active class to selected page
-                    const selectedPage = document.querySelector(`.page-item[data-id="${pageId}"]`);
-                    if (selectedPage) {
-                        selectedPage.classList.add('active');
-                        
-                        // Load page content
-                        loadPageContent(pageId);
-                    }
-                }
-                
-                // Function to delete a page
-                function deletePage(pageId) {
-                    if (confirm('Are you sure you want to delete this page and all its notes?')) {
-                        const pageItem = document.querySelector(`.page-item[data-id="${pageId}"]`);
-                        if (pageItem) {
-                            pageItem.remove();
-                            updatePagesCount();
-                            
-                            // Remove from localStorage
-                            const pages = getPagesFromLocalStorage();
-                            delete pages[pageId];
-                            localStorage.setItem('cozynotes_pages', JSON.stringify(pages));
-                            
-                            // Select another page if available
-                            const remainingPages = document.querySelectorAll('.page-item');
-                            if (remainingPages.length > 0) {
-                                selectPage(remainingPages[0].getAttribute('data-id'));
-                            } else {
-                                // Clear note area if no pages left
-                                clearNoteArea();
-                            }
-                        }
-                    }
-                }
-                
-                // Update pages count
-                function updatePagesCount() {
-                    const count = document.querySelectorAll('.page-item').length;
-                    pagesCount.textContent = `${count} ${count === 1 ? 'page' : 'pages'}`;
-                }
-                
-                // Clear note area
-                function clearNoteArea() {
-                    document.querySelector('.note-title').value = '';
-                    document.querySelector('.note-subject').value = '';
-                    document.querySelector('.short-note').value = '';
-                    document.querySelector('.long-note').value = '';
-                    document.querySelector('.uploaded-images').innerHTML = '';
-                    document.querySelector('.date-created').textContent = '-';
-                    document.querySelector('.date-updated').textContent = '-';
+        document.addEventListener('DOMContentLoaded', () => {
+            // Globals
+            let activeNoteId = null;
+            const root = document.documentElement;
+            // Selectors
+            const notesListEl = document.querySelector('.notes-list');
+            const noteContentEl = document.querySelector('.note-content');
+            const noteContentWrapperEl = document.querySelector('.note-content-wrapper');
+            const emptyStateEl = document.querySelector('.empty-state');
+            const notesCountEl = document.getElementById('notesCount');
+            const wordCountEl = document.getElementById('word-count');
+            const charCountEl = document.getElementById('char-count');
+            let debounceTimer;
+
+
+            // --- CORE INITIALIZATION ---
+            function init() {
+                loadTheme();
+                renderNotesList();
+                bindEventListeners();
+
+                activeNoteId = localStorage.getItem('cozynotes_active_note_id');
+                const notes = getNotes();
+                if (activeNoteId && notes.find(n => n.id === activeNoteId)) {
+                     selectNote(activeNoteId, true);
+                } else {
+                    updateUIForNoNote();
                 }
             }
-            
-            function setupNoteEditing() {
-                const imageInput = document.getElementById('imageInput');
-                const uploadedImagesContainer = document.querySelector('.uploaded-images');
-                const saveBtn = document.querySelector('.save-btn');
-                const deleteBtn = document.querySelector('.delete-btn');
-                
-                // Image upload functionality
-                imageInput.addEventListener('change', function() {
-                    const files = this.files;
-                    if (files && files.length > 0) {
-                        Array.from(files).forEach(file => {
-                            if (file.type.startsWith('image/')) {
-                                const reader = new FileReader();
-                                
-                                reader.addEventListener('load', function() {
-                                    addImageToContainer(reader.result);
-                                });
-                                
-                                reader.readAsDataURL(file);
-                            }
-                        });
-                        
-                        // Reset the input to allow uploading the same image again
-                        this.value = '';
+
+            // --- DATA & THEME HANDLING ---
+            const getNotes = () => JSON.parse(localStorage.getItem('cozynotes_notes_v4') || '[]');
+            const saveNotes = (notes) => localStorage.setItem('cozynotes_notes_v4', JSON.stringify(notes));
+
+            function applyTheme(colors, isDarkMode) {
+                root.dataset.theme = isDarkMode ? 'dark' : 'light';
+                Object.entries(colors).forEach(([key, value]) => root.style.setProperty(`--${key}`, value));
+                const derivedSidebarBg = isDarkMode ? shadeColor(colors.background, 15) : shadeColor(colors.background, -5);
+                root.style.setProperty('--sidebar-bg', derivedSidebarBg);
+            }
+            function saveAndApplyTheme(theme) {
+                 localStorage.setItem('cozynotes_theme_v3', JSON.stringify(theme));
+                 applyTheme(theme.colors, theme.isDark);
+            }
+            function loadTheme() {
+                const defaultTheme = { colors: { accent: "#007aff", background: "#ffffff", text: "#1d1d1f" }, isDark: false };
+                const savedTheme = JSON.parse(localStorage.getItem('cozynotes_theme_v3'));
+                saveAndApplyTheme(savedTheme || defaultTheme);
+            }
+
+            // --- NOTE MANAGEMENT & UI ---
+            function createNewNote() {
+                const newNote = { id: 'note_' + Date.now(), content: '' };
+                const notes = getNotes();
+                notes.unshift(newNote);
+                saveNotes(notes);
+                activeNoteId = newNote.id;
+                renderNotesList();
+                selectNote(newNote.id);
+                noteContentEl.focus();
+            }
+            function selectNote(noteId, force = false) {
+                 if (!force && activeNoteId === noteId) return;
+                 activeNoteId = noteId;
+                 localStorage.setItem('cozynotes_active_note_id', noteId);
+                 updateUIAfterSelection();
+            }
+            function deleteCurrentNote() {
+                if (!activeNoteId || !confirm('Delete this note permanently?')) return;
+                let notes = getNotes();
+                notes = notes.filter(n => n.id !== activeNoteId);
+                saveNotes(notes);
+                activeNoteId = notes.length > 0 ? notes[0].id : null;
+                localStorage.setItem('cozynotes_active_note_id', activeNoteId);
+                renderNotesList();
+                if(activeNoteId) selectNote(activeNoteId, true); else updateUIForNoNote();
+            }
+            function renderNotesList() {
+                const notes = getNotes();
+                notesListEl.innerHTML = notes.map(note => {
+                    const tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = note.content;
+                    const title = tempDiv.querySelector('h1')?.textContent || tempDiv.innerText.split('\n')[0] || 'Untitled Note';
+                    const preview = (tempDiv.querySelector('p')?.textContent || tempDiv.innerText.split('\n').filter(Boolean)[1] || 'No additional text');
+                    return `<li class="note-item" data-id="${note.id}"><div class="note-item-title">${title}</div><div class="note-item-preview">${preview}</div></li>`;
+                }).join('');
+                notesCountEl.textContent = `${notes.length} Note${notes.length !== 1 ? 's' : ''}`;
+            }
+             function updateUIAfterSelection() {
+                const note = getNotes().find(n => n.id === activeNoteId);
+                if (note) {
+                    noteContentEl.innerHTML = note.content;
+                    noteContentEl.style.display = 'block';
+                    emptyStateEl.classList.remove('visible');
+                    document.querySelectorAll('.note-item').forEach(el => el.classList.toggle('active', el.dataset.id === activeNoteId));
+                    updateNoteStats(); // Update stats on note selection
+                } else { updateUIForNoNote(); }
+            }
+            function updateUIForNoNote(){
+                activeNoteId = null;
+                noteContentEl.innerHTML = '';
+                noteContentEl.style.display = 'none';
+                emptyStateEl.classList.add('visible');
+                renderNotesList();
+                updateNoteStats(true); // Reset stats
+            }
+
+            function updateNoteStats(reset = false) {
+                 if (reset || !activeNoteId) {
+                    wordCountEl.textContent = '0 words';
+                    charCountEl.textContent = '0 characters';
+                    return;
+                }
+                const text = noteContentEl.innerText;
+                const charCount = text.length;
+                const wordCount = text.trim().split(/\s+/).filter(Boolean).length;
+                wordCountEl.textContent = `${wordCount} word${wordCount !== 1 ? 's' : ''}`;
+                charCountEl.textContent = `${charCount} character${charCount !== 1 ? 's' : ''}`;
+            }
+
+            // --- EVENT LISTENERS ---
+            function bindEventListeners() {
+                document.getElementById('addNoteBtn').addEventListener('click', createNewNote);
+                document.getElementById('deleteNoteBtn').addEventListener('click', deleteCurrentNote);
+                notesListEl.addEventListener('click', e => e.target.closest('.note-item') && selectNote(e.target.closest('.note-item').dataset.id));
+                document.querySelector('.sidebar-toggle').addEventListener('click', () => document.body.classList.toggle('sidebar-collapsed'));
+
+                // Auto-save & Stats Update
+                noteContentEl.addEventListener('input', () => {
+                    clearTimeout(debounceTimer);
+                    debounceTimer = setTimeout(() => { if(activeNoteId) { saveCurrentNote(); } }, 500);
+                    updateNoteStats();
+                });
+
+                bindEditorToolbarEvents();
+                bindSettingsModalEvents();
+                bindDragAndDropEvents();
+                document.getElementById('cozy-ai-btn').addEventListener('click', openAiModal);
+                document.querySelectorAll('[data-close-modal]').forEach(el => el.addEventListener('click', () => el.closest('.modal').classList.remove('visible')));
+            }
+
+            function saveCurrentNote(){
+                const notes = getNotes();
+                const noteIndex = notes.findIndex(n => n.id === activeNoteId);
+                if (noteIndex > -1) {
+                    notes[noteIndex].content = noteContentEl.innerHTML;
+                    saveNotes(notes);
+                    const item = notesListEl.querySelector(`.note-item[data-id="${activeNoteId}"]`);
+                    if(item){
+                        const tempDiv = document.createElement('div');
+                        tempDiv.innerHTML = noteContentEl.innerHTML;
+                        item.querySelector('.note-item-title').textContent = tempDiv.querySelector('h1')?.textContent || tempDiv.innerText.split('\n')[0] || 'Untitled Note';
+                        item.querySelector('.note-item-preview').textContent = tempDiv.querySelector('p')?.textContent || tempDiv.innerText.split('\n').filter(Boolean)[1] || 'No additional text';
+                    }
+                }
+            }
+
+            // --- EDITOR TOOLBAR ---
+            function bindEditorToolbarEvents(){
+                document.querySelectorAll('#editor-toolbar button[data-command]').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        const {command, value} = btn.dataset;
+                        if(command === 'createLink') {
+                            const url = prompt('Enter a URL:');
+                            if(url) document.execCommand(command, false, url);
+                        } else if(command === 'insertImage') {
+                             document.getElementById('imageInput').click();
+                        } else {
+                            document.execCommand(command, false, value || null);
+                        }
+                        noteContentEl.focus();
+                    });
+                });
+                document.getElementById('style-selector').addEventListener('change', (e) => {
+                     document.execCommand('formatBlock', false, e.target.value);
+                });
+                 document.getElementById('font-selector').addEventListener('change', (e) => {
+                     document.execCommand('fontName', false, e.target.value);
+                });
+                const highlightPicker = document.getElementById('highlight-color-picker');
+                document.getElementById('highlight-btn-container').addEventListener('click', () => highlightPicker.click());
+                highlightPicker.addEventListener('input', (e) => {
+                    document.execCommand('styleWithCSS', false, true);
+                    document.execCommand('backColor', false, e.target.value);
+                });
+                document.getElementById('imageInput').addEventListener('change', function(){
+                    if (this.files && this.files[0]) {
+                       handleImageFile(this.files[0]);
                     }
                 });
-                
-                // Function to add an image to the container
-                function addImageToContainer(src) {
-                    const imageId = 'img_' + Date.now();
-                    const imageContainer = document.createElement('div');
-                    imageContainer.className = 'image-container';
-                    imageContainer.innerHTML = `
-                        <img src="${src}" class="uploaded-image" alt="Uploaded Image">
-                        <div class="delete-image" data-id="${imageId}"><i class="fas fa-times"></i></div>
-                    `;
-                    
-                    // Add delete functionality
-                    const deleteBtn = imageContainer.querySelector('.delete-image');
-                    deleteBtn.addEventListener('click', function() {
-                        imageContainer.remove();
-                    });
-                    
-                    uploadedImagesContainer.appendChild(imageContainer);
-                }
-                
-                // Save note functionality
-                saveBtn.addEventListener('click', function() {
-                    const activePage = document.querySelector('.page-item.active');
-                    if (!activePage) {
-                        alert('Please create a page first!');
-                        return;
-                    }
-                    
-                    // Get all note data
-                    const title = document.querySelector('.note-title').value;
-                    const subject = document.querySelector('.note-subject').value;
-                    const shortNote = document.querySelector('.short-note').value;
-                    const longNote = document.querySelector('.long-note').value;
-                    
-                    // Get images
-                    const images = [];
-                    document.querySelectorAll('.uploaded-image').forEach(img => {
-                        images.push(img.src);
-                    });
-                    
-                    // Create note object
-                    const note = {
-                        title,
-                        subject,
-                        shortNote,
-                        longNote,
-                        images,
-                        createdAt: document.querySelector('.date-created').textContent,
-                        updatedAt: new Date().toLocaleString()
+                document.getElementById('voice-dictation-btn').addEventListener('click', toggleDictation);
+                document.getElementById('focus-mode-btn').addEventListener('click', toggleFocusMode);
+            }
+
+            // --- IMAGE HANDLING & DRAG-DROP ---
+             function handleImageFile(file) {
+                if (file && file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                       const imgHTML = `<img src="${e.target.result}" style="max-width: 100%; border-radius:8px;">`;
+                       document.execCommand('insertHTML', false, imgHTML);
                     };
-                    
-                    // Save to localStorage
-                    saveNoteToPage(activePage.getAttribute('data-id'), note);
-                    
-                    // Update the updated date display
-                    document.querySelector('.date-updated').textContent = note.updatedAt;
-                    
-                    alert(`Note "${title}" saved successfully!`);
-                });
-                
-                // Delete note functionality
-                deleteBtn.addEventListener('click', function() {
-                    if (confirm('Are you sure you want to delete this note?')) {
-                        clearNoteArea();
-                    }
-                });
-            }
-            
-            function saveNoteToPage(pageId, note) {
-                const pages = getPagesFromLocalStorage();
-                if (!pages[pageId]) {
-                    pages[pageId] = { notes: [] };
+                    reader.readAsDataURL(file);
                 }
-                
-                // For simplicity, we'll just store one note per page
-                pages[pageId].currentNote = note;
-                
-                localStorage.setItem('cozynotes_pages', JSON.stringify(pages));
             }
-            
-            function getPagesFromLocalStorage() {
-                return JSON.parse(localStorage.getItem('cozynotes_pages') || '{}');
-            }
-            
-            function savePagesToLocalStorage() {
-                const pages = {};
-                document.querySelectorAll('.page-item').forEach(page => {
-                    const pageId = page.getAttribute('data-id');
-                    const pageName = page.querySelector('span').textContent;
-                    pages[pageId] = { name: pageName };
+
+            function bindDragAndDropEvents() {
+                const dragVisual = document.querySelector('.drag-over-visual');
+                noteContentWrapperEl.addEventListener('dragover', e => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    dragVisual.classList.add('visible');
                 });
-                
-                localStorage.setItem('cozynotes_pages', JSON.stringify(pages));
-            }
-            
-            function loadPageContent(pageId) {
-                const pages = getPagesFromLocalStorage();
-                const page = pages[pageId];
-                
-                if (page && page.currentNote) {
-                    const note = page.currentNote;
-                    document.querySelector('.note-title').value = note.title || '';
-                    document.querySelector('.note-subject').value = note.subject || '';
-                    document.querySelector('.short-note').value = note.shortNote || '';
-                    document.querySelector('.long-note').value = note.longNote || '';
-                    document.querySelector('.date-created').textContent = note.createdAt || new Date().toLocaleString();
-                    document.querySelector('.date-updated').textContent = note.updatedAt || '-';
-                    
-                    // Load images
-                    const uploadedImagesContainer = document.querySelector('.uploaded-images');
-                    uploadedImagesContainer.innerHTML = '';
-                    
-                    if (note.images && note.images.length > 0) {
-                        note.images.forEach(src => {
-                            addImageToContainer(src);
-                        });
+                 noteContentWrapperEl.addEventListener('dragleave', e => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    dragVisual.classList.remove('visible');
+                });
+                 noteContentWrapperEl.addEventListener('drop', e => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    dragVisual.classList.remove('visible');
+                    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+                        handleImageFile(e.dataTransfer.files[0]);
                     }
+                });
+            }
+
+            // --- ADVANCED WRITING TOOLS ---
+             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+             let recognition;
+             if (SpeechRecognition) {
+                recognition = new SpeechRecognition();
+                recognition.continuous = true;
+                recognition.interimResults = true;
+                recognition.onresult = event => {
+                    let final_transcript = '';
+                    let interim_transcript = '';
+                    for (let i = event.resultIndex; i < event.results.length; ++i) {
+                        if (event.results[i].isFinal) {
+                            final_transcript += event.results[i][0].transcript;
+                        } else {
+                            interim_transcript += event.results[i][0].transcript;
+                        }
+                    }
+                     document.execCommand("insertText", false, final_transcript);
+                };
+             }
+
+             function toggleDictation(e) {
+                const btn = e.currentTarget;
+                if (!recognition) return alert('Speech recognition not supported in this browser.');
+                if (btn.classList.contains('recording')) {
+                    recognition.stop();
+                    btn.classList.remove('recording');
                 } else {
-                    // New empty note
-                    clearNoteArea();
-                    document.querySelector('.date-created').textContent = new Date().toLocaleString();
-                    document.querySelector('.date-updated').textContent = '-';
+                    recognition.start();
+                    btn.classList.add('recording');
                 }
+             }
+
+             function toggleFocusMode(e){
+                const btn = e.currentTarget;
+                btn.classList.toggle('active');
+                document.body.classList.toggle('focus-mode');
+             }
+
+            // --- SETTINGS MODAL ---
+            function bindSettingsModalEvents(){
+                const modal = document.getElementById('settingsModal');
+                document.getElementById('settingsBtn').addEventListener('click', () => {
+                    const theme = JSON.parse(localStorage.getItem('cozynotes_theme_v3')) || { colors: { accent: "#007aff", background: "#ffffff", text: "#1d1d1f" }, isDark: false };
+                    document.getElementById('accentColor').value = theme.colors.accent;
+                    document.getElementById('bgColor').value = theme.colors.background;
+                    document.getElementById('textColor').value = theme.colors.text;
+                    modal.classList.add('visible');
+                });
+
+                document.getElementById('lightModeBtn').addEventListener('click', () => {
+                    const currentTheme = JSON.parse(localStorage.getItem('cozynotes_theme_v3')) || { colors: {}, isDark: true };
+                    currentTheme.isDark = false;
+                    saveAndApplyTheme(currentTheme);
+                });
+                document.getElementById('darkModeBtn').addEventListener('click', () => {
+                     const currentTheme = JSON.parse(localStorage.getItem('cozynotes_theme_v3')) || { colors: {}, isDark: false };
+                     currentTheme.isDark = true;
+                     saveAndApplyTheme(currentTheme);
+                });
+
+                modal.querySelectorAll('.theme-button').forEach(btn => btn.addEventListener('click', () => {
+                    const colors = JSON.parse(btn.dataset.colors);
+                    const isDark = isColorDark(colors.background);
+                    saveAndApplyTheme({ colors, isDark });
+                }));
+
+                modal.querySelectorAll('.color-customizer input').forEach(input => input.addEventListener('input', () => {
+                    const theme = JSON.parse(localStorage.getItem('cozynotes_theme_v3')) || {colors:{}, isDark: false};
+                    theme.colors.accent = document.getElementById('accentColor').value;
+                    theme.colors.background = document.getElementById('bgColor').value;
+                    theme.colors.text = document.getElementById('textColor').value;
+                    theme.isDark = isColorDark(theme.colors.background); // Auto-detect dark mode
+                    saveAndApplyTheme(theme);
+                }));
+
+                document.getElementById('resetThemeBtn').addEventListener('click', () => {
+                    localStorage.removeItem('cozynotes_theme_v3');
+                    loadTheme();
+                });
             }
-            
-            function loadFromLocalStorage() {
-                // Load pages
-                const pages = getPagesFromLocalStorage();
-                const pagesList = document.querySelector('.pages-list');
-                
-                if (Object.keys(pages).length === 0) {
-                    // Add a default page if none exist
-                    addPage('General Notes');
-                } else {
-                    // Recreate pages from localStorage
-                    for (const [pageId, pageData] of Object.entries(pages)) {
-                        const pageItem = document.createElement('li');
-                        pageItem.className = 'page-item';
-                        pageItem.setAttribute('data-id', pageId);
-                        pageItem.innerHTML = `
-                            <span>${pageData.name}</span>
-                            <div class="delete-page"><i class="fas fa-times"></i></div>
-                        `;
-                        
-                        // Add click event to select the page
-                        pageItem.addEventListener('click', function(e) {
-                            if (!e.target.closest('.delete-page')) {
-                                selectPage(pageId);
-                            }
-                        });
-                        
-                        // Add delete functionality
-                        const deleteBtn = pageItem.querySelector('.delete-page');
-                        deleteBtn.addEventListener('click', function(e) {
-                            e.stopPropagation();
-                            deletePage(pageId);
-                        });
-                        
-                        pagesList.appendChild(pageItem);
-                    }
-                    
-                    // Select the first page
-                    const firstPageId = Object.keys(pages)[0];
-                    selectPage(firstPageId);
+
+           // --- 1000x BETTER COZY AI ---
+            function getReadabilityStats(text) {
+                const sentences = text.match(/[^.!?]+[.!?]+/g)?.length || 1;
+                const words = text.trim().split(/\s+/).filter(Boolean).length;
+                const syllables = text.toLowerCase().split(/\s+/).reduce((acc, word) => {
+                    if (word.length <= 3) return acc + 1;
+                    word = word.replace(/(?:[^laeiouy]es|ed|[^laeiouy]e)$/, '');
+                    word = word.replace(/^y/, '');
+                    const matches = word.match(/[aeiouy]{1,2}/g);
+                    return acc + (matches ? matches.length : 0);
+                }, 0);
+                 if (words === 0) return { score: 0, gradeLevel: "N/A" };
+                const score = 206.835 - 1.015 * (words / sentences) - 84.6 * (syllables / words);
+                let gradeLevel = "N/A";
+                if (score >= 90) gradeLevel = "5th Grade";
+                else if (score >= 80) gradeLevel = "6th Grade";
+                else if (score >= 70) gradeLevel = "7th Grade";
+                else if (score >= 60) gradeLevel = "8th & 9th Grade";
+                else if (score >= 50) gradeLevel = "10th to 12th Grade";
+                else if (score >= 30) gradeLevel = "College";
+                else gradeLevel = "Graduate";
+                return { score: score.toFixed(2), gradeLevel };
+            }
+             function analyzeTone(text) {
+                const positiveWords = ['amazing', 'excellent', 'great', 'love', 'happy', 'good'];
+                const negativeWords = ['terrible', 'awful', 'hate', 'bad', 'problem'];
+                let score = 0;
+                text.toLowerCase().split(/\s+/).forEach(word => {
+                    if (positiveWords.includes(word)) score++;
+                    if (negativeWords.includes(word)) score--;
+                });
+                if (score > 1) return { tone: 'Positive', emoji: '😊' };
+                if (score < -1) return { tone: 'Negative', emoji: '😞' };
+                return { tone: 'Neutral', emoji: '😐' };
+            }
+            function openAiModal(){
+                const text = noteContentEl.innerText;
+                const htmlContent = noteContentEl.innerHTML;
+                const recsContainer = document.getElementById('ai-recommendations');
+                recsContainer.innerHTML = '';
+                let suggestions = [];
+
+                if(text.trim().length === 0){
+                    recsContainer.innerHTML = '<li>Write something to get AI suggestions!</li>';
+                     document.getElementById('aiModal').classList.add('visible');
+                    return;
                 }
-                
-                updatePagesCount();
+
+                // Suggestion 1: Improve Readability
+                const readability = getReadabilityStats(text);
+                suggestions.push({
+                    title: `Readability: Grade ${readability.gradeLevel} (Score: ${readability.score})`,
+                    action: 'info'
+                });
+                // Suggestion 2: Analyze Tone
+                const tone = analyzeTone(text);
+                suggestions.push({
+                     title: `Detected Tone: ${tone.tone} ${tone.emoji}`,
+                     action: 'info'
+                });
+                 // Suggestion 3: Generate Summary
+                if (text.split(' ').length > 50) suggestions.push({
+                     title: 'Generate an Executive Summary',
+                     action: 'summarize'
+                });
+                 // Suggestion 4: Find action items
+                if (text.toLowerCase().match(/todo|task|follow up|action item/gi)) suggestions.push({
+                     title: 'Highlight Action Items',
+                     action: 'highlight_actions'
+                 });
+                // Suggestion 5: Placeholder for a "true" AI feature
+                suggestions.push({
+                    title: 'Rewrite with a Professional Tone (Premium AI)',
+                    action: 'rewrite_pro_placeholder'
+                });
+
+
+                suggestions.forEach(s => {
+                     const li = document.createElement('li');
+                     li.innerHTML = s.title; // Use innerHTML to render emojis
+                     if (s.action !== 'info') {
+                         li.onclick = () => { runAiAction(s.action); document.getElementById('aiModal').classList.remove('visible'); };
+                     } else {
+                        li.style.cursor = 'default';
+                        li.style.borderColor = 'transparent';
+                     }
+                     recsContainer.appendChild(li);
+                });
+                document.getElementById('aiModal').classList.add('visible');
             }
+
+            function runAiAction(action) {
+                const text = noteContentEl.innerText;
+                if (action === 'summarize') {
+                    // Improved extractive summary: find the longest sentences
+                     const sentences = text.match(/[^.!?]+[.!?]+/g) || [];
+                     const sortedSentences = sentences.sort((a,b) => b.length - a.length);
+                     const summary = sortedSentences.slice(0, Math.max(1, Math.floor(sortedSentences.length * 0.2))).join(' ');
+                    noteContentEl.innerHTML += `<hr><h2>Executive Summary</h2><blockquote>${summary}</blockquote>`;
+                } else if (action === 'highlight_actions') {
+                     const regex = /(todo|task|follow up|action item|assign to|due by|deadline)/gi;
+                     noteContentEl.innerHTML = noteContentEl.innerHTML.replace(regex, `<mark style="background-color: #007aff; color: white;">$&</mark>`);
+                 } else if (action === 'rewrite_pro_placeholder') {
+                    alert("This feature would require a powerful external AI service. Imagine this text has now been professionally rewritten!");
+                 }
+                saveCurrentNote(); // Save after AI changes
+            }
+
+            // --- UTILITIES ---
+            const isColorDark = (hex) => {
+                if(!hex) return false;
+                const c = hex.substring(1); const rgb = parseInt(c, 16);
+                const r = (rgb >> 16) & 0xff; const g = (rgb >> 8) & 0xff; const b = (rgb >> 0) & 0xff;
+                return (0.2126 * r + 0.7152 * g + 0.0722 * b) < 128;
+            };
+            const shadeColor = (hex, percent) => {
+                if(!hex) return "#f5f5f7"; // a default fallback
+                let [r,g,b] = hex.match(/\w\w/g).map(x => parseInt(x, 16));
+                r = Math.min(255, Math.max(0, parseInt(r * (100 + percent) / 100)));
+                g = Math.min(255, Math.max(0, parseInt(g * (100 + percent) / 100)));
+                b = Math.min(255, Math.max(0, parseInt(b * (100 + percent) / 100)));
+                return `#${[r,g,b].map(x => x.toString(16).padStart(2,'0')).join('')}`;
+            };
+
+            init(); // Start the application
         });
     </script>
 </body>
