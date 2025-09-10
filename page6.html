@@ -3,20 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Typo Master</title>
+    <title>Typo Master - Professional Typing Test</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             --primary: #2563eb;
-            --secondary: #1e40af;
-            --background: rgb(255, 255, 255);
+            --primary-dark: #1e40af;
+            --primary-light: #3b82f6;
+            --secondary: #f59e0b;
+            --background: #ffffff;
+            --background-alt: #f8fafc;
             --text: #1f2937;
-            --accent: #3b82f6;
-            --shadow: rgba(0, 0, 0, 0.08);
+            --text-light: #64748b;
             --correct: #10b981;
             --incorrect: #ef4444;
             --card-bg: #ffffff;
-            --header-bg: #f8fafc;
+            --shadow: rgba(0, 0, 0, 0.08);
+            --shadow-hover: rgba(0, 0, 0, 0.12);
+            --transition: all 0.3s ease;
+            --border-radius: 12px;
+        }
+
+        [data-theme="dark"] {
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --primary-light: #60a5fa;
+            --secondary: #f59e0b;
+            --background: #1f2937;
+            --background-alt: #111827;
+            --text: #f3f4f6;
+            --text-light: #9ca3af;
+            --card-bg: #374151;
+            --shadow: rgba(0, 0, 0, 0.2);
+            --shadow-hover: rgba(0, 0, 0, 0.3);
         }
 
         * {
@@ -27,34 +46,41 @@
         }
 
         body {
-            background: linear-gradient(135deg, rgb(225, 180, 0))
+            background: linear-gradient(135deg, #f0f4ff 0%, #e6f0ff 100%);
             color: var(--text);
             min-height: 100vh;
             padding: 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
+            transition: var(--transition);
+        }
+
+        [data-theme="dark"] body {
+            background: linear-gradient(135deg, #111827 0%, #1f2937 100%);
         }
 
         .container {
             width: 100%;
             max-width: 1000px;
             background: var(--background);
-            backdrop-filter: blur(12px);
-            border-radius: 16px;
+            border-radius: var(--border-radius);
             padding: 30px;
             box-shadow: 0 12px 40px var(--shadow);
-            border: 1px solid rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             margin-bottom: 20px;
+            transition: var(--transition);
         }
 
         header {
             text-align: center;
             margin-bottom: 30px;
             padding: 20px;
-            background: var(--header-bg);
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            background: var(--background-alt);
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 6px var(--shadow);
+            transition: var(--transition);
+            position: relative;
         }
 
         .logo {
@@ -68,6 +94,7 @@
         .logo-icon {
             font-size: 2.2rem;
             color: var(--primary);
+            transition: var(--transition);
         }
 
         h1 {
@@ -75,13 +102,36 @@
             margin-bottom: 10px;
             color: var(--primary);
             font-weight: 700;
+            transition: var(--transition);
         }
 
         .tagline {
             font-size: 1.1rem;
-            color: #64748b;
+            color: var(--text-light);
             max-width: 600px;
             margin: 0 auto;
+            transition: var(--transition);
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: var(--card-bg);
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 2px 4px var(--shadow);
+            transition: var(--transition);
+        }
+
+        .theme-toggle:hover {
+            transform: rotate(15deg);
         }
 
         nav {
@@ -96,13 +146,13 @@
             padding: 12px 24px;
             border: none;
             border-radius: 8px;
-            background: white;
+            background: var(--card-bg);
             color: var(--text);
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-            border: 1px solid #e2e8f0;
+            transition: var(--transition);
+            box-shadow: 0 2px 4px var(--shadow);
+            border: 1px solid transparent;
             display: flex;
             align-items: center;
             gap: 8px;
@@ -112,7 +162,7 @@
             background: var(--primary);
             color: white;
             transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(37, 99, 235, 0.15);
+            box-shadow: 0 4px 8px var(--shadow-hover);
         }
 
         .nav-btn.active {
@@ -146,22 +196,27 @@
         .config-card {
             background: var(--card-bg);
             padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 6px var(--shadow);
             text-align: center;
             min-width: 180px;
-            border: 1px solid #e2e8f0;
-            transition: transform 0.3s ease;
+            border: 1px solid transparent;
+            transition: var(--transition);
         }
 
         .config-card:hover {
             transform: translateY(-5px);
+            box-shadow: 0 8px 15px var(--shadow-hover);
         }
 
         .config-card h3 {
             margin-bottom: 15px;
             color: var(--primary);
             font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
 
         .time-options {
@@ -173,9 +228,10 @@
         .time-option {
             padding: 8px 15px;
             border-radius: 6px;
-            background: #f1f5f9;
+            background: var(--background-alt);
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: var(--transition);
+            font-weight: 500;
         }
 
         .time-option.active {
@@ -184,33 +240,74 @@
         }
 
         /* Test Area */
+        .timer-container {
+            position: relative;
+            margin: 25px 0;
+        }
+
         .timer {
             font-size: 3.2rem;
             text-align: center;
-            margin: 25px 0;
             font-weight: 700;
             color: var(--primary);
             font-variant-numeric: tabular-nums;
+            transition: var(--transition);
+        }
+
+        .progress-ring {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .progress-ring__circle {
+            transition: stroke-dashoffset 0.5s linear;
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+        }
+
+        .text-display-container {
+            position: relative;
+            margin-bottom: 25px;
         }
 
         .text-display {
-            background: white;
+            background: var(--card-bg);
             padding: 30px;
-            border-radius: 12px;
-            margin-bottom: 25px;
+            border-radius: var(--border-radius);
             min-height: 180px;
             font-size: 1.5rem;
             line-height: 1.6;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 6px var(--shadow);
+            border: 1px solid transparent;
             text-align: left;
+            transition: var(--transition);
+            overflow: hidden;
+            position: relative;
         }
 
         .current-word {
-            background: var(--accent);
+            background: var(--primary);
             color: white;
             padding: 2px 6px;
             border-radius: 4px;
+            transition: var(--transition);
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 2px;
+            height: 1.2em;
+            background: var(--primary);
+            vertical-align: middle;
+            margin-left: 1px;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
         }
 
         .input-area {
@@ -222,25 +319,27 @@
         #typing-input {
             width: 100%;
             padding: 18px;
-            border-radius: 12px;
-            border: 2px solid #e2e8f0;
-            background: white;
+            border-radius: var(--border-radius);
+            border: 2px solid var(--background-alt);
+            background: var(--card-bg);
             color: var(--text);
             font-size: 1.3rem;
             outline: none;
-            transition: border-color 0.3s ease;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            transition: var(--transition);
+            box-shadow: 0 2px 4px var(--shadow);
         }
 
         #typing-input:focus {
-            border-color: var(--accent);
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
         }
 
         .input-hint {
             text-align: center;
-            color: #64748b;
+            color: var(--text-light);
             margin-top: 10px;
             font-size: 0.9rem;
+            transition: var(--transition);
         }
 
         .action-buttons {
@@ -256,7 +355,7 @@
             border-radius: 8px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: var(--transition);
             display: flex;
             align-items: center;
             gap: 8px;
@@ -268,30 +367,31 @@
         }
 
         .btn-primary:hover {
-            background: var(--secondary);
+            background: var(--primary-dark);
             transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(37, 99, 235, 0.2);
+            box-shadow: 0 4px 8px var(--shadow-hover);
         }
 
         .btn-secondary {
-            background: white;
+            background: var(--card-bg);
             color: var(--text);
-            border: 1px solid #e2e8f0;
+            border: 1px solid var(--background-alt);
         }
 
         .btn-secondary:hover {
-            background: #f8fafc;
+            background: var(--background-alt);
             transform: translateY(-2px);
         }
 
         .results {
             text-align: center;
             padding: 25px;
-            background: var(--header-bg);
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            background: var(--background-alt);
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 6px var(--shadow);
             margin-top: 20px;
             display: none;
+            transition: var(--transition);
         }
 
         .results.show {
@@ -317,12 +417,43 @@
             font-size: 2.8rem;
             font-weight: 700;
             color: var(--primary);
+            transition: var(--transition);
         }
 
         .label {
             font-size: 1rem;
-            color: #64748b;
+            color: var(--text-light);
             margin-top: 5px;
+            transition: var(--transition);
+        }
+
+        .result-details {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .result-card {
+            background: var(--card-bg);
+            padding: 15px;
+            border-radius: var(--border-radius);
+            min-width: 120px;
+            box-shadow: 0 2px 4px var(--shadow);
+            transition: var(--transition);
+        }
+
+        .result-card h4 {
+            color: var(--text-light);
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+        }
+
+        .result-card p {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text);
         }
 
         /* Practice Section */
@@ -341,14 +472,15 @@
         .practice-card {
             background: var(--card-bg);
             padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-            transition: transform 0.3s ease;
-            border: 1px solid #e2e8f0;
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 6px var(--shadow);
+            transition: var(--transition);
+            border: 1px solid transparent;
         }
 
         .practice-card:hover {
             transform: translateY(-5px);
+            box-shadow: 0 8px 15px var(--shadow-hover);
         }
 
         .practice-card h3 {
@@ -361,24 +493,104 @@
 
         .practice-card i {
             font-size: 1.4rem;
-            color: var(--accent);
+            color: var(--primary);
+        }
+
+        /* Stats Section */
+        .stats-container {
+            margin-top: 30px;
+        }
+
+        .stats-chart {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 6px var(--shadow);
+            margin-bottom: 20px;
+        }
+
+        .stats-history {
+            display: flex;
+            gap: 15px;
+            overflow-x: auto;
+            padding: 10px 0;
+        }
+
+        .history-item {
+            background: var(--background-alt);
+            padding: 15px;
+            border-radius: var(--border-radius);
+            min-width: 150px;
+            text-align: center;
+            box-shadow: 0 2px 4px var(--shadow);
         }
 
         footer {
             text-align: center;
             margin-top: 40px;
             padding: 20px;
-            color: #64748b;
+            color: var(--text-light);
             font-size: 0.9rem;
+            transition: var(--transition);
         }
 
         .correct {
             color: var(--correct);
+            font-weight: 600;
         }
 
         .incorrect {
             color: var(--incorrect);
             text-decoration: underline;
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        /* Keyboard Visualization */
+        .keyboard-container {
+            margin-top: 30px;
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 6px var(--shadow);
+        }
+
+        .keyboard-row {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 8px;
+        }
+
+        .key {
+            width: 40px;
+            height: 40px;
+            margin: 0 4px;
+            background: var(--background-alt);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            box-shadow: 0 2px 0px rgba(0, 0, 0, 0.1);
+            transition: var(--transition);
+        }
+
+        .key-wide {
+            width: 70px;
+        }
+
+        .key-extra-wide {
+            width: 100px;
+        }
+
+        .key-space {
+            width: 250px;
+        }
+
+        .key-active {
+            background: var(--primary);
+            color: white;
+            transform: translateY(2px);
+            box-shadow: 0 0 0px rgba(0, 0, 0, 0.1);
         }
 
         /* Responsive Design */
@@ -403,6 +615,10 @@
             .value {
                 font-size: 2.2rem;
             }
+            
+            .timer {
+                font-size: 2.8rem;
+            }
         }
 
         @media (max-width: 480px) {
@@ -426,6 +642,15 @@
             #typing-input {
                 font-size: 1.1rem;
             }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
         }
     </style>
 </head>
@@ -434,9 +659,12 @@
         <header>
             <div class="logo">
                 <i class="fas fa-keyboard logo-icon"></i>
-                <h1>CozyTuStudios Typing Master</h1>
+                <h1>Typo Master</h1>
             </div>
             <p class="tagline">Professional typing speed test and practice platform to enhance your productivity</p>
+            <button class="theme-toggle" id="theme-toggle">
+                <i class="fas fa-moon"></i>
+            </button>
         </header>
 
         <nav>
@@ -445,6 +673,9 @@
             </button>
             <button class="nav-btn" data-target="practice">
                 <i class="fas fa-graduation-cap"></i> Practice
+            </button>
+            <button class="nav-btn" data-target="stats">
+                <i class="fas fa-chart-line"></i> Statistics
             </button>
         </nav>
 
@@ -469,14 +700,24 @@
                 </div>
             </div>
 
-            <div class="timer">01:00</div>
-            <div class="text-display">
-                Press start to begin the test. You'll have one minute to type as many words as possible. Focus on accuracy as well as speed!
+            <div class="timer-container">
+                <svg class="progress-ring" width="120" height="120">
+                    <circle class="progress-ring__circle" stroke="var(--primary-light)" stroke-width="4" fill="transparent" r="52" cx="60" cy="60"/>
+                </svg>
+                <div class="timer">01:00</div>
             </div>
+            
+            <div class="text-display-container">
+                <div class="text-display">
+                    Press start to begin the test. You'll have one minute to type as many words as possible. Focus on accuracy as well as speed!
+                </div>
+            </div>
+            
             <div class="input-area">
                 <input type="text" id="typing-input" placeholder="Click here and press start to begin..." disabled>
                 <p class="input-hint">Press Space after each word | Press Ctrl+Enter to restart</p>
             </div>
+            
             <div class="action-buttons">
                 <button id="start-btn" class="btn btn-primary">
                     <i class="fas fa-play"></i> Start Test
@@ -485,22 +726,43 @@
                     <i class="fas fa-redo"></i> Reset
                 </button>
             </div>
+            
+            <div class="keyboard-container" id="keyboard">
+                <!-- Keyboard will be generated by JavaScript -->
+            </div>
+            
             <div class="results" id="results">
                 <h2><i class="fas fa-medal"></i> Test Results</h2>
                 <div class="metrics">
                     <div class="metric">
-                        <div class="value">0</div>
+                        <div class="value" id="wpm">0</div>
                         <div class="label">Words Per Minute</div>
                     </div>
                     <div class="metric">
-                        <div class="value">0%</div>
+                        <div class="value" id="accuracy">0%</div>
                         <div class="label">Accuracy</div>
                     </div>
                     <div class="metric">
-                        <div class="value">0</div>
+                        <div class="value" id="errors">0</div>
                         <div class="label">Errors</div>
                     </div>
                 </div>
+                
+                <div class="result-details">
+                    <div class="result-card">
+                        <h4>Time</h4>
+                        <p id="result-time">1:00</p>
+                    </div>
+                    <div class="result-card">
+                        <h4>Characters</h4>
+                        <p id="result-chars">0</p>
+                    </div>
+                    <div class="result-card">
+                        <h4>Words</h4>
+                        <p id="result-words">0</p>
+                    </div>
+                </div>
+                
                 <button id="new-test-btn" class="btn btn-primary">
                     <i class="fas fa-plus"></i> New Test
                 </button>
@@ -540,14 +802,47 @@
                 </div>
             </div>
         </section>
+
+        <!-- Statistics Section -->
+        <section id="stats" class="section">
+            <div class="practice-header">
+                <h2><i class="fas fa-chart-line"></i> Your Typing Statistics</h2>
+                <p>Track your progress and identify areas for improvement</p>
+            </div>
+            
+            <div class="stats-container">
+                <div class="stats-chart">
+                    <canvas id="stats-chart" height="150"></canvas>
+                </div>
+                
+                <h3>Recent Tests</h3>
+                <div class="stats-history" id="stats-history">
+                    <div class="history-item">
+                        <h4>WPM</h4>
+                        <p class="value">42</p>
+                        <p class="label">Accuracy: 95%</p>
+                    </div>
+                    <div class="history-item">
+                        <h4>WPM</h4>
+                        <p class="value">48</p>
+                        <p class="label">Accuracy: 92%</p>
+                    </div>
+                    <div class="history-item">
+                        <h4>WPM</h4>
+                        <p class="value">52</p>
+                        <p class="label">Accuracy: 96%</p>
+                    </div>
+                </div>
+            </div>
+        </section>
     </div>
 
     <footer>
-        <p>© 2023 CozyTuStudios Typing Master | Professional Typing Test Platform</p>
+        <p>© 2023 Typo Master | Professional Typing Test Platform</p>
     </footer>
 
     <script>
-        // Sample texts for different difficulty levels
+        // Enhanced sample texts for different difficulty levels
         const sampleTexts = {
             easy: [
                 "The quick brown fox jumps over the lazy dog. Programming is both an art and a science. Typing quickly and accurately is an essential skill for developers.",
@@ -584,6 +879,15 @@
         const resultsDiv = document.getElementById('results');
         const timeOptions = document.querySelectorAll('.time-option');
         const difficultyOptions = document.querySelectorAll('.time-option[data-difficulty]');
+        const themeToggle = document.getElementById('theme-toggle');
+        const progressCircle = document.querySelector('.progress-ring__circle');
+        const keyboardContainer = document.getElementById('keyboard');
+        const wpmElement = document.getElementById('wpm');
+        const accuracyElement = document.getElementById('accuracy');
+        const errorsElement = document.getElementById('errors');
+        const resultTimeElement = document.getElementById('result-time');
+        const resultCharsElement = document.getElementById('result-chars');
+        const resultWordsElement = document.getElementById('result-words');
 
         // Variables for test
         let timer;
@@ -596,11 +900,85 @@
         let totalChars = 0;
         let started = false;
         let currentTextSet = 0;
+        let startTime = 0;
+        let endTime = 0;
+        let testHistory = [];
+        let progressInterval;
+        let radius = 52;
+        let circumference = 2 * Math.PI * radius;
+
+        // Initialize progress ring
+        if (progressCircle) {
+            progressCircle.style.strokeDasharray = `${circumference} ${circumference}`;
+            progressCircle.style.strokeDashoffset = `${circumference}`;
+        }
 
         // Initialize
         function init() {
             loadNewText();
             setupEventListeners();
+            generateKeyboard();
+            loadTestHistory();
+            setTheme(localStorage.getItem('theme') || 'light');
+        }
+
+        // Set theme
+        function setTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+            
+            if (theme === 'dark') {
+                themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+            } else {
+                themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+            }
+        }
+
+        // Generate keyboard visualization
+        function generateKeyboard() {
+            if (!keyboardContainer) return;
+            
+            const keyboardLayout = [
+                ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', 'Backspace'],
+                ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p'],
+                ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'Enter'],
+                ['z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '?'],
+                ['Space']
+            ];
+            
+            keyboardContainer.innerHTML = '';
+            
+            keyboardLayout.forEach(row => {
+                const rowElement = document.createElement('div');
+                rowElement.className = 'keyboard-row';
+                
+                row.forEach(key => {
+                    const keyElement = document.createElement('div');
+                    keyElement.className = 'key';
+                    keyElement.textContent = key;
+                    
+                    if (key === 'Backspace') keyElement.className += ' key-wide';
+                    if (key === 'Enter') keyElement.className += ' key-wide';
+                    if (key === 'Space') keyElement.className += ' key-space';
+                    
+                    keyElement.setAttribute('data-key', key.toLowerCase());
+                    rowElement.appendChild(keyElement);
+                });
+                
+                keyboardContainer.appendChild(rowElement);
+            });
+        }
+
+        // Update keyboard visualization
+        function updateKeyboard(key, isActive) {
+            const keyElement = document.querySelector(`.key[data-key="${key.toLowerCase()}"]`);
+            if (keyElement) {
+                if (isActive) {
+                    keyElement.classList.add('key-active');
+                } else {
+                    keyElement.classList.remove('key-active');
+                }
+            }
         }
 
         // Load new text for typing
@@ -643,6 +1021,12 @@
                         }
                     });
                 });
+            });
+
+            // Theme toggle
+            themeToggle.addEventListener('click', () => {
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                setTheme(currentTheme === 'dark' ? 'light' : 'dark');
             });
 
             // Time options
@@ -689,12 +1073,26 @@
 
             // Typing input
             typingInput.addEventListener('input', handleTyping);
+            
+            // Keydown events for keyboard visualization
+            typingInput.addEventListener('keydown', (e) => {
+                updateKeyboard(e.key, true);
+            });
+            
+            typingInput.addEventListener('keyup', (e) => {
+                updateKeyboard(e.key, false);
+            });
 
             // Keyboard shortcuts
             document.addEventListener('keydown', (e) => {
                 // Ctrl + Enter to restart test
                 if (e.ctrlKey && e.key === 'Enter') {
                     resetTest();
+                }
+                
+                // Escape to focus input
+                if (e.key === 'Escape') {
+                    typingInput.focus();
                 }
             });
         }
@@ -708,11 +1106,23 @@
             resetBtn.disabled = false;
             typingInput.disabled = false;
             typingInput.focus();
+            startTime = Date.now();
+            
+            // Set progress ring
+            if (progressCircle) {
+                progressCircle.style.strokeDashoffset = 0;
+            }
             
             // Start timer
             timer = setInterval(() => {
                 timeLeft--;
                 timerDisplay.textContent = formatTime(timeLeft);
+                
+                // Update progress ring
+                if (progressCircle) {
+                    const offset = circumference - (timeLeft / selectedTime) * circumference;
+                    progressCircle.style.strokeDashoffset = offset;
+                }
                 
                 if (timeLeft <= 0) {
                     endTest();
@@ -776,7 +1186,6 @@
                 if (i < typed.length) {
                     if (typed[i] === target[i]) {
                         html += `<span class="correct">${target[i]}</span>`;
-                        correctChars++;
                     } else {
                         html += `<span class="incorrect">${target[i]}</span>`;
                     }
@@ -799,10 +1208,9 @@
             const accuracy = totalChars > 0 ? Math.round((correctChars / totalChars) * 100) : 0;
             
             // Update display
-            const metricValues = document.querySelectorAll('.metric .value');
-            metricValues[0].textContent = wpm;
-            metricValues[1].textContent = `${accuracy}%`;
-            metricValues[2].textContent = totalChars - correctChars;
+            wpmElement.textContent = wpm;
+            accuracyElement.textContent = `${accuracy}%`;
+            errorsElement.textContent = totalChars - correctChars;
         }
 
         // End the test
@@ -811,12 +1219,74 @@
             started = false;
             typingInput.disabled = true;
             startBtn.disabled = false;
+            endTime = Date.now();
             
             // Final metrics calculation
             updateMetrics();
             
+            // Update result details
+            resultTimeElement.textContent = formatTime(selectedTime);
+            resultCharsElement.textContent = totalChars;
+            resultWordsElement.textContent = Math.round(totalChars / 5);
+            
+            // Save test results
+            saveTestResult();
+            
             // Show results
             resultsDiv.classList.add('show');
+        }
+
+        // Save test result to history
+        function saveTestResult() {
+            const result = {
+                wpm: parseInt(wpmElement.textContent),
+                accuracy: parseInt(accuracyElement.textContent),
+                errors: parseInt(errorsElement.textContent),
+                timestamp: Date.now(),
+                duration: selectedTime,
+                difficulty: selectedDifficulty
+            };
+            
+            testHistory.push(result);
+            localStorage.setItem('typingTestHistory', JSON.stringify(testHistory));
+            updateTestHistory();
+        }
+
+        // Load test history from localStorage
+        function loadTestHistory() {
+            const history = localStorage.getItem('typingTestHistory');
+            if (history) {
+                testHistory = JSON.parse(history);
+                updateTestHistory();
+            }
+        }
+
+        // Update test history display
+        function updateTestHistory() {
+            const historyContainer = document.getElementById('stats-history');
+            if (!historyContainer) return;
+            
+            // Clear existing history
+            historyContainer.innerHTML = '';
+            
+            // Add recent tests (last 5)
+            const recentTests = testHistory.slice(-5);
+            
+            recentTests.forEach(test => {
+                const historyItem = document.createElement('div');
+                historyItem.className = 'history-item';
+                
+                const date = new Date(test.timestamp);
+                const formattedDate = `${date.getMonth()+1}/${date.getDate()}`;
+                
+                historyItem.innerHTML = `
+                    <h4>${formattedDate}</h4>
+                    <p class="value">${test.wpm} WPM</p>
+                    <p class="label">Accuracy: ${test.accuracy}%</p>
+                `;
+                
+                historyContainer.appendChild(historyItem);
+            });
         }
 
         // Reset the test
@@ -833,6 +1303,11 @@
             typingInput.disabled = true;
             startBtn.disabled = false;
             resetBtn.disabled = true;
+            
+            // Reset progress ring
+            if (progressCircle) {
+                progressCircle.style.strokeDashoffset = `${circumference}`;
+            }
             
             // Hide results
             resultsDiv.classList.remove('show');
