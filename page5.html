@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Notes by Chrono Focus</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- PDF Generation Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         /* --- Base Variables & Structure --- */
         * { 
@@ -868,11 +871,12 @@
             <header class="glass">
                 <div class="header-controls">
                     <button class="header-btn" id="sidebarToggle" title="Toggle Sidebar"><i class="fas fa-bars"></i></button>
-                    <!-- SAVE BUTTON ADDED HERE -->
                     <button class="header-btn" id="saveBtn" title="Save Note"><i class="fas fa-save"></i></button>
                 </div>
                 <h2 class="header-title" id="mainHeaderTitle">Chrono Notes</h2>
                 <div class="header-controls">
+                    <!-- NEW: Download as PDF Button -->
+                    <button class="header-btn" id="downloadBtn" title="Download as PDF"><i class="fas fa-file-pdf"></i></button>
                     <button class="header-btn" id="deleteBtn" title="Delete Note"><i class="fas fa-trash"></i></button>
                     <button class="header-btn" id="settingsBtn" title="Settings"><i class="fas fa-cog"></i></button>
                 </div>
@@ -961,7 +965,8 @@
     document.addEventListener('DOMContentLoaded', function() {
         // --- CORE APP --- //
         let currentNoteId = null;
-        const debounceSave = debounce(() => saveCurrentNote());
+        // Use a shorter debounce delay now that there's a prominent save button.
+        const debounceSave = debounce(() => saveCurrentNote(), 2000); 
 
         function initApp() {
             setupAppearance();
@@ -969,7 +974,9 @@
             setupNoteManagement();
             setupFormattingToolbar();
             setupImageUploadAndLightbox();
-            setupStudyAI(); // Updated AI setup
+            setupStudyAI(); 
+            // NEW: Initialize the download button
+            setupDownloadButton(); 
             loadFromLocalStorage();
             
             document.getElementById('mainHeaderTitle').innerText = "Liquid Glass Notes";
@@ -1033,20 +1040,8 @@
             document.getElementById('newNoteBtn').addEventListener('click', createNewNote);
             document.getElementById('deleteBtn').addEventListener('click', deleteCurrentNote);
             
-            // --- ADDED SAVE BUTTON EVENT LISTENER --- //
             document.getElementById('saveBtn').addEventListener('click', () => {
-                saveCurrentNote(); // Call the save function immediately
-                const saveBtn = document.getElementById('saveBtn');
-                const originalIcon = '<i class="fas fa-save"></i>';
-                const successIcon = '<i class="fas fa-check"></i>';
-
-                saveBtn.innerHTML = successIcon; // Show checkmark on save
-                saveBtn.style.color = '#4CAF50'; // Green color for success
-                
-                setTimeout(() => { // Revert back to original icon after 1.5 seconds
-                    saveBtn.innerHTML = originalIcon;
-                    saveBtn.style.color = ''; // Revert to default color
-                }, 1500);
+                saveCurrentNote(true); // Call the save function with a "force" flag for visual feedback
             });
 
             document.getElementById('searchInput').addEventListener('input', e => filterNotes(e.target.value));
@@ -1087,7 +1082,7 @@
             }
 
             function selectNote(noteId) {
-                if (currentNoteId && currentNoteId !== noteId) saveCurrentNote(true);
+                if (currentNoteId && currentNoteId !== noteId) saveCurrentNote(); // Auto-save previous note on switch
                 if (!noteId) return;
 
                 currentNoteId = noteId;
@@ -1119,7 +1114,7 @@
                 loadNoteImages(note.images || []);
             }
 
-            function saveCurrentNote() {
+            function saveCurrentNote(isManualSave = false) {
                 if (!currentNoteId) return;
                 const notes = getAllNotes();
                 const note = notes[currentNoteId];
@@ -1135,6 +1130,18 @@
                 updateNoteInSidebar(note);
                 document.querySelector('.date-updated').textContent = formatDate(note.updatedAt);
                 document.getElementById('mainHeaderTitle').innerText = newTitle;
+
+                if (isManualSave) {
+                    const saveBtn = document.getElementById('saveBtn');
+                    const originalIcon = '<i class="fas fa-save"></i>';
+                    const successIcon = '<i class="fas fa-check"></i>';
+                    saveBtn.innerHTML = successIcon;
+                    saveBtn.style.color = 'var(--theme-accent)';
+                    setTimeout(() => {
+                        saveBtn.innerHTML = originalIcon;
+                        saveBtn.style.color = '';
+                    }, 1500);
+                }
             }
 
             function updateNoteInSidebar(note) {
@@ -1224,7 +1231,47 @@
             if (images) images.forEach(addImageToContainer); 
         };
 
-        // --- NEW: ADVANCED STUDY AI ASSISTANT --- //
+        // --- NEW: PDF DOWNLOAD FUNCTIONALITY --- //
+        function setupDownloadButton() {
+            document.getElementById('downloadBtn').addEventListener('click', downloadNoteAsPDF);
+        }
+        
+        function downloadNoteAsPDF() {
+            if (!currentNoteId) {
+                alert('Please select a note to download.');
+                return;
+            }
+
+            const { jsPDF } = window.jspdf;
+            const noteEditor = document.getElementById('noteEditor');
+            const noteWrapper = document.querySelector('.note-editor-wrapper'); // Capture the inner content
+            const noteTitle = document.getElementById('noteTitle').value.trim() || 'Untitled Note';
+            const downloadBtn = document.getElementById('downloadBtn');
+            
+            const originalIcon = downloadBtn.innerHTML;
+            downloadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>'; // Loading feedback
+
+            html2canvas(noteWrapper, {
+                scale: 2, // Higher scale for better resolution
+                useCORS: true // Handles externally hosted images
+            }).then(canvas => {
+                const imgData = canvas.toDataURL('image/png');
+                const pdf = new jsPDF({
+                    orientation: 'portrait',
+                    unit: 'px',
+                    format: [canvas.width, canvas.height]
+                });
+                pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
+                pdf.save(`${noteTitle}.pdf`);
+                downloadBtn.innerHTML = originalIcon; // Restore icon
+            }).catch(err => {
+                console.error("PDF generation failed:", err);
+                alert("Sorry, an error occurred while generating the PDF.");
+                downloadBtn.innerHTML = originalIcon; // Restore icon on error
+            });
+        }
+
+        // --- ADVANCED STUDY AI ASSISTANT --- //
         function setupStudyAI() {
             const aiBtn = document.getElementById('studyAiBtn');
             const overlay = document.getElementById('aiOverlay');
@@ -1266,7 +1313,6 @@
 
             const suggestions = [];
 
-            // 1. Generate Summary
             suggestions.push({ 
                 text: "Generate a Summary", 
                 icon: "fas fa-file-alt",
@@ -1276,7 +1322,6 @@
                 }
             });
 
-            // 2. Identify Key Terms
             const keyTerms = extractKeyTerms(noteText, 5);
             if(keyTerms.length > 0) {
                 suggestions.push({ 
@@ -1291,7 +1336,6 @@
                 });
             }
             
-            // 3. Create Practice Questions from headings
             const questions = generateQuestionsFromHeadings(noteHtml);
              if(questions) {
                  suggestions.push({ 
@@ -1328,7 +1372,6 @@
 
             const noteText = document.getElementById('noteBody').innerText || '';
             const queryKeywords = new Set(query.replace(/[^\w\s]/g, '').split(/\s+/).filter(w => w.length > 2 && w !== 'the' && w !== 'what' && w !== 'about'));
-
             const paragraphs = noteText.split('\n').filter(p => p.trim().length > 20);
 
             if (paragraphs.length === 0) {
@@ -1338,7 +1381,6 @@
             
             let bestParagraph = '';
             let maxScore = 0;
-
             for (const p of paragraphs) {
                 let currentScore = 0;
                 const pLower = p.toLowerCase();
@@ -1361,11 +1403,10 @@
                 });
                 answerDiv.innerHTML = highlightedText;
             } else {
-                answerDiv.innerHTML = "Sorry, I couldn't find a direct answer. Try rephrasing your question or asking about a different topic in the note.";
+                answerDiv.innerHTML = "Sorry, I couldn't find a direct answer. Try rephrasing your question.";
             }
         }
         
-        // --- AI HELPER FUNCTIONS --- //
         function generateSummary(text, sentenceCount = 3) {
             const sentences = text.match(/[^.!?]+[.!?]+/g) || [];
             if (sentences.length === 0 && text.length > 0) return text.substring(0, 300) + '...';
@@ -1376,7 +1417,6 @@
             const stopWords = new Set(['i','me','my','we','our','you','your','he','him','his','she','her','it','its','they','them','their','what','which','who','whom','this','that','these','those','am','is','are','was','were','be','been','being','have','has','had','do','does','did','a','an','the','and','but','if','or','because','as','until','of','at','by','for','with','about','to','from','in','out','on','off','over','so','than','too','very','can','will','just','should']);
             const wordFrequencies = {};
             const words = text.toLowerCase().replace(/[^\w\s-]/g, '').split(/\s+/);
-
             for (const word of words) {
                 if (!stopWords.has(word) && word.length > 3) {
                     wordFrequencies[word] = (wordFrequencies[word] || 0) + 1;
@@ -1390,7 +1430,6 @@
             tempDiv.innerHTML = noteHtml;
             const headings = tempDiv.querySelectorAll('h1, h2, h3');
             if (headings.length === 0) return null;
-            
             const questions = [];
             headings.forEach(h => {
                 if(h.textContent.trim().length > 3) {
