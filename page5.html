@@ -866,9 +866,13 @@
         <!-- Main Content Column -->
         <main class="main-content">
             <header class="glass">
-                <div><button class="header-btn" id="sidebarToggle" title="Toggle Sidebar"><i class="fas fa-bars"></i></button></div>
+                <div class="header-controls">
+                    <button class="header-btn" id="sidebarToggle" title="Toggle Sidebar"><i class="fas fa-bars"></i></button>
+                    <!-- SAVE BUTTON ADDED HERE -->
+                    <button class="header-btn" id="saveBtn" title="Save Note"><i class="fas fa-save"></i></button>
+                </div>
                 <h2 class="header-title" id="mainHeaderTitle">Chrono Notes</h2>
-                <div>
+                <div class="header-controls">
                     <button class="header-btn" id="deleteBtn" title="Delete Note"><i class="fas fa-trash"></i></button>
                     <button class="header-btn" id="settingsBtn" title="Settings"><i class="fas fa-cog"></i></button>
                 </div>
@@ -957,7 +961,7 @@
     document.addEventListener('DOMContentLoaded', function() {
         // --- CORE APP --- //
         let currentNoteId = null;
-        const debounceSave = debounce(() => saveCurrentNote(true));
+        const debounceSave = debounce(() => saveCurrentNote());
 
         function initApp() {
             setupAppearance();
@@ -1028,6 +1032,23 @@
             
             document.getElementById('newNoteBtn').addEventListener('click', createNewNote);
             document.getElementById('deleteBtn').addEventListener('click', deleteCurrentNote);
+            
+            // --- ADDED SAVE BUTTON EVENT LISTENER --- //
+            document.getElementById('saveBtn').addEventListener('click', () => {
+                saveCurrentNote(); // Call the save function immediately
+                const saveBtn = document.getElementById('saveBtn');
+                const originalIcon = '<i class="fas fa-save"></i>';
+                const successIcon = '<i class="fas fa-check"></i>';
+
+                saveBtn.innerHTML = successIcon; // Show checkmark on save
+                saveBtn.style.color = '#4CAF50'; // Green color for success
+                
+                setTimeout(() => { // Revert back to original icon after 1.5 seconds
+                    saveBtn.innerHTML = originalIcon;
+                    saveBtn.style.color = ''; // Revert to default color
+                }, 1500);
+            });
+
             document.getElementById('searchInput').addEventListener('input', e => filterNotes(e.target.value));
             ['input', 'paste'].forEach(evt => {
                 document.getElementById('noteTitle').addEventListener(evt, debounceSave);
