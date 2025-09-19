@@ -362,7 +362,7 @@
         .dock-whiteboard { background: linear-gradient(135deg, #4FACFE, #00F2FE); }
         .dock-books { background: linear-gradient(135deg, #C471F5, #FA71CD); }
         .dock-moodly { background: linear-gradient(135deg, #F8B9D6, #E87CC2); }
-        .dock-optichain { background: linear-gradient(135deg, #77FFD2, #6297F5); }
+        .dock-copilot { background: linear-gradient(135deg, #4FACFE, #21D4FD); } /* New Copilot Gradient */
         .dock-pomodoro { background: linear-gradient(135deg, #FF6B6B, #FF8E53); }
         .dock-deep-focus { background: linear-gradient(135deg, #6577F6, #855CF8); }
         .dock-focus { background: linear-gradient(135deg, #8338EC, #3A86FF); }
@@ -730,6 +730,82 @@
             transform: scale(1.05);
         }
 
+        /* ===== NEW COPILOT BROWSER STYLES ===== */
+        .copilot-modal-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .copilot-modal-overlay.visible {
+            display: flex;
+            opacity: 1;
+        }
+        
+        .copilot-modal-content {
+            background: var(--card-bg);
+            border: 1px solid var(--glass-border);
+            padding: 0;
+            border-radius: 24px;
+            width: 90%;
+            max-width: 900px;
+            height: 80vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.5);
+            overflow: hidden; /* Important for iframe */
+        }
+        
+        .copilot-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 20px;
+            background: rgba(0,0,0,0.2);
+            color: var(--accent);
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .copilot-modal-close-btn {
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: var(--text-primary);
+            width: 30px; height: 30px;
+            border-radius: 50%;
+            font-size: 1.3rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            line-height: 1;
+        }
+        .copilot-modal-close-btn:hover {
+            background: var(--accent);
+            color: var(--background);
+            transform: rotate(90deg);
+        }
+
+        .copilot-iframe-container {
+            flex-grow: 1;
+        }
+        
+        .copilot-iframe-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
 
         /* RESPONSIVE STYLES */
         @media (max-width: 768px) {
@@ -810,7 +886,7 @@
         <div class="dock-icon dock-tip" onclick="newTip()" aria-label="New Tip"><i class="fas fa-lightbulb"></i><div class="dock-icon-label">New Tip</div></div>
         <a href="page12.html" class="dock-icon dock-motivation" aria-label="Motivation"><i class="fas fa-fist-raised"></i><div class="dock-icon-label">Motivation</div></a>
         <a href="page1.html" class="dock-icon dock-task" aria-label="Tasks"><i class="fas fa-tasks"></i><div class="dock-icon-label">Tasks</div></a>
-        <div class="dock-icon dock-focus" aria-label="Focus Modes">
+        <div class="dock-icon dock-focus" onclick="window.location.href='page9.html'" aria-label="Focus Modes">
             <i class="fas fa-bullseye"></i>
             <div class="dock-icon-label">Focus</div>
             <div class="focus-submenu">
@@ -828,7 +904,7 @@
         <a href="page8.html" class="dock-icon dock-whiteboard" aria-label="White Board"><i class="fas fa-chalkboard"></i><div class="dock-icon-label">White Board</div></a>
         <a href="https://www.ebanglalibrary.com/" target="_blank" class="dock-icon dock-books" aria-label="Books"><i class="fas fa-book-open"></i><div class="dock-icon-label">Books</div></a>
         <a href="page11.html" class="dock-icon dock-moodly" aria-label="Moodly"><i class="fas fa-smile-beam"></i><div class="dock-icon-label">Moodly</div></a>
-        <a href="https://talk.shapes.inc/chat/5b4536bc-ecc0-4996-b0d6-677c5aac0d34" target="_blank" class="dock-icon dock-optichain" aria-label="Optichain AI"><i class="fas fa-robot"></i><div class="dock-icon-label">Optichain AI</div></a>
+        <div id="copilot-dock-icon" class="dock-icon dock-copilot" aria-label="Copilot AI"><i class="fas fa-robot"></i><div class="dock-icon-label">Copilot</div></div>
     </div>
 
     <div class="app">
@@ -898,6 +974,19 @@
         </div>
     </div>
 
+    <!-- ===== NEW COPILOT BROWSER MODAL ===== -->
+    <div class="copilot-modal-overlay" id="copilot-modal-overlay">
+        <div class="copilot-modal-content">
+            <div class="copilot-modal-header">
+                <span><i class="fas fa-robot"></i> Copilot</span>
+                <button class="copilot-modal-close-btn" id="copilot-modal-close-btn">&times;</button>
+            </div>
+            <div class="copilot-iframe-container">
+                <iframe src="https://copilot.microsoft.com/" allow="camera; microphone"></iframe>
+            </div>
+        </div>
+    </div>
+
     <!-- ===== NEW CHAT AI INTERFACE ===== -->
     <div class="chat-ai-toggle" id="chat-ai-toggle"><i class="fas fa-comment-dots"></i></div>
     <div class="chat-window" id="chat-window">
@@ -937,6 +1026,11 @@
         const chatMessagesContainer = document.getElementById('chat-messages');
         const chatInput = document.getElementById('chat-input');
         const chatSendBtn = document.getElementById('chat-send-btn');
+        
+        // COPILOT MODAL SELECTORS
+        const copilotDockIcon = document.getElementById('copilot-dock-icon');
+        const copilotModalOverlay = document.getElementById('copilot-modal-overlay');
+        const copilotModalCloseBtn = document.getElementById('copilot-modal-close-btn');
 
 
         // --- APP STATE ---
@@ -1150,6 +1244,15 @@
 
         function closeThemeModal() {
             themeModalOverlay.classList.remove('visible');
+        }
+        
+        // --- COPILOT MODAL FUNCTIONS ---
+        function openCopilotModal() {
+            copilotModalOverlay.classList.add('visible');
+        }
+
+        function closeCopilotModal() {
+            copilotModalOverlay.classList.remove('visible');
         }
 
         /**
@@ -1383,6 +1486,15 @@
                 // Close only if the dark overlay itself is clicked
                 if (event.target === themeModalOverlay) {
                     closeThemeModal();
+                }
+            });
+            
+            // Setup Copilot Modal Listeners
+            copilotDockIcon.addEventListener('click', openCopilotModal);
+            copilotModalCloseBtn.addEventListener('click', closeCopilotModal);
+            copilotModalOverlay.addEventListener('click', (event) => {
+                if (event.target === copilotModalOverlay) {
+                    closeCopilotModal();
                 }
             });
 
