@@ -5,9 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="icon" href="Chronofocus.png" type="image/x-icon">
   <title>Chrono Focus — Enter</title>
+
+  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Internal CSS -->
   <style>
     :root {
       /* Light Mode Palette */
@@ -15,16 +19,15 @@
       --bg-gradient-mid1: #ffbcd5;
       --bg-gradient-mid2: #ffcca3;
       --bg-gradient-end: #a7b6ff;
-      --text: #1a1a1a;
+      --text-primary: #1a1a1a;
+      --text-secondary: rgba(255, 255, 255, 0.9);
+      --text-on-accent: #fff;
+      --header-text: #fff;
       --glass-bg: rgba(255, 255, 255, 0.25);
       --glass-border: rgba(255, 255, 255, 0.3);
       --shadow-color: rgba(31, 38, 135, 0.37);
-      --h1-color: #fff;
-      --p-color: rgba(255, 255, 255, 0.9);
-      --button-text: #fff;
       --button-focus: rgba(37, 117, 252, 0.5);
-      --accent-start: #d9b6ff;
-      --accent-end: #94bbff;
+      --accent-gradient: linear-gradient(135deg, #d9b6ff, #94bbff);
     }
 
     @media (prefers-color-scheme: dark) {
@@ -34,90 +37,66 @@
         --bg-gradient-mid1: #1d2b3a;
         --bg-gradient-mid2: #2c3e50;
         --bg-gradient-end: #1a2533;
-        --text: #EEEDE9;
+        --text-primary: #EEEDE9;
+        --text-secondary: rgba(255, 255, 255, 0.8);
+        --text-on-accent: #fff;
+        --header-text: #fff;
         --glass-bg: rgba(0, 0, 0, 0.25);
         --glass-border: rgba(255, 255, 255, 0.15);
         --shadow-color: rgba(0, 0, 0, 0.5);
-        --h1-color: #fff;
-        --p-color: rgba(255, 255, 255, 0.8);
-        --button-text: #fff;
         --button-focus: rgba(130, 180, 255, 0.5);
-        --accent-start: #5a6b79;
-        --accent-end: #b48e69;
+        --accent-gradient: linear-gradient(135deg, #5a6b79, #b48e69);
       }
     }
 
-    * {
-      box-sizing: border-box;
-    }
-
-    html, body {
-      height: 100%;
-    }
+    /* --- General Setup & Resets --- */
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { height: 100%; }
 
     body {
       margin: 0;
       font-family: 'Inter', sans-serif;
-      color: var(--text);
+      color: var(--text-primary);
       background: linear-gradient(-45deg, var(--bg-gradient-start), var(--bg-gradient-mid1), var(--bg-gradient-mid2), var(--bg-gradient-end));
       background-size: 400% 400%;
       animation: gradient 15s ease infinite;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      display: grid; /* Changed to grid for better centering */
+      place-items: center;
       overflow: hidden;
     }
 
+    /* --- Animations --- */
     @keyframes gradient {
       0% { background-position: 0% 50%; }
       50% { background-position: 100% 50%; }
       100% { background-position: 0% 50%; }
     }
-    
-    /* --- Welcome Animation --- */
+    @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeIn { to { opacity: 1; } }
+    @keyframes fadeOut { to { opacity: 0; visibility: hidden; } }
+
+    /* --- Welcome Screen --- */
     .welcome-container {
       position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
+      inset: 0; /* Modern way to set top, right, bottom, left to 0 */
       display: flex;
       align-items: center;
       justify-content: center;
-      flex-direction: column;
       z-index: 10;
-      /* Starts visible, then fades out */
-      animation: fadeOut 1s forwards;
-      animation-delay: 2.5s;
+      animation: fadeOut 1s forwards 2.5s;
     }
 
     .welcome-message {
       font-size: 28px;
       font-weight: 600;
-      color: var(--h1-color);
+      color: var(--header-text);
       text-shadow: 0 3px 10px rgba(0,0,0,0.3);
       opacity: 0;
       transform: translateY(20px);
-      /* Fades in and moves up */
-      animation: fadeInUp 1s forwards;
-      animation-delay: 0.5s;
+      animation: fadeInUp 1s forwards 0.5s;
     }
 
-    @keyframes fadeInUp {
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    @keyframes fadeOut {
-      to {
-        opacity: 0;
-        visibility: hidden; /* Hide it completely after animation */
-      }
-    }
-    /* --- End Welcome Animation --- */
-
+    /* --- Main Glass Container --- */
     .container {
       width: min(90vw, 400px);
       padding: 48px;
@@ -129,149 +108,266 @@
       border: 1px solid var(--glass-border);
       text-align: center;
       z-index: 2;
-      transition: background 0.3s ease, border 0.3s ease, box-shadow 0.3s ease;
-      /* Start hidden, then fade in AFTER welcome animation */
+      transition: all 0.3s ease;
       opacity: 0;
-      animation: fadeIn 1s forwards;
-      animation-delay: 3s;
+      animation: fadeIn 1s forwards 3s;
     }
 
-    @keyframes fadeIn {
-      to {
-        opacity: 1;
-      }
-    }
-
-    header {
-      margin-bottom: 32px;
-    }
-
+    /* --- Header & Typography --- */
+    header { margin-bottom: 24px; }
     .logo {
       width: 64px;
       height: 64px;
       border-radius: 18px;
-      background: linear-gradient(145deg, var(--accent-start), var(--accent-end));
-      display: flex;
+      background: var(--accent-gradient);
+      display: inline-flex;
       align-items: center;
       justify-content: center;
-      margin: 0 auto 24px;
+      margin-bottom: 24px;
       font-size: 32px;
       color: white;
       font-weight: 600;
       box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
     }
-
     h1 {
       font-size: 28px;
       margin: 0;
       font-weight: 600;
-      color: var(--h1-color);
+      color: var(--header-text);
       text-shadow: 0 2px 8px rgba(0,0,0,0.2);
     }
-
     p {
       margin: 12px 0 0;
-      color: var(--p-color);
+      color: var(--text-secondary);
       font-size: 16px;
       line-height: 1.5;
     }
+    .footer p { margin-top: 32px; font-size: 12px; }
 
+    /* --- Region Selector --- */
+    .region-selector-wrapper { margin: 24px 0; }
+    .select-container {
+      position: relative;
+      display: inline-block;
+      width: 100%;
+    }
+    .select-container::after { /* Custom dropdown arrow */
+      content: '▼';
+      font-size: 12px;
+      position: absolute;
+      top: 50%;
+      right: 20px;
+      transform: translateY(-50%);
+      color: var(--text-on-accent);
+      pointer-events: none; /* Allows clicks to pass through to the select */
+    }
+    .region-select {
+      appearance: none; /* Hides default browser styles */
+      -webkit-appearance: none;
+      width: 100%;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 14px;
+      padding: 16px 20px;
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--text-on-accent);
+      background: var(--accent-gradient);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+    .region-select:focus {
+      outline: none;
+      box-shadow: 0 0 0 4px var(--button-focus);
+    }
+
+    /* --- Enter Button --- */
     .enter {
       appearance: none;
       width: 100%;
       border: 0;
       border-radius: 14px;
       padding: 18px 20px;
-      margin-top: 24px;
       font-size: 17px;
       font-weight: 600;
-      color: var(--button-text);
+      color: var(--text-on-accent);
       cursor: pointer;
-      background: linear-gradient(135deg, var(--accent-start), var(--accent-end));
+      background: var(--accent-gradient);
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
       transition: all 0.2s ease;
       border: 1px solid rgba(255, 255, 255, 0.2);
     }
-
     .enter:hover {
       transform: translateY(-2px);
       box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4);
     }
-
     .enter:active {
       transform: translateY(0);
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     }
-
-    .enter:focus {
+    .enter:focus-visible {
       outline: none;
       box-shadow: 0 0 0 4px var(--button-focus);
     }
+    .enter:disabled {
+      cursor: not-allowed;
+      opacity: 0.6;
+      transform: none;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
 
+    /* --- Utility & Accessibility --- */
     .success {
-      display: none;
+      display: none; /* Controlled by JS */
       margin-top: 16px;
       font-size: 14px;
-      color: var(--h1-color);
+      color: var(--header-text);
       font-weight: 500;
     }
-
-    .footer {
-      margin-top: 32px;
-      font-size: 12px;
-      color: var(--p-color);
-    }
-
-    .footer a {
-      color: var(--h1-color);
-      text-decoration: none;
-      font-weight: 500;
-    }
-
-    .footer a:hover {
-      text-decoration: underline;
+    .sr-only { /* Hides elements visually but not from screen readers */
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      border: 0;
     }
   </style>
 </head>
 <body>
 
-  <!-- This container will show the welcome message first -->
-  <div class="welcome-container">
+  <!-- Welcome Animation Container -->
+  <div class="welcome-container" aria-hidden="true">
     <div class="welcome-message">Welcome to Beta 3</div>
   </div>
 
-  <!-- The main content, which appears after the welcome message -->
-  <main class="container">
+  <!-- Main Application Container -->
+  <main class="container" id="main-content">
     <header>
-      <div class="logo">⌛</div>
+      <div class="logo" aria-label="Chrono Focus Logo">⌛</div>
       <h1>Chrono Focus</h1>
       <p>Find your flow, peacefully.</p>
     </header>
 
-    <button class="enter" id="enterBtn">Enter</button>
-    <div id="success" class="success">✓ Welcome back. Preparing your sanctuary…</div>
-    <div class="footer">© <span id="year"></span> Chrono Focus · Crafted by <a href="https://cozytusstudio-showcase-9bg3htb.gamma.site/cozytustudio" target="_blank">CozytuStudios Team</a></div>
+    <!-- Region Selection Section -->
+    <div class="region-selector-wrapper">
+      <label for="region-select" class="sr-only">Select Your Region</label>
+      <div class="select-container">
+        <select id="region-select" class="region-select" required>
+          <option value="" disabled selected>Choose your region...</option>
+          <option value="USA">USA</option>
+          <option value="Canada">Canada</option>
+          <option value="China">China</option>
+          <option value="Bangladesh">Bangladesh</option>
+          <option value="UK">United Kingdom</option>
+          <option value="Australia">Australia</option>
+          <option value="Japan">Japan</option>
+          <option value="Germany">Germany</option>
+          <option value="India">India</option>
+          <!-- Add more countries as needed -->
+        </select>
+      </div>
+    </div>
+
+    <!-- Action Button -->
+    <button class="enter" id="enterBtn" disabled>Enter</button>
+    <div id="success" class="success" role="status"></div>
+    
+    <footer class="footer">
+      <p>© <span id="year"></span> Chrono Focus · Crafted by <a href="https://cozytusstudio-showcase-9bg3htb.gamma.site/cozytustudio" target="_blank" rel="noopener noreferrer">CozytuStudios Team</a></p>
+    </footer>
   </main>
 
+  <!-- Internal JavaScript -->
   <script>
-    const btn = document.getElementById('enterBtn');
-    const ok = document.getElementById('success');
-    const year = document.getElementById('year');
-    year.textContent = new Date().getFullYear();
+    // A self-invoking anonymous function to avoid polluting the global scope
+    (function() {
+      'use strict';
 
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') {
-        btn.click();
+      // --- DOM Element Selection ---
+      const regionSelect = document.getElementById('region-select');
+      const enterBtn = document.getElementById('enterBtn');
+      const successMsg = document.getElementById('success');
+      const yearSpan = document.getElementById('year');
+      
+      const STORAGE_KEY = 'chronoFocus-userRegion';
+      const REDIRECT_DELAY_MS = 1500;
+
+      /**
+       * Initializes the application.
+       */
+      function initialize() {
+        setCurrentYear();
+        loadSavedRegion();
+        setupEventListeners();
       }
-    });
 
-    btn.addEventListener('click', async () => {
-      btn.disabled = true;
-      btn.textContent = 'Entering…';
-      ok.style.display = 'block';
-      await new Promise(r => setTimeout(r, 1200));
-      window.location.href = 'page1.html';
-    });
+      /**
+       * Sets the copyright year in the footer.
+       */
+      function setCurrentYear() {
+        yearSpan.textContent = new Date().getFullYear();
+      }
+
+      /**
+       * Loads the user's previously selected region from localStorage.
+       */
+      function loadSavedRegion() {
+        const savedRegion = localStorage.getItem(STORAGE_KEY);
+        if (savedRegion) {
+          regionSelect.value = savedRegion;
+          validateSelection();
+        }
+      }
+
+      /**
+       * Sets up all the necessary event listeners.
+       */
+      function setupEventListeners() {
+        regionSelect.addEventListener('change', validateSelection);
+        enterBtn.addEventListener('click', handleEntry);
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' && !enterBtn.disabled) {
+            enterBtn.click();
+          }
+        });
+      }
+
+      /**
+       * Checks if a valid region is selected to enable/disable the button.
+       */
+      function validateSelection() {
+        const regionIsSelected = regionSelect.value && regionSelect.value !== "";
+        enterBtn.disabled = !regionIsSelected;
+      }
+
+      /**
+       * Handles the logic when the 'Enter' button is clicked.
+       */
+      function handleEntry() {
+        const selectedRegion = regionSelect.value;
+        
+        enterBtn.disabled = true;
+        regionSelect.disabled = true;
+
+        enterBtn.textContent = 'Entering…';
+        successMsg.textContent = `✓ Welcome back. Preparing your sanctuary in ${selectedRegion}…`;
+        successMsg.style.display = 'block';
+
+        localStorage.setItem(STORAGE_KEY, selectedRegion);
+        
+        setTimeout(() => {
+          window.location.href = 'page1.html'; // Or the next page
+        }, REDIRECT_DELAY_MS);
+      }
+
+      // --- Start the application once the DOM is ready ---
+      document.addEventListener('DOMContentLoaded', initialize);
+
+    })();
   </script>
+
 </body>
 </html>
