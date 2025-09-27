@@ -1,676 +1,1161 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Glassmorphic Unit Converter</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<style>
-:root {
-  --accent1: #82aaff;
-  --accent2: #c792ea;
-  --accent3: #ffcb6b;
-  --text: #ffffff;
-  --text-dark: #6792bc;
-  --glass-bg: rgba(255, 255, 255, 0.25);
-  --glass-border: rgba(255, 255, 255, 0.3);
-  --blur: 20px;
-  --shadow: 0 16px 40px rgba(0, 0, 0, 0.2);
-  --transition: .4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  --theme-bg: #a8b9ff4d;
-}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Material 3 Glassmorphic Unit Converter</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6750A4;
+            --on-primary: #FFFFFF;
+            --primary-container: #EADDFF;
+            --on-primary-container: #21005D;
+            --secondary: #625B71;
+            --on-secondary: #FFFFFF;
+            --secondary-container: #E8DEF8;
+            --on-secondary-container: #1D192B;
+            --tertiary: #7D5260;
+            --on-tertiary: #FFFFFF;
+            --tertiary-container: #FFD8E4;
+            --on-tertiary-container: #31111D;
+            --surface: #FEF7FF;
+            --on-surface: #1C1B1F;
+            --surface-variant: #E7E0EC;
+            --on-surface-variant: #49454F;
+            --outline: #79747E;
+            --shadow: #000000;
+            
+            --glass-bg: rgba(255, 255, 255, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.3);
+            --blur: 20px;
+            --shadow-elevation: 0 8px 24px rgba(0, 0, 0, 0.12);
+            --transition: .3s cubic-bezier(0.4, 0, 0.2, 1);
+            
+            --theme-bg: linear-gradient(135deg, #a8b9ff 0%, #c792ea 100%);
+        }
 
-*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;}
+        .theme-dark {
+            --primary: #D0BCFF;
+            --on-primary: #381E72;
+            --primary-container: #4F378B;
+            --on-primary-container: #EADDFF;
+            --secondary: #CCC2DC;
+            --on-secondary: #332D41;
+            --secondary-container: #4A4458;
+            --on-secondary-container: #E8DEF8;
+            --tertiary: #EFB8C8;
+            --on-tertiary: #492532;
+            --tertiary-container: #633B48;
+            --on-tertiary-container: #FFD8E4;
+            --surface: #141218;
+            --on-surface: #E6E1E5;
+            --surface-variant: #49454F;
+            --on-surface-variant: #CAC4D0;
+            --outline: #938F99;
+            --shadow: #000000;
+            
+            --glass-bg: rgba(30, 30, 40, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --theme-bg: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        }
 
-html, body {
-    height: 100%;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: var(--theme-bg);
-    overflow: hidden;
-    transition: background 1s ease;
-}
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
 
-body::before {
-  content: '';
-  position: fixed;
-  top: 50%; left: 50%;
-  width: 200vmax; height: 200vmax;
-  transform: translate(-50%, -50%);
-  background: radial-gradient(circle, var(--accent2), var(--accent1) 60%, var(--accent3));
-  background-size: 200% 200%;
-  animation: gradientMove 25s ease-in-out infinite;
-  z-index: -2;
-}
+        html, body {
+            height: 100%;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: var(--theme-bg);
+            overflow: hidden;
+            transition: background 1s ease;
+            color: var(--on-surface);
+        }
 
-@keyframes gradientMove{
-  0% { transform: translate(-50%, -50%) rotate(0deg); }
-  50% { transform: translate(-50%, -50%) rotate(180deg); }
-  100% { transform: translate(-50%, -50%) rotate(360deg); }
-}
+        body::before {
+            content: '';
+            position: fixed;
+            top: 50%; 
+            left: 50%;
+            width: 200vmax; 
+            height: 200vmax;
+            transform: translate(-50%, -50%);
+            background: radial-gradient(circle, var(--primary) 0%, var(--tertiary) 50%, var(--secondary) 100%);
+            background-size: 200% 200%;
+            animation: gradientMove 25s ease-in-out infinite;
+            z-index: -2;
+            opacity: 0.7;
+        }
 
-/* --- Cube Startup Animation --- */
-#startup-animation {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: rgba(0, 0, 0, 0.8);
-  z-index: 1000;
-  perspective: 1000px;
-  opacity: 1;
-  transition: opacity 1s ease;
-}
+        @keyframes gradientMove {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            50% { transform: translate(-50%, -50%) rotate(180deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
 
-.cube {
-  width: 150px;
-  height: 150px;
-  position: relative;
-  transform-style: preserve-3d;
-  animation: rotate-cube 8s infinite linear;
-}
+        /* Material 3 Card Styles */
+        .card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(var(--blur));
+            border-radius: 24px;
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--shadow-elevation);
+            transition: var(--transition);
+            overflow: hidden;
+            width: 95%;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+        }
 
-.cube.unfold {
-  animation: unfold-cube 1.2s forwards cubic-bezier(0.68, -0.55, 0.27, 1.55);
-}
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 16px 32px rgba(0, 0, 0, 0.15);
+        }
 
-.face {
-  position: absolute;
-  width: 150px;
-  height: 150px;
-  border: 1px solid var(--glass-border);
-  background: var(--glass-bg);
-  backdrop-filter: blur(var(--blur));
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 2.5rem;
-  color: var(--text);
-  font-weight: 300;
-  transition: transform 1.2s cubic-bezier(0.68, -0.55, 0.27, 1.55);
-}
+        /* Startup Animation */
+        #startup-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: var(--surface);
+            z-index: 1000;
+            perspective: 1000px;
+            opacity: 1;
+            transition: opacity 1s ease;
+        }
 
-.front  { transform: rotateY(0deg) translateZ(75px); }
-.back   { transform: rotateY(180deg) translateZ(75px); }
-.right  { transform: rotateY(90deg) translateZ(75px); }
-.left   { transform: rotateY(-90deg) translateZ(75px); }
-.top    { transform: rotateX(90deg) translateZ(75px); }
-.bottom { transform: rotateX(-90deg) translateZ(75px); }
+        .cube {
+            width: 150px;
+            height: 150px;
+            position: relative;
+            transform-style: preserve-3d;
+            animation: rotate-cube 8s infinite linear;
+        }
 
-@keyframes rotate-cube {
-  from { transform: rotateX(0deg) rotateY(0deg); }
-  to { transform: rotateX(360deg) rotateY(360deg); }
-}
+        .cube.unfold {
+            animation: unfold-cube 1.2s forwards cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        }
 
-@keyframes unfold-cube {
-  0% { transform: rotateX(45deg) rotateY(45deg) scale(1); }
-  50% { transform: rotateX(0deg) rotateY(0deg) scale(1.5); }
-  100% { transform: scale(20); opacity: 0; }
-}
-/* --- End Cube Animation --- */
+        .face {
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            border: 1px solid var(--glass-border);
+            background: var(--glass-bg);
+            backdrop-filter: blur(var(--blur));
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2.5rem;
+            color: var(--primary);
+            font-weight: 300;
+            transition: transform 1.2s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        }
 
-.page {
-  display: none;
-  width: 90%;
-  max-width: 600px;
-  padding: 40px 30px;
-  border-radius: 30px;
-  border: 1.5px solid var(--glass-border);
-  backdrop-filter: blur(var(--blur));
-  background: var(--glass-bg);
-  box-shadow: var(--shadow);
-  color: var(--text);
-  transition: var(--transition);
-  animation: fadeIn 0.8s ease forwards;
-  position: relative;
-  z-index: 1;
-}
+        .front  { transform: rotateY(0deg) translateZ(75px); }
+        .back   { transform: rotateY(180deg) translateZ(75px); }
+        .right  { transform: rotateY(90deg) translateZ(75px); }
+        .left   { transform: rotateY(-90deg) translateZ(75px); }
+        .top    { transform: rotateX(90deg) translateZ(75px); }
+        .bottom { transform: rotateX(-90deg) translateZ(75px); }
 
-.active { display: block; }
+        @keyframes rotate-cube {
+            from { transform: rotateX(0deg) rotateY(0deg); }
+            to { transform: rotateX(360deg) rotateY(360deg); }
+        }
 
-h2 {
-    text-align: center;
-    margin-bottom: 30px;
-    font-size: 2.2rem;
-    color: var(--text);
-    text-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
-    font-weight: 500;
-}
+        @keyframes unfold-cube {
+            0% { transform: rotateX(45deg) rotateY(45deg) scale(1); }
+            50% { transform: rotateX(0deg) rotateY(0deg) scale(1.5); }
+            100% { transform: scale(20); opacity: 0; }
+        }
 
-.menu-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-}
+        /* Page Layout */
+        .page {
+            display: none;
+            width: 100%;
+            position: relative;
+            z-index: 1;
+            animation: fadeIn 0.8s ease forwards;
+        }
 
-.menu-item {
-  padding: 25px;
-  text-align: center;
-  border-radius: 20px;
-  border: 1px solid transparent;
-  cursor: pointer;
-  font-weight: 500;
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  transition: all .5s ease;
-  font-size: 1.1rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-}
+        .active { 
+            display: block; 
+        }
 
-.menu-item i {
-  font-size: 1.8rem;
-}
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+            color: var(--on-surface);
+            font-weight: 400;
+            letter-spacing: -0.5px;
+            padding: 0 10px;
+        }
 
-.menu-item:hover {
-  transform: translateY(-8px) scale(1.03);
-  background: rgba(255, 255, 255, 0.25);
-  color: var(--text);
-  border-color: var(--glass-border);
-  box-shadow: 0 15px 35px rgba(0,0,0,0.25);
-}
+        /* Menu Grid */
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+            padding: 0 5px;
+        }
 
-.converter {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  margin-top: 20px;
-}
+        .menu-item {
+            padding: 20px 12px;
+            text-align: center;
+            border-radius: 16px;
+            cursor: pointer;
+            font-weight: 500;
+            background: var(--surface-variant);
+            color: var(--on-surface-variant);
+            transition: all .3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            min-height: 100px;
+            justify-content: center;
+        }
 
-input, select {
-  padding: 18px;
-  border: none;
-  border-radius: 15px;
-  font-size: 16px;
-  font-weight: 500;
-  outline: none;
-  background: rgba(0,0,0,0.15);
-  color: var(--text);
-  border: 1px solid var(--glass-border);
-  transition: all .3s ease;
-}
+        .menu-item i {
+            font-size: 1.8rem;
+            color: var(--primary);
+        }
 
-input::placeholder { color: rgba(255,255,255,0.7); }
-select { appearance: none; -webkit-appearance: none; background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M5%208l5%205%205-5%22%20stroke%3D%22%23ffffff%22%20stroke-width%3D%222%22%20fill%3D%22none%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22/%3E%3C/svg%3E'); background-repeat: no-repeat; background-position: right 15px center; }
-option { background: #3c3c78; color: var(--text); }
+        .menu-item:hover {
+            background: var(--primary-container);
+            color: var(--on-primary-container);
+            transform: translateY(-4px);
+        }
 
-input:focus, select:focus {
-  transform: scale(1.02);
-  box-shadow: 0 0 20px var(--accent1);
-  border-color: var(--accent1);
-}
+        .menu-item.active-category {
+            background: var(--primary);
+            color: var(--on-primary);
+        }
 
-#conv-output {
-  background: rgba(0,0,0,0.25);
-  font-weight: bold;
-}
+        .menu-item.active-category i {
+            color: var(--on-primary);
+        }
 
-.btn-group {
-  display: flex;
-  gap: 10px;
-  margin-top: 10px;
-}
+        /* Converter Styles */
+        .converter {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-top: 16px;
+        }
 
-.btn {
-  padding: 14px;
-  border: 1px solid var(--glass-border);
-  border-radius: 15px;
-  cursor: pointer;
-  font-weight: bold;
-  color: var(--text);
-  transition:.3s ease;
-  flex: 1;
-  text-align: center;
-}
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
 
-.back-btn {
-  background: rgba(255,255,255,0.15);
-}
+        .input-group label {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--on-surface-variant);
+            margin-left: 4px;
+        }
 
-.back-btn:hover {
-  transform: scale(1.05);
-  background: var(--accent2);
-  border-color: var(--accent2);
-}
+        input, select {
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 400;
+            outline: none;
+            background: var(--surface-variant);
+            color: var(--on-surface);
+            border: 1px solid transparent;
+            transition: all .3s ease;
+        }
 
-.orange-btn {
-  background: linear-gradient(135deg, #ff9a3d, #ff6b6b);
-  border: none;
-}
+        input::placeholder { 
+            color: var(--on-surface-variant); 
+        }
 
-.orange-btn:hover {
-  transform: scale(1.05);
-  box-shadow: 0 0 15px rgba(255, 107, 107, 0.7);
-}
+        input:focus, select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(103, 80, 164, 0.2);
+        }
 
-.history-section {
-  margin-top: 30px;
-  max-height: 200px;
-  overflow-y: auto;
-  padding: 10px;
-  border-radius: 15px;
-  background: rgba(0,0,0,0.1);
-}
+        select { 
+            appearance: none; 
+            -webkit-appearance: none; 
+            background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M5%208l5%205%205-5%22%20stroke%3D%22%236750A4%22%20stroke-width%3D%222%22%20fill%3D%22none%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22/%3E%3C/svg%3E'); 
+            background-repeat: no-repeat; 
+            background-position: right 16px center; 
+        }
 
-.history-section h3 {
-  margin-bottom: 10px;
-  text-align: center;
-  font-weight: 500;
-}
+        option { 
+            background: var(--surface); 
+            color: var(--on-surface); 
+        }
 
-.history-item {
-  padding: 10px;
-  border-bottom: 1px solid rgba(255,255,255,0.1);
-  font-size: 0.9rem;
-}
+        #conv-output {
+            background: var(--surface-variant);
+            font-weight: 500;
+        }
 
-.history-item:last-child {
-  border-bottom: none;
-}
+        /* Buttons */
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 16px;
+        }
 
-.theme-selector {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  display: flex;
-  gap: 8px;
-  z-index: 10;
-  transition: transform 0.5s ease, opacity 0.5s ease;
-}
+        .btn {
+            padding: 14px 20px;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 500;
+            color: var(--on-primary);
+            transition: all .3s ease;
+            flex: 1;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 0.875rem;
+        }
 
-.theme-selector.hidden {
-  transform: translateX(150px);
-  opacity: 0;
-  pointer-events: none;
-}
+        .btn-primary {
+            background: var(--primary);
+        }
 
-.theme-dot {
-  width: 25px;
-  height: 25px;
-  border-radius: 50%;
-  cursor: pointer;
-  border: 2px solid rgba(255,255,255,0.5);
-  transition: transform 0.3s ease;
-}
+        .btn-primary:hover {
+            background: var(--primary-container);
+            color: var(--on-primary-container);
+            box-shadow: 0 4px 12px rgba(103, 80, 164, 0.3);
+        }
 
-.theme-dot:hover {
-  transform: scale(1.2);
-}
+        .btn-secondary {
+            background: var(--secondary-container);
+            color: var(--on-secondary-container);
+        }
 
-.toggle-themes {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.15);
-  backdrop-filter: blur(10px);
-  border: 1px solid var(--glass-border);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  z-index: 11;
-  transition: all 0.3s ease;
-}
+        .btn-secondary:hover {
+            background: var(--secondary);
+            color: var(--on-secondary);
+        }
 
-.toggle-themes:hover {
-  transform: scale(1.1);
-  background: rgba(255,255,255,0.25);
-}
+        /* History Section */
+        .history-section {
+            margin-top: 24px;
+            max-height: 250px;
+            overflow-y: auto;
+            padding: 12px;
+            border-radius: 16px;
+            background: var(--surface-variant);
+        }
 
-.credit {
-  position: absolute;
-  bottom: 15px;
-  left: 0;
-  right: 0;
-  text-align: center;
-  font-size: 0.8rem;
-  opacity: 0.7;
-}
+        .history-section h3 {
+            margin-bottom: 12px;
+            text-align: center;
+            font-weight: 500;
+            color: var(--on-surface-variant);
+            font-size: 1.125rem;
+        }
 
-@keyframes fadeIn {
-    from { opacity:0; transform: translateY(20px); }
-    to { opacity:1; transform: translateY(0); }
-}
+        .history-item {
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--outline);
+            font-size: 0.875rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-@media (max-width:768px) {
-  .menu-grid { grid-template-columns:1fr; }
-  h2 { font-size:1.8rem; }
-  input, select, .menu-item, .btn { font-size:15px; padding:15px; }
-  .cube { width: 100px; height: 100px; }
-  .face { width: 100px; height: 100px; font-size: 1.8rem; }
-  .front, .back, .right, .left, .top, .bottom { transform-origin: 50px 50px; }
-  .front  { transform: rotateY(0deg) translateZ(50px); }
-  .back   { transform: rotateY(180deg) translateZ(50px); }
-  .right  { transform: rotateY(90deg) translateZ(50px); }
-  .left   { transform: rotateY(-90deg) translateZ(50px); }
-  .top    { transform: rotateX(90deg) translateZ(50px); }
-  .bottom { transform: rotateX(-90deg) translateZ(50px); }
-  .theme-selector {
-    top: 10px;
-    right: 10px;
-    flex-direction: column;
-  }
-  .theme-dot {
-    width: 20px;
-    height: 20px;
-  }
-  .toggle-themes {
-    top: 10px;
-    right: 10px;
-    width: 35px;
-    height: 35px;
-  }
-}
+        .history-item:last-child {
+            border-bottom: none;
+        }
 
-</style>
+        .history-item .conversion-text {
+            flex: 1;
+        }
+
+        .history-item .conversion-date {
+            font-size: 0.75rem;
+            color: var(--on-surface-variant);
+        }
+
+        .clear-history {
+            margin-top: 12px;
+            text-align: center;
+        }
+
+        .clear-history-btn {
+            background: transparent;
+            border: none;
+            color: var(--primary);
+            font-size: 0.875rem;
+            cursor: pointer;
+            text-decoration: underline;
+            transition: color 0.3s ease;
+        }
+
+        .clear-history-btn:hover {
+            color: var(--tertiary);
+        }
+
+        /* Theme Selector */
+        .theme-selector {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px;
+            z-index: 100;
+            transition: all 0.3s ease;
+            background: var(--glass-bg);
+            backdrop-filter: blur(var(--blur));
+            padding: 20px;
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--shadow-elevation);
+            max-width: 90%;
+            width: 320px;
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .theme-selector.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .theme-option {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: transform 0.3s ease, border-color 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .theme-option:hover {
+            transform: scale(1.1);
+        }
+
+        .theme-option.active {
+            border-color: var(--on-surface);
+        }
+
+        .toggle-themes {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: var(--on-primary);
+            border: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 11;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .toggle-themes:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+        }
+
+        .toggle-dark-mode {
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: var(--surface-variant);
+            color: var(--on-surface-variant);
+            border: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 11;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .toggle-dark-mode:hover {
+            transform: scale(1.1);
+        }
+
+        .credit {
+            text-align: center;
+            font-size: 0.75rem;
+            opacity: 0.7;
+            color: var(--on-surface-variant);
+            margin-top: 20px;
+            padding: 10px;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 99;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        @keyframes fadeIn {
+            from { opacity:0; transform: translateY(20px); }
+            to { opacity:1; transform: translateY(0); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 480px) {
+            .card {
+                padding: 16px;
+                width: 95%;
+                margin: 10px auto;
+            }
+            
+            .menu-grid { 
+                grid-template-columns: repeat(2, 1fr); 
+                gap: 10px;
+            }
+            
+            h2 { 
+                font-size: 1.6rem; 
+                margin-bottom: 16px;
+            }
+            
+            .menu-item {
+                padding: 16px 10px;
+                min-height: 90px;
+                font-size: 0.9rem;
+            }
+            
+            .menu-item i {
+                font-size: 1.5rem;
+            }
+            
+            input, select, .btn { 
+                font-size: 15px; 
+                padding: 12px;
+            }
+            
+            .btn {
+                padding: 12px 16px;
+            }
+            
+            .toggle-themes, .toggle-dark-mode {
+                width: 50px;
+                height: 50px;
+                bottom: 16px;
+                right: 16px;
+            }
+            
+            .toggle-dark-mode {
+                bottom: 80px;
+            }
+            
+            .theme-selector {
+                width: 280px;
+                padding: 16px;
+            }
+            
+            .theme-option {
+                width: 45px;
+                height: 45px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .menu-grid { 
+                grid-template-columns: 1fr; 
+            }
+            
+            .btn-group {
+                flex-direction: column;
+            }
+            
+            .card {
+                padding: 12px;
+            }
+        }
+    </style>
 </head>
 <body>
-
-<!-- Startup Animation -->
-<div id="startup-animation">
-  <div class="cube">
-    <div class="face front"><i class="fas fa-ruler"></i></div>
-    <div class="face back"><i class="fas fa-weight-hanging"></i></div>
-    <div class="face right"><i class="fas fa-temperature-high"></i></div>
-    <div class="face left"><i class="fas fa-tachometer-alt"></i></div>
-    <div class="face top"><i class="fas fa-bolt"></i></div>
-    <div class="face bottom"><i class="fas fa-compress-arrows-alt"></i></div>
-  </div>
-</div>
-
-<div id="page1" class="page">
-  <div class="toggle-themes" onclick="toggleThemeSelector()">
-    <i class="fas fa-palette"></i>
-  </div>
-  
-  <div class="theme-selector hidden">
-    <div class="theme-dot" style="background: #ffc1d7;" data-theme="cosmic-pink"></div>
-    <div class="theme-dot" style="background: #1a1a2e;" data-theme="midnight-blue"></div>
-    <div class="theme-dot" style="background: #4b6a4a;" data-theme="forest-green"></div>
-    <div class="theme-dot" style="background: #fb8500;" data-theme="golden-hour"></div>
-    <div class="theme-dot" style="background: #2d00f7;" data-theme="synthwave"></div>
-  </div>
-  
-  <h2>Choose a Converter</h2>
-  <div class="menu-grid">
-    <div class="menu-item" onclick="openConverter('Length')">
-      <i class="fas fa-ruler"></i>
-      Length
+    <!-- Startup Animation -->
+    <div id="startup-animation">
+        <div class="cube">
+            <div class="face front"><i class="fas fa-ruler"></i></div>
+            <div class="face back"><i class="fas fa-weight-hanging"></i></div>
+            <div class="face right"><i class="fas fa-temperature-high"></i></div>
+            <div class="face left"><i class="fas fa-tachometer-alt"></i></div>
+            <div class="face top"><i class="fas fa-bolt"></i></div>
+            <div class="face bottom"><i class="fas fa-compress-arrows-alt"></i></div>
+        </div>
     </div>
-    <div class="menu-item" onclick="openConverter('Area')">
-      <i class="fas fa-border-all"></i>
-      Area
+
+    <!-- Overlay for theme selector -->
+    <div class="overlay" id="theme-overlay"></div>
+
+    <!-- Main Menu Page -->
+    <div id="page1" class="page card">
+        <h2>Unit Converter</h2>
+        <div class="menu-grid">
+            <div class="menu-item" onclick="openConverter('Length')">
+                <i class="fas fa-ruler"></i>
+                Length
+            </div>
+            <div class="menu-item" onclick="openConverter('Area')">
+                <i class="fas fa-border-all"></i>
+                Area
+            </div>
+            <div class="menu-item" onclick="openConverter('Volume')">
+                <i class="fas fa-cube"></i>
+                Volume
+            </div>
+            <div class="menu-item" onclick="openConverter('Mass')">
+                <i class="fas fa-weight-hanging"></i>
+                Mass
+            </div>
+            <div class="menu-item" onclick="openConverter('Temperature')">
+                <i class="fas fa-temperature-high"></i>
+                Temperature
+            </div>
+            <div class="menu-item" onclick="openConverter('Speed')">
+                <i class="fas fa-tachometer-alt"></i>
+                Speed
+            </div>
+            <div class="menu-item" onclick="openConverter('Pressure')">
+                <i class="fas fa-compress-arrows-alt"></i>
+                Pressure
+            </div>
+            <div class="menu-item" onclick="openConverter('Power')">
+                <i class="fas fa-bolt"></i>
+                Power
+            </div>
+        </div>
+        <div class="credit">Made with ❤️ by cozytustudios</div>
     </div>
-    <div class="menu-item" onclick="openConverter('Volume')">
-      <i class="fas fa-cube"></i>
-      Volume
+
+    <!-- Converter Page -->
+    <div id="page2" class="page card">
+        <div class="btn-group">
+            <button class="btn btn-secondary" onclick="goMenu()">
+                <i class="fas fa-arrow-left"></i> Back to Menu
+            </button>
+        </div>
+        <h2 id="conv-title"></h2>
+        <div class="converter">
+            <div class="input-group">
+                <label for="conv-input">Enter Value</label>
+                <input type="number" id="conv-input" placeholder="Enter value">
+            </div>
+            <div class="input-group">
+                <label for="conv-from">From Unit</label>
+                <select id="conv-from"></select>
+            </div>
+            <div class="input-group">
+                <label for="conv-to">To Unit</label>
+                <select id="conv-to"></select>
+            </div>
+            <div class="input-group">
+                <label for="conv-output">Result</label>
+                <input type="text" id="conv-output" placeholder="Result" readonly>
+            </div>
+        </div>
+        <div class="history-section">
+            <h3>Conversion History</h3>
+            <div id="history-list"></div>
+            <div class="clear-history">
+                <button class="clear-history-btn" onclick="clearHistory()">Clear History</button>
+            </div>
+        </div>
+        <div class="credit">Made with ❤️ by cozytustudios</div>
     </div>
-    <div class="menu-item" onclick="openConverter('Mass')">
-      <i class="fas fa-weight-hanging"></i>
-      Mass
+
+    <!-- Theme Selector -->
+    <div class="theme-selector" id="theme-selector">
+        <div class="theme-option" style="background: linear-gradient(135deg, #ff8bb3, #ff6b9d);" data-theme="cosmic-pink">
+            <i class="fas fa-heart"></i>
+        </div>
+        <div class="theme-option" style="background: linear-gradient(135deg, #0f3460, #533483);" data-theme="midnight-blue">
+            <i class="fas fa-moon"></i>
+        </div>
+        <div class="theme-option" style="background: linear-gradient(135deg, #3a7d44, #69b578);" data-theme="forest-green">
+            <i class="fas fa-leaf"></i>
+        </div>
+        <div class="theme-option" style="background: linear-gradient(135deg, #ffb703, #fd9e02);" data-theme="golden-hour">
+            <i class="fas fa-sun"></i>
+        </div>
+        <div class="theme-option" style="background: linear-gradient(135deg, #6a00f4, #a100f2);" data-theme="synthwave">
+            <i class="fas fa-music"></i>
+        </div>
     </div>
-    <div class="menu-item" onclick="openConverter('Temperature')">
-      <i class="fas fa-temperature-high"></i>
-      Temperature
-    </div>
-    <div class="menu-item" onclick="openConverter('Speed')">
-      <i class="fas fa-tachometer-alt"></i>
-      Speed
-    </div>
-    <div class="menu-item" onclick="openConverter('Pressure')">
-      <i class="fas fa-compress-arrows-alt"></i>
-      Pressure
-    </div>
-    <div class="menu-item" onclick="openConverter('Power')">
-      <i class="fas fa-bolt"></i>
-      Power
-    </div>
-  </div>
-  
-  <div class="btn-group">
-    <div class="btn orange-btn" onclick="openCalculator()">
-      <i class="fas fa-calculator"></i> Ultra Calculator
-    </div>
-  </div>
-  
-  <div class="credit">Made by cozytustudios</div>
-</div>
 
-<div id="page2" class="page">
-  <div class="toggle-themes" onclick="toggleThemeSelector()">
-    <i class="fas fa-palette"></i>
-  </div>
-  
-  <div class="theme-selector hidden">
-    <div class="theme-dot" style="background: #ffc1d7;" data-theme="cosmic-pink"></div>
-    <div class="theme-dot" style="background: #1a1a2e;" data-theme="midnight-blue"></div>
-    <div class="theme-dot" style="background: #4b6a4a;" data-theme="forest-green"></div>
-    <div class="theme-dot" style="background: #fb8500;" data-theme="golden-hour"></div>
-    <div class="theme-dot" style="background: #2d00f7;" data-theme="synthwave"></div>
-  </div>
-  
-  <div class="btn-group">
-    <div class="btn back-btn" onclick="goMenu()">← Back to Menu</div>
-  </div>
-  
-  <h2 id="conv-title"></h2>
-  <div class="converter">
-    <input type="number" id="conv-input" placeholder="Enter value">
-    <select id="conv-from"></select>
-    <select id="conv-to"></select>
-    <input type="text" id="conv-output" placeholder="Result" readonly>
-  </div>
-  
-  <div class="history-section">
-    <h3>Conversion History</h3>
-    <div id="history-list"></div>
-  </div>
-  
-  <div class="credit">Made by cozytustudios</div>
-</div>
+    <!-- Floating Action Buttons -->
+    <button class="toggle-dark-mode" onclick="toggleDarkMode()">
+        <i class="fas fa-moon"></i>
+    </button>
+    <button class="toggle-themes" onclick="toggleThemeSelector()">
+        <i class="fas fa-palette"></i>
+    </button>
 
-<script>
-// Theme management
-const themes = {
-  'cosmic-pink': { bg: '#a8b9ff4d', accent1: '#ff8bb3', accent2: '#ff6b9d', accent3: '#ffcb6b' },
-  'midnight-blue': { bg: '#1a1a2e', accent1: '#0f3460', accent2: '#533483', accent3: '#e94560' },
-  'forest-green': { bg: '#4b6a4a', accent1: '#3a7d44', accent2: '#69b578', accent3: '#d0db97' },
-  'golden-hour': { bg: '#fb8500', accent1: '#ffb703', accent2: '#fd9e02', accent3: '#023047' },
-  'synthwave': { bg: '#2d00f7', accent1: '#6a00f4', accent2: '#8900f2', accent3: '#a100f2' }
-};
+    <script>
+        // Theme management
+        const themes = {
+            'cosmic-pink': { 
+                primary: '#ff6b9d', 
+                onPrimary: '#FFFFFF',
+                primaryContainer: '#ffd8e4',
+                onPrimaryContainer: '#3f0021',
+                secondary: '#7d5260',
+                onSecondary: '#FFFFFF',
+                secondaryContainer: '#ffd8e4',
+                onSecondaryContainer: '#31101d',
+                tertiary: '#7d5260',
+                onTertiary: '#FFFFFF',
+                tertiaryContainer: '#ffd8e4',
+                onTertiaryContainer: '#31101d',
+                surface: '#fff8fa',
+                onSurface: '#1c1b1e',
+                surfaceVariant: '#f2dde1',
+                onSurfaceVariant: '#514347',
+                outline: '#837377',
+                bg: 'linear-gradient(135deg, #ff8bb3 0%, #ff6b9d 100%)'
+            },
+            'midnight-blue': { 
+                primary: '#8b9dff', 
+                onPrimary: '#0a0048',
+                primaryContainer: '#303c7a',
+                onPrimaryContainer: '#dee0ff',
+                secondary: '#c5c6dd',
+                onSecondary: '#2e2f42',
+                secondaryContainer: '#444559',
+                onSecondaryContainer: '#e1e2f9',
+                tertiary: '#e5bdd8',
+                onTertiary: '#44263d',
+                tertiaryContainer: '#5d3c54',
+                onTertiaryContainer: '#ffd7f1',
+                surface: '#131318',
+                onSurface: '#e3e2e6',
+                surfaceVariant: '#46464f',
+                onSurfaceVariant: '#c7c5d0',
+                outline: '#918f9a',
+                bg: 'linear-gradient(135deg, #0f3460 0%, #533483 100%)'
+            },
+            'forest-green': { 
+                primary: '#4caf50', 
+                onPrimary: '#003906',
+                primaryContainer: '#0c5f1a',
+                onPrimaryContainer: '#a8f5a6',
+                secondary: '#b5ccb5',
+                onSecondary: '#253425',
+                secondaryContainer: '#3b4b3b',
+                onSecondaryContainer: '#d1e8d0',
+                tertiary: '#92cdce',
+                onTertiary: '#003738',
+                tertiaryContainer: '#1e4e4f',
+                onTertiaryContainer: '#acebeb',
+                surface: '#f8fbf8',
+                onSurface: '#191c19',
+                surfaceVariant: '#dde5db',
+                onSurfaceVariant: '#424941',
+                outline: '#727970',
+                bg: 'linear-gradient(135deg, #3a7d44 0%, #69b578 100%)'
+            },
+            'golden-hour': { 
+                primary: '#ff9800', 
+                onPrimary: '#3f2600',
+                primaryContainer: '#5c3d00',
+                onPrimaryContainer: '#ffddb8',
+                secondary: '#e5bfa0',
+                onSecondary: '#422c15',
+                secondaryContainer: '#5b4229',
+                onSecondaryContainer: '#ffddb8',
+                tertiary: '#c6c3a5',
+                onTertiary: '#31321a',
+                tertiaryContainer: '#48482e',
+                onTertiaryContainer: '#e3e0bf',
+                surface: '#fff8f2',
+                onSurface: '#1f1b16',
+                surfaceVariant: '#f2dfd1',
+                onSurfaceVariant: '#51453a',
+                outline: '#837468',
+                bg: 'linear-gradient(135deg, #ffb703 0%, #fd9e02 100%)'
+            },
+            'synthwave': { 
+                primary: '#d500f9', 
+                onPrimary: '#3d0047',
+                primaryContainer: '#570064',
+                onPrimaryContainer: '#f5d6ff',
+                secondary: '#dfb8ff',
+                onSecondary: '#451a5f',
+                secondaryContainer: '#5d3377',
+                onSecondaryContainer: '#f2daff',
+                tertiary: '#86fff7',
+                onTertiary: '#003733',
+                tertiaryContainer: '#00504a',
+                onTertiaryContainer: '#a0f1ea',
+                surface: '#1a1a1a',
+                onSurface: '#e1e1e1',
+                surfaceVariant: '#49454f',
+                onSurfaceVariant: '#cac4d0',
+                outline: '#948f99',
+                bg: 'linear-gradient(135deg, #6a00f4 0%, #a100f2 100%)'
+            }
+        };
 
-// Initialize theme selector state
-let themeSelectorVisible = false;
+        // Initialize theme selector state
+        let themeSelectorVisible = false;
 
-function toggleThemeSelector() {
-  const themeSelector = document.querySelector('.theme-selector');
-  themeSelectorVisible = !themeSelectorVisible;
-  
-  if (themeSelectorVisible) {
-    themeSelector.classList.remove('hidden');
-  } else {
-    themeSelector.classList.add('hidden');
-  }
-}
+        function toggleThemeSelector() {
+            const themeSelector = document.getElementById('theme-selector');
+            const overlay = document.getElementById('theme-overlay');
+            themeSelectorVisible = !themeSelectorVisible;
+            
+            if (themeSelectorVisible) {
+                themeSelector.classList.add('active');
+                overlay.classList.add('active');
+            } else {
+                themeSelector.classList.remove('active');
+                overlay.classList.remove('active');
+            }
+        }
 
-// Apply theme and hide selector
-function applyTheme(themeName) {
-  const theme = themes[themeName];
-  
-  document.documentElement.style.setProperty('--accent1', theme.accent1);
-  document.documentElement.style.setProperty('--accent2', theme.accent2);
-  document.documentElement.style.setProperty('--accent3', theme.accent3);
-  document.documentElement.style.setProperty('--theme-bg', theme.bg);
-  document.body.style.background = theme.bg;
-  
-  // Hide theme selector after selection
-  themeSelectorVisible = false;
-  document.querySelector('.theme-selector').classList.add('hidden');
-}
+        // Close theme selector when clicking overlay
+        document.getElementById('theme-overlay').addEventListener('click', function() {
+            toggleThemeSelector();
+        });
 
-// Set up theme dots
-document.querySelectorAll('.theme-dot').forEach(dot => {
-  dot.addEventListener('click', (e) => {
-    const themeName = e.target.getAttribute('data-theme');
-    applyTheme(themeName);
-  });
-});
+        // Apply theme and hide selector
+        function applyTheme(themeName) {
+            const theme = themes[themeName];
+            
+            document.documentElement.style.setProperty('--primary', theme.primary);
+            document.documentElement.style.setProperty('--on-primary', theme.onPrimary);
+            document.documentElement.style.setProperty('--primary-container', theme.primaryContainer);
+            document.documentElement.style.setProperty('--on-primary-container', theme.onPrimaryContainer);
+            document.documentElement.style.setProperty('--secondary', theme.secondary);
+            document.documentElement.style.setProperty('--on-secondary', theme.onSecondary);
+            document.documentElement.style.setProperty('--secondary-container', theme.secondaryContainer);
+            document.documentElement.style.setProperty('--on-secondary-container', theme.onSecondaryContainer);
+            document.documentElement.style.setProperty('--tertiary', theme.tertiary);
+            document.documentElement.style.setProperty('--on-tertiary', theme.onTertiary);
+            document.documentElement.style.setProperty('--tertiary-container', theme.tertiaryContainer);
+            document.documentElement.style.setProperty('--on-tertiary-container', theme.onTertiaryContainer);
+            document.documentElement.style.setProperty('--surface', theme.surface);
+            document.documentElement.style.setProperty('--on-surface', theme.onSurface);
+            document.documentElement.style.setProperty('--surface-variant', theme.surfaceVariant);
+            document.documentElement.style.setProperty('--on-surface-variant', theme.onSurfaceVariant);
+            document.documentElement.style.setProperty('--outline', theme.outline);
+            document.documentElement.style.setProperty('--theme-bg', theme.bg);
+            
+            // Update active theme indicator
+            document.querySelectorAll('.theme-option').forEach(option => {
+                option.classList.remove('active');
+            });
+            
+            document.querySelector(`.theme-option[data-theme="${themeName}"]`).classList.add('active');
+            
+            // Hide theme selector after selection
+            toggleThemeSelector();
+            
+            // Save theme preference
+            localStorage.setItem('selectedTheme', themeName);
+        }
 
-// Startup Animation
-window.addEventListener('load', () => {
-    const startupDiv = document.getElementById('startup-animation');
-    const cube = document.querySelector('.cube');
+        // Set up theme options
+        document.querySelectorAll('.theme-option').forEach(option => {
+            option.addEventListener('click', (e) => {
+                const themeName = e.currentTarget.getAttribute('data-theme');
+                applyTheme(themeName);
+            });
+        });
 
-    // After a delay, trigger the unfolding animation
-    setTimeout(() => {
-        cube.classList.add('unfold');
+        // Dark mode toggle
+        function toggleDarkMode() {
+            document.body.classList.toggle('theme-dark');
+            const isDark = document.body.classList.contains('theme-dark');
+            localStorage.setItem('darkMode', isDark);
+            
+            // Update icon
+            const icon = document.querySelector('.toggle-dark-mode i');
+            icon.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+        }
 
-        // After the cube unfolds, hide it and show the main menu
-        setTimeout(() => {
-            startupDiv.style.opacity = '0';
-            showPage('page1');
+        // Startup Animation
+        window.addEventListener('load', () => {
+            const startupDiv = document.getElementById('startup-animation');
+            const cube = document.querySelector('.cube');
+
+            // Load saved preferences
+            const savedTheme = localStorage.getItem('selectedTheme') || 'cosmic-pink';
+            applyTheme(savedTheme);
+            
+            const isDarkMode = localStorage.getItem('darkMode') === 'true';
+            if (isDarkMode) {
+                document.body.classList.add('theme-dark');
+                document.querySelector('.toggle-dark-mode i').className = 'fas fa-sun';
+            }
+
+            // After a delay, trigger the unfolding animation
             setTimeout(() => {
-              startupDiv.style.display = 'none';
-            }, 1000);
-        }, 1200);
-    }, 2500);
-});
+                cube.classList.add('unfold');
 
-// Navigation
-function showPage(id){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-}
-function goMenu(){ showPage('page1'); }
+                // After the cube unfolds, hide it and show the main menu
+                setTimeout(() => {
+                    startupDiv.style.opacity = '0';
+                    showPage('page1');
+                    setTimeout(() => {
+                        startupDiv.style.display = 'none';
+                    }, 1000);
+                }, 1200);
+            }, 2500);
+        });
 
-function openCalculator() {
-  // This would navigate to the calculator page
-  alert("This would navigate to the Ultra Calculator page (page4.html)");
-}
+        // Navigation
+        function showPage(id){
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+        }
+        
+        function goMenu(){ 
+            showPage('page1'); 
+        }
 
-// History management
-let conversionHistory = [];
+        // History management
+        let conversionHistory = JSON.parse(localStorage.getItem('conversionHistory')) || [];
 
-function addToHistory(conversion) {
-  conversionHistory.unshift(conversion);
-  if (conversionHistory.length > 10) {
-    conversionHistory.pop();
-  }
-  updateHistoryDisplay();
-}
+        function addToHistory(conversion) {
+            conversionHistory.unshift({
+                ...conversion,
+                timestamp: new Date().toLocaleString()
+            });
+            
+            if (conversionHistory.length > 10) {
+                conversionHistory = conversionHistory.slice(0, 10);
+            }
+            
+            localStorage.setItem('conversionHistory', JSON.stringify(conversionHistory));
+            updateHistoryDisplay();
+        }
 
-function updateHistoryDisplay() {
-  const historyList = document.getElementById('history-list');
-  historyList.innerHTML = '';
-  
-  conversionHistory.forEach(item => {
-    const historyItem = document.createElement('div');
-    historyItem.className = 'history-item';
-    historyItem.textContent = `${item.value} ${item.from} = ${item.result} ${item.to}`;
-    historyList.appendChild(historyItem);
-  });
-}
+        function updateHistoryDisplay() {
+            const historyList = document.getElementById('history-list');
+            historyList.innerHTML = '';
+            
+            if (conversionHistory.length === 0) {
+                historyList.innerHTML = '<div class="history-item">No conversion history yet</div>';
+                return;
+            }
+            
+            conversionHistory.forEach(item => {
+                const historyItem = document.createElement('div');
+                historyItem.className = 'history-item';
+                historyItem.innerHTML = `
+                    <div class="conversion-text">${item.value} ${item.from} = ${item.result} ${item.to}</div>
+                    <div class="conversion-date">${item.timestamp}</div>
+                `;
+                historyList.appendChild(historyItem);
+            });
+        }
 
-function openConverter(type){
-  showPage('page2');
-  document.getElementById('conv-title').innerText=type+' Converter';
-  loadUnits(type);
-}
+        function clearHistory() {
+            if (confirm("Are you sure you want to clear all conversion history?")) {
+                conversionHistory = [];
+                localStorage.setItem('conversionHistory', JSON.stringify(conversionHistory));
+                updateHistoryDisplay();
+            }
+        }
 
-// Units
-const units = {
-Length:{'Millimeter (mm)':1,'Centimeter (cm)':10,'Meter (m)':1000,'Kilometer (km)':1000000,'Inch (in)':25.4,'Foot (ft)':304.8,'Yard (yd)':914.4,'Mile (mi)':1609344},
-Area:{'Square millimeter (mm²)':1,'Square centimeter (cm²)':100,'Square meter (m²)':1000000,'Square kilometer (km²)':1e12,'Square inch (in²)':645.16,'Square foot (ft²)':92903,'Square yard (yd²)':836127,'Acre':4046860000,'Hectare (ha)':10000000000},
-Volume:{'Milliliter (mL)':1,'Liter (L)':1000,'Cubic centimeter (cm³)':1,'Cubic meter (m³)':1e6,'Cubic inch (in³)':16.387,'Cubic foot (ft³)':28316.8,'US Gallon (gal)':3785.41,'US Pint (pt)':473.176},
-Mass:{'Milligram (mg)':0.001,'Gram (g)':1,'Kilogram (kg)':1000,'Tonne (t)':1e6,'Ounce (oz)':28.3495,'Pound (lb)':453.592,'Stone (st)':6350.29},
-Temperature:['Celsius','Fahrenheit','Kelvin'],
-Speed:{'Meters per second (m/s)':1,'Kilometers per hour (km/h)':0.277778,'Miles per hour (mph)':0.44704,'Knots (kn)':0.514444,'Feet per second (ft/s)':0.3048},
-Pressure:{'Pascal (Pa)':1,'Kilopascal (kPa)':1000,'Bar':100000,'Atmosphere (atm)':101325,'Millimeters of mercury (mmHg)':133.322,'Pounds per square inch (psi)':6894.76},
-Power:{'Watt (W)':1,'Kilowatt (kW)':1000,'Megawatt (MW)':1e6,'Horsepower (hp)':745.7,'Calorie per second (cal/s)':4.184}
-};
+        function openConverter(type){
+            showPage('page2');
+            document.getElementById('conv-title').innerText = type + ' Converter';
+            loadUnits(type);
+            updateHistoryDisplay();
+        }
 
-function loadUnits(type){
-  const from=document.getElementById('conv-from'), to=document.getElementById('conv-to');
-  from.innerHTML=''; to.innerHTML='';
-  
-  const unitList = Array.isArray(units[type]) ? units[type] : Object.keys(units[type]);
-  unitList.forEach(u => {
-      from.innerHTML += `<option value="${u}">${u}</option>`;
-      to.innerHTML += `<option value="${u}">${u}</option>`;
-  });
+        // Units
+        const units = {
+            Length: {
+                'Millimeter (mm)': 1,
+                'Centimeter (cm)': 10,
+                'Meter (m)': 1000,
+                'Kilometer (km)': 1000000,
+                'Inch (in)': 25.4,
+                'Foot (ft)': 304.8,
+                'Yard (yd)': 914.4,
+                'Mile (mi)': 1609344
+            },
+            Area: {
+                'Square millimeter (mm²)': 1,
+                'Square centimeter (cm²)': 100,
+                'Square meter (m²)': 1000000,
+                'Square kilometer (km²)': 1e12,
+                'Square inch (in²)': 645.16,
+                'Square foot (ft²)': 92903,
+                'Square yard (yd²)': 836127,
+                'Acre': 4046860000,
+                'Hectare (ha)': 10000000000
+            },
+            Volume: {
+                'Milliliter (mL)': 1,
+                'Liter (L)': 1000,
+                'Cubic centimeter (cm³)': 1,
+                'Cubic meter (m³)': 1e6,
+                'Cubic inch (in³)': 16.387,
+                'Cubic foot (ft³)': 28316.8,
+                'US Gallon (gal)': 3785.41,
+                'US Pint (pt)': 473.176
+            },
+            Mass: {
+                'Milligram (mg)': 0.001,
+                'Gram (g)': 1,
+                'Kilogram (kg)': 1000,
+                'Tonne (t)': 1e6,
+                'Ounce (oz)': 28.3495,
+                'Pound (lb)': 453.592,
+                'Stone (st)': 6350.29
+            },
+            Temperature: ['Celsius', 'Fahrenheit', 'Kelvin'],
+            Speed: {
+                'Meters per second (m/s)': 1,
+                'Kilometers per hour (km/h)': 0.277778,
+                'Miles per hour (mph)': 0.44704,
+                'Knots (kn)': 0.514444,
+                'Feet per second (ft/s)': 0.3048
+            },
+            Pressure: {
+                'Pascal (Pa)': 1,
+                'Kilopascal (kPa)': 1000,
+                'Bar': 100000,
+                'Atmosphere (atm)': 101325,
+                'Millimeters of mercury (mmHg)': 133.322,
+                'Pounds per square inch (psi)': 6894.76
+            },
+            Power: {
+                'Watt (W)': 1,
+                'Kilowatt (kW)': 1000,
+                'Megawatt (MW)': 1e6,
+                'Horsepower (hp)': 745.7,
+                'Calorie per second (cal/s)': 4.184
+            }
+        };
 
-  // Set default different units
-  if (to.options.length > 1) {
-    to.selectedIndex = 1;
-  }
-  
-  document.getElementById('conv-input').value='';
-  document.getElementById('conv-output').value='';
-  updateHistoryDisplay();
-}
+        function loadUnits(type){
+            const from = document.getElementById('conv-from');
+            const to = document.getElementById('conv-to');
+            
+            from.innerHTML = '';
+            to.innerHTML = '';
+            
+            const unitList = Array.isArray(units[type]) ? units[type] : Object.keys(units[type]);
+            
+            unitList.forEach(u => {
+                from.innerHTML += `<option value="${u}">${u}</option>`;
+                to.innerHTML += `<option value="${u}">${u}</option>`;
+            });
 
-// Conversion Logic
-document.getElementById('conv-input').addEventListener('input', convert);
-document.getElementById('conv-from').addEventListener('change', convert);
-document.getElementById('conv-to').addEventListener('change', convert);
+            // Set default different units
+            if (to.options.length > 1) {
+                to.selectedIndex = 1;
+            }
+            
+            document.getElementById('conv-input').value = '';
+            document.getElementById('conv-output').value = '';
+        }
 
-function convert(){
-  const inputEl = document.getElementById('conv-input');
-  const outputEl = document.getElementById('conv-output');
-  const from = document.getElementById('conv-from').value;
-  const to = document.getElementById('conv-to').value;
-  const type = document.getElementById('conv-title').innerText.replace(' Converter', '');
-  
-  if (inputEl.value === "") {
-    outputEl.value = "";
-    return;
-  }
-  const val = parseFloat(inputEl.value);
-  if(isNaN(val)) return;
+        // Conversion Logic
+        document.getElementById('conv-input').addEventListener('input', convert);
+        document.getElementById('conv-from').addEventListener('change', convert);
+        document.getElementById('conv-to').addEventListener('change', convert);
 
-  let result;
-  if(type === 'Temperature'){
-    if (from === to) {
-        result = val;
-    } else if (from === 'Celsius'){
-        result = (to === 'Fahrenheit') ? (val * 9/5) + 32 : val + 273.15;
-    } else if (from === 'Fahrenheit'){
-        result = (to === 'Celsius') ? (val - 32) * 5/9 : ((val - 32) * 5/9) + 273.15;
-    } else { // Kelvin
-        result = (to === 'Celsius') ? val - 273.15 : (val - 273.15) * 9/5 + 32;
-    }
-  } else {
-    const factorFrom = units[type][from];
-    const factorTo = units[type][to];
-    result = val * factorFrom / factorTo;
-  }
-  
-  const formattedResult = parseFloat(result.toPrecision(6));
-  outputEl.value = formattedResult;
-  
-  // Add to history
-  if (inputEl.value && from && to) {
-    addToHistory({
-      type: type,
-      value: inputEl.value,
-      from: from,
-      to: to,
-      result: formattedResult
-    });
-  }
-}
+        function convert(){
+            const inputEl = document.getElementById('conv-input');
+            const outputEl = document.getElementById('conv-output');
+            const from = document.getElementById('conv-from').value;
+            const to = document.getElementById('conv-to').value;
+            const type = document.getElementById('conv-title').innerText.replace(' Converter', '');
+            
+            if (inputEl.value === "") {
+                outputEl.value = "";
+                return;
+            }
+            
+            const val = parseFloat(inputEl.value);
+            if(isNaN(val)) return;
 
-</script>
+            let result;
+            if(type === 'Temperature'){
+                if (from === to) {
+                    result = val;
+                } else if (from === 'Celsius'){
+                    result = (to === 'Fahrenheit') ? (val * 9/5) + 32 : val + 273.15;
+                } else if (from === 'Fahrenheit'){
+                    result = (to === 'Celsius') ? (val - 32) * 5/9 : ((val - 32) * 5/9) + 273.15;
+                } else { // Kelvin
+                    result = (to === 'Celsius') ? val - 273.15 : (val - 273.15) * 9/5 + 32;
+                }
+            } else {
+                const factorFrom = units[type][from];
+                const factorTo = units[type][to];
+                result = val * factorFrom / factorTo;
+            }
+            
+            const formattedResult = parseFloat(result.toPrecision(8));
+            outputEl.value = formattedResult;
+            
+            // Add to history
+            if (inputEl.value && from && to) {
+                addToHistory({
+                    type: type,
+                    value: inputEl.value,
+                    from: from,
+                    to: to,
+                    result: formattedResult
+                });
+            }
+        }
+    </script>
 </body>
 </html>
