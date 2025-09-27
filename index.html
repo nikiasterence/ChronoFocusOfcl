@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,7 +10,7 @@
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <!-- Internal CSS -->
   <style>
@@ -28,6 +29,7 @@
       --shadow-color: rgba(31, 38, 135, 0.37);
       --button-focus: rgba(37, 117, 252, 0.5);
       --accent-gradient: linear-gradient(135deg, #d9b6ff, #94bbff);
+      --error-color: #ff8a80;
     }
 
     @media (prefers-color-scheme: dark) {
@@ -46,6 +48,7 @@
         --shadow-color: rgba(0, 0, 0, 0.5);
         --button-focus: rgba(130, 180, 255, 0.5);
         --accent-gradient: linear-gradient(135deg, #5a6b79, #b48e69);
+        --error-color: #e57373;
       }
     }
 
@@ -60,7 +63,7 @@
       background: linear-gradient(-45deg, var(--bg-gradient-start), var(--bg-gradient-mid1), var(--bg-gradient-mid2), var(--bg-gradient-end));
       background-size: 400% 400%;
       animation: gradient 15s ease infinite;
-      display: grid; /* Changed to grid for better centering */
+      display: grid;
       place-items: center;
       overflow: hidden;
     }
@@ -72,33 +75,16 @@
       100% { background-position: 0% 50%; }
     }
     @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
-    @keyframes fadeIn { to { opacity: 1; } }
-    @keyframes fadeOut { to { opacity: 0; visibility: hidden; } }
-
-    /* --- Welcome Screen --- */
-    .welcome-container {
-      position: absolute;
-      inset: 0; /* Modern way to set top, right, bottom, left to 0 */
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 10;
-      animation: fadeOut 1s forwards 2.5s;
+    @keyframes shake {
+        10%, 90% { transform: translate3d(-1px, 0, 0); }
+        20%, 80% { transform: translate3d(2px, 0, 0); }
+        30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+        40%, 60% { transform: translate3d(4px, 0, 0); }
     }
 
-    .welcome-message {
-      font-size: 28px;
-      font-weight: 600;
-      color: var(--header-text);
-      text-shadow: 0 3px 10px rgba(0,0,0,0.3);
-      opacity: 0;
-      transform: translateY(20px);
-      animation: fadeInUp 1s forwards 0.5s;
-    }
-
-    /* --- Main Glass Container --- */
+    /* --- Glass Container Base --- */
     .container {
-      width: min(90vw, 400px);
+      width: min(90vw, 420px);
       padding: 48px;
       background: var(--glass-bg);
       border-radius: 24px;
@@ -108,263 +94,399 @@
       border: 1px solid var(--glass-border);
       text-align: center;
       z-index: 2;
-      transition: all 0.3s ease;
+      transition: opacity 0.5s ease, transform 0.5s ease;
       opacity: 0;
-      animation: fadeIn 1s forwards 3s;
+      transform: translateY(20px);
+      position: absolute;
+      visibility: hidden;
+    }
+
+    .container.active {
+      opacity: 1;
+      transform: translateY(0);
+      visibility: visible;
+    }
+    
+    .hidden {
+      display: none;
     }
 
     /* --- Header & Typography --- */
-    header { margin-bottom: 24px; }
+    header { margin-bottom: 24px; text-align:center; }
     .logo {
-      width: 64px;
-      height: 64px;
-      border-radius: 18px;
-      background: var(--accent-gradient);
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 24px;
-      font-size: 32px;
-      color: white;
-      font-weight: 600;
+      width: 64px; height: 64px; border-radius: 18px;
+      background: var(--accent-gradient); display: inline-flex;
+      align-items: center; justify-content: center; margin-bottom: 16px;
+      font-size: 32px; color: white; font-weight: 600;
       box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+      transition: transform 0.3s ease;
     }
+    .logo:hover { transform: scale(1.1) rotate(-10deg); }
     h1 {
-      font-size: 28px;
-      margin: 0;
-      font-weight: 600;
-      color: var(--header-text);
+      font-size: 28px; margin: 0; font-weight: 600; color: var(--header-text);
       text-shadow: 0 2px 8px rgba(0,0,0,0.2);
     }
-    p {
-      margin: 12px 0 0;
-      color: var(--text-secondary);
-      font-size: 16px;
-      line-height: 1.5;
-    }
+    p { margin: 12px 0 0; color: var(--text-secondary); font-size: 16px; line-height: 1.5; }
     .footer p { margin-top: 32px; font-size: 12px; }
 
-    /* --- Region Selector --- */
-    .region-selector-wrapper { margin: 24px 0; }
-    .select-container {
-      position: relative;
-      display: inline-block;
-      width: 100%;
-    }
-    .select-container::after { /* Custom dropdown arrow */
-      content: '▼';
-      font-size: 12px;
-      position: absolute;
-      top: 50%;
-      right: 20px;
-      transform: translateY(-50%);
-      color: var(--text-on-accent);
-      pointer-events: none; /* Allows clicks to pass through to the select */
-    }
-    .region-select {
-      appearance: none; /* Hides default browser styles */
-      -webkit-appearance: none;
-      width: 100%;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: 14px;
-      padding: 16px 20px;
-      font-size: 16px;
-      font-weight: 500;
-      color: var(--text-on-accent);
-      background: var(--accent-gradient);
-      cursor: pointer;
-      transition: all 0.2s ease;
+    /* --- Generic Form Styles --- */
+    .form-group { margin-bottom: 20px; text-align: left; }
+    .form-group label { display: block; margin-bottom: 8px; font-weight: 500; color: var(--text-secondary); font-size: 14px;}
+    .form-control, .region-select {
+      appearance: none; -webkit-appearance: none;
+      width: 100%; border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 14px;
+      padding: 16px 20px; font-size: 16px; font-weight: 500; color: var(--text-on-accent);
+      background: rgba(0,0,0,0.2);
+      cursor: pointer; transition: all 0.2s ease;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     }
-    .region-select:focus {
-      outline: none;
-      box-shadow: 0 0 0 4px var(--button-focus);
+    .form-control::placeholder { color: rgba(255, 255, 255, 0.6); }
+    .form-control:focus, .region-select:focus {
+      outline: none; box-shadow: 0 0 0 4px var(--button-focus);
     }
 
-    /* --- Enter Button --- */
-    .enter {
-      appearance: none;
-      width: 100%;
-      border: 0;
-      border-radius: 14px;
-      padding: 18px 20px;
-      font-size: 17px;
-      font-weight: 600;
-      color: var(--text-on-accent);
-      cursor: pointer;
-      background: var(--accent-gradient);
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-      transition: all 0.2s ease;
-      border: 1px solid rgba(255, 255, 255, 0.2);
+    /* --- Button Styles --- */
+    .btn {
+      appearance: none; width: 100%; border: 0; border-radius: 14px; padding: 18px 20px;
+      font-size: 17px; font-weight: 600; color: var(--text-on-accent); cursor: pointer;
+      background: var(--accent-gradient); box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+      transition: all 0.2s ease; border: 1px solid rgba(255, 255, 255, 0.2);
+      position: relative; overflow: hidden;
     }
-    .enter:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4);
-    }
-    .enter:active {
-      transform: translateY(0);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    }
-    .enter:focus-visible {
-      outline: none;
-      box-shadow: 0 0 0 4px var(--button-focus);
-    }
-    .enter:disabled {
-      cursor: not-allowed;
-      opacity: 0.6;
-      transform: none;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    }
+    .btn:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4); }
+    .btn:active { transform: translateY(0) scale(1); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); }
+    .btn:focus-visible { outline: none; box-shadow: 0 0 0 4px var(--button-focus); }
+    .btn:disabled { cursor: not-allowed; opacity: 0.6; transform: none; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); }
 
-    /* --- Utility & Accessibility --- */
-    .success {
-      display: none; /* Controlled by JS */
-      margin-top: 16px;
-      font-size: 14px;
-      color: var(--header-text);
-      font-weight: 500;
+    /* --- Registration Form Specifics --- */
+    #registration-container p { font-size: 14px; margin-bottom: 24px; }
+    .profile-pic-group { display: flex; align-items: center; flex-direction: column; gap: 16px; margin: 16px 0; }
+    #pfp-preview { width: 80px; height: 80px; border-radius: 50%; background: rgba(0,0,0,0.2); color: white; display: grid; place-items:center; font-size: 32px; background-size: cover; background-position: center; }
+    #pfp-upload-label { cursor: pointer; color: var(--text-on-accent); text-decoration: underline; font-size: 14px;}
+    
+    /* --- PIN Lock Screen --- */
+    .pin-display { display: flex; justify-content: center; gap: 15px; margin: 30px 0; }
+    .pin-dot { width: 16px; height: 16px; border-radius: 50%; border: 2px solid var(--text-secondary); transition: background-color 0.2s; }
+    .pin-dot.filled { background-color: var(--header-text); }
+    .pin-display.shake { animation: shake 0.5s; }
+
+    .pin-keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .pin-keypad button {
+      width: 70px; height: 70px; border-radius: 50%; border: none;
+      background: var(--glass-bg); color: var(--header-text); font-size: 24px; font-weight: 500;
+      cursor: pointer; transition: background-color 0.2s, transform 0.1s;
+      display: grid; place-items: center;
     }
-    .sr-only { /* Hides elements visually but not from screen readers */
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      padding: 0;
-      margin: -1px;
-      overflow: hidden;
-      clip: rect(0, 0, 0, 0);
-      border: 0;
-    }
+    .pin-keypad button:hover { background: rgba(255, 255, 255, 0.4); }
+    .pin-keypad button:active { transform: scale(0.95); }
+
+    /* --- Main App Screen Specifics --- */
+    .user-profile-header { display: flex; flex-direction: column; align-items: center; gap: 12px; margin-bottom: 24px; }
+    #user-pfp { width: 72px; height: 72px; border-radius: 50%; background: rgba(0,0,0,0.2); background-size: cover; background-position: center; }
+    #user-greeting { font-size: 20px; font-weight: 600; color: var(--header-text); }
+    .region-select { background: var(--accent-gradient); }
+
+    .select-container { position: relative; display: inline-block; width: 100%; }
+    .select-container::after { content: '▼'; font-size: 12px; position: absolute; top: 50%; right: 20px; transform: translateY(-50%); color: var(--text-on-accent); pointer-events: none; }
+    .success { display: none; margin-top: 16px; font-size: 14px; color: var(--header-text); font-weight: 500; }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); border: 0; }
   </style>
 </head>
 <body>
-
-  <!-- Welcome Animation Container -->
-  <div class="welcome-container" aria-hidden="true">
-    <div class="welcome-message">Welcome to Beta 3</div>
-  </div>
-
-  <!-- Main Application Container -->
-  <main class="container" id="main-content">
-    <header>
-      <div class="logo" aria-label="Chrono Focus Logo">⌛</div>
-      <h1>Chrono Focus</h1>
-      <p>Find your flow, peacefully.</p>
-    </header>
-
-    <!-- Region Selection Section -->
-    <div class="region-selector-wrapper">
-      <label for="region-select" class="sr-only">Select Your Region</label>
-      <div class="select-container">
-        <select id="region-select" class="region-select" required>
-          <option value="" disabled selected>Choose your region...</option>
-          <option value="USA">USA</option>
-          <option value="Canada">Canada</option>
-          <option value="China">China</option>
-          <option value="Bangladesh">Bangladesh</option>
-          <option value="UK">United Kingdom</option>
-          <option value="Australia">Australia</option>
-          <option value="Japan">Japan</option>
-          <option value="Germany">Germany</option>
-          <option value="India">India</option>
-          <!-- Add more countries as needed -->
-        </select>
-      </div>
+    <div id="loader" style="color: white; font-size: 24px;">Loading...</div>
+  
+    <!-- Registration Container -->
+    <div id="registration-container" class="container">
+      <header>
+        <div class="logo">🚀</div>
+        <h1>Create Your Profile</h1>
+        <p>This is a one-time setup and cannot be changed later. Let's make your sanctuary perfect from the start.</p>
+      </header>
+      <form id="registration-form" novalidate>
+        <div class="profile-pic-group">
+            <div id="pfp-preview">👤</div>
+            <label for="pfp-upload" id="pfp-upload-label">Choose a Profile Picture</label>
+            <input type="file" id="pfp-upload" class="sr-only" accept="image/*">
+        </div>
+        <div class="form-group"><label for="name">Name</label><input type="text" id="name" class="form-control" required placeholder="Enter your name"></div>
+        <div class="form-group"><label for="email">Email</label><input type="email" id="email" class="form-control" required placeholder="Enter your email"></div>
+        <div class="form-group"><label for="password">Password</label><input type="password" id="password" class="form-control" required placeholder="Create a password"></div>
+        <div class="form-group"><label for="gender">Gender</label>
+            <select id="gender" class="form-control" required><option value="" disabled selected>Select...</option><option value="Male">Male</option><option value="Female">Female</option><option value="Prefer not to say">Prefer not to say</option></select>
+        </div>
+        <div class="form-group"><label for="age">Age</label><input type="number" id="age" class="form-control" required min="12" placeholder="Your age (must be 12+)"></div>
+        <button type="submit" class="btn" id="registerBtn">Create Profile</button>
+      </form>
     </div>
 
-    <!-- Action Button -->
-    <button class="enter" id="enterBtn" disabled>Enter</button>
-    <div id="success" class="success" role="status"></div>
-    
-    <footer class="footer">
-      <p>© <span id="year"></span> Chrono Focus · Crafted by <a href="https://cozytusstudio-showcase-9bg3htb.gamma.site/cozytustudio" target="_blank" rel="noopener noreferrer">CozytuStudios Team</a></p>
-    </footer>
-  </main>
+    <!-- PIN Lock Container -->
+    <div id="pin-container" class="container">
+        <header><div class="logo">🔒</div><h1 id="pin-title">Set Your 4-Digit PIN</h1><p id="pin-subtitle">For quick and secure access.</p></header>
+        <div class="pin-display" id="pin-display">
+            <div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div>
+        </div>
+        <div class="pin-keypad" id="pin-keypad">
+            <button data-key="1">1</button><button data-key="2">2</button><button data-key="3">3</button>
+            <button data-key="4">4</button><button data-key="5">5</button><button data-key="6">6</button>
+            <button data-key="7">7</button><button data-key="8">8</button><button data-key="9">9</button>
+            <span></span><button data-key="0">0</button><button data-key="del">⌫</button>
+        </div>
+    </div>
+  
+    <!-- Main Application Container -->
+    <main id="main-content" class="container">
+        <header class="user-profile-header">
+            <div id="user-pfp"></div>
+            <h1 id="user-greeting">Welcome!</h1>
+        </header>
+        <p style="margin-top:0;">Find your flow, peacefully.</p>
+        <div class="region-selector-wrapper" style="margin: 24px 0;">
+            <label for="region-select" class="sr-only">Select Your Region</label>
+            <div class="select-container">
+                <select id="region-select" class="region-select" required><option value="" disabled selected>Choose your region...</option><option value="USA">USA</option><option value="Canada">Canada</option><option value="China">China</option><option value="Bangladesh">Bangladesh</option><option value="UK">United Kingdom</option><option value="Australia">Australia</option><option value="Japan">Japan</option><option value="Germany">Germany</option><option value="India">India</option></select>
+            </div>
+        </div>
+        <button class="btn enter" id="enterBtn" disabled>Enter</button>
+        <div id="success" class="success" role="status"></div>
+        <footer class="footer"><p>© <span id="year"></span> Chrono Focus · Crafted by CozytuStudios Team</p></footer>
+    </main>
 
   <!-- Internal JavaScript -->
   <script>
-    // A self-invoking anonymous function to avoid polluting the global scope
     (function() {
       'use strict';
-
-      // --- DOM Element Selection ---
-      const regionSelect = document.getElementById('region-select');
-      const enterBtn = document.getElementById('enterBtn');
-      const successMsg = document.getElementById('success');
-      const yearSpan = document.getElementById('year');
       
-      const STORAGE_KEY = 'chronoFocus-userRegion';
-      const REDIRECT_DELAY_MS = 1500;
+      const USER_DATA_KEY = 'chronoFocus-userData';
+      const USER_PIN_KEY = 'chronoFocus-userPin';
+      const SAVED_REGION_KEY = 'chronoFocus-userRegion';
+
+      // --- Wait for the DOM to be fully loaded before running any script
+      document.addEventListener('DOMContentLoaded', initialize);
 
       /**
-       * Initializes the application.
+       * Main initialization function. Acts as a router to decide which view to show.
        */
       function initialize() {
-        setCurrentYear();
-        loadSavedRegion();
-        setupEventListeners();
+        document.getElementById('year').textContent = new Date().getFullYear();
+        checkUserState();
       }
-
+      
       /**
-       * Sets the copyright year in the footer.
+       * Checks the user's state (new, returning, etc.) and routes them to the correct view.
        */
-      function setCurrentYear() {
-        yearSpan.textContent = new Date().getFullYear();
-      }
+      function checkUserState() {
+        let userData = null;
+        try {
+          // Robustly parse user data
+          const storedData = localStorage.getItem(USER_DATA_KEY);
+          userData = storedData ? JSON.parse(storedData) : null;
+        } catch (error) {
+          console.error("Error parsing user data, clearing for safety:", error);
+          localStorage.removeItem(USER_DATA_KEY);
+        }
+        
+        const userPin = localStorage.getItem(USER_PIN_KEY);
+        
+        // Hide loader once JS kicks in
+        document.getElementById('loader').classList.add('hidden');
 
-      /**
-       * Loads the user's previously selected region from localStorage.
-       */
-      function loadSavedRegion() {
-        const savedRegion = localStorage.getItem(STORAGE_KEY);
-        if (savedRegion) {
-          regionSelect.value = savedRegion;
-          validateSelection();
+        if (!userData) {
+          // Case 1: Brand new user -> Show registration
+          showModule('registration-container');
+          setupRegistration();
+        } else if (!userPin) {
+          // Case 2: User registered but didn't set PIN (edge case) -> Show PIN setup
+          showModule('pin-container');
+          setupPinScreen(true, userData); // isSettingPin = true
+        } else {
+          // Case 3: Returning user -> Show PIN entry
+          showModule('pin-container');
+          setupPinScreen(false, userData); // isSettingPin = false
         }
       }
 
       /**
-       * Sets up all the necessary event listeners.
+       * Shows a specific app module and hides others.
+       * @param {string} moduleId The ID of the container element to show.
        */
-      function setupEventListeners() {
+      function showModule(moduleId) {
+          document.querySelectorAll('.container').forEach(c => c.classList.remove('active'));
+          const module = document.getElementById(moduleId);
+          if (module) {
+            setTimeout(() => module.classList.add('active'), 50); // Small delay for CSS transition
+          }
+      }
+
+      // --- MODULE 1: REGISTRATION ---
+      function setupRegistration() {
+          const form = document.getElementById('registration-form');
+          const pfpUpload = document.getElementById('pfp-upload');
+          const pfpPreview = document.getElementById('pfp-preview');
+          let pfpData = null;
+
+          pfpUpload.addEventListener('change', (e) => {
+              const file = e.target.files[0];
+              if (!file) return;
+              const reader = new FileReader();
+              reader.onload = (event) => {
+                  pfpData = event.target.result;
+                  pfpPreview.style.backgroundImage = `url(${pfpData})`;
+                  pfpPreview.textContent = ''; // Clear emoji
+              };
+              reader.readAsDataURL(file);
+          });
+          
+          form.addEventListener('submit', (e) => {
+              e.preventDefault();
+              const newUserData = {
+                  pfp: pfpData,
+                  name: document.getElementById('name').value,
+                  email: document.getElementById('email').value,
+                  gender: document.getElementById('gender').value,
+                  age: document.getElementById('age').value
+              };
+
+              // Simple validation
+              if (!newUserData.name || !newUserData.email || !document.getElementById('password').value || !newUserData.gender || !newUserData.age || newUserData.age < 12) {
+                  alert("Please fill out all fields correctly. Age must be 12 or over.");
+                  return;
+              }
+              
+              localStorage.setItem(USER_DATA_KEY, JSON.stringify(newUserData));
+              
+              // Transition to PIN setup
+              showModule('pin-container');
+              setupPinScreen(true, newUserData); // true for 'isSettingPin'
+          });
+      }
+
+      // --- MODULE 2: PIN SCREEN ---
+      function setupPinScreen(isSettingPin, userData) {
+        let pin = "";
+        const pinDisplayDots = document.querySelectorAll('.pin-dot');
+        const keypad = document.getElementById('pin-keypad');
+        const pinTitle = document.getElementById('pin-title');
+        const pinSubtitle = document.getElementById('pin-subtitle');
+        const pinDisplay = document.getElementById('pin-display');
+        const savedPin = localStorage.getItem(USER_PIN_KEY);
+
+        // Configure text based on whether user is setting or entering PIN
+        if (isSettingPin) {
+            pinTitle.textContent = 'Set Your 4-Digit PIN';
+            pinSubtitle.textContent = 'For quick and secure access.';
+        } else {
+            pinTitle.textContent = `Welcome Back, ${userData.name}`;
+            pinSubtitle.textContent = "Please enter your PIN";
+        }
+        
+        function updatePinDisplay() {
+            pinDisplayDots.forEach((dot, index) => {
+                dot.classList.toggle('filled', index < pin.length);
+            });
+        }
+        
+        function handlePinComplete() {
+            if (isSettingPin) {
+                localStorage.setItem(USER_PIN_KEY, pin);
+                showModule('main-content');
+                setupMainApp(userData);
+            } else {
+                if (pin === savedPin) {
+                    showModule('main-content');
+                    setupMainApp(userData);
+                } else {
+                    pinDisplay.classList.add('shake');
+                    setTimeout(() => {
+                        pinDisplay.classList.remove('shake');
+                        pin = ""; // Reset PIN
+                        updatePinDisplay();
+                    }, 500);
+                }
+            }
+        }
+        
+        const keypressHandler = (e) => {
+            const key = e.target.closest('[data-key]')?.dataset.key;
+            if (!key) return;
+
+            if (key === 'del') {
+                pin = pin.slice(0, -1);
+            } else if (pin.length < 4) {
+                pin += key;
+            }
+            
+            updatePinDisplay();
+            
+            if (pin.length === 4) {
+                setTimeout(handlePinComplete, 200);
+            }
+        };
+
+        // Important: Remove old listener to prevent duplicates, then add the new one.
+        keypad.removeEventListener('click', keypressHandler);
+        keypad.addEventListener('click', keypressHandler);
+      }
+
+      // --- MODULE 3: MAIN APP ---
+      function setupMainApp(userData) {
+        const regionSelect = document.getElementById('region-select');
+        const enterBtn = document.getElementById('enterBtn');
+        const successMsg = document.getElementById('success');
+        
+        function validateSelection() {
+            enterBtn.disabled = !regionSelect.value;
+        }
+
+        function loadSavedRegion() {
+            const savedRegion = localStorage.getItem(SAVED_REGION_KEY);
+            if (savedRegion) {
+                regionSelect.value = savedRegion;
+            }
+            validateSelection();
+        }
+        
+        function personalizeHeader() {
+            if (userData) {
+                document.getElementById('user-greeting').textContent = `Welcome, ${userData.name}`;
+                const userPfp = document.getElementById('user-pfp');
+                if (userData.pfp) {
+                    userPfp.style.backgroundImage = `url(${userData.pfp})`;
+                    userPfp.textContent = '';
+                } else {
+                    userPfp.style.backgroundImage = '';
+                    userPfp.textContent = '👤'; // Default if no PFP
+                }
+            }
+        }
+
+        function handleEntry() {
+            const selectedRegion = regionSelect.value;
+            enterBtn.disabled = true;
+            regionSelect.disabled = true;
+            enterBtn.textContent = 'Entering…';
+            successMsg.textContent = `✓ Preparing your sanctuary in ${selectedRegion}…`;
+            successMsg.style.display = 'block';
+            localStorage.setItem(SAVED_REGION_KEY, selectedRegion);
+            setTimeout(() => {
+                alert(`Redirecting to your personalized Chrono Focus experience in ${selectedRegion}!`);
+                // In a real app, you would redirect here:
+                // window.location.href = 'page1.html';
+                
+                // For this demo, we'll reset the button state
+                 enterBtn.disabled = false;
+                 regionSelect.disabled = false;
+                 enterBtn.textContent = 'Enter';
+
+            }, 1500);
+        }
+
         regionSelect.addEventListener('change', validateSelection);
         enterBtn.addEventListener('click', handleEntry);
-        document.addEventListener('keydown', (e) => {
-          if (e.key === 'Enter' && !enterBtn.disabled) {
-            enterBtn.click();
-          }
-        });
-      }
-
-      /**
-       * Checks if a valid region is selected to enable/disable the button.
-       */
-      function validateSelection() {
-        const regionIsSelected = regionSelect.value && regionSelect.value !== "";
-        enterBtn.disabled = !regionIsSelected;
-      }
-
-      /**
-       * Handles the logic when the 'Enter' button is clicked.
-       */
-      function handleEntry() {
-        const selectedRegion = regionSelect.value;
         
-        enterBtn.disabled = true;
-        regionSelect.disabled = true;
-
-        enterBtn.textContent = 'Entering…';
-        successMsg.textContent = `✓ Welcome back. Preparing your sanctuary in ${selectedRegion}…`;
-        successMsg.style.display = 'block';
-
-        localStorage.setItem(STORAGE_KEY, selectedRegion);
-        
-        setTimeout(() => {
-          window.location.href = 'page1.html'; // Or the next page
-        }, REDIRECT_DELAY_MS);
+        personalizeHeader();
+        loadSavedRegion();
+        validateSelection();
       }
-
-      // --- Start the application once the DOM is ready ---
-      document.addEventListener('DOMContentLoaded', initialize);
 
     })();
   </script>
