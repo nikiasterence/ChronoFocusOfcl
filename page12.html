@@ -52,22 +52,82 @@
             to { opacity: 1; }
         }
 
-
         /* ----- Header and Title Section ----- */
         .main-header {
             text-align: center;
-            padding: 5rem 1.5rem 3rem;
+            padding: 4rem 1.5rem 2rem;
+            position: relative;
         }
 
         .main-header h1 {
             font-family: var(--font-heading);
-            font-size: clamp(2.5rem, 5vw, 4rem); /* Responsive font size */
+            font-size: clamp(2.5rem, 5vw, 4rem);
             font-style: italic;
             font-weight: 500;
             color: var(--primary-text-color);
             margin: 0;
             opacity: 0;
             animation: slideInDown 1s ease-out 0.3s forwards;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            margin-top: 0.5rem;
+            color: var(--accent-color-2);
+            opacity: 0;
+            animation: fadeIn 1s ease-in-out 0.6s forwards;
+        }
+
+        /* ----- Controls Section ----- */
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            padding: 1rem 1.5rem;
+            flex-wrap: wrap;
+            opacity: 0;
+            animation: fadeIn 1s ease-in-out 0.8s forwards;
+        }
+
+        .search-box {
+            padding: 0.7rem 1rem;
+            border: 1px solid var(--accent-color-1);
+            border-radius: 50px;
+            font-family: var(--font-body);
+            font-size: 1rem;
+            width: 300px;
+            max-width: 100%;
+            background: rgba(255, 255, 255, 0.7);
+            transition: all 0.3s ease;
+        }
+
+        .search-box:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px var(--accent-color-1);
+            background: white;
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .filter-btn {
+            padding: 0.7rem 1.2rem;
+            background: var(--card-background);
+            border: 1px solid var(--accent-color-1);
+            border-radius: 50px;
+            font-family: var(--font-body);
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--accent-color-1);
+            color: white;
         }
 
         /* ----- "Quote of the Day" Special Section ----- */
@@ -78,7 +138,7 @@
             justify-content: center;
             align-items: center;
             opacity: 0;
-            animation: fadeIn 1s ease-in-out 0.6s forwards;
+            animation: fadeIn 1s ease-in-out 1s forwards;
         }
 
         .quote-of-the-day {
@@ -90,6 +150,20 @@
             box-shadow: 0 10px 30px -10px var(--shadow-color);
             border-radius: 8px;
             text-align: left;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .quote-of-the-day::before {
+            content: """;
+            position: absolute;
+            top: -10px;
+            left: 10px;
+            font-size: 8rem;
+            color: var(--accent-color-1);
+            opacity: 0.1;
+            font-family: var(--font-heading);
+            line-height: 1;
         }
 
         .quote-of-the-day-title {
@@ -136,6 +210,8 @@
             box-shadow: 0 4px 15px -5px var(--shadow-color);
             transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
             border-top: 4px solid transparent; /* Prepare for hover effect */
+            position: relative;
+            overflow: hidden;
             
             /* Animation for cards loading in sequence */
             opacity: 0;
@@ -143,11 +219,23 @@
             animation: fadeInUp 0.5s ease-out forwards;
         }
 
+        .quote-card::before {
+            content: """;
+            position: absolute;
+            top: 10px;
+            left: 15px;
+            font-size: 4rem;
+            color: var(--accent-color-1);
+            opacity: 0.1;
+            font-family: var(--font-heading);
+            line-height: 1;
+        }
+
         /* Individual Card Animations */
         /* Assign staggered animation delay using nth-child */
-        .quote-card:nth-child(1) { animation-delay: 0.8s; }
-        .quote-card:nth-child(2) { animation-delay: 0.9s; }
-        .quote-card:nth-child(3) { animation-delay: 1.0s; }
+        .quote-card:nth-child(1) { animation-delay: 1.2s; }
+        .quote-card:nth-child(2) { animation-delay: 1.3s; }
+        .quote-card:nth-child(3) { animation-delay: 1.4s; }
         /* Add more if needed, or handle with JS */
         
         @keyframes fadeInUp {
@@ -161,7 +249,6 @@
             to { transform: translateY(0); opacity: 1;}
         }
 
-
         .quote-card:hover {
             transform: translateY(-8px);
             box-shadow: 0 15px 35px -10px rgba(0, 0, 0, 0.12);
@@ -173,20 +260,8 @@
             margin: 0 0 1rem 0;
             font-weight: 400;
             position: relative;
+            z-index: 1;
         }
-        
-        /* A subtle quote icon for decoration */
-        .quote-card blockquote::before {
-            content: '“';
-            font-family: var(--font-heading);
-            position: absolute;
-            top: -20px;
-            left: -15px;
-            font-size: 3rem;
-            color: var(--accent-color-1);
-            opacity: 0.2;
-        }
-
 
         .quote-card cite {
             display: block;
@@ -194,15 +269,75 @@
             font-size: 0.9rem;
             font-weight: 500;
             color: var(--accent-color-2);
+            z-index: 1;
+            position: relative;
+        }
+
+        /* ----- Load More Button ----- */
+        .load-more-container {
+            text-align: center;
+            padding: 2rem 0 4rem;
+            opacity: 0;
+            animation: fadeIn 1s ease-in-out 1.5s forwards;
+        }
+
+        .load-more-btn {
+            padding: 0.8rem 2rem;
+            background: var(--card-background);
+            border: 1px solid var(--accent-color-1);
+            border-radius: 50px;
+            font-family: var(--font-body);
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .load-more-btn:hover {
+            background: var(--accent-color-1);
+            color: white;
         }
 
         /* ----- Footer Styling ----- */
         .main-footer {
             text-align: center;
             padding: 3rem 1.5rem;
-            margin-top: 4rem;
+            margin-top: 2rem;
             color: var(--accent-color-2);
             font-size: 0.9rem;
+            border-top: 1px solid rgba(0,0,0,0.05);
+        }
+
+        /* ----- Responsive Adjustments ----- */
+        @media (max-width: 768px) {
+            .quote-collection {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+                padding: 2rem 1rem;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .search-box {
+                width: 100%;
+                max-width: 400px;
+            }
+            
+            .quote-of-the-day {
+                padding: 1.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main-header {
+                padding: 3rem 1rem 1.5rem;
+            }
+            
+            .quote-card {
+                padding: 2rem 1.5rem;
+            }
         }
     </style>
 </head>
@@ -210,7 +345,19 @@
 
     <header class="main-header">
         <h1>Don't lose motivation</h1>
+        <p class="subtitle">Over 200 quotes to inspire your journey</p>
     </header>
+
+    <div class="controls">
+        <input type="text" class="search-box" placeholder="Search for quotes or authors...">
+        <div class="filter-buttons">
+            <button class="filter-btn active" data-filter="all">All Quotes</button>
+            <button class="filter-btn" data-filter="short">Short & Sweet</button>
+            <button class="filter-btn" data-filter="perseverance">Perseverance</button>
+            <button class="filter-btn" data-filter="success">Success</button>
+            <button class="filter-btn" data-filter="dreams">Dreams</button>
+        </div>
+    </div>
 
     <main>
         <section class="quote-of-the-day-container">
@@ -223,6 +370,10 @@
         <div id="quote-grid" class="quote-collection">
             <!-- JavaScript will inject the shuffled quotes here -->
         </div>
+
+        <div class="load-more-container">
+            <button class="load-more-btn">Load More Quotes</button>
+        </div>
     </main>
 
     <footer class="main-footer">
@@ -233,37 +384,279 @@
         // All necessary JavaScript is right here.
         document.addEventListener('DOMContentLoaded', () => {
             const quotes = [
-                { text: "Success is not final, failure is not fatal: it is the courage to continue that counts.", author: "Winston Churchill" },
-                { text: "Believe you can and you're halfway there.", author: "Theodore Roosevelt" },
-                { text: "The secret of getting ahead is getting started.", author: "Mark Twain" },
-                { text: "It always seems impossible until it's done.", author: "Nelson Mandela" },
-                { text: "The future belongs to those who believe in the beauty of their dreams.", author: "Eleanor Roosevelt" },
-                { text: "The only way to do great work is to love what you do.", author: "Steve Jobs" },
-                { text: "Perseverance is not a long race; it is many short races one after the other.", author: "Walter Elliot" },
-                { text: "The harder you work for something, the greater you'll feel when you achieve it.", author: "Anonymous" },
-                { text: "Don't let what you cannot do interfere with what you can do.", author: "John Wooden" },
-                { text: "Success is the sum of small efforts, repeated day in and day out.", author: "Robert Collier" },
-                { text: "You are never too old to set another goal or to dream a new dream.", author: "C.S. Lewis" },
-                { text: "The expert in anything was once a beginner.", author: "Helen Hayes" },
-                { text: "A little progress each day adds up to big results.", author: "Satya Nani" },
-                { text: "Strive for progress, not perfection.", author: "Anonymous" },
-                { text: "It does not matter how slowly you go as long as you do not stop.", author: "Confucius" },
-                { text: "The way to get started is to quit talking and begin doing.", author: "Walt Disney" },
-                { text: "I find that the harder I work, the more luck I seem to have.", author: "Thomas Jefferson" },
-                { text: "Our greatest weakness lies in giving up. The most certain way to succeed is always to try just one more time.", author: "Thomas A. Edison" },
-                { text: "If you can dream it, you can do it.", author: "Walt Disney" },
-                { text: "You just can't beat the person who never gives up.", author: "Babe Ruth" },
-                { text: "Fall seven times and stand up eight.", author: "Japanese Proverb" },
-                { text: "What you get by achieving your goals is not as important as what you become by achieving your goals.", author: "Zig Ziglar" },
-                { text: "There are no shortcuts to any place worth going.", author: "Beverly Sills" },
-                { text: "Action is the foundational key to all success.", author: "Pablo Picasso" },
-                { text: "The journey of a thousand miles begins with a single step.", author: "Lao Tzu" },
-                { text: "I am not a product of my circumstances. I am a product of my decisions.", author: "Stephen Covey" },
-                { text: "The mind is not a vessel to be filled, but a fire to be kindled.", author: "Plutarch" },
-                { text: "The best way to predict your future is to create it.", author: "Abraham Lincoln" },
-                { text: "The beautiful thing about learning is that no one can take it away from you.", author: "B.B. King" },
-                { text: "Genius is 1% inspiration, 99% perspiration.", author: "Thomas Edison" },
+                { text: "Success is not final, failure is not fatal: it is the courage to continue that counts.", author: "Winston Churchill", category: "perseverance" },
+                { text: "Believe you can and you're halfway there.", author: "Theodore Roosevelt", category: "success" },
+                { text: "The secret of getting ahead is getting started.", author: "Mark Twain", category: "success" },
+                { text: "It always seems impossible until it's done.", author: "Nelson Mandela", category: "perseverance" },
+                { text: "The future belongs to those who believe in the beauty of their dreams.", author: "Eleanor Roosevelt", category: "dreams" },
+                { text: "The only way to do great work is to love what you do.", author: "Steve Jobs", category: "success" },
+                { text: "Perseverance is not a long race; it is many short races one after the other.", author: "Walter Elliot", category: "perseverance" },
+                { text: "The harder you work for something, the greater you'll feel when you achieve it.", author: "Anonymous", category: "success" },
+                { text: "Don't let what you cannot do interfere with what you can do.", author: "John Wooden", category: "perseverance" },
+                { text: "Success is the sum of small efforts, repeated day in and day out.", author: "Robert Collier", category: "success" },
+                { text: "You are never too old to set another goal or to dream a new dream.", author: "C.S. Lewis", category: "dreams" },
+                { text: "The expert in anything was once a beginner.", author: "Helen Hayes", category: "perseverance" },
+                { text: "A little progress each day adds up to big results.", author: "Satya Nani", category: "success" },
+                { text: "Strive for progress, not perfection.", author: "Anonymous", category: "success" },
+                { text: "It does not matter how slowly you go as long as you do not stop.", author: "Confucius", category: "perseverance" },
+                { text: "The way to get started is to quit talking and begin doing.", author: "Walt Disney", category: "success" },
+                { text: "I find that the harder I work, the more luck I seem to have.", author: "Thomas Jefferson", category: "success" },
+                { text: "Our greatest weakness lies in giving up. The most certain way to succeed is always to try just one more time.", author: "Thomas A. Edison", category: "perseverance" },
+                { text: "If you can dream it, you can do it.", author: "Walt Disney", category: "dreams" },
+                { text: "You just can't beat the person who never gives up.", author: "Babe Ruth", category: "perseverance" },
+                { text: "Fall seven times and stand up eight.", author: "Japanese Proverb", category: "perseverance" },
+                { text: "What you get by achieving your goals is not as important as what you become by achieving your goals.", author: "Zig Ziglar", category: "success" },
+                { text: "There are no shortcuts to any place worth going.", author: "Beverly Sills", category: "perseverance" },
+                { text: "Action is the foundational key to all success.", author: "Pablo Picasso", category: "success" },
+                { text: "The journey of a thousand miles begins with a single step.", author: "Lao Tzu", category: "perseverance" },
+                { text: "I am not a product of my circumstances. I am a product of my decisions.", author: "Stephen Covey", category: "success" },
+                { text: "The mind is not a vessel to be filled, but a fire to be kindled.", author: "Plutarch", category: "dreams" },
+                { text: "The best way to predict your future is to create it.", author: "Abraham Lincoln", category: "success" },
+                { text: "The beautiful thing about learning is that no one can take it away from you.", author: "B.B. King", category: "dreams" },
+                { text: "Genius is 1% inspiration, 99% perspiration.", author: "Thomas Edison", category: "success" },
+                { text: "Do what you can, with what you have, where you are.", author: "Theodore Roosevelt", category: "success" },
+                { text: "Keep your face always toward the sunshine, and shadows will fall behind you.", author: "Walt Whitman", category: "dreams" },
+                { text: "It is during our darkest moments that we must focus to see the light.", author: "Aristotle", category: "perseverance" },
+                { text: "Life is 10% what happens to you and 90% how you react to it.", author: "Charles R. Swindoll", category: "success" },
+                { text: "The only limit to our realization of tomorrow will be our doubts of today.", author: "Franklin D. Roosevelt", category: "dreams" },
+                { text: "In the middle of difficulty lies opportunity.", author: "Albert Einstein", category: "perseverance" },
+                { text: "The best revenge is massive success.", author: "Frank Sinatra", category: "success" },
+                { text: "Life isn't about finding yourself. Life is about creating yourself.", author: "George Bernard Shaw", category: "dreams" },
+                { text: "Either you run the day, or the day runs you.", author: "Jim Rohn", category: "success" },
+                { text: "Whether you think you can or you think you can't, you're right.", author: "Henry Ford", category: "success" },
+                { text: "The two most important days in your life are the day you are born and the day you find out why.", author: "Mark Twain", category: "dreams" },
+                { text: "Nothing is impossible, the word itself says 'I'm possible'!", author: "Audrey Hepburn", category: "success" },
+                { text: "The only person you are destined to become is the person you decide to be.", author: "Ralph Waldo Emerson", category: "dreams" },
+                { text: "Everything you've ever wanted is on the other side of fear.", author: "George Addair", category: "perseverance" },
+                { text: "Dream big and dare to fail.", author: "Norman Vaughan", category: "dreams" },
+                { text: "It's not whether you get knocked down, it's whether you get up.", author: "Vince Lombardi", category: "perseverance" },
+                { text: "Your time is limited, so don't waste it living someone else's life.", author: "Steve Jobs", category: "success" },
+                { text: "Winning isn't everything, but wanting to win is.", author: "Vince Lombardi", category: "success" },
+                { text: "I am not a product of my circumstances. I am a product of my decisions.", author: "Stephen Covey", category: "success" },
+                { text: "Every child is an artist. The problem is how to remain an artist once we grow up.", author: "Pablo Picasso", category: "dreams" },
+                { text: "You can't use up creativity. The more you use, the more you have.", author: "Maya Angelou", category: "dreams" },
+                { text: "Dream is not that which you see while sleeping, it is something that does not let you sleep.", author: "A.P.J. Abdul Kalam", category: "dreams" },
+                { text: "Don't be pushed around by the fears in your mind. Be led by the dreams in your heart.", author: "Roy T. Bennett", category: "dreams" },
+                { text: "Go confidently in the direction of your dreams. Live the life you have imagined.", author: "Henry David Thoreau", category: "dreams" },
+                { text: "The biggest adventure you can take is to live the life of your dreams.", author: "Oprah Winfrey", category: "dreams" },
+                { text: "All our dreams can come true, if we have the courage to pursue them.", author: "Walt Disney", category: "dreams" },
+                { text: "The future belongs to those who believe in the beauty of their dreams.", author: "Eleanor Roosevelt", category: "dreams" },
+                { text: "Dreams are necessary to life.", author: "Anais Nin", category: "dreams" },
+                { text: "A dream doesn't become reality through magic; it takes sweat, determination and hard work.", author: "Colin Powell", category: "dreams" },
+                { text: "The only thing that will stop you from fulfilling your dreams is you.", author: "Tom Bradley", category: "dreams" },
+                { text: "Great minds have purposes, others have wishes.", author: "Washington Irving", category: "dreams" },
+                { text: "If you have built castles in the air, your work need not be lost; that is where they should be. Now put the foundations under them.", author: "Henry David Thoreau", category: "dreams" },
+                { text: "First, have a definite, clear practical ideal; a goal, an objective. Second, have the necessary means to achieve your ends; wisdom, money, materials, and methods. Third, adjust all your means to that end.", author: "Aristotle", category: "success" },
+                { text: "If you want to live a happy life, tie it to a goal, not to people or things.", author: "Albert Einstein", category: "success" },
+                { text: "Setting goals is the first step in turning the invisible into the visible.", author: "Tony Robbins", category: "success" },
+                { text: "A goal properly set is halfway reached.", author: "Zig Ziglar", category: "success" },
+                { text: "You should set goals beyond your reach so you always have something to live for.", author: "Ted Turner", category: "success" },
+                { text: "If you aim at nothing, you will hit it every time.", author: "Zig Ziglar", category: "success" },
+                { text: "Give me a stock clerk with a goal and I'll give you a man who will make history. Give me a man with no goals and I'll give you a stock clerk.", author: "J.C. Penney", category: "success" },
+                { text: "Intelligence without ambition is a bird without wings.", author: "Salvador Dali", category: "success" },
+                { text: "Stay focused, go after your dreams and keep moving toward your goals.", author: "LL Cool J", category: "success" },
+                { text: "It's hard to beat a person who never gives up.", author: "Babe Ruth", category: "perseverance" },
+                { text: "I've failed over and over and over again in my life and that is why I succeed.", author: "Michael Jordan", category: "perseverance" },
+                { text: "Many of life's failures are people who did not realize how close they were to success when they gave up.", author: "Thomas A. Edison", category: "perseverance" },
+                { text: "Success is stumbling from failure to failure with no loss of enthusiasm.", author: "Winston S. Churchill", category: "perseverance" },
+                { text: "The difference between a successful person and others is not a lack of strength, not a lack of knowledge, but rather a lack in will.", author: "Vince Lombardi", category: "perseverance" },
+                { text: "There is no failure except in no longer trying.", author: "Elbert Hubbard", category: "perseverance" },
+                { text: "I can accept failure, everyone fails at something. But I can't accept not trying.", author: "Michael Jordan", category: "perseverance" },
+                { text: "Failure is simply the opportunity to begin again, this time more intelligently.", author: "Henry Ford", category: "perseverance" },
+                { text: "A man can fail many times, but he isn't a failure until he begins to blame somebody else.", author: "John Burroughs", category: "perseverance" },
+                { text: "There is no failure except in no longer trying.", author: "Chris Bradford", category: "perseverance" },
+                { text: "Failure is the condiment that gives success its flavor.", author: "Truman Capote", category: "perseverance" },
+                { text: "I have not failed. I've just found 10,000 ways that won't work.", author: "Thomas A. Edison", category: "perseverance" },
+                { text: "Success is not the absence of failure; it's the persistence through failure.", author: "Aisha Tyler", category: "perseverance" },
+                { text: "Failure is not the opposite of success, it's part of success.", author: "Arianna Huffington", category: "perseverance" },
+                { text: "The only real mistake is the one from which we learn nothing.", author: "Henry Ford", category: "perseverance" },
+                { text: "Perseverance is failing 19 times and succeeding the 20th.", author: "Julie Andrews", category: "perseverance" },
+                { text: "It's not that I'm so smart, it's just that I stay with problems longer.", author: "Albert Einstein", category: "perseverance" },
+                { text: "Energy and persistence conquer all things.", author: "Benjamin Franklin", category: "perseverance" },
+                { text: "Persistence is the twin sister of excellence. One is a matter of quality; the other, a matter of time.", author: "Marabel Morgan", category: "perseverance" },
+                { text: "Continuous effort - not strength or intelligence - is the key to unlocking our potential.", author: "Winston Churchill", category: "perseverance" },
+                { text: "The road to success is dotted with many tempting parking spaces.", author: "Will Rogers", category: "perseverance" },
+                { text: "The difference between the impossible and the possible lies in a person's determination.", author: "Tommy Lasorda", category: "perseverance" },
+                { text: "Determination is the wake-up call to the human will.", author: "Tony Robbins", category: "perseverance" },
+                { text: "The only thing that overcomes hard luck is hard work.", author: "Harry Golden", category: "perseverance" },
+                { text: "Work hard in silence, let your success be your noise.", author: "Frank Ocean", category: "success" },
+                { text: "Success usually comes to those who are too busy to be looking for it.", author: "Henry David Thoreau", category: "success" },
+                { text: "Don't be afraid to give up the good to go for the great.", author: "John D. Rockefeller", category: "success" },
+                { text: "I owe my success to having listened respectfully to the very best advice, and then going away and doing the exact opposite.", author: "G.K. Chesterton", category: "success" },
+                { text: "There are no secrets to success. It is the result of preparation, hard work, and learning from failure.", author: "Colin Powell", category: "success" },
+                { text: "Success is walking from failure to failure with no loss of enthusiasm.", author: "Winston Churchill", category: "success" },
+                { text: "The successful warrior is the average man, with laser-like focus.", author: "Bruce Lee", category: "success" },
+                { text: "Develop success from failures. Discouragement and failure are two of the surest stepping stones to success.", author: "Dale Carnegie", category: "success" },
+                { text: "To succeed in life, you need two things: ignorance and confidence.", author: "Mark Twain", category: "success" },
+                { text: "Success is not in what you have, but who you are.", author: "Bo Bennett", category: "success" },
+                { text: "Success is getting what you want, happiness is wanting what you get.", author: "W.P. Kinsella", category: "success" },
+                { text: "The secret of success is to do the common thing uncommonly well.", author: "John D. Rockefeller Jr.", category: "success" },
+                { text: "I cannot give you the formula for success, but I can give you the formula for failure: Try to please everybody.", author: "Herbert Bayard Swope", category: "success" },
+                { text: "Success is not the key to happiness. Happiness is the key to success. If you love what you are doing, you will be successful.", author: "Albert Schweitzer", category: "success" },
+                { text: "The successful man is the one who finds out what is the matter with his business before his competitors do.", author: "Roy L. Smith", category: "success" },
+                { text: "There is no elevator to success. You have to take the stairs.", author: "Zig Ziglar", category: "success" },
+                { text: "Success is not just about making money. It's about making a difference.", author: "Unknown", category: "success" },
+                { text: "The price of success is hard work, dedication to the job at hand, and the determination that whether we win or lose, we have applied the best of ourselves to the task at hand.", author: "Vince Lombardi", category: "success" },
+                { text: "Success is where preparation and opportunity meet.", author: "Bobby Unser", category: "success" },
+                { text: "The only place where success comes before work is in the dictionary.", author: "Vidal Sassoon", category: "success" },
+                { text: "Success seems to be connected with action. Successful people keep moving. They make mistakes, but they don't quit.", author: "Conrad Hilton", category: "success" },
+                { text: "Success is not measured by what you accomplish, but by the opposition you have encountered, and the courage with which you have maintained the struggle against overwhelming odds.", author: "Orison Swett Marden", category: "success" },
+                { text: "Success is not final, failure is not fatal: it is the courage to continue that counts.", author: "Winston Churchill", category: "perseverance" },
+                { text: "Believe you can and you're halfway there.", author: "Theodore Roosevelt", category: "success" },
+                { text: "The secret of getting ahead is getting started.", author: "Mark Twain", category: "success" },
+                { text: "It always seems impossible until it's done.", author: "Nelson Mandela", category: "perseverance" },
+                { text: "The future belongs to those who believe in the beauty of their dreams.", author: "Eleanor Roosevelt", category: "dreams" },
+                { text: "The only way to do great work is to love what you do.", author: "Steve Jobs", category: "success" },
+                { text: "Perseverance is not a long race; it is many short races one after the other.", author: "Walter Elliot", category: "perseverance" },
+                { text: "The harder you work for something, the greater you'll feel when you achieve it.", author: "Anonymous", category: "success" },
+                { text: "Don't let what you cannot do interfere with what you can do.", author: "John Wooden", category: "perseverance" },
+                { text: "Success is the sum of small efforts, repeated day in and day out.", author: "Robert Collier", category: "success" },
+                { text: "You are never too old to set another goal or to dream a new dream.", author: "C.S. Lewis", category: "dreams" },
+                { text: "The expert in anything was once a beginner.", author: "Helen Hayes", category: "perseverance" },
+                { text: "A little progress each day adds up to big results.", author: "Satya Nani", category: "success" },
+                { text: "Strive for progress, not perfection.", author: "Anonymous", category: "success" },
+                { text: "It does not matter how slowly you go as long as you do not stop.", author: "Confucius", category: "perseverance" },
+                { text: "The way to get started is to quit talking and begin doing.", author: "Walt Disney", category: "success" },
+                { text: "I find that the harder I work, the more luck I seem to have.", author: "Thomas Jefferson", category: "success" },
+                { text: "Our greatest weakness lies in giving up. The most certain way to succeed is always to try just one more time.", author: "Thomas A. Edison", category: "perseverance" },
+                { text: "If you can dream it, you can do it.", author: "Walt Disney", category: "dreams" },
+                { text: "You just can't beat the person who never gives up.", author: "Babe Ruth", category: "perseverance" },
+                { text: "Fall seven times and stand up eight.", author: "Japanese Proverb", category: "perseverance" },
+                { text: "What you get by achieving your goals is not as important as what you become by achieving your goals.", author: "Zig Ziglar", category: "success" },
+                { text: "There are no shortcuts to any place worth going.", author: "Beverly Sills", category: "perseverance" },
+                { text: "Action is the foundational key to all success.", author: "Pablo Picasso", category: "success" },
+                { text: "The journey of a thousand miles begins with a single step.", author: "Lao Tzu", category: "perseverance" },
+                { text: "I am not a product of my circumstances. I am a product of my decisions.", author: "Stephen Covey", category: "success" },
+                { text: "The mind is not a vessel to be filled, but a fire to be kindled.", author: "Plutarch", category: "dreams" },
+                { text: "The best way to predict your future is to create it.", author: "Abraham Lincoln", category: "success" },
+                { text: "The beautiful thing about learning is that no one can take it away from you.", author: "B.B. King", category: "dreams" },
+                { text: "Genius is 1% inspiration, 99% perspiration.", author: "Thomas Edison", category: "success" },
+                { text: "Do what you can, with what you have, where you are.", author: "Theodore Roosevelt", category: "success" },
+                { text: "Keep your face always toward the sunshine, and shadows will fall behind you.", author: "Walt Whitman", category: "dreams" },
+                { text: "It is during our darkest moments that we must focus to see the light.", author: "Aristotle", category: "perseverance" },
+                { text: "Life is 10% what happens to you and 90% how you react to it.", author: "Charles R. Swindoll", category: "success" },
+                { text: "The only limit to our realization of tomorrow will be our doubts of today.", author: "Franklin D. Roosevelt", category: "dreams" },
+                { text: "In the middle of difficulty lies opportunity.", author: "Albert Einstein", category: "perseverance" },
+                { text: "The best revenge is massive success.", author: "Frank Sinatra", category: "success" },
+                { text: "Life isn't about finding yourself. Life is about creating yourself.", author: "George Bernard Shaw", category: "dreams" },
+                { text: "Either you run the day, or the day runs you.", author: "Jim Rohn", category: "success" },
+                { text: "Whether you think you can or you think you can't, you're right.", author: "Henry Ford", category: "success" },
+                { text: "The two most important days in your life are the day you are born and the day you find out why.", author: "Mark Twain", category: "dreams" },
+                { text: "Nothing is impossible, the word itself says 'I'm possible'!", author: "Audrey Hepburn", category: "success" },
+                { text: "The only person you are destined to become is the person you decide to be.", author: "Ralph Waldo Emerson", category: "dreams" },
+                { text: "Everything you've ever wanted is on the other side of fear.", author: "George Addair", category: "perseverance" },
+                { text: "Dream big and dare to fail.", author: "Norman Vaughan", category: "dreams" },
+                { text: "It's not whether you get knocked down, it's whether you get up.", author: "Vince Lombardi", category: "perseverance" },
+                { text: "Your time is limited, so don't waste it living someone else's life.", author: "Steve Jobs", category: "success" },
+                { text: "Winning isn't everything, but wanting to win is.", author: "Vince Lombardi", category: "success" },
+                { text: "I am not a product of my circumstances. I am a product of my decisions.", author: "Stephen Covey", category: "success" },
+                { text: "Every child is an artist. The problem is how to remain an artist once we grow up.", author: "Pablo Picasso", category: "dreams" },
+                { text: "You can't use up creativity. The more you use, the more you have.", author: "Maya Angelou", category: "dreams" },
+                { text: "Dream is not that which you see while sleeping, it is something that does not let you sleep.", author: "A.P.J. Abdul Kalam", category: "dreams" },
+                { text: "Don't be pushed around by the fears in your mind. Be led by the dreams in your heart.", author: "Roy T. Bennett", category: "dreams" },
+                { text: "Go confidently in the direction of your dreams. Live the life you have imagined.", author: "Henry David Thoreau", category: "dreams" },
+                { text: "The biggest adventure you can take is to live the life of your dreams.", author: "Oprah Winfrey", category: "dreams" },
+                { text: "All our dreams can come true, if we have the courage to pursue them.", author: "Walt Disney", category: "dreams" },
+                { text: "The future belongs to those who believe in the beauty of their dreams.", author: "Eleanor Roosevelt", category: "dreams" },
+                { text: "Dreams are necessary to life.", author: "Anais Nin", category: "dreams" },
+                { text: "A dream doesn't become reality through magic; it takes sweat, determination and hard work.", author: "Colin Powell", category: "dreams" },
+                { text: "The only thing that will stop you from fulfilling your dreams is you.", author: "Tom Bradley", category: "dreams" },
+                { text: "Great minds have purposes, others have wishes.", author: "Washington Irving", category: "dreams" },
+                { text: "If you have built castles in the air, your work need not be lost; that is where they should be. Now put the foundations under them.", author: "Henry David Thoreau", category: "dreams" },
+                { text: "First, have a definite, clear practical ideal; a goal, an objective. Second, have the necessary means to achieve your ends; wisdom, money, materials, and methods. Third, adjust all your means to that end.", author: "Aristotle", category: "success" },
+                { text: "If you want to live a happy life, tie it to a goal, not to people or things.", author: "Albert Einstein", category: "success" },
+                { text: "Setting goals is the first step in turning the invisible into the visible.", author: "Tony Robbins", category: "success" },
+                { text: "A goal properly set is halfway reached.", author: "Zig Ziglar", category: "success" },
+                { text: "You should set goals beyond your reach so you always have something to live for.", author: "Ted Turner", category: "success" },
+                { text: "If you aim at nothing, you will hit it every time.", author: "Zig Ziglar", category: "success" },
+                { text: "Give me a stock clerk with a goal and I'll give you a man who will make history. Give me a man with no goals and I'll give you a stock clerk.", author: "J.C. Penney", category: "success" },
+                { text: "Intelligence without ambition is a bird without wings.", author: "Salvador Dali", category: "success" },
+                { text: "Stay focused, go after your dreams and keep moving toward your goals.", author: "LL Cool J", category: "success" },
+                { text: "It's hard to beat a person who never gives up.", author: "Babe Ruth", category: "perseverance" },
+                { text: "I've failed over and over and over again in my life and that is why I succeed.", author: "Michael Jordan", category: "perseverance" },
+                { text: "Many of life's failures are people who did not realize how close they were to success when they gave up.", author: "Thomas A. Edison", category: "perseverance" },
+                { text: "Success is stumbling from failure to failure with no loss of enthusiasm.", author: "Winston S. Churchill", category: "perseverance" },
+                { text: "The difference between a successful person and others is not a lack of strength, not a lack of knowledge, but rather a lack in will.", author: "Vince Lombardi", category: "perseverance" },
+                { text: "There is no failure except in no longer trying.", author: "Elbert Hubbard", category: "perseverance" },
+                { text: "I can accept failure, everyone fails at something. But I can't accept not trying.", author: "Michael Jordan", category: "perseverance" },
+                { text: "Failure is simply the opportunity to begin again, this time more intelligently.", author: "Henry Ford", category: "perseverance" },
+                { text: "A man can fail many times, but he isn't a failure until he begins to blame somebody else.", author: "John Burroughs", category: "perseverance" },
+                { text: "There is no failure except in no longer trying.", author: "Chris Bradford", category: "perseverance" },
+                { text: "Failure is the condiment that gives success its flavor.", author: "Truman Capote", category: "perseverance" },
+                { text: "I have not failed. I've just found 10,000 ways that won't work.", author: "Thomas A. Edison", category: "perseverance" },
+                { text: "Success is not the absence of failure; it's the persistence through failure.", author: "Aisha Tyler", category: "perseverance" },
+                { text: "Failure is not the opposite of success, it's part of success.", author: "Arianna Huffington", category: "perseverance" },
+                { text: "The only real mistake is the one from which we learn nothing.", author: "Henry Ford", category: "perseverance" },
+                { text: "Perseverance is failing 19 times and succeeding the 20th.", author: "Julie Andrews", category: "perseverance" },
+                { text: "It's not that I'm so smart, it's just that I stay with problems longer.", author: "Albert Einstein", category: "perseverance" },
+                { text: "Energy and persistence conquer all things.", author: "Benjamin Franklin", category: "perseverance" },
+                { text: "Persistence is the twin sister of excellence. One is a matter of quality; the other, a matter of time.", author: "Marabel Morgan", category: "perseverance" },
+                { text: "Continuous effort - not strength or intelligence - is the key to unlocking our potential.", author: "Winston Churchill", category: "perseverance" },
+                { text: "The road to success is dotted with many tempting parking spaces.", author: "Will Rogers", category: "perseverance" },
+                { text: "The difference between the impossible and the possible lies in a person's determination.", author: "Tommy Lasorda", category: "perseverance" },
+                { text: "Determination is the wake-up call to the human will.", author: "Tony Robbins", category: "perseverance" },
+                { text: "The only thing that overcomes hard luck is hard work.", author: "Harry Golden", category: "perseverance" },
+                { text: "Work hard in silence, let your success be your noise.", author: "Frank Ocean", category: "success" },
+                { text: "Success usually comes to those who are too busy to be looking for it.", author: "Henry David Thoreau", category: "success" },
+                { text: "Don't be afraid to give up the good to go for the great.", author: "John D. Rockefeller", category: "success" },
+                { text: "I owe my success to having listened respectfully to the very best advice, and then going away and doing the exact opposite.", author: "G.K. Chesterton", category: "success" },
+                { text: "There are no secrets to success. It is the result of preparation, hard work, and learning from failure.", author: "Colin Powell", category: "success" },
+                { text: "Success is walking from failure to failure with no loss of enthusiasm.", author: "Winston Churchill", category: "success" },
+                { text: "The successful warrior is the average man, with laser-like focus.", author: "Bruce Lee", category: "success" },
+                { text: "Develop success from failures. Discouragement and failure are two of the surest stepping stones to success.", author: "Dale Carnegie", category: "success" },
+                { text: "To succeed in life, you need two things: ignorance and confidence.", author: "Mark Twain", category: "success" },
+                { text: "Success is not in what you have, but who you are.", author: "Bo Bennett", category: "success" },
+                { text: "Success is getting what you want, happiness is wanting what you get.", author: "W.P. Kinsella", category: "success" },
+                { text: "The secret of success is to do the common thing uncommonly well.", author: "John D. Rockefeller Jr.", category: "success" },
+                { text: "I cannot give you the formula for success, but I can give you the formula for failure: Try to please everybody.", author: "Herbert Bayard Swope", category: "success" },
+                { text: "Success is not the key to happiness. Happiness is the key to success. If you love what you are doing, you will be successful.", author: "Albert Schweitzer", category: "success" },
+                { text: "The successful man is the one who finds out what is the matter with his business before his competitors do.", author: "Roy L. Smith", category: "success" },
+                { text: "There is no elevator to success. You have to take the stairs.", author: "Zig Ziglar", category: "success" },
+                { text: "Success is not just about making money. It's about making a difference.", author: "Unknown", category: "success" },
+                { text: "The price of success is hard work, dedication to the job at hand, and the determination that whether we win or lose, we have applied the best of ourselves to the task at hand.", author: "Vince Lombardi", category: "success" },
+                { text: "Success is where preparation and opportunity meet.", author: "Bobby Unser", category: "success" },
+                { text: "The only place where success comes before work is in the dictionary.", author: "Vidal Sassoon", category: "success" },
+                { text: "Success seems to be connected with action. Successful people keep moving. They make mistakes, but they don't quit.", author: "Conrad Hilton", category: "success" },
+                { text: "Success is not measured by what you accomplish, but by the opposition you have encountered, and the courage with which you have maintained the struggle against overwhelming odds.", author: "Orison Swett Marden", category: "success" },
+                { text: "The only way to achieve the impossible is to believe it is possible.", author: "Charles Kingsleigh", category: "dreams" },
+                { text: "You miss 100% of the shots you don't take.", author: "Wayne Gretzky", category: "success" },
+                { text: "The only thing standing between you and your goal is the story you keep telling yourself as to why you can't achieve it.", author: "Jordan Belfort", category: "success" },
+                { text: "Start where you are. Use what you have. Do what you can.", author: "Arthur Ashe", category: "success" },
+                { text: "The man who moves a mountain begins by carrying away small stones.", author: "Confucius", category: "perseverance" },
+                { text: "You don't have to be great to start, but you have to start to be great.", author: "Zig Ziglar", category: "success" },
+                { text: "The best time to plant a tree was 20 years ago. The second best time is now.", author: "Chinese Proverb", category: "success" },
+                { text: "Your limitation—it's only your imagination.", author: "Unknown", category: "dreams" },
+                { text: "Push yourself, because no one else is going to do it for you.", author: "Unknown", category: "perseverance" },
+                { text: "Great things never come from comfort zones.", author: "Unknown", category: "perseverance" },
+                { text: "Dream it. Wish it. Do it.", author: "Unknown", category: "dreams" },
+                { text: "Success doesn't just find you. You have to go out and get it.", author: "Unknown", category: "success" },
+                { text: "The harder you work for something, the greater you'll feel when you achieve it.", author: "Unknown", category: "success" },
+                { text: "Dream bigger. Do bigger.", author: "Unknown", category: "dreams" },
+                { text: "Don't stop when you're tired. Stop when you're done.", author: "Unknown", category: "perseverance" },
+                { text: "Wake up with determination. Go to bed with satisfaction.", author: "Unknown", category: "success" },
+                { text: "Do something today that your future self will thank you for.", author: "Unknown", category: "success" },
+                { text: "Little things make big days.", author: "Unknown", category: "success" },
+                { text: "It's going to be hard, but hard does not mean impossible.", author: "Unknown", category: "perseverance" },
+                { text: "Don't wait for opportunity. Create it.", author: "Unknown", category: "success" },
+                { text: "Sometimes we're tested not to show our weaknesses, but to discover our strengths.", author: "Unknown", category: "perseverance" },
+                { text: "The key to success is to focus on goals, not obstacles.", author: "Unknown", category: "success" },
+                { text: "Dream it. Believe it. Build it.", author: "Unknown", category: "dreams" }
             ];
+
+            // Add category for short quotes
+            quotes.forEach(quote => {
+                if (!quote.category) {
+                    if (quote.text.split(' ').length < 10) {
+                        quote.category = "short";
+                    } else if (quote.text.toLowerCase().includes('dream')) {
+                        quote.category = "dreams";
+                    } else if (quote.text.toLowerCase().includes('success')) {
+                        quote.category = "success";
+                    } else {
+                        quote.category = "perseverance";
+                    }
+                }
+            });
 
             // 1. Shuffle the quotes array randomly
             const shuffledQuotes = quotes.sort(() => Math.random() - 0.5);
@@ -281,20 +674,91 @@
             const gridContainer = document.getElementById('quote-grid');
             const mainQuotes = shuffledQuotes.slice(1); // The rest of the quotes
             
-            let cardHTML = '';
-            let animationDelay = 1.0; // Start animation delay after header/qotd animations
+            // Initial display count
+            let displayCount = 20;
+            let currentFilter = 'all';
+            
+            function renderQuotes(quotesToRender, count = displayCount) {
+                let cardHTML = '';
+                let animationDelay = 1.2; // Start animation delay after header/qotd animations
 
-            mainQuotes.forEach(quote => {
-                animationDelay += 0.05; // Increment delay for each card for a nice staggered effect
-                cardHTML += `
-                    <div class="quote-card" style="animation-delay: ${animationDelay}s;">
-                        <blockquote>${quote.text}</blockquote>
-                        <cite>— ${quote.author}</cite>
-                    </div>
-                `;
+                const limitedQuotes = quotesToRender.slice(0, count);
+                
+                limitedQuotes.forEach(quote => {
+                    animationDelay += 0.05; // Increment delay for each card for a nice staggered effect
+                    cardHTML += `
+                        <div class="quote-card" style="animation-delay: ${animationDelay}s;" data-category="${quote.category}">
+                            <blockquote>${quote.text}</blockquote>
+                            <cite>— ${quote.author}</cite>
+                        </div>
+                    `;
+                });
+
+                gridContainer.innerHTML = cardHTML;
+                
+                // Update load more button visibility
+                const loadMoreBtn = document.querySelector('.load-more-btn');
+                if (count >= quotesToRender.length) {
+                    loadMoreBtn.style.display = 'none';
+                } else {
+                    loadMoreBtn.style.display = 'block';
+                }
+            }
+            
+            // Filter quotes based on category
+            function filterQuotes(category) {
+                currentFilter = category;
+                if (category === 'all') {
+                    return mainQuotes;
+                } else {
+                    return mainQuotes.filter(quote => quote.category === category);
+                }
+            }
+            
+            // Initial render
+            renderQuotes(mainQuotes);
+            
+            // Load more functionality
+            document.querySelector('.load-more-btn').addEventListener('click', () => {
+                displayCount += 20;
+                const filteredQuotes = filterQuotes(currentFilter);
+                renderQuotes(filteredQuotes, displayCount);
             });
-
-            gridContainer.innerHTML = cardHTML;
+            
+            // Search functionality
+            document.querySelector('.search-box').addEventListener('input', (e) => {
+                const searchTerm = e.target.value.toLowerCase();
+                if (searchTerm.length < 2) {
+                    const filteredQuotes = filterQuotes(currentFilter);
+                    renderQuotes(filteredQuotes, displayCount);
+                    return;
+                }
+                
+                const filteredQuotes = filterQuotes(currentFilter);
+                const searchResults = filteredQuotes.filter(quote => 
+                    quote.text.toLowerCase().includes(searchTerm) || 
+                    quote.author.toLowerCase().includes(searchTerm)
+                );
+                
+                renderQuotes(searchResults, displayCount);
+            });
+            
+            // Filter buttons functionality
+            document.querySelectorAll('.filter-btn').forEach(button => {
+                button.addEventListener('click', () => {
+                    // Update active button
+                    document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    
+                    // Reset display count when changing filters
+                    displayCount = 20;
+                    
+                    // Filter and render quotes
+                    const category = button.getAttribute('data-filter');
+                    const filteredQuotes = filterQuotes(category);
+                    renderQuotes(filteredQuotes, displayCount);
+                });
+            });
         });
     </script>
 </body>
