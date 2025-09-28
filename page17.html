@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cody - Code Runner</title>
+    <style>
+        :root {
+            --primary: #8ecae6;
+            --secondary: #219ebc;
+            --accent: #ffb4a2;
+            --dark: #1d3557;
+            --light: #f1faee;
+            --glass: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            --blur: blur(10px);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1d3557, #457b9d);
+            color: var(--light);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .tagline {
+            font-size: 1.2rem;
+            opacity: 0.8;
+        }
+
+        .editor-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            height: 60vh;
+        }
+
+        @media (max-width: 768px) {
+            .editor-container {
+                grid-template-columns: 1fr;
+                height: auto;
+            }
+        }
+
+        .code-panel, .preview-panel {
+            background: var(--glass);
+            backdrop-filter: var(--blur);
+            border-radius: 15px;
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .panel-header {
+            padding: 15px 20px;
+            background: rgba(0, 0, 0, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .panel-title {
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .panel-title i {
+            color: var(--primary);
+        }
+
+        .code-tabs {
+            display: flex;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 0 10px;
+        }
+
+        .code-tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-bottom: 2px solid transparent;
+        }
+
+        .code-tab.active {
+            border-bottom: 2px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .code-tab:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .code-area {
+            flex: 1;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border: none;
+            color: var(--light);
+            font-family: 'Courier New', monospace;
+            resize: none;
+            outline: none;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+
+        #preview {
+            flex: 1;
+            width: 100%;
+            border: none;
+            background: white;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 50px;
+            background: var(--primary);
+            color: var(--dark);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        button#runBtn {
+            background: var(--secondary);
+            color: white;
+        }
+
+        button#clearBtn {
+            background: var(--accent);
+            color: var(--dark);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .water-effect {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            opacity: 0.1;
+        }
+
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--primary) 0%, transparent 70%);
+            transform: scale(0);
+            animation: ripple-animation 3s linear infinite;
+        }
+
+        @keyframes ripple-animation {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+
+        .zen-elements {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 10;
+        }
+
+        .zen-element {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--glass);
+            backdrop-filter: var(--blur);
+            border: 1px solid var(--glass-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .zen-element:hover {
+            transform: scale(1.1);
+            background: var(--primary);
+        }
+
+        .status {
+            margin-top: 10px;
+            text-align: center;
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+    </style>
+</head>
+<body>
+    <div class="water-effect" id="waterEffect"></div>
+    
+    <div class="container">
+        <header>
+            <h1>Cody</h1>
+            <p class="tagline">Your cozy, zen code runner for HTML, CSS & JavaScript</p>
+        </header>
+        
+        <div class="editor-container">
+            <div class="code-panel">
+                <div class="panel-header">
+                    <div class="panel-title">
+                        <i>📝</i> Code Editor
+                    </div>
+                </div>
+                <div class="code-tabs">
+                    <div class="code-tab active" data-tab="html">HTML</div>
+                    <div class="code-tab" data-tab="css">CSS</div>
+                    <div class="code-tab" data-tab="js">JavaScript</div>
+                </div>
+                <textarea class="code-area" id="htmlCode" placeholder="Write your HTML code here...">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;My Page&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;Hello, Cody!&lt;/h1&gt;
+    &lt;p&gt;This is a sample HTML page.&lt;/p&gt;
+    &lt;button onclick="showMessage()"&gt;Click Me&lt;/button&gt;
+    &lt;div id="output"&gt;&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;</textarea>
+                <textarea class="code-area hidden" id="cssCode" placeholder="Write your CSS code here...">body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    padding: 50px;
+    background: linear-gradient(135deg, #8EC5FC, #E0C3FC);
+    color: #333;
+}
+
+h1 {
+    color: #2c3e50;
+    margin-bottom: 20px;
+}
+
+button {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 20px;
+}
+
+button:hover {
+    background-color: #2980b9;
+}
+
+#output {
+    margin-top: 20px;
+    font-size: 18px;
+    font-weight: bold;
+}</textarea>
+                <textarea class="code-area hidden" id="jsCode" placeholder="Write your JavaScript code here...">function showMessage() {
+    const output = document.getElementById('output');
+    output.innerHTML = 'Welcome to Cody Code Runner!';
+    output.style.color = '#e74c3c';
+    
+    // Add a little animation
+    output.style.transform = 'scale(1.1)';
+    setTimeout(() => {
+        output.style.transform = 'scale(1)';
+    }, 300);
+}</textarea>
+            </div>
+            
+            <div class="preview-panel">
+                <div class="panel-header">
+                    <div class="panel-title">
+                        <i>👁️</i> Preview
+                    </div>
+                </div>
+                <iframe id="preview"></iframe>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <button id="runBtn">
+                <i>▶️</i> Run Code
+            </button>
+            <button id="clearBtn">
+                <i>🗑️</i> Clear All
+            </button>
+        </div>
+        <div class="status" id="status">Ready to code!</div>
+    </div>
+    
+    <div class="zen-elements">
+        <div class="zen-element" id="themeToggle">🌙</div>
+        <div class="zen-element" id="fullscreenToggle">⛶</div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const htmlCode = document.getElementById('htmlCode');
+        const cssCode = document.getElementById('cssCode');
+        const jsCode = document.getElementById('jsCode');
+        const preview = document.getElementById('preview');
+        const codeTabs = document.querySelectorAll('.code-tab');
+        const codeAreas = document.querySelectorAll('.code-area');
+        const runBtn = document.getElementById('runBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const themeToggle = document.getElementById('themeToggle');
+        const fullscreenToggle = document.getElementById('fullscreenToggle');
+        const waterEffect = document.getElementById('waterEffect');
+        const status = document.getElementById('status');
+
+        // Tab switching
+        codeTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const tabName = tab.getAttribute('data-tab');
+                
+                // Update active tab
+                codeTabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                
+                // Show corresponding code area
+                codeAreas.forEach(area => {
+                    area.classList.add('hidden');
+                    if (area.id === `${tabName}Code`) {
+                        area.classList.remove('hidden');
+                    }
+                });
+            });
+        });
+
+        // Run code
+        function runCode() {
+            try {
+                const html = htmlCode.value;
+                const css = cssCode.value;
+                const js = jsCode.value;
+                
+                // Create a complete HTML document
+                const fullHtml = `
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                        <meta charset="UTF-8">
+                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                        <style>${css}</style>
+                    </head>
+                    <body>
+                        ${html}
+                        <script>
+                            try {
+                                ${js}
+                            } catch(e) {
+                                document.body.innerHTML = '<div style="color: red; padding: 20px; font-family: Arial;">JavaScript Error: ' + e.message + '</div>';
+                            }
+                        <\/script>
+                    </body>
+                    </html>
+                `;
+                
+                // Write to iframe using srcdoc for better compatibility
+                preview.srcdoc = fullHtml;
+                
+                status.textContent = "Code executed successfully!";
+                status.style.color = "#a8e6cf";
+            } catch (error) {
+                status.textContent = "Error: " + error.message;
+                status.style.color = "#ff8b94";
+                console.error("Code execution error:", error);
+            }
+        }
+
+        // Clear all code
+        function clearCode() {
+            if (confirm('Are you sure you want to clear all code?')) {
+                htmlCode.value = '';
+                cssCode.value = '';
+                jsCode.value = '';
+                
+                // Clear the preview
+                preview.srcdoc = '<html><body style="display: flex; align-items: center; justify-content: center; height: 100%; font-family: Arial;"><div>Preview will appear here</div></body></html>';
+                
+                status.textContent = "All code cleared!";
+            }
+        }
+
+        // Toggle theme
+        function toggleTheme() {
+            document.body.classList.toggle('light-theme');
+            themeToggle.textContent = document.body.classList.contains('light-theme') ? '☀️' : '🌙';
+            
+            if (document.body.classList.contains('light-theme')) {
+                document.body.style.background = 'linear-gradient(135deg, #a8e6cf, #dcedc1)';
+                document.body.style.color = '#333';
+            } else {
+                document.body.style.background = 'linear-gradient(135deg, #1d3557, #457b9d)';
+                document.body.style.color = '#f1faee';
+            }
+        }
+
+        // Toggle fullscreen
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen();
+                fullscreenToggle.textContent = '⛶';
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                    fullscreenToggle.textContent = '⛶';
+                }
+            }
+        }
+
+        // Create water ripple effect
+        function createRipple() {
+            const ripple = document.createElement('div');
+            ripple.classList.add('ripple');
+            
+            const size = Math.random() * 100 + 50;
+            const x = Math.random() * 100;
+            const y = Math.random() * 100;
+            
+            ripple.style.width = `${size}px`;
+            ripple.style.height = `${size}px`;
+            ripple.style.left = `${x}%`;
+            ripple.style.top = `${y}%`;
+            ripple.style.animationDuration = `${Math.random() * 3 + 2}s`;
+            
+            waterEffect.appendChild(ripple);
+            
+            setTimeout(() => {
+                ripple.remove();
+            }, 3000);
+        }
+
+        // Event listeners
+        runBtn.addEventListener('click', runCode);
+        clearBtn.addEventListener('click', clearCode);
+        themeToggle.addEventListener('click', toggleTheme);
+        fullscreenToggle.addEventListener('click', toggleFullscreen);
+
+        // Auto-run code after a short delay when typing
+        let timeout;
+        [htmlCode, cssCode, jsCode].forEach(editor => {
+            editor.addEventListener('input', () => {
+                clearTimeout(timeout);
+                timeout = setTimeout(runCode, 1000);
+                status.textContent = "Typing...";
+                status.style.color = "#ffd3b6";
+            });
+        });
+
+        // Initialize with some ripples
+        for (let i = 0; i < 5; i++) {
+            setTimeout(createRipple, i * 500);
+        }
+
+        // Continue creating ripples
+        setInterval(createRipple, 2000);
+
+        // Initialize preview with default content
+        preview.srcdoc = '<html><body style="display: flex; align-items: center; justify-content: center; height: 100%; font-family: Arial;"><div>Preview will appear here</div></body></html>';
+        
+        // Run initial code
+        setTimeout(runCode, 500);
+    </script>
+</body>
+</html>
