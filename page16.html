@@ -30,7 +30,7 @@
 --active-overlay: rgba(60, 64, 67, 0.12);
 --border-radius: 8px;
 --border-radius-lg: 16px;
---transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+--transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 --shadow-sm: 0 1px 3px rgba(60, 64, 67, 0.15);
 --shadow-md: 0 4px 6px rgba(60, 64, 67, 0.15);
 --shadow-lg: 0 8px 25px rgba(60, 64, 67, 0.15);
@@ -49,59 +49,92 @@
 }
 
 /* Dark Mode Themes */
-body.theme-dark { 
---background: #0D1117; 
---surface: #161B22; 
---surface-elevated: #21262D; 
---primary: #58A6FF; 
+body.theme-dark {
+--background: #0D1117;
+--surface: #161B22;
+--surface-elevated: #21262D;
+--primary: #58A6FF;
 --primary-rgb: 88, 166, 255;
 --primary-light: rgba(88, 166, 255, 0.1);
---text-primary: #F0F6FC; 
---text-secondary: #8B949E; 
+--text-primary: #F0F6FC;
+--text-secondary: #8B949E;
 --text-disabled: #484F58;
---border-color: #30363D; 
+--border-color: #30363D;
 --hover-overlay: rgba(177, 186, 196, 0.12);
 --active-overlay: rgba(177, 186, 196, 0.16);
 }
 
-body.theme-midnight { 
---background: #1A1A2E; 
---surface: #16213E; 
+body.theme-midnight {
+--background: #1A1A2E;
+--surface: #16213E;
 --surface-elevated: #0F3460;
---primary: #E94560; 
+--primary: #E94560;
 --primary-rgb: 233, 69, 96;
 --primary-light: rgba(233, 69, 96, 0.1);
---text-primary: #F5F5F5; 
---text-secondary: #B8B8B8; 
---border-color: #2C3E50; 
+--text-primary: #F5F5F5;
+--text-secondary: #B8B8B8;
+--border-color: #2C3E50;
 }
 
-body.theme-forest { 
---background: #0F2027; 
---surface: #203A43; 
+body.theme-forest {
+--background: #0F2027;
+--surface: #203A43;
 --surface-elevated: #2C5364;
---primary: #4ECDC4; 
+--primary: #4ECDC4;
 --primary-rgb: 78, 205, 196;
 --primary-light: rgba(78, 205, 196, 0.1);
---text-primary: #F7F7F7; 
---text-secondary: #A4B0BE; 
---border-color: #34495E; 
+--text-primary: #F7F7F7;
+--text-secondary: #A4B0BE;
+--border-color: #34495E;
 }
+
+body.theme-liquid-glass {
+--background-image: url('https://images.unsplash.com/photo-1553095066-5014bc7b7f2d?q=80&w=2787&auto=format&fit=crop');
+--background: #1a1a2e; /* Fallback */
+--surface: rgba(30, 30, 46, 0.6);
+--surface-elevated: rgba(45, 45, 66, 0.7);
+--primary: #86A8E7;
+--primary-rgb: 134, 168, 231;
+--primary-light: rgba(134, 168, 231, 0.15);
+--text-primary: #FFFFFF;
+--text-secondary: #E0E0E0;
+--border-color: rgba(255, 255, 255, 0.2);
+--hover-overlay: rgba(255, 255, 255, 0.1);
+--active-overlay: rgba(255, 255, 255, 0.15);
+--shadow-lg: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+--shadow-xl: 0 12px 40px rgba(0, 0, 0, 0.4);
+}
+
+body.theme-liquid-glass .sidebar,
+body.theme-liquid-glass .calendar-section,
+body.theme-liquid-glass .tasks-section,
+body.theme-liquid-glass .main-header,
+body.theme-liquid-glass .theme-dropdown,
+body.theme-liquid-glass .toast,
+body.theme-liquid-glass .task-item {
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid var(--border-color);
+}
+
 
 /* Global Styles */
-* { 
-margin: 0; 
-padding: 0; 
-box-sizing: border-box; 
+* {
+margin: 0;
+padding: 0;
+box-sizing: border-box;
 }
 
-body { 
+body {
 font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 background-color: var(--background);
 color: var(--text-primary);
 line-height: 1.5;
 transition: var(--transition);
 overflow-x: hidden;
+background-image: var(--background-image, none);
+background-size: cover;
+background-attachment: fixed;
 }
 
 /* App Layout */
@@ -114,7 +147,7 @@ overflow: hidden;
 
 /* Sidebar */
 .sidebar {
-width: 300px;
+width: 280px;
 background: var(--surface);
 border-right: 1px solid var(--border-color);
 display: flex;
@@ -122,27 +155,30 @@ flex-direction: column;
 transition: var(--transition);
 box-shadow: var(--shadow-sm);
 z-index: 100;
+flex-shrink: 0;
 }
 
 .sidebar.collapsed {
 width: 0;
+padding: 0;
 overflow: hidden;
+border-right: none;
 }
 
 .sidebar-header {
-padding: 20px;
+padding: 24px;
 border-bottom: 1px solid var(--border-color);
 background: var(--surface-elevated);
 }
 
 .app-title {
-font-size: 1.5rem;
+font-size: 1.6rem;
 font-weight: 700;
 color: var(--primary);
 margin: 0;
 display: flex;
 align-items: center;
-gap: 10px;
+gap: 12px;
 }
 
 .sidebar-nav {
@@ -152,17 +188,18 @@ padding: 16px 0;
 .nav-item {
 display: flex;
 align-items: center;
-padding: 12px 20px;
+padding: 14px 24px;
 cursor: pointer;
 transition: var(--transition);
 border: none;
 background: none;
 width: 100%;
 text-align: left;
-font-size: 0.875rem;
+font-size: 0.95rem;
 font-weight: 500;
 color: var(--text-primary);
-gap: 12px;
+gap: 15px;
+border-left: 3px solid transparent;
 }
 
 .nav-item:hover {
@@ -172,17 +209,18 @@ background: var(--hover-overlay);
 .nav-item.active {
 background: var(--primary-light);
 color: var(--primary);
-border-right: 3px solid var(--primary);
+border-left-color: var(--primary);
 }
 
 .nav-item i {
-width: 20px;
+width: 22px;
 text-align: center;
+font-size: 1rem;
 }
 
 /* Main Content */
 .main-content {
-flex: 1;
+flex-grow: 1;
 display: flex;
 flex-direction: column;
 overflow: hidden;
@@ -216,7 +254,8 @@ align-items: center;
 gap: 12px;
 }
 
-.toggle-sidebar-btn {
+.toggle-sidebar-btn,
+.calendar-back-btn {
 display: none;
 background: none;
 border: none;
@@ -228,7 +267,8 @@ border-radius: var(--border-radius);
 transition: var(--transition);
 }
 
-.toggle-sidebar-btn:hover {
+.toggle-sidebar-btn:hover,
+.calendar-back-btn:hover {
 background: var(--hover-overlay);
 }
 
@@ -246,11 +286,13 @@ border-right: 1px solid var(--border-color);
 display: flex;
 flex-direction: column;
 transition: var(--transition);
+flex-shrink: 0;
 }
 
 .calendar-section.hidden {
 width: 0;
 overflow: hidden;
+border-right: none;
 }
 
 .tasks-section {
@@ -268,12 +310,17 @@ border-bottom: 1px solid var(--border-color);
 text-align: center;
 background: var(--surface-elevated);
 }
-
+.calendar-top-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
 .calendar-nav {
 display: flex;
 align-items: center;
 justify-content: space-between;
-margin-bottom: 16px;
+flex-grow: 1;
 }
 
 .calendar-nav button {
@@ -436,7 +483,7 @@ box-shadow: var(--shadow-sm);
 }
 
 .add-task-btn:hover {
-background: var(--primary);
+opacity: 0.9;
 transform: translateY(-1px);
 box-shadow: var(--shadow-md);
 }
@@ -480,6 +527,10 @@ align-items: center;
 justify-content: space-between;
 margin-bottom: 20px;
 padding-top: 20px;
+position: sticky;
+top: 0;
+background: var(--surface);
+z-index: 10;
 }
 
 .task-count {
@@ -527,10 +578,10 @@ background: var(--surface-elevated);
 border: 1px solid var(--border-color);
 border-radius: var(--border-radius-lg);
 margin-bottom: 12px;
-transition: var(--transition);
+transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
 cursor: pointer;
 opacity: 0;
-animation: slideInUp 0.4s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
+animation: slideInUp 0.5s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
 }
 
 .task-item:nth-child(1) { animation-delay: 0.05s; }
@@ -538,7 +589,9 @@ animation: slideInUp 0.4s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
 .task-item:nth-child(3) { animation-delay: 0.15s; }
 .task-item:nth-child(4) { animation-delay: 0.2s; }
 .task-item:nth-child(5) { animation-delay: 0.25s; }
-
+.task-item.fade-out {
+    animation: fadeOut 0.4s forwards;
+}
 .task-item:hover {
 transform: translateY(-2px);
 box-shadow: var(--shadow-lg);
@@ -612,6 +665,7 @@ align-items: center;
 gap: 12px;
 font-size: 0.75rem;
 color: var(--text-secondary);
+flex-wrap: wrap;
 }
 
 .task-priority {
@@ -750,7 +804,7 @@ border-radius: 50%;
 /* Toast Notifications */
 .toast-container {
 position: fixed;
-top: 20px;
+bottom: 20px;
 right: 20px;
 z-index: 2000;
 }
@@ -763,13 +817,14 @@ border-radius: var(--border-radius-lg);
 box-shadow: var(--shadow-xl);
 border: 1px solid var(--border-color);
 margin-bottom: 12px;
-transform: translateX(400px);
-transition: var(--transition);
-max-width: 300px;
+transform: translateX(120%);
+opacity: 0;
+transition: all 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+max-width: 320px;
 }
-
 .toast.show {
 transform: translateX(0);
+opacity: 1;
 }
 
 .toast.success {
@@ -784,7 +839,7 @@ border-left: 4px solid var(--danger);
 @keyframes slideInUp {
 from {
 opacity: 0;
-transform: translateY(20px);
+transform: translateY(30px);
 }
 to {
 opacity: 1;
@@ -794,109 +849,108 @@ transform: translateY(0);
 
 @keyframes fadeOut {
 from {
-opacity: 1;
+opacity: 0.7;
 transform: scale(1);
 }
 to {
 opacity: 0;
 transform: scale(0.9);
+height: 0;
+padding: 0;
+margin: 0;
+border: 0;
 }
 }
-
 /* Responsive Design */
+@media (max-width: 992px) {
+    .sidebar {
+        position: fixed;
+        left: 0;
+        top: 0;
+        height: 100vh;
+        z-index: 200;
+        transform: translateX(-100%);
+        width: 280px;
+        transition: transform 0.3s ease-in-out;
+    }
+
+    .sidebar.visible {
+        transform: translateX(0);
+    }
+
+    .sidebar.collapsed {
+        width: 280px;
+        transform: translateX(-100%);
+    }
+
+    .toggle-sidebar-btn {
+        display: block;
+    }
+}
 @media (max-width: 768px) {
-.sidebar {
-position: fixed;
-left: 0;
-top: 0;
-height: 100vh;
-z-index: 200;
-transform: translateX(-100%);
-width: 280px;
-}
+    .calendar-section {
+        width: 100%;
+        position: fixed;
+        left: 0;
+        top: 0;
+        height: 100vh;
+        z-index: 150;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease-in-out;
+        border-right: none;
+    }
 
-.sidebar.visible {
-transform: translateX(0);
-}
+    .calendar-section.visible {
+        transform: translateX(0);
+    }
 
-.sidebar.collapsed {
-width: 280px;
-transform: translateX(-100%);
-}
+    .calendar-section.hidden {
+        width: 100%;
+        transform: translateX(-100%);
+    }
+    .calendar-back-btn {
+        display: block;
+    }
+    .main-header {
+        padding: 16px 20px;
+    }
 
-.main-content {
-margin-left: 0;
-}
+    .header-title {
+        font-size: 1.5rem;
+    }
 
-.toggle-sidebar-btn {
-display: block;
-}
+    .tasks-header, .tasks-content {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
 
-.calendar-section {
-width: 100%;
-position: fixed;
-left: 0;
-top: 0;
-height: 100vh;
-z-index: 150;
-transform: translateX(-100%);
-}
+    .task-input-container {
+        flex-direction: column;
+        align-items: stretch;
+    }
 
-.calendar-section.visible {
-transform: translateX(0);
-}
-
-.calendar-section.hidden {
-width: 100%;
-transform: translateX(-100%);
-}
-
-.main-header {
-padding: 16px 20px;
-}
-
-.header-title {
-font-size: 1.5rem;
-}
-
-.tasks-header {
-padding: 16px 20px;
-}
-
-.tasks-content {
-padding: 0 20px 20px;
-}
-
-.task-input-container {
-flex-direction: column;
-}
-
-.task-options {
-justify-content: center;
-}
-
-.app-container {
-flex-direction: column;
-}
+    .app-container {
+        flex-direction: column;
+    }
 }
 
 @media (max-width: 480px) {
-.task-item {
-padding: 12px;
-}
+    .task-item {
+        padding: 12px;
+    }
 
-.task-input {
-font-size: 16px; /* Prevents zoom on iOS */
-}
+    .task-input {
+        font-size: 16px; /* Prevents zoom on iOS */
+    }
 
-.calendar-day {
-font-size: 0.75rem;
-}
+    .calendar-day {
+        font-size: 0.75rem;
+    }
 
-.theme-dropdown {
-right: auto;
-left: 0;
-}
+    .theme-dropdown {
+        right: auto;
+        left: 0;
+    }
 }
 
 /* Scrollbar Styling */
@@ -947,6 +1001,7 @@ color: var(--primary);
 text-align: center;
 padding: 60px 20px;
 color: var(--text-secondary);
+display: none; /* Initially hidden */
 }
 
 .empty-state i {
@@ -967,47 +1022,34 @@ font-size: 0.875rem;
 line-height: 1.5;
 }
 
-/* Loading States */
-.loading {
-display: inline-block;
-width: 20px;
-height: 20px;
-border: 2px solid var(--border-color);
-border-radius: 50%;
-border-top-color: var(--primary);
-animation: spin 1s ease-in-out infinite;
-}
-
-@keyframes spin {
-to { transform: rotate(360deg); }
-}
 
 /* Focus Styles for Accessibility */
-.task-item:focus-visible,
-.calendar-day:focus-visible,
-button:focus-visible,
-input:focus-visible,
-select:focus-visible {
-outline: 2px solid var(--primary);
-outline-offset: 2px;
+a, button, input, select, .task-item, .calendar-day {
+    --focus-ring-color: var(--primary);
 }
+:is(a, button, input, select, .task-item, .calendar-day):focus-visible {
+    outline: 2px solid var(--focus-ring-color);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 4px rgba(var(--primary-rgb), 0.2);
+}
+
 
 /* Print Styles */
 @media print {
 .sidebar,
 .theme-selector,
 .task-actions,
-.calendar-nav {
+.calendar-nav,
+.main-header {
 display: none;
 }
-
 .main-content {
 margin-left: 0;
 }
-
 .task-item {
 break-inside: avoid;
 border: 1px solid #ccc;
+box-shadow: none;
 }
 }
 </style>
@@ -1050,22 +1092,22 @@ border: 1px solid #ccc;
   <!-- Main Content -->
   <div class="main-content">
     <!-- Header -->
-    <div class="main-header">
+    <header class="main-header">
       <div style="display: flex; align-items: center; gap: 12px;">
-        <button class="toggle-sidebar-btn" id="toggleSidebar">
+        <button class="toggle-sidebar-btn" id="toggleSidebar" aria-label="Toggle Sidebar">
           <i class="fas fa-bars"></i>
         </button>
-        <h1 class="header-title" id="pageTitle">
+        <h2 class="header-title" id="pageTitle">
           <i class="fas fa-calendar-day"></i>
           Today
-        </h1>
+        </h2>
       </div>
       <div class="header-controls">
-        <button class="theme-btn" id="toggleCalendar" title="Toggle Calendar">
+        <button class="theme-btn" id="toggleCalendar" title="Toggle Calendar" aria-label="Toggle Calendar">
           <i class="fas fa-calendar"></i>
         </button>
         <div class="theme-selector">
-          <button class="theme-btn" id="themeButton" title="Change Theme">
+          <button class="theme-btn" id="themeButton" title="Change Theme" aria-label="Change Theme">
             <i class="fas fa-palette"></i>
           </button>
           <div class="theme-dropdown" id="themeDropdown">
@@ -1085,20 +1127,29 @@ border: 1px solid #ccc;
               <div class="theme-color" style="background: #4ECDC4;"></div>
               <span>Forest</span>
             </div>
+            <div class="theme-option" data-theme="theme-liquid-glass">
+                <div class="theme-color" style="background-image: linear-gradient(to right, #86A8E7, #7F7FD5); "></div>
+                <span>Liquid Glass</span>
+              </div>
           </div>
         </div>
       </div>
-    </div>
+    </header>
 
     <!-- Content Area -->
-    <div class="content-area">
+    <main class="content-area">
       <!-- Calendar Section -->
-      <div class="calendar-section" id="calendarSection">
+      <section class="calendar-section" id="calendarSection">
         <div class="calendar-header">
-          <div class="calendar-nav">
-            <button id="prevMonth"><i class="fas fa-chevron-left"></i></button>
-            <div class="calendar-title" id="calendarTitle"></div>
-            <button id="nextMonth"><i class="fas fa-chevron-right"></i></button>
+          <div class="calendar-top-controls">
+              <a href="page16.html" class="calendar-back-btn" id="calendarBackBtn" aria-label="Go Back">
+                  <i class="fas fa-arrow-left"></i>
+              </a>
+              <div class="calendar-nav">
+                <button id="prevMonth" aria-label="Previous Month"><i class="fas fa-chevron-left"></i></button>
+                <div class="calendar-title" id="calendarTitle"></div>
+                <button id="nextMonth" aria-label="Next Month"><i class="fas fa-chevron-right"></i></button>
+              </div>
           </div>
           <button style="padding: 8px 16px; background: var(--primary); color: white; border: none; border-radius: var(--border-radius); font-size: 0.875rem; cursor: pointer;" id="todayBtn">Today</button>
         </div>
@@ -1114,17 +1165,17 @@ border: 1px solid #ccc;
           </div>
           <div class="calendar-days" id="calendarDays"></div>
         </div>
-      </div>
+      </section>
 
       <!-- Tasks Section -->
-      <div class="tasks-section">
+      <section class="tasks-section">
         <div class="tasks-header">
           <div class="task-input-container">
             <div class="task-input-wrapper">
-              <textarea 
-                class="task-input" 
-                id="taskInput" 
-                placeholder="Add a task..." 
+              <textarea
+                class="task-input"
+                id="taskInput"
+                placeholder="Add a task for Today..."
                 rows="1"
               ></textarea>
             </div>
@@ -1134,12 +1185,12 @@ border: 1px solid #ccc;
             </button>
           </div>
           <div class="task-options">
-            <select class="task-option-select" id="taskPriority">
+            <select class="task-option-select" id="taskPriority" aria-label="Task Priority">
               <option value="low">Low Priority</option>
-              <option value="medium">Medium Priority</option>
+              <option value="medium" selected>Medium Priority</option>
               <option value="high">High Priority</option>
             </select>
-            <select class="task-option-select" id="taskCategory">
+            <select class="task-option-select" id="taskCategory" aria-label="Task Category">
               <option value="general">📋 General</option>
               <option value="work">💼 Work</option>
               <option value="personal">👤 Personal</option>
@@ -1166,14 +1217,14 @@ border: 1px solid #ccc;
 
           <ul class="tasks-list" id="tasksList"></ul>
 
-          <div class="empty-state" id="emptyState" style="display: none;">
+          <div class="empty-state" id="emptyState">
             <i class="fas fa-clipboard-list"></i>
-            <h3>No tasks yet</h3>
-            <p>Add a task above to get started on your productivity journey!</p>
+            <h3>No tasks here</h3>
+            <p>Add a new task or select a different date!</p>
           </div>
         </div>
-      </div>
-    </div>
+      </section>
+    </main>
   </div>
 </div>
 
@@ -1188,12 +1239,10 @@ class ChronoFocusPro {
     this.currentView = 'today';
     this.currentFilter = 'all';
     this.draggedTask = null;
-    
-    // Initialize
+
     this.initializeElements();
     this.setupEventListeners();
     this.loadTheme();
-    this.loadTasks();
     this.renderCalendar();
     this.updateView();
     this.autoResizeTextarea();
@@ -1201,17 +1250,19 @@ class ChronoFocusPro {
 
   initializeElements() {
     this.elements = {
+      // Body
+      body: document.body,
       // Sidebar
       sidebar: document.getElementById('sidebar'),
       toggleSidebar: document.getElementById('toggleSidebar'),
       navItems: document.querySelectorAll('.nav-item'),
-      
+
       // Header
       pageTitle: document.getElementById('pageTitle'),
       toggleCalendar: document.getElementById('toggleCalendar'),
       themeButton: document.getElementById('themeButton'),
       themeDropdown: document.getElementById('themeDropdown'),
-      
+
       // Calendar
       calendarSection: document.getElementById('calendarSection'),
       calendarTitle: document.getElementById('calendarTitle'),
@@ -1219,7 +1270,8 @@ class ChronoFocusPro {
       prevMonth: document.getElementById('prevMonth'),
       nextMonth: document.getElementById('nextMonth'),
       todayBtn: document.getElementById('todayBtn'),
-      
+      calendarBackBtn: document.getElementById('calendarBackBtn'),
+
       // Tasks
       taskInput: document.getElementById('taskInput'),
       addTaskBtn: document.getElementById('addTaskBtn'),
@@ -1230,26 +1282,28 @@ class ChronoFocusPro {
       filterBtns: document.querySelectorAll('.filter-btn'),
       dropZone: document.getElementById('dropZone'),
       emptyState: document.getElementById('emptyState'),
-      
+
       // Toast
       toastContainer: document.getElementById('toastContainer')
     };
   }
 
   setupEventListeners() {
-    // Sidebar
+    // Sidebar & Calendar visibility
     this.elements.toggleSidebar.addEventListener('click', () => this.toggleSidebar());
+    this.elements.toggleCalendar.addEventListener('click', () => this.toggleCalendar());
+    
+    // Navigation
     this.elements.navItems.forEach(item => {
       item.addEventListener('click', () => this.switchView(item.dataset.view));
     });
 
-    // Calendar
-    this.elements.toggleCalendar.addEventListener('click', () => this.toggleCalendar());
+    // Calendar controls
     this.elements.prevMonth.addEventListener('click', () => this.changeMonth(-1));
     this.elements.nextMonth.addEventListener('click', () => this.changeMonth(1));
     this.elements.todayBtn.addEventListener('click', () => this.goToToday());
 
-    // Tasks
+    // Task input and actions
     this.elements.taskInput.addEventListener('keypress', (e) => {
       if (e.key === 'Enter' && !e.shiftKey) {
         e.preventDefault();
@@ -1263,15 +1317,17 @@ class ChronoFocusPro {
       btn.addEventListener('click', () => this.setFilter(btn.dataset.filter));
     });
 
-    // Theme
-    this.elements.themeButton.addEventListener('click', () => this.toggleThemeDropdown());
+    // Theme switcher
+    this.elements.themeButton.addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.toggleThemeDropdown();
+    });
     document.addEventListener('click', (e) => {
       if (!this.elements.themeButton.contains(e.target) && !this.elements.themeDropdown.contains(e.target)) {
         this.elements.themeDropdown.classList.remove('visible');
       }
     });
 
-    // Theme options
     document.querySelectorAll('.theme-option').forEach(option => {
       option.addEventListener('click', () => {
         this.setTheme(option.dataset.theme);
@@ -1279,16 +1335,12 @@ class ChronoFocusPro {
       });
     });
 
-    // Drop zone
+    // Drag and drop for tasks
     this.elements.dropZone.addEventListener('dragover', (e) => {
       e.preventDefault();
       this.elements.dropZone.classList.add('active');
     });
-
-    this.elements.dropZone.addEventListener('dragleave', () => {
-      this.elements.dropZone.classList.remove('active');
-    });
-
+    this.elements.dropZone.addEventListener('dragleave', () => this.elements.dropZone.classList.remove('active'));
     this.elements.dropZone.addEventListener('drop', (e) => {
       e.preventDefault();
       this.elements.dropZone.classList.remove('active');
@@ -1296,8 +1348,8 @@ class ChronoFocusPro {
         this.moveTaskToDate(this.draggedTask.id, this.selectedDate);
       }
     });
-
-    // Responsive
+    
+    // Window resize handler
     window.addEventListener('resize', () => this.handleResize());
     this.handleResize();
   }
@@ -1306,39 +1358,23 @@ class ChronoFocusPro {
   renderCalendar() {
     const year = this.currentDate.getFullYear();
     const month = this.currentDate.getMonth();
-    
-    // Update title
-    this.elements.calendarTitle.textContent = new Date(year, month).toLocaleDateString('en-US', { 
-      month: 'long', 
-      year: 'numeric' 
-    });
-
-    // Clear days
+    this.elements.calendarTitle.textContent = new Date(year, month).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
     this.elements.calendarDays.innerHTML = '';
-
-    // Get first day of month and number of days
     const firstDay = new Date(year, month, 1).getDay();
     const daysInMonth = new Date(year, month + 1, 0).getDate();
     const daysInPrevMonth = new Date(year, month, 0).getDate();
 
-    // Add previous month days
-    for (let i = firstDay - 1; i >= 0; i--) {
-      const day = daysInPrevMonth - i;
-      const dayElement = this.createCalendarDay(day, true, new Date(year, month - 1, day));
-      this.elements.calendarDays.appendChild(dayElement);
+    for (let i = firstDay; i > 0; i--) {
+        const day = daysInPrevMonth - i + 1;
+        this.elements.calendarDays.appendChild(this.createCalendarDay(day, true, new Date(year, month - 1, day)));
     }
-
-    // Add current month days
     for (let day = 1; day <= daysInMonth; day++) {
-      const dayElement = this.createCalendarDay(day, false, new Date(year, month, day));
-      this.elements.calendarDays.appendChild(dayElement);
+        this.elements.calendarDays.appendChild(this.createCalendarDay(day, false, new Date(year, month, day)));
     }
-
-    // Add next month days
-    const remainingCells = 42 - (firstDay + daysInMonth);
+    const gridCells = this.elements.calendarDays.children.length;
+    const remainingCells = gridCells > 35 ? 42 - gridCells : 35 - gridCells;
     for (let day = 1; day <= remainingCells; day++) {
-      const dayElement = this.createCalendarDay(day, true, new Date(year, month + 1, day));
-      this.elements.calendarDays.appendChild(dayElement);
+      this.elements.calendarDays.appendChild(this.createCalendarDay(day, true, new Date(year, month + 1, day)));
     }
   }
 
@@ -1347,28 +1383,14 @@ class ChronoFocusPro {
     dayElement.className = 'calendar-day';
     dayElement.textContent = day;
 
-    if (isOtherMonth) {
-      dayElement.classList.add('other-month');
-    }
+    if (isOtherMonth) dayElement.classList.add('other-month');
 
-    // Check if today
     const today = new Date();
-    if (this.isSameDate(fullDate, today)) {
-      dayElement.classList.add('today');
-    }
+    if (this.isSameDate(fullDate, today)) dayElement.classList.add('today');
+    if (this.isSameDate(fullDate, this.selectedDate)) dayElement.classList.add('selected');
 
-    // Check if selected
-    if (this.isSameDate(fullDate, this.selectedDate)) {
-      dayElement.classList.add('selected');
-    }
+    if (this.getTasksForDate(fullDate).length > 0) dayElement.classList.add('has-tasks');
 
-    // Check if has tasks
-    const tasks = this.getTasksForDate(fullDate);
-    if (tasks.length > 0) {
-      dayElement.classList.add('has-tasks');
-    }
-
-    // Click handler
     dayElement.addEventListener('click', () => {
       this.selectDate(fullDate);
     });
@@ -1378,9 +1400,14 @@ class ChronoFocusPro {
 
   selectDate(date) {
     this.selectedDate = new Date(date);
+    const dateString = this.selectedDate.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+    this.elements.taskInput.placeholder = `Add a task for ${dateString}...`;
+
+    if (this.currentView === 'today') this.switchView('all');
+    else this.updateView();
+    
     this.renderCalendar();
-    this.updateView();
-    this.showDropZone();
+    this.closeCalendarOnMobile();
   }
 
   changeMonth(delta) {
@@ -1391,10 +1418,14 @@ class ChronoFocusPro {
   goToToday() {
     this.currentDate = new Date();
     this.selectedDate = new Date();
+    this.elements.taskInput.placeholder = 'Add a task for Today...';
+    if (this.currentView !== 'today') this.switchView('today');
+    else this.updateView();
+    
     this.renderCalendar();
-    this.updateView();
+    this.closeCalendarOnMobile();
   }
-
+  
   // Task Methods
   addTask() {
     const text = this.elements.taskInput.value.trim();
@@ -1402,21 +1433,18 @@ class ChronoFocusPro {
       this.showToast('Please enter a task', 'error');
       return;
     }
-
     const task = {
-      id: 'task_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
-      text: text,
+      id: `task_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      text,
       completed: false,
       priority: this.elements.taskPriority.value,
       category: this.elements.taskCategory.value,
       date: this.formatDate(this.selectedDate),
       createdAt: new Date().toISOString()
     };
-
     const tasks = this.getTasks();
     tasks.push(task);
     this.saveTasks(tasks);
-
     this.elements.taskInput.value = '';
     this.elements.taskInput.style.height = 'auto';
     this.updateView();
@@ -1432,25 +1460,23 @@ class ChronoFocusPro {
       task.completedAt = task.completed ? new Date().toISOString() : null;
       this.saveTasks(tasks);
       this.updateView();
-      this.renderCalendar();
-      
-      if (task.completed) {
-        this.showToast('Task completed! 🎉', 'success');
-      }
+      if(task.completed) this.showToast('Task completed! 🎉', 'success');
     }
   }
 
-  deleteTask(taskId) {
+  deleteTask(taskId, taskElement) {
     if (confirm('Are you sure you want to delete this task?')) {
-      const tasks = this.getTasks();
-      const filteredTasks = tasks.filter(t => t.id !== taskId);
-      this.saveTasks(filteredTasks);
-      this.updateView();
-      this.renderCalendar();
-      this.showToast('Task deleted', 'success');
+        taskElement.classList.add('fade-out');
+        taskElement.addEventListener('animationend', () => {
+            let tasks = this.getTasks();
+            tasks = tasks.filter(t => t.id !== taskId);
+            this.saveTasks(tasks);
+            this.updateView();
+            this.renderCalendar();
+            this.showToast('Task deleted', 'success');
+        }, { once: true });
     }
-  }
-
+}
   editTask(taskId) {
     const tasks = this.getTasks();
     const task = tasks.find(t => t.id === taskId);
@@ -1477,49 +1503,49 @@ class ChronoFocusPro {
       this.showToast(`Task moved to ${newDate.toLocaleDateString()}`, 'success');
     }
   }
-
+  
   // View Methods
   switchView(view) {
     this.currentView = view;
-    
-    // Update active nav item
     this.elements.navItems.forEach(item => {
       item.classList.toggle('active', item.dataset.view === view);
     });
 
-    // Update page title
     const titles = {
       today: { icon: 'fas fa-calendar-day', text: 'Today' },
       upcoming: { icon: 'fas fa-calendar-week', text: 'Upcoming' },
       all: { icon: 'fas fa-list', text: 'All Tasks' },
       completed: { icon: 'fas fa-check-double', text: 'Completed' },
-      priority: { icon: 'fas fa-star', text: 'Priority' }
+      priority: { icon: 'fas fa-star', text: 'Priority Tasks' }
     };
 
     const title = titles[view];
     this.elements.pageTitle.innerHTML = `<i class="${title.icon}"></i> ${title.text}`;
 
+    if (view === 'today') {
+      this.selectedDate = new Date();
+      this.currentDate = new Date();
+      this.renderCalendar();
+    }
+    
     this.updateView();
-    this.closeSidebar();
+    this.closeSidebarOnMobile();
   }
 
   updateView() {
     const tasks = this.getFilteredTasks();
     this.renderTasks(tasks);
-    this.updateTaskCount(tasks.length);
   }
 
   getFilteredTasks() {
     let tasks = this.getTasks();
-    
-    // Filter by view
+    const todayStr = this.formatDate(new Date());
+
     switch (this.currentView) {
       case 'today':
-        const today = this.formatDate(new Date());
-        tasks = tasks.filter(task => task.date === today);
+        tasks = tasks.filter(task => task.date === todayStr);
         break;
       case 'upcoming':
-        const todayStr = this.formatDate(new Date());
         tasks = tasks.filter(task => task.date >= todayStr && !task.completed);
         break;
       case 'completed':
@@ -1529,74 +1555,44 @@ class ChronoFocusPro {
         tasks = tasks.filter(task => task.priority === 'high' && !task.completed);
         break;
       case 'all':
-      default:
-        // Show tasks for selected date when viewing all
-        if (this.currentView === 'all' && this.selectedDate) {
-          const selectedStr = this.formatDate(this.selectedDate);
-          tasks = tasks.filter(task => task.date === selectedStr);
-        }
+        const selectedStr = this.formatDate(this.selectedDate);
+        tasks = tasks.filter(task => task.date === selectedStr);
         break;
     }
 
-    // Filter by completion status
-    if (this.currentFilter === 'pending') {
-      tasks = tasks.filter(task => !task.completed);
-    } else if (this.currentFilter === 'completed') {
-      tasks = tasks.filter(task => task.completed);
-    }
-
-    // Sort tasks
+    if (this.currentFilter === 'pending') tasks = tasks.filter(task => !task.completed);
+    else if (this.currentFilter === 'completed') tasks = tasks.filter(task => task.completed);
+    
     tasks.sort((a, b) => {
-      // Completed tasks go to bottom
-      if (a.completed !== b.completed) {
-        return a.completed - b.completed;
-      }
-      
-      // Sort by priority
-      const priorityOrder = { high: 0, medium: 1, low: 2 };
-      const priorityDiff = priorityOrder[a.priority] - priorityOrder[b.priority];
-      if (priorityDiff !== 0) return priorityDiff;
-      
-      // Sort by creation date
-      return new Date(b.createdAt) - new Date(a.createdAt);
+        if (a.completed !== b.completed) return a.completed - b.completed;
+        const priorityOrder = { high: 0, medium: 1, low: 2 };
+        if (priorityOrder[a.priority] !== priorityOrder[b.priority]) return priorityOrder[a.priority] - priorityOrder[b.priority];
+        return new Date(b.createdAt) - new Date(a.createdAt);
     });
-
     return tasks;
   }
-
+  
   renderTasks(tasks) {
     this.elements.tasksList.innerHTML = '';
-    
+    this.updateTaskCount(tasks.length);
+
     if (tasks.length === 0) {
       this.elements.emptyState.style.display = 'block';
     } else {
       this.elements.emptyState.style.display = 'none';
-      
-      tasks.forEach((task, index) => {
-        const taskElement = this.createTaskElement(task, index);
-        this.elements.tasksList.appendChild(taskElement);
+      tasks.forEach(task => {
+        this.elements.tasksList.appendChild(this.createTaskElement(task));
       });
     }
   }
 
-  createTaskElement(task, index) {
+  createTaskElement(task) {
     const li = document.createElement('li');
     li.className = 'task-item';
     li.dataset.taskId = task.id;
     li.draggable = true;
-    
-    if (task.completed) {
-      li.classList.add('completed');
-    }
-
-    const categoryIcons = {
-      general: '📋',
-      work: '💼',
-      personal: '👤',
-      shopping: '🛒',
-      health: '❤️',
-      learning: '📚'
-    };
+    if (task.completed) li.classList.add('completed');
+    const categoryIcons = { general: '📋', work: '💼', personal: '👤', shopping: '🛒', health: '❤️', learning: '📚' };
 
     li.innerHTML = `
       <div class="task-checkbox ${task.completed ? 'checked' : ''}" data-action="toggle"></div>
@@ -1604,127 +1600,74 @@ class ChronoFocusPro {
         <div class="task-text">${task.text}</div>
         <div class="task-meta">
           <span class="task-priority ${task.priority}">${task.priority}</span>
-          <span class="task-date">
-            <i class="fas fa-calendar"></i>
-            ${new Date(task.date).toLocaleDateString()}
-          </span>
+          <span class="task-date"><i class="fas fa-calendar"></i>${new Date(task.date.replace(/-/g, '/')).toLocaleDateString()}</span>
           <span>${categoryIcons[task.category]} ${task.category}</span>
         </div>
       </div>
       <div class="task-actions">
-        <button class="task-action-btn edit" data-action="edit" title="Edit">
-          <i class="fas fa-edit"></i>
-        </button>
-        <button class="task-action-btn delete" data-action="delete" title="Delete">
-          <i class="fas fa-trash"></i>
-        </button>
+        <button class="task-action-btn edit" data-action="edit" title="Edit"><i class="fas fa-edit"></i></button>
+        <button class="task-action-btn delete" data-action="delete" title="Delete"><i class="fas fa-trash"></i></button>
       </div>
     `;
 
-    // Add event listeners
     li.addEventListener('click', (e) => {
-      const action = e.target.closest('[data-action]')?.dataset.action;
-      if (action === 'toggle') {
-        this.toggleTask(task.id);
-      } else if (action === 'edit') {
-        this.editTask(task.id);
-      } else if (action === 'delete') {
-        this.deleteTask(task.id);
-      }
+        const actionTarget = e.target.closest('[data-action]');
+        if (!actionTarget) return;
+        const action = actionTarget.dataset.action;
+        
+        if (action === 'toggle') this.toggleTask(task.id);
+        else if (action === 'edit') this.editTask(task.id);
+        else if (action === 'delete') this.deleteTask(task.id, li);
     });
 
-    // Drag and drop
     li.addEventListener('dragstart', (e) => {
       this.draggedTask = task;
       li.classList.add('dragging');
       this.showDropZone();
     });
-
     li.addEventListener('dragend', () => {
       li.classList.remove('dragging');
       this.draggedTask = null;
       this.hideDropZone();
     });
-
     return li;
   }
 
-  // Filter Methods
   setFilter(filter) {
     this.currentFilter = filter;
-    
-    // Update active filter button
-    this.elements.filterBtns.forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.filter === filter);
-    });
-
+    this.elements.filterBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.filter === filter));
     this.updateView();
   }
 
   // UI Helper Methods
-  toggleSidebar() {
-    if (window.innerWidth <= 768) {
-      this.elements.sidebar.classList.toggle('visible');
-    } else {
-      this.elements.sidebar.classList.toggle('collapsed');
-    }
-  }
-
-  closeSidebar() {
-    if (window.innerWidth <= 768) {
-      this.elements.sidebar.classList.remove('visible');
-    }
-  }
-
+  toggleSidebar() { this.elements.sidebar.classList.toggle('visible'); }
+  closeSidebarOnMobile() { if (window.innerWidth <= 992) this.elements.sidebar.classList.remove('visible'); }
   toggleCalendar() {
-    if (window.innerWidth <= 768) {
-      this.elements.calendarSection.classList.toggle('visible');
-    } else {
-      this.elements.calendarSection.classList.toggle('hidden');
-    }
+    if(window.innerWidth <= 768) this.elements.calendarSection.classList.toggle('visible');
+    else this.elements.calendarSection.classList.toggle('hidden');
   }
-
-  showDropZone() {
-    if (this.draggedTask) {
-      this.elements.dropZone.style.display = 'flex';
-    }
-  }
-
-  hideDropZone() {
-    this.elements.dropZone.style.display = 'none';
-  }
-
-  updateTaskCount(count) {
-    this.elements.taskCount.textContent = `${count} task${count !== 1 ? 's' : ''}`;
-  }
-
+  closeCalendarOnMobile() { if (window.innerWidth <= 768) this.elements.calendarSection.classList.remove('visible'); }
+  showDropZone() { if (this.draggedTask) this.elements.dropZone.style.display = 'flex'; }
+  hideDropZone() { this.elements.dropZone.style.display = 'none'; }
+  updateTaskCount(count) { this.elements.taskCount.textContent = `${count} task${count !== 1 ? 's' : ''}`; }
   autoResizeTextarea() {
     this.elements.taskInput.addEventListener('input', () => {
       this.elements.taskInput.style.height = 'auto';
-      this.elements.taskInput.style.height = Math.min(this.elements.taskInput.scrollHeight, 120) + 'px';
+      this.elements.taskInput.style.height = `${Math.min(this.elements.taskInput.scrollHeight, 120)}px`;
     });
   }
-
   handleResize() {
-    if (window.innerWidth > 768) {
-      this.elements.sidebar.classList.remove('visible');
-      this.elements.calendarSection.classList.remove('visible');
-    } else {
-      this.elements.sidebar.classList.remove('collapsed');
-      this.elements.calendarSection.classList.remove('hidden');
-    }
+    if (window.innerWidth > 992) this.elements.sidebar.classList.remove('visible');
+    if (window.innerWidth > 768) this.elements.calendarSection.classList.remove('visible');
+    else this.elements.calendarSection.classList.remove('hidden');
   }
 
   // Theme Methods
-  toggleThemeDropdown() {
-    this.elements.themeDropdown.classList.toggle('visible');
-  }
-
+  toggleThemeDropdown() { this.elements.themeDropdown.classList.toggle('visible'); }
   setTheme(theme) {
-    document.body.className = theme === 'default' ? '' : theme;
+    this.elements.body.className = theme === 'default' ? '' : theme;
     localStorage.setItem('chronoFocusProTheme', theme);
   }
-
   loadTheme() {
     const savedTheme = localStorage.getItem('chronoFocusProTheme') || 'default';
     this.setTheme(savedTheme);
@@ -1735,48 +1678,27 @@ class ChronoFocusPro {
     const toast = document.createElement('div');
     toast.className = `toast ${type}`;
     toast.textContent = message;
-
     this.elements.toastContainer.appendChild(toast);
-
-    // Trigger animation
     setTimeout(() => toast.classList.add('show'), 10);
-
-    // Remove toast
     setTimeout(() => {
       toast.classList.remove('show');
-      setTimeout(() => {
-        if (toast.parentNode) {
-          toast.parentNode.removeChild(toast);
-        }
-      }, 300);
+      toast.addEventListener('transitionend', () => toast.remove(), { once: true });
     }, 3000);
   }
-
+  
   // Data Methods
-  getTasks() {
-    return JSON.parse(localStorage.getItem('chronoFocusProTasks') || '[]');
-  }
-
-  saveTasks(tasks) {
-    localStorage.setItem('chronoFocusProTasks', JSON.stringify(tasks));
-  }
-
+  getTasks() { return JSON.parse(localStorage.getItem('chronoFocusProTasks') || '[]'); }
+  saveTasks(tasks) { localStorage.setItem('chronoFocusProTasks', JSON.stringify(tasks)); }
   getTasksForDate(date) {
     const dateStr = this.formatDate(date);
     return this.getTasks().filter(task => task.date === dateStr);
   }
 
   // Utility Methods
-  formatDate(date) {
-    return date.toISOString().split('T')[0];
-  }
-
-  isSameDate(date1, date2) {
-    return this.formatDate(date1) === this.formatDate(date2);
-  }
+  formatDate(date) { return date.toISOString().split('T')[0]; }
+  isSameDate(d1, d2) { return this.formatDate(d1) === this.formatDate(d2); }
 }
 
-// Initialize app when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
   window.chronoFocusPro = new ChronoFocusPro();
 });
