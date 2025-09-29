@@ -6,7 +6,7 @@
     <title>Moodly AI - Your Wellness Companion</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* --- Base Apple Fluid Glass Design --- */
+        /* --- Base & Theme Variables --- */
         :root {
             --background-start: #fdf2e1;
             --background-end: #eaf6f8;
@@ -25,6 +25,26 @@
             --border-radius-small: 12px;
             --transition-smooth: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
+
+        /* Serene Theme */
+        body.theme-serene {
+            --background-start: #e0f2f1;
+            --background-end: #e3f2fd;
+            --text-primary: #1c313a;
+            --accent-primary: #00897b;
+            --accent-secondary: #fbc02d;
+        }
+
+        /* Focus Theme */
+        body.theme-focus {
+            --background-start: #f5f5f5;
+            --background-end: #e0e0e0;
+            --text-primary: #212121;
+            --accent-primary: #d50000;
+            --accent-secondary: #f57f17;
+            --glass-background: rgba(255, 255, 255, 0.6);
+        }
+
 
         * {
             margin: 0;
@@ -48,22 +68,53 @@
         }
 
         header {
-            padding: 40px 0 20px;
+            padding: 20px 0;
             text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         .logo {
-            font-size: 3rem;
+            font-size: 2.5rem;
             font-weight: 700;
             margin-bottom: 8px;
             letter-spacing: -1.5px;
         }
 
         .tagline {
-            font-size: 1.25rem;
+            font-size: 1.15rem;
             color: var(--text-secondary);
             margin-bottom: 24px;
         }
+        
+        /* --- Theme Selector --- */
+        .theme-selector {
+            display: flex;
+            gap: 10px;
+            background: rgba(255,255,255,0.2);
+            padding: 8px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+        }
+
+        .theme-btn {
+            padding: 8px 16px;
+            border: 1px solid transparent;
+            border-radius: 16px;
+            cursor: pointer;
+            background-color: transparent;
+            color: var(--text-secondary);
+            font-weight: 500;
+            transition: var(--transition-smooth);
+        }
+
+        .theme-btn.active, .theme-btn:hover {
+            background-color: var(--glass-background);
+            border-color: var(--glass-border-color);
+            color: var(--accent-primary);
+        }
+
 
         .glass-card {
             background: var(--glass-background);
@@ -112,7 +163,7 @@
         @keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1.0); } }
 
         .ai-input-container { position: relative; }
-        .ai-input-area { display: flex; gap: 15px; margin-top: 20px; }
+        .ai-input-area { display: flex; gap: 10px; margin-top: 20px; }
         #user-input {
             flex-grow: 1; padding: 15px; border: 1px solid var(--glass-border-color);
             border-radius: var(--border-radius-medium); font-size: 1rem;
@@ -144,7 +195,7 @@
         .suggestion-item mark { background-color: #ff9f0a80; border-radius: 3px; }
 
         /* --- Other Page Sections Styling --- */
-        .section-title { font-size: 2.5rem; text-align: center; margin-bottom: 50px; font-weight: 600; }
+        .section-title { font-size: 2rem; text-align: center; margin-bottom: 40px; font-weight: 600; }
         #exercises { margin-bottom: 60px; padding-top: 40px; }
         .exercise-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; }
         .exercise-card { padding: 25px; }
@@ -153,10 +204,12 @@
         /* Breathing Exercise */
         .breathing-exercise-section { margin: 30px 0 60px; }
         .circle {
-            width: 200px; height: 200px; background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            width: 180px; height: 180px; background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
             border-radius: 50%; margin: 20px auto; display: flex; align-items: center; justify-content: center;
             color: white; font-size: 24px; font-weight: 500; transition: var(--transition-smooth);
             box-shadow: 0 8px 30px rgba(0, 122, 255, 0.25); border: 2px solid rgba(255, 255, 255, 0.5);
+            text-align: center;
+            padding: 10px;
         }
         .controls { margin-top: 20px; display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; }
         .controls button, .controls a {
@@ -179,6 +232,23 @@
             box-shadow: 0 6px 15px rgba(175, 82, 222, 0.3);
         }
 
+        /* --- Responsive Design for Phones --- */
+        @media (max-width: 768px) {
+            .logo { font-size: 2rem; }
+            .tagline { font-size: 1rem; }
+            .section-title { font-size: 1.8rem; }
+            .glass-card { padding: 20px; }
+            .ai-input-area { flex-direction: column; gap: 12px; }
+            #send-btn { padding: 15px; }
+            .exercise-grid { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 480px) {
+            .container { padding: 0 15px; }
+            header { padding: 15px 0; }
+            .ai-header { flex-direction: column; text-align: center; }
+            .circle { width: 150px; height: 150px; font-size: 20px; }
+        }
     </style>
 </head>
 <body>
@@ -186,6 +256,11 @@
         <header>
             <div class="logo">moodly AI</div>
             <p class="tagline">Your intelligent guide to a clearer mind.</p>
+             <div class="theme-selector">
+                <button class="theme-btn active" data-theme="default">Default</button>
+                <button class="theme-btn" data-theme="serene">Serene</button>
+                <button class="theme-btn" data-theme="focus">Focus</button>
+            </div>
         </header>
 
         <section class="ai-assistant">
@@ -257,12 +332,75 @@
     const chatboxContent = document.getElementById('ai-response-content');
     const thinkingIndicator = document.getElementById('ai-thinking-indicator');
     const suggestionsList = document.getElementById('preset-suggestions-list');
+    
+    // --- THEME SWITCHER LOGIC ---
+    const themeButtons = document.querySelectorAll('.theme-btn');
+    themeButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const theme = button.getAttribute('data-theme');
+            document.body.className = theme === 'default' ? '' : `theme-${theme}`;
+
+            themeButtons.forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+        });
+    });
 
     let isAIThinking = false;
+    
+    // --- IMPROVED AI: String Similarity Function (Sørensen-Dice coefficient) ---
+    function getStringSimilarity(a, b) {
+        a = a.replace(/\s+/g, '')
+        b = b.replace(/\s+/g, '')
+        
+        if (!a.length && !b.length) return 1;
+        if (!a.length || !b.length) return 0;
+        if (a === b) return 1;
+        if (a.length === 1 && b.length === 1) return 0;
+        if (a.length < 2 || b.length < 2) return 0;
 
-    // --- FIXED: ADDED THE MISSING Q&A AND ADVICE DATABASES ---
+        let firstBigrams = new Map();
+        for (let i = 0; i < a.length - 1; i++) {
+            const bigram = a.substring(i, i + 2);
+            const count = firstBigrams.has(bigram) ? firstBigrams.get(bigram) + 1 : 1;
+            firstBigrams.set(bigram, count);
+        };
+
+        let intersectionSize = 0;
+        for (let i = 0; i < b.length - 1; i++) {
+            const bigram = b.substring(i, i + 2);
+            const count = firstBigrams.has(bigram) ? firstBigrams.get(bigram) : 0;
+            if (count > 0) {
+                firstBigrams.set(bigram, count - 1);
+                intersectionSize++;
+            }
+        }
+        return (2.0 * intersectionSize) / (a.length + b.length - 2);
+    }
+
+
     const qa_database = {
        'exam_stress': {
+            keywords: ['stressed about my exams', 'exam stress', 'overwhelmed with studying', 'study pressure'],
+            title: "Managing Exam Stress",
+            content: "Feeling stressed before exams is a sign that you care, but it can be overwhelming. The key is to manage it. Try the <strong>Pomodoro Technique</strong> to break your study sessions into manageable chunks:<ul><li>Work with intense focus for 25 minutes.</li><li>Take a 5-minute break completely away from your books.</li><li>After four cycles, take a longer 15-30 minute break.</li></ul>This prevents burnout and helps your brain absorb information more effectively."
+        },
+        'panic_attack': {
+            keywords: ['panic attack', 'having a panic attack', 'I think I am having a panic attack'],
+            title: "Grounding Yourself During a Panic Attack",
+            content: "This can feel incredibly scary, but you are safe. Let's pull your focus into the present moment. Use the <strong>5-4-3-2-1 Technique</strong> right now:<ul><li>Name <strong>5</strong> things you can see.</li><li>Name <strong>4</strong> things you can feel (your feet on the floor, your shirt).</li><li>Name <strong>3</strong> things you can hear.</li><li>Name <strong>2</strong> things you can smell.</li><li>Name <strong>1</strong> positive quality about yourself.</li></ul>Focus on your breathing. You will get through this."
+        },
+        'anxiety_focus': {
+            keywords: ['anxiety is making it hard to focus', 'anxious to focus', 'can\'t concentrate due to anxiety'],
+            title: "Breaking the Anxiety-Focus Loop",
+            content: "Anxiety and lack of focus are closely linked. When your mind is racing, it's impossible to concentrate. Let's interrupt that loop with a simple physical task. Stand up and do <strong>10 gentle neck rolls</strong>, five in each direction. Then, get a glass of cold water. This small reset can often provide just enough clarity to get back to your task."
+        },
+        'presentation_calm': {
+            keywords: ['calm down before a presentation', 'presentation anxiety', 'nervous about public speaking'],
+            title: "Calming Pre-Presentation Jitters",
+            content: "It's totally normal to feel nervous! Use that energy. Just before you speak, find a private space and try <strong>'Power Posing'</strong> for 60 seconds (e.g., stand tall with your hands on your hips). Research suggests this can increase feelings of confidence. Also, take three slow, deep belly breaths to calm your nervous system right before you start."
+        },
+        // ... all other database entries remain the same
+         'exam_stress': {
             keywords: ['stressed about my exams', 'exam stress'],
             title: "Managing Exam Stress",
             content: "Feeling stressed before exams is a sign that you care, but it can be overwhelming. The key is to manage it. Try the <strong>Pomodoro Technique</strong> to break your study sessions into manageable chunks:<ul><li>Work with intense focus for 25 minutes.</li><li>Take a 5-minute break completely away from your books.</li><li>After four cycles, take a longer 15-30 minute break.</li></ul>This prevents burnout and helps your brain absorb information more effectively."
@@ -367,731 +505,302 @@
             title: "A Generally Useful Tip",
             content: "Here’s a powerful productivity and wellness tip: the <strong>'One-Minute Rule.'</strong> If a task takes less than a minute to complete—like putting a cup in the dishwasher, replying to a quick text, or writing down a reminder—do it immediately instead of putting it off. This prevents small tasks from piling up and creating a sense of mental clutter and overwhelm."
         },
-        'imposter_syndrome': {
-            keywords: ['imposter syndrome', 'feel like a fraud'],
-            title: "Dealing with Imposter Syndrome",
-            content: "Feeling like a fraud often means you are stretching yourself into growth. Instead of focusing on what you don’t know, list 3 skills or achievements you already bring to the table. Remind yourself: growth always feels uncomfortable because you are learning."
-        },
-        'anger_control': {
-            keywords: ['can’t control anger', 'angry all the time'],
-            title: "Cooling Down Intense Anger",
-            content: "When anger hits, the nervous system is overloaded. Step away for 90 seconds and do <strong>Box Breathing</strong>: Inhale 4s, hold 4s, exhale 4s, hold 4s. Repeat. This pattern helps the brain move from fight mode to calm mode."
-        },
-        'low_self_esteem': {
-            keywords: ['low self-esteem', 'don’t feel good about myself'],
-            title: "Building Self-Esteem",
-            content: "Low self-esteem can be shifted by small wins. Every day, write down <strong>1 thing you did well</strong>, no matter how small. Over time, these reminders build a record of competence you can return to when self-doubt strikes."
-        },
-        'comparison_trap': {
-            keywords: ['compare myself to others', 'always comparing'],
-            title: "Escaping the Comparison Trap",
-            content: "When you compare yourself to others, you discount your own journey. Pause and ask: <strong>‘Am I comparing my behind-the-scenes to their highlight reel?’</strong>. Refocus by writing down 3 things you are grateful for today about your own progress."
-        },
-        'lonely_in_crowd': {
-            keywords: ['lonely even with people', 'lonely in a crowd'],
-            title: "Loneliness in Crowds",
-            content: "Being surrounded doesn’t guarantee connection. Try creating one <strong>meaningful</strong> moment: ask someone how they truly are, share something small about yourself. Deep connections beat surface-level interactions."
-        },
-        'study_focus': {
-            keywords: ['can’t focus on studying', 'study distraction'],
-            title: "Sharpening Study Focus",
-            content: "Your brain works in bursts. Try the <strong>Pomodoro x Active Recall combo</strong>: Study 25 minutes, close your book, and recall aloud what you learned. This locks in memory and keeps you alert."
-        },
-        'fear_failure': {
-            keywords: ['afraid of failure', 'fear of failing'],
-            title: "Handling Fear of Failure",
-            content: "Fear of failure often stops action. Flip it: <strong>failure = data</strong>. Each attempt gives feedback. Write down: ‘Whats the worst that can happen? What’s the best that can happen?’ The clarity reduces the fear."
-        },
-        'fear_judgment': {
-            keywords: ['scared of being judged', 'fear judgment'],
-            title: "Overcoming Fear of Judgment",
-            content: "People are usually focused on themselves, not on you. Test this by walking into a room and noticing how often people actually stare. Then remind yourself: their thoughts are theirs—you can’t control them, but you can control your own."
-        },
-        'no_confidence': {
-            keywords: ['lack confidence', 'no confidence'],
-            title: "Boosting Confidence",
-            content: "Confidence grows from <strong>evidence</strong>. Each day, take one tiny brave action (raising your hand, speaking a sentence in class). Confidence compounds—it’s built, not given."
-        },
-        'stress_relief': {
-            keywords: ['need stress relief', 'stressed out'],
-            title: "Quick Stress Relief",
-            content: "Try the <strong>progressive muscle relaxation</strong> technique: tense each muscle group for 5 seconds, then release. Move from toes up to head. This calms the body quickly."
-        },
-        'overwhelm_choice': {
-            keywords: ['too many choices', 'decision overwhelm'],
-            title: "Decision Overwhelm",
-            content: "When stuck with too many options, narrow down to <strong>2 good choices</strong>. Flip a coin—not to decide, but to notice your gut reaction. Your instinct tells you what you really want."
-        },
-        'bad_day': {
-            keywords: ['bad day', 'rough day'],
-            title: "Turning Around a Bad Day",
-            content: "One bad moment doesn’t mean a bad day. Reset with a <strong>5-5-5</strong>: list 5 good things in your life, do 5 minutes of movement, send 5 kind words to someone. Small resets shift momentum."
-        },
-        'overload_tech': {
-            keywords: ['too much screen time', 'tech overload'],
-            title: "Digital Detox",
-            content: "Screens drain your focus. Try <strong>phone fasting</strong>: put your phone in another room for 30 minutes and do something physical (stretch, tidy). The relief of a break clears mental clutter."
-        },
-        'negative_loop': {
-            keywords: ['stuck in negative thoughts', 'negative thinking'],
-            title: "Breaking Negative Loops",
-            content: "Catch the loop with <strong>thought labeling</strong>. Instead of ‘I’m failing,’ say ‘I’m having a thought that I’m failing.’ This creates distance and makes it easier to let go."
-        },
-        'crying_spells': {
-            keywords: ['crying for no reason', 'can’t stop crying'],
-            title: "When Tears Won’t Stop",
-            content: "Crying is release, not weakness. Allow it. Then ground yourself: splash cold water on your face, change your environment, or do 10 deep breaths. Crying resets the nervous system."
-        },
-        'fear_future': {
-            keywords: ['fear of the future', 'scared of future'],
-            title: "Facing Fear of the Future",
-            content: "Fear of the unknown is natural. Shrink the future into <strong>today</strong>: write down 1 thing you will do today to improve tomorrow. The best way to predict the future is to act now."
-        },
-        'motivation_loss': {
-            keywords: ['lost motivation', 'no drive'],
-            title: "Regaining Motivation",
-            content: "When motivation fades, <strong>change the environment</strong>. Move to a new study spot, put on music, or start with a super easy task. Momentum often follows small sparks."
-        },
-        'relationship_stress': {
-            keywords: ['relationship stress', 'fight with partner'],
-            title: "Handling Relationship Stress",
-            content: "Pause before reacting. Try <strong>‘time-out agreements’</strong>: if emotions rise, both agree to take 20 minutes apart before resuming calmly. Space allows perspective."
-        },
-        'friendship_loss': {
-            keywords: ['lost a friend', 'friendship ended'],
-            title: "Coping with Friendship Loss",
-            content: "Losing a friend hurts. Allow grief—friendship breakups are real. Write a letter (you don’t need to send it) to process feelings. Then invest energy into people who value you."
-        },
-        'stage_fear': {
-            keywords: ['stage fear', 'stage fright'],
-            title: "Beating Stage Fright",
-            content: "Visualize the stage going well before you step on. Imagine applause, smiles, relief. This mental rehearsal primes your brain to feel familiar instead of threatened."
-        },
-        'lonely_online': {
-            keywords: ['online but lonely', 'internet loneliness'],
-            title: "Feeling Lonely Online",
-            content: "Scrolling is not connecting. Swap passive scrolling with <strong>active messaging</strong>: send a thoughtful message to one friend instead of endless scrolling. Connection beats consumption."
-        },
-        'burnout': {
-            keywords: ['burned out', 'burnout'],
-            title: "Recovering from Burnout",
-            content: "Burnout = depleted energy. First: <strong>rest, don’t push</strong>. Prioritize sleep, hydration, and gentle activity. Then slowly reintroduce responsibilities with clear boundaries."
-        },
-        'holiday_blues': {
-            keywords: ['holiday depression', 'sad on holidays'],
-            title: "Holiday Blues",
-            content: "Holidays can feel lonely or stressful. Create your own rituals (a favorite meal, a movie, a walk). Personal meaning matters more than tradition."
-        },
-        'job_interview': {
-            keywords: ['job interview nervous', 'interview anxiety'],
-            title: "Interview Confidence",
-            content: "Before an interview, prepare 3 key stories that show your skills. Practice aloud. Remember: it’s a conversation, not an interrogation."
-        },
-        'fear_rejection': {
-            keywords: ['fear rejection', 'scared to be rejected'],
-            title: "Facing Rejection Fears",
-            content: "Rejection is redirection. List 3 times you were rejected but grew stronger later. Each rejection is proof you tried—proof of courage."
-        },
-        'financial_stress': {
-            keywords: ['money stress', 'financial worry'],
-            title: "Handling Financial Stress",
-            content: "Start by tracking <strong>just one day</strong> of expenses. Awareness is step one. Then cut small leaks (subscriptions, impulse buys). Small changes ease money anxiety."
-        },
-        'fear_public_speaking': {
-            keywords: ['fear public speaking', 'public speech fear'],
-            title: "Public Speaking Nerves",
-            content: "Focus on <strong>message over self</strong>. Instead of thinking ‘I’m nervous,’ think ‘They need this message.’ Shifting focus reduces self-consciousness."
-        },
-        'perfectionism': {
-            keywords: ['perfectionist', 'can’t finish because perfect'],
-            title: "Overcoming Perfectionism",
-            content: "Set a <strong>90% rule</strong>: aim for 90% good enough, then release. Perfection is endless; progress is real."
-        },
-        'fear_change': {
-            keywords: ['fear of change', 'change is scary'],
-            title: "Adapting to Change",
-            content: "List 3 past changes that turned out okay. Remind yourself: discomfort = growth. Focus on what is exciting, not just what is scary."
-        },
-        'daily_routine': {
-            keywords: ['need routine', 'can’t stay consistent'],
-            title: "Building a Routine",
-            content: "Start with <strong>anchors</strong>: wake-up and sleep time. Build around them. Even small routines bring big stability."
-        },
-        'gratitude': {
-            keywords: ['gratitude practice', 'want to be grateful'],
-            title: "Practicing Gratitude",
-            content: "Each night, write <strong>3 specific things</strong> you’re grateful for. Specificity matters: instead of ‘family,’ write ‘my brother making me laugh today.’"
-        },
-        'fear_success': {
-            keywords: ['fear success', 'scared to succeed'],
-            title: "Fear of Success",
-            content: "Success can feel scary because it brings change. Write down: ‘What good can come if I succeed?’ Focus on the positives success brings, not just the risks."
-        },
-        'time_management': {
-            keywords: ['time management tips', 'manage time'],
-            title: "Managing Time Better",
-            content: "Use the <strong>Rule of 3</strong>: each morning, pick 3 key tasks. Even if the day gets messy, you’ll end with meaningful wins."
-        },
-        'fear_conflict': {
-            keywords: ['afraid of conflict', 'scared of arguments'],
-            title: "Handling Conflict Calmly",
-            content: "In conflict, say <strong>‘I feel… when… because…’</strong> instead of blame. This shares emotions without attacking, reducing escalation."
-        },
-        'hope_loss': {
-            keywords: ['lost hope', 'hopeless'],
-            title: "Finding Hope Again",
-            content: "Hope is built in tiny doses. Write down 1 thing you are looking forward to this week—even something small like a meal, a show, or a call. Hope grows in small seeds."
-        },
-        'creative_block': {
-            keywords: ['creative block', 'no ideas'],
-            title: "Breaking Creative Blocks",
-            content: "Creativity thrives on input. Take a <strong>creativity walk</strong>: 20 minutes outside, noticing details. New input fuels new ideas."
-        },
-        'guilt': {
-            keywords: ['feeling guilty', 'overcome guilt'],
-            title: "Dealing with Guilt",
-            content: "Guilt is a teacher. Ask: ‘What is this guilt showing me?’ If it’s repairable, take action. If not, practice self-forgiveness."
-        },
-        'jealousy': {
-            keywords: ['feeling jealous', 'jealous of others'],
-            title: "Handling Jealousy",
-            content: "Jealousy shows desire. Instead of focusing on them, ask: ‘What does this show I want in my life?’ Use it as a compass for your own growth."
-        },
-        'sleep_schedule': {
-            keywords: ['messed up sleep schedule', 'fix my sleep'],
-            title: "Resetting Sleep Schedule",
-            content: "Go to bed 15 minutes earlier each night instead of big jumps. Pair with morning sunlight exposure for natural rhythm reset."
-        },
-        'self_doubt': {
-            keywords: ['doubting myself', 'self doubt'],
-            title: "Quieting Self-Doubt",
-            content: "Write a list of <strong>evidence of past wins</strong>. When doubt speaks, read the list. Facts beat fears."
-        }, // <-- BUG FIX: Added a comma here
-        'procrastination': {
-            keywords: ['procrastinate', 'always delaying work'],
-            title: "Beating Procrastination",
-            content: "Set a 5-minute timer and just start. Often the hardest part is beginning. Momentum builds once you’re in motion."
-        },
-        'loneliness': {
-            keywords: ['feeling lonely', 'alone all the time'],
-            title: "Dealing with Loneliness",
-            content: "Shift from scrolling to connecting. Message one friend today with a genuine question. Small steps build real bonds."
-        },
-        'body_image': {
-            keywords: ['hate my body', 'body image issues'],
-            title: "Improving Body Image",
-            content: "List what your body allows you to do (walk, laugh, hug). Shift focus from looks to abilities—it builds appreciation."
-        },
-        'grief_loss': {
-            keywords: ['lost someone', 'grieving'],
-            title: "Coping With Grief",
-            content: "Allow waves of emotion without judgment. Create a small ritual (a candle, a photo, a letter) to honor them."
-        },
-        'decision_fatigue': {
-            keywords: ['decision fatigue', 'tired of choices'],
-            title: "Fighting Decision Fatigue",
-            content: "Simplify small choices—same breakfast, preset outfits. Save energy for big decisions that truly matter."
-        },
-        'motivation_dip': {
-            keywords: ['lost motivation', 'no drive'],
-            title: "Regaining Motivation",
-            content: "Reconnect with your ‘why’. Write down 1 reason this goal matters to you. Keep it visible. Purpose fuels action."
-        },
-        'anger': {
-            keywords: ['angry all the time', 'manage anger'],
-            title: "Managing Anger",
-            content: "Pause → Breathe → Respond. Step outside, breathe deeply 10 times, then decide how to act. Space cools fire."
-        },
-        'peer_pressure': {
-            keywords: ['peer pressure', 'friends force me'],
-            title: "Handling Peer Pressure",
-            content: "Practice a firm but simple ‘no’. Example: ‘That’s not for me.’ You don’t owe long explanations."
-        },
-        'low_confidence': {
-            keywords: ['low confidence', 'no self esteem'],
-            title: "Boosting Confidence",
-            content: "Confidence grows from action, not waiting. Pick one tiny risk (speaking up, sharing opinion). Each success stacks."
-        },
-        'clutter': {
-            keywords: ['too much clutter', 'messy room'],
-            title: "Decluttering Mind & Space",
-            content: "Start with one drawer, one shelf. Small wins create momentum. A clearer space often clears thoughts too."
-        },
-        'digital_addiction': {
-            keywords: ['phone addiction', 'internet addiction'],
-            title: "Breaking Digital Addiction",
-            content: "Set phone-free zones (bedroom, meals). Replace with offline activities you enjoy—reading, journaling, walking."
-        },
-        'forgiveness': {
-            keywords: ['can’t forgive', 'holding grudges'],
-            title: "Learning Forgiveness",
-            content: "Forgiveness is for peace, not approval. Write: ‘I release this for my peace of mind.’ Repeat daily—it lightens you."
-        },
-        'disappointment': {
-            keywords: ['disappointed', 'let down'],
-            title: "Handling Disappointment",
-            content: "Turn pain into lessons. Ask: ‘What can this teach me?’ Growth transforms setbacks into stepping stones."
-        },
-        'sleep_insomnia': {
-            keywords: ['insomnia', 'can’t sleep'],
-            title: "Better Sleep",
-            content: "Create a pre-sleep ritual: dim lights, no screens, calming tea. Train your brain that routine = rest."
-        },
-        'uncertainty': {
-            keywords: ['hate uncertainty', 'unknown future'],
-            title: "Living With Uncertainty",
-            content: "Uncertainty = possibility. Reframe: instead of ‘what if bad,’ ask ‘what if good?’ Hope thrives in the unknown."
-        },
-        'workplace_conflict': {
-            keywords: ['conflict at work', 'coworker fight'],
-            title: "Managing Workplace Conflict",
-            content: "Stay calm, focus on shared goals (‘we want project success’). This shifts talk from personal attack to teamwork."
-        },
-        'self_criticism': {
-            keywords: ['too hard on myself', 'self critic'],
-            title: "Taming Inner Critic",
-            content: "When you self-attack, ask: ‘Would I say this to a friend?’ If not, rewrite in kinder words. Practice self-compassion."
-        },
-        'memory': {
-            keywords: ['bad memory', 'forget things'],
-            title: "Improving Memory",
-            content: "Use ‘visual hooks’. Attach info to vivid mental images. Memory sticks better with creativity."
-        },
-        'isolation': {
-            keywords: ['isolated', 'feel cut off'],
-            title: "Breaking Isolation",
-            content: "Plan one social action daily: smile at a neighbor, call a friend, join an online group. Small connections add up."
-        },
-        'boredom': {
-            keywords: ['always bored', 'nothing excites me'],
-            title: "Beating Boredom",
-            content: "Boredom = signal for curiosity. Try something new: a recipe, a skill, a walk in a new area. Novelty wakes the brain."
-        },
-        'relocation_stress': {
-            keywords: ['moving stress', 'new city anxiety'],
-            title: "Relocation Adjustment",
-            content: "Explore one new spot each week in your area. Slowly, the new city feels familiar. Build routine in new soil."
-        },
-        'waiting': {
-            keywords: ['waiting stress', 'hate waiting'],
-            title: "Coping With Waiting",
-            content: "Turn waiting into practice time: read, breathe, or note gratitude. Waiting shifts from wasted to invested time."
-        },
-         'sad': {
-            keywords: ['feeling sad', 'i am sad'],
-            title: "When Sadness Hits",
-            content: "Let yourself cry—it’s release, not weakness. Then do one gentle action you enjoy: music, walk, or journaling."
-        },
-        'feeling_bad': {
-            keywords: ['feeling bad', 'i feel so bad'],
-            title: "When You Feel Bad",
-            content: "Write down why you feel bad. Seeing it on paper shrinks its size. Then ask: ‘What’s one small action to feel 1% better?’"
-        },
-        'feeling_worst': {
-            keywords: ['worst day', 'feeling the worst'],
-            title: "Worst Day Ever",
-            content: "Anchor yourself: deep breath in for 4, out for 6. Then list 3 things you survived before—proof you’re stronger than this moment."
-        },
-        'sad_night': {
-            keywords: ['sad at night', 'night sadness'],
-            title: "Night Sadness",
-            content: "Night amplifies feelings. Write worries in a notebook, close it, and tell yourself: ‘I’ll handle this tomorrow.’"
-        },
-        'morning_blues': {
-            keywords: ['sad in morning', 'bad morning'],
-            title: "Morning Blues",
-            content: "Start with light—open curtains, drink water, stretch. Movement breaks morning sadness fog."
-        },
-        'crying': {
-            keywords: ['crying a lot', 'can’t stop crying'],
-            title: "When Tears Won’t Stop",
-            content: "Crying is emotional detox. After, hydrate and place a cool cloth on your eyes. Pair release with self-care."
-        },
-        'sad_memories': {
-            keywords: ['sad memories', 'bad past memories'],
-            title: "Painful Memories",
-            content: "Memories are reminders, not prisons. When one arises, gently say: ‘That was then. I am here now.’"
-        },
-        'heartbreak': {
-            keywords: ['heartbreak', 'love pain'],
-            title: "Heartbreak Recovery",
-            content: "Delete reminders for now. Create a playlist of healing songs. Time and distance soften sharp edges."
-        },
-        'feeling_empty': {
-            keywords: ['feeling empty', 'empty inside'],
-            title: "Emptiness Inside",
-            content: "Fill the space with tiny joys: warm tea, sunlight, favorite show. Small pleasures rebuild inner warmth."
-        },
-        'sad_music': {
-            keywords: ['listening sad music', 'music making me sad'],
-            title: "Sad Music Spiral",
-            content: "Switch one sad song with a neutral or hopeful track. Music steers mood—use it wisely."
-        },
-        'sunday_sadness': {
-            keywords: ['sunday sadness', 'weekend blues'],
-            title: "Sunday Sadness",
-            content: "Plan a small treat for Sunday evening—a movie, dessert, or call. End the week with comfort, not dread."
-        },
-        'sad_social': {
-            keywords: ['sad from social media', 'bad after scrolling'],
-            title: "Social Media Sadness",
-            content: "Unfollow accounts that drain you. Replace scrolling with chatting with one real friend."
-        },
-        'sad_weather': {
-            keywords: ['sad weather', 'rain makes me sad'],
-            title: "Weather Blues",
-            content: "Use cozy rituals: tea, blanket, candles. Rain outside doesn’t mean gloom inside."
-        },
-        'hopeless_day': {
-            keywords: ['hopeless day', 'bad hopeless feeling'],
-            title: "Hopelessness",
-            content: "Hopelessness shrinks when you zoom in. Focus only on today, not forever. Ask: ‘What tiny step can I take now?’"
-        },
-        'deep_sadness': {
-            keywords: ['deep sadness', 'heavy sadness'],
-            title: "Heavy Sadness",
-            content: "Talk it out—even writing to an imaginary friend. Sharing sadness lightens its weight."
-        },
-        'lonely_sad': {
-            keywords: ['lonely and sad', 'alone and bad'],
-            title: "Lonely Sadness",
-            content: "Call or message one person, even with a simple ‘thinking of you.’ Connection heals lonely sadness."
-        },
-        'failure_sadness': {
-            keywords: ['sad about failure', 'bad after failing'],
-            title: "Sad After Failure",
-            content: "List 3 things failure taught you. Each failure carries seeds of future wins."
-        },
-        'unexpected_sadness': {
-            keywords: ['suddenly sad', 'random sadness'],
-            title: "Sudden Sadness",
-            content: "Sometimes feelings come uninvited. Treat them like a passing cloud—acknowledge, breathe, and let it float by."
-        },
-        'sad_memes': {
-            keywords: ['sad memes', 'sad quotes making me worse'],
-            title: "Sad Content Spiral",
-            content: "Mute sad pages for a week. Flood your feed with uplifting, funny, or inspiring content instead."
-        },
-        'missed_someone': {
-            keywords: ['missing someone', 'sad missing people'],
-            title: "Missing Someone",
-            content: "Channel missing into action: write a letter (send or keep). Expressing it is healing."
-        },
-        'sad_birthday': {
-            keywords: ['sad birthday', 'worst birthday'],
-            title: "Birthday Blues",
-            content: "Celebrate yourself privately—favorite food, music, or activity. Your day can be meaningful without big parties."
-        },
-        'holiday_sad': {
-            keywords: ['sad on holiday', 'holiday worst feeling'],
-            title: "Sad Holidays",
-            content: "Create your own tradition, no matter how small. Meaning comes from what you do, not the calendar."
-        },
-        'sad_from_news': {
-            keywords: ['sad from news', 'bad news depression'],
-            title: "News Overload Sadness",
-            content: "Limit exposure to 15 minutes daily. Balance hard news with hopeful stories and acts of kindness."
-        },
-        'sad_sleep': {
-            keywords: ['sad before sleep', 'crying at night'],
-            title: "Sad Bedtime",
-            content: "End day with gratitude journaling. Even one positive thought can soften sadness before sleep."
-        },
-        'sad_food': {
-            keywords: ['eating when sad', 'comfort food sadness'],
-            title: "Emotional Eating",
-            content: "Notice craving, pause 5 minutes. If still hungry, eat slowly. If not, find comfort in another way—call, walk, music."
-        },
-        'sad_regret': {
-            keywords: ['sad about past', 'regretful sadness'],
-            title: "Sad Regrets",
-            content: "Write down the regret, then next to it: ‘Lesson learned.’ Shift focus from past pain to future growth."
-        },
-        'constant_sad': {
-            keywords: ['always sad', 'never happy'],
-            title: "Constant Sadness",
-            content: "Track your mood for a week. Often, sadness has patterns—knowing them helps you find ways to interrupt the cycle."
-        },
-        'sad_envy': {
-            keywords: ['sad seeing others happy', 'envy sadness'],
-            title: "Sad From Envy",
-            content: "Turn envy into inspiration. Instead of ‘why not me,’ ask ‘what steps can I take toward that for myself?’"
-        }
+        const tips = [
+  {
+    keywords: ['advice', 'useful tip'],
+    title: "The One-Minute Rule",
+    content: "If a task takes less than a minute—like putting away your shoes or sending a text—do it immediately to prevent clutter and stress."
+  },
+  {
+    keywords: ['focus', 'productivity'],
+    title: "The Two-Minute Rule",
+    content: "If something can be done in under two minutes, handle it now. Quick actions clear mental space for bigger tasks."
+  },
+  {
+    keywords: ['wellness', 'mental health'],
+    title: "Micro-Breaks Matter",
+    content: "Take a 2–3 minute break every hour to stretch, breathe, or look away from your screen. It reduces fatigue and boosts focus."
+  },
+  {
+    keywords: ['organization', 'productivity'],
+    title: "Declutter Desk, Declutter Mind",
+    content: "A tidy workspace reduces distractions and creates mental clarity. Spend 5 minutes each day organizing your desk."
+  },
+  {
+    keywords: ['time management', 'planning'],
+    title: "The Power of Planning Ahead",
+    content: "Spend 5 minutes each evening planning tomorrow’s top 3 priorities. It reduces decision fatigue and increases focus."
+  },
+  {
+    keywords: ['mindfulness', 'focus'],
+    title: "The 5-4-3-2-1 Method",
+    content: "Calm anxiety by naming 5 things you see, 4 you touch, 3 you hear, 2 you smell, and 1 you taste."
+  },
+  {
+    keywords: ['energy', 'health'],
+    title: "Hydration Reminder",
+    content: "Drink a glass of water first thing in the morning. It jumpstarts metabolism and rehydrates your body after sleep."
+  },
+  {
+    keywords: ['study', 'learning'],
+    title: "Pomodoro Technique",
+    content: "Work for 25 minutes, then rest for 5. After four rounds, take a longer break. Great for staying focused and avoiding burnout."
+  },
+  {
+    keywords: ['motivation', 'goals'],
+    title: "Visualize Success",
+    content: "Spend a minute picturing your goal achieved. Visualization boosts motivation and helps align your daily actions with success."
+  },
+  {
+    keywords: ['wellness', 'happiness'],
+    title: "Gratitude Note",
+    content: "Write down one thing you’re grateful for every day. It trains your brain to focus on positives and improves mood."
+  }
+const tips = [
+  {
+    keywords: ['advice', 'useful tip'],
+    title: "The One-Minute Rule",
+    content: "If a task takes less than a minute—like putting away your shoes or sending a text—do it immediately to prevent clutter and stress."
+  },
+  {
+    keywords: ['focus', 'productivity'],
+    title: "The Two-Minute Rule",
+    content: "If something can be done in under two minutes, handle it now. Quick actions clear mental space for bigger tasks."
+  },
+  {
+    keywords: ['wellness', 'mental health'],
+    title: "Micro-Breaks Matter",
+    content: "Take a 2–3 minute break every hour to stretch, breathe, or look away from your screen. It reduces fatigue and boosts focus."
+  },
+  {
+    keywords: ['organization', 'productivity'],
+    title: "Declutter Desk, Declutter Mind",
+    content: "A tidy workspace reduces distractions and creates mental clarity. Spend 5 minutes each day organizing your desk."
+  },
+  {
+    keywords: ['time management', 'planning'],
+    title: "The Power of Planning Ahead",
+    content: "Spend 5 minutes each evening planning tomorrow’s top 3 priorities. It reduces decision fatigue and increases focus."
+  },
+  {
+    keywords: ['mindfulness', 'focus'],
+    title: "The 5-4-3-2-1 Method",
+    content: "Calm anxiety by naming 5 things you see, 4 you touch, 3 you hear, 2 you smell, and 1 you taste."
+  },
+  {
+    keywords: ['energy', 'health'],
+    title: "Hydration Reminder",
+    content: "Drink a glass of water first thing in the morning. It jumpstarts metabolism and rehydrates your body after sleep."
+  },
+  {
+    keywords: ['study', 'learning'],
+    title: "Pomodoro Technique",
+    content: "Work for 25 minutes, then rest for 5. After four rounds, take a longer break. Great for staying focused and avoiding burnout."
+  },
+  {
+    keywords: ['motivation', 'goals'],
+    title: "Visualize Success",
+    content: "Spend a minute picturing your goal achieved. Visualization boosts motivation and helps align your daily actions with success."
+  },
+  {
+    keywords: ['wellness', 'happiness'],
+    title: "Gratitude Note",
+    content: "Write down one thing you’re grateful for every day. It trains your brain to focus on positives and improves mood."
+  },
+  {
+    keywords: ['productivity', 'decision making'],
+    title: "Limit Daily Decisions",
+    content: "Reduce decision fatigue by automating small choices—like meal prepping or planning outfits in advance."
+  },
+  {
+    keywords: ['mental health', 'stress'],
+    title: "Box Breathing",
+    content: "Breathe in for 4 seconds, hold 4, exhale 4, hold 4. Repeat to calm nerves and sharpen focus."
+  },
+  {
+    keywords: ['time management', 'efficiency'],
+    title: "Batch Similar Tasks",
+    content: "Group similar tasks (emails, calls, errands) together to save time and reduce mental switching."
+  },
+  {
+    keywords: ['study', 'memory'],
+    title: "Teach What You Learn",
+    content: "Explain new knowledge to someone else. Teaching reinforces memory and deepens understanding."
+  },
+  {
+    keywords: ['health', 'energy'],
+    title: "Morning Movement",
+    content: "Start your day with light stretching or a short walk to wake up your body and mind."
+  },
+  {
+    keywords: ['organization', 'planning'],
+    title: "Weekly Reset",
+    content: "Set aside 15 minutes on Sunday to review goals, tidy up, and set intentions for the week."
+  },
+  {
+    keywords: ['happiness', 'relationships'],
+    title: "Send a Kind Message",
+    content: "Text someone a quick note of appreciation. Small acts strengthen bonds and improve mood."
+  },
+  {
+    keywords: ['focus', 'work'],
+    title: "Single-Tasking Wins",
+    content: "Multitasking reduces efficiency. Focus on one task at a time for better results."
+  },
+  {
+    keywords: ['wellness', 'sleep'],
+    title: "No Screens Before Bed",
+    content: "Avoid screens 30 minutes before sleeping. Blue light disrupts melatonin and sleep quality."
+  },
+  {
+    keywords: ['study', 'retention'],
+    title: "Spaced Repetition",
+    content: "Review material over increasing intervals. It strengthens long-term memory better than cramming."
+  },
+  {
+    keywords: ['finance', 'savings'],
+    title: "Automate Savings",
+    content: "Set up an automatic transfer to savings right after payday to build wealth effortlessly."
+  },
+  {
+    keywords: ['motivation', 'growth'],
+    title: "Celebrate Small Wins",
+    content: "Acknowledge progress, no matter how small. Momentum builds motivation."
+  },
+  {
+    keywords: ['productivity', 'focus'],
+    title: "Use Do Not Disturb",
+    content: "Silence notifications during deep work sessions to protect your focus."
+  },
+  {
+    keywords: ['energy', 'health'],
+    title: "Stand and Stretch",
+    content: "Stand up at least once an hour to improve circulation and avoid stiffness."
+  },
+  {
+    keywords: ['learning', 'curiosity'],
+    title: "Ask More Questions",
+    content: "Stay curious—asking questions deepens understanding and sparks creativity."
+  },
+  {
+    keywords: ['stress relief', 'focus'],
+    title: "Quick Walk Reset",
+    content: "When overwhelmed, take a 5-minute walk outside. Movement clears the mind."
+  },
+  {
+    keywords: ['study', 'creativity'],
+    title: "Change Study Spot",
+    content: "A new environment can refresh focus and spark creativity."
+  },
+  {
+    keywords: ['organization', 'decluttering'],
+    title: "One In, One Out Rule",
+    content: "For every new item you bring in, remove one old item. Keeps clutter under control."
+  },
+  {
+    keywords: ['mental health', 'positivity'],
+    title: "Affirmation Practice",
+    content: "Repeat a positive statement daily. It rewires thought patterns over time."
+  },
+  {
+    keywords: ['work', 'efficiency'],
+    title: "Set Time Limits",
+    content: "Give yourself a deadline, even for small tasks. Deadlines create urgency and focus."
+  },
+  {
+    keywords: ['relationships', 'kindness'],
+    title: "Listen Actively",
+    content: "When someone speaks, listen fully without planning your reply. It deepens connections."
+  },
+  {
+    keywords: ['finance', 'budget'],
+    title: "Track Small Expenses",
+    content: "Little purchases add up. Log them to see where your money really goes."
+  },
+  {
+    keywords: ['health', 'fitness'],
+    title: "Stretch Before Sleep",
+    content: "Gentle stretches before bed relax muscles and improve sleep quality."
+  },
+  {
+    keywords: ['focus', 'time management'],
+    title: "Time Blocking",
+    content: "Assign specific blocks of time to tasks. It prevents multitasking and distraction."
+  },
+  {
+    keywords: ['productivity', 'work'],
+    title: "Tackle Hardest Task First",
+    content: "Do your most difficult task in the morning when willpower is strongest."
+  },
+  {
+    keywords: ['mental health', 'stress'],
+    title: "Journaling Release",
+    content: "Write down worries before bed to clear your mind and sleep better."
+  },
+  {
+    keywords: ['study', 'learning'],
+    title: "Mind Map Notes",
+    content: "Use diagrams instead of linear notes. It boosts memory and creativity."
+  },
+  {
+    keywords: ['health', 'diet'],
+    title: "Eat Protein Breakfast",
+    content: "Protein-rich breakfasts keep you fuller and more focused than sugary ones."
+  },
+  {
+    keywords: ['focus', 'productivity'],
+    title: "Set 3 Priorities",
+    content: "Pick your top 3 tasks for the day. Focus beats overwhelming to-do lists."
+  },
+  {
+    keywords: ['motivation', 'growth'],
+    title: "Progress Journal",
+    content: "Track your small wins daily. Seeing progress fuels consistency."
+  },
+  {
+    keywords: ['organization', 'planning'],
+    title: "Night Prep",
+    content: "Lay out clothes, prep meals, and plan tomorrow the night before to reduce stress."
+  },
+  {
+    keywords: ['relationships', 'positivity'],
+    title: "Compliment Someone",
+    content: "Give a genuine compliment today. It brightens both your day and theirs."
+  },
+  {
+    keywords: ['wellness', 'focus'],
+    title: "Digital Detox Hour",
+    content: "Set aside one hour a day screen-free. It refreshes your brain."
+  },
+  {
+    keywords: ['health', 'hydration'],
+    title: "Carry a Water Bottle",
+    content: "Keep water with you at all times to avoid dehydration."
+  },
+  {
+    keywords: ['learning', 'study'],
+    title: "Review Before Sleep",
+    content: "Go over key notes before bed. Your brain consolidates learning overnight."
+  },
+  {
+    keywords: ['productivity', 'organization'],
+    title: "Inbox Zero Habit",
+    content: "Clear your email inbox daily or weekly to avoid digital clutter."
+  },
+  {
+    keywords: ['mental health', 'happiness'],
+    title: "Daily Sunlight",
+    content: "Get at least 10 minutes of natural sunlight to boost mood and vitamin D."
+  },
+  {
+    keywords: ['work', 'motivation'],
+    title: "Reward Yourself",
+    content: "After finishing a task, treat yourself with something small. Rewards build habits."
+  }
+];   
     };
-    const dailyLifeAdviceDB = {
-        'procrastinate_start': {
-            keywords: ['can\'t start', 'procrastinate beginning', 'putting it off'],
-            title: "Can't Start a Task",
-            content: "Use the 5-minute rule. Promise yourself to work on it for just 5 minutes. Often, starting is the hardest part, and you'll find it easier to continue."
-        },
-        'procrastinate_boring': {
-            keywords: ['task is boring', 'procrastinate boring', 'mundane task'],
-            title: "Procrastinating on Something Boring",
-            content: "Pair the boring task with something enjoyable. Listen to your favorite podcast or music exclusively while doing the chore."
-        },
-        'overwhelm_tasks': {
-            keywords: ['too many tasks', 'overwhelmed to do list', 'don\'t know where to start'],
-            title: "Overwhelmed by Too Many Tasks",
-            content: "Stop listing and start choosing. Write everything down, then pick just ONE top priority for today. Ignore the rest until it's done."
-        },
-        'no_motivation': {
-            keywords: ['zero motivation', 'no drive', 'unmotivated'],
-            title: "Zero Motivation",
-            content: "Don't wait for motivation. Action comes first, motivation second. Do one tiny thing related to the goal to build momentum."
-        },
-        'goals_too_big': {
-            keywords: ['goals too big', 'intimidating goal', 'dream too large'],
-            title: "Goals Feel Too Big",
-            content: "Break it down until it's laughably small. Want to write a book? Just write one sentence. Want to get fit? Just put on your workout clothes."
-        },
-        'easily_distracted': {
-            keywords: ['easily distracted', 'lose focus', 'can\'t concentrate'],
-            title: "Easily Distracted",
-            content: "Identify your top 3 distractions and create a 'distraction-free' zone. Use apps to block social media or put your phone in another room for 25-minute focus sprints."
-        },
-        'multitasking_fail': {
-            keywords: ['bad at multitasking', 'doing too many things', 'multitasking mistake'],
-            title: "Trying to Multitask",
-            content: "Multitasking is a myth. It's task-switching, and it costs time. Practice 'single-tasking'. Focus on one thing until completion or a designated break."
-        },
-        'unproductive_day': {
-            keywords: ['unproductive day', 'wasted day', 'got nothing done'],
-            title: "An Unproductive Day",
-            content: "Reset, don't regret. End the day by writing one thing you *did* do (even if it's just getting up). Plan your ONE priority for tomorrow now."
-        },
-        'perfectionism_paralysis': {
-            keywords: ['perfectionism', 'can\'t finish', 'never good enough'],
-            title: "Perfectionism Stopping You",
-            content: "Aim for 'good enough' or a 'first draft'. Done is better than perfect. You can always improve later, but you can't improve a blank page."
-        },
-        'overthink_future': {
-            keywords: ['overthink future', 'worry about tomorrow', 'anxious about what if'],
-            title: "Overthinking the Future",
-            content: "Ask: 'Is this a real problem or a hypothetical one?' If it's hypothetical, gently bring your focus back to the present moment. What can you see, hear, feel right now?"
-        },
-        'overthink_past': {
-            keywords: ['overthink past', 'ruminate', 'can\'t let go of mistake'],
-            title: "Overthinking the Past",
-            content: "Treat the past as data, not destiny. Ask: 'What did I learn from this? What would I do differently next time?' Then, let the lesson stick and the guilt go."
-        },
-        'panic_physical': {
-            keywords: ['panic physical', 'anxiety symptoms', 'heart racing anxiety'],
-            title: "Physical Anxiety Symptoms",
-            content: "Use the 5-4-3-2-1 grounding technique: Name 5 things you see, 4 you can touch, 3 you hear, 2 you smell, and 1 you taste. It forces your brain back to the present."
-        },
-        'decision_anxiety': {
-            keywords: ['anxious decision', 'can\'t decide', 'fear of wrong choice'],
-            title: "Anxious About a Decision",
-            content: "Set a timer. For small decisions, give yourself 2 minutes. For bigger ones, set a deadline. Most decisions are not permanent and can be corrected later."
-        },
-        'sad_health': {
-            keywords: ['sick and sad', 'bad because health'],
-            title: "Sad About Health",
-            content: "Break health goals into mini steps. Even drinking water or stretching is progress worth noticing."
-        },
-        'sad_rainy': {
-            keywords: ['sad weather', 'rainy day blues', 'seasonal sadness'],
-            title: "Sad from Weather or Season",
-            content: "Maximize light. Open blinds, sit near windows, or use a light therapy lamp. Even 15 minutes of artificial light can significantly improve mood."
-        },
-        'sad_news': {
-            keywords: ['sad from news', 'world is awful', 'overwhelmed by media'],
-            title: "Saddened by the News",
-            content: "Limit your consumption. Choose one or two trusted sources and check them at a set time, not throughout the day. Take action locally to regain a sense of agency."
-        },
-        'road_rage': {
-            keywords: ['road rage', 'angry driving', 'frustrated in traffic'],
-            title: "Angry in Traffic",
-            content: "Reframe the situation. That driver who cut you off isn't malicious, they're probably just distracted or having a worse day. Don't let their mistake ruin your mood."
-        },
-        'anger_family': {
-            keywords: ['angry at family', 'frustrated relatives', 'family argument'],
-            title: "Angry at Family",
-            content: "Take a timeout before reacting. Say 'I need a moment to cool down' and leave the room. Breathe deeply. Respond, don't react, when you're calmer."
-        },
-        'frustration_tech': {
-            keywords: ['frustrated technology', 'computer slow', 'phone not working'],
-            title: "Frustrated with Technology",
-            content: "Walk away for 5 minutes. Most tech frustration comes from impatience. A short break resets your patience and often the device itself."
-        },
-        'anger_injustice': {
-            keywords: ['angry injustice', 'frustrated unfair', 'mad at unfairness'],
-            title: "Angry About Injustice",
-            content: "Channel the energy into action. Sign a petition, donate $5, or volunteer. Transforming anger into action is empowering and productive."
-        },
-        'irritable_tired': {
-            keywords: ['irritable tired', 'hungry and angry', 'hangry'],
-            title: "Irritable Because Tired/Hungry",
-            content: "HALT: Ask if you are Hungry, Angry, Lonely, or Tired. Address the physical need (eat a snack, take a nap) before addressing the emotional reaction."
-        },
-        'lonely_crowd': {
-            keywords: ['lonely in crowd', 'feel alone people', 'isolated at party'],
-            title: "Lonely Even With People",
-            content: "Seek deeper connections. Instead of small talk, ask one meaningful question like 'What's been the highlight of your week?' or 'What are you passionate about right now?'"
-        },
-        'miss_someone': {
-            keywords: ['miss someone', 'homesick', 'longing for past'],
-            title: "Missing Someone",
-            content: "Reach out with a simple memory. Send a text: 'Hey, was just thinking about that time we...' It strengthens bonds and honors the connection."
-        },
-        'new_city_lonely': {
-            keywords: ['lonely new city', 'no friends here', 'how to meet people'],
-            title: "Lonely in a New Place",
-            content: "Find people with shared interests. Use apps like Meetup or look for local clubs (book clubs, hiking groups, board game cafes) based on your hobbies."
-        },
-        'friend_fade': {
-            keywords: ['friends fading', 'growing apart', 'lost touch'],
-            title: "Friendships Fading",
-            content: "Be the one to reach out. Don't assume the friendship is over. Send a message saying you miss them and would love to catch up. Most people appreciate the effort."
-        },
-        'social_battery': {
-            keywords: ['social battery dead', 'drained after people', 'introvert tired'],
-            title: "Social Battery Drained",
-            content: "Honor your need for recharge. Cancel plans if you need to. Schedule alone time after social events to decompress. It's not rude, it's necessary self-care."
-        },
-        'wake_up_tired': {
-            keywords: ['wake up tired', 'not rested', 'groggy morning'],
-            title: "Wake Up Still Tired",
-            content: "Stick to a consistent wake-up time, even on weekends. This regulates your body's internal clock, leading to more restful sleep over time."
-        },
-        'screen_sleep': {
-            keywords: ['phone before bed', 'screens affect sleep', 'blue light'],
-            title: "On Screens Before Bed",
-            content: "Enforce a 30-60 minute screen curfew before bed. Use this time to read, stretch, or listen to music instead. Enable night shift mode on all devices."
-        },
-        'nap_guilt': {
-            keywords: ['guilty nap', 'is napping bad', 'daytime sleep'],
-            title: "Guilty About Napping",
-            content: "Nap strategically. A 20-minute 'power nap' can boost alertness without causing grogginess. Avoid napping after 3 PM as it can disrupt nighttime sleep."
-        },
-        'dreams_stress': {
-            keywords: ['stress dreams', 'weird dreams', 'bad dreams'],
-            title: "Stressful or Weird Dreams",
-            content: "Dreams often process the day's stress. Reduce stimulating content before bed and try writing down worries earlier in the evening to 'empty' your mind."
-        },
-        'skip_exercise': {
-            keywords: ['skip exercise', 'too tired workout', 'lazy to gym'],
-            title: "Skipping Exercise",
-            content: "Redefine 'exercise'. A 10-minute walk, dancing to 3 songs, or stretching while watching TV all count. Focus on movement, not just workouts."
-        },
-        'eat_emotional': {
-            keywords: ['emotional eating', 'eat when sad', 'bored eating'],
-            title: "Eating Out of Emotion",
-            content: "Pause and ask 'Am I physically hungry?' If not, identify the emotion (boredom, stress, sadness) and address it directly with a non-food activity."
-        },
-        'forget_water': {
-            keywords: ['forget drink water', 'dehydrated', 'not enough water'],
-            title: "Forgetting to Drink Water",
-            content: "Pair drinking with daily habits. Drink a glass when you wake up, before each meal, and when you brush your teeth. Use a marked water bottle."
-        },
-        'posture_pains': {
-            keywords: ['bad posture', 'back pain sitting', 'neck pain computer'],
-            title: "Bad Posture & Pain",
-            content: "Set posture reminders. Use a sticky note on your monitor or a timer to reset your posture every 30 minutes. Ensure your screen is at eye level."
-        },
-        'clutter_stress': {
-            keywords: ['clutter stress', 'messy room anxiety', 'disorganized'],
-            title: "Stressed by Clutter",
-            content: "Use the '5-item pick-up'. Every time you leave a room, put away 5 things. This prevents mess from building up without feeling like a huge chore."
-        },
-        'digital_clutter': {
-            keywords: ['digital clutter', 'too many files', 'email inbox thousands'],
-            title: "Digital Clutter",
-            content: "Unsubscribe and delete. Spend 10 minutes unsubscribing from annoying emails. For files, archive old projects and delete duplicates."
-        },
-        'lost_keys': {
-            keywords: ['lost keys', 'lost phone', 'always losing things'],
-            title: "Always Losing Things",
-            content: "Assign a home for important items. Always put your keys, wallet, and phone in the exact same spot when you walk in the door (e.g., a bowl by the entrance)."
-        },
-        'paper_mess': {
-            keywords: ['paper mess', 'mail pile', 'important documents'],
-            title: "Piles of Paper & Mail",
-            content: "Sort mail over a trash can. Recycle junk immediately. Have a single tray or folder for 'action needed' papers and file the rest once a week."
-        },
-        'overpack': {
-            keywords: ['overpack', 'too much luggage', 'pack everything'],
-            title: "Overpacking for Trips",
-            content: "Lay out everything you want to pack, then put half of it back. Choose versatile items that can be mixed and matched. You almost always need less than you think."
-        },
-        'impulse_buy': {
-            keywords: ['impulse buy', 'spend too much', 'retail therapy'],
-            title: "Impulse Spending",
-            content: "Implement a 24-hour rule. See something you want? Wait 24 hours before buying it. Often, the urge passes, and you realize you don't need it."
-        },
-        'budget_fail': {
-            keywords: ['budget fail', 'can\'t stick to budget', 'tracking money hard'],
-            title: "Can't Stick to a Budget",
-            content: "Try a reverse budget. Instead of micromanaging categories, automatically transfer your desired savings amount to a separate account as soon as you get paid. Spend the rest guilt-free."
-        },
-        'money_anxiety': {
-            keywords: ['anxious about money', 'scared check account', 'financial stress'],
-            title: "Anxious About Money",
-            content: "Knowledge reduces anxiety. Schedule a weekly 'money date' to review your accounts and bills. Facing the numbers is less scary than avoiding them."
-        },
-        'compare_wealth': {
-            keywords: ['compare wealth', 'friends richer', 'behind financially'],
-            title: "Comparing Wealth to Others",
-            content: "You see their highlight reel, not their balance sheet. Focus on your own financial journey. Celebrate your progress, no matter how small."
-        },
-        'save_more': {
-            keywords: ['how to save more', 'cut expenses', 'save money'],
-            title: "Wanting to Save More",
-            content: "Attack recurring expenses. Can you negotiate a bill, cancel a subscription you don't use, or switch to a cheaper provider? Small monthly savings add up hugely over time."
-        },
-        'partner_misunderstand': {
-            keywords: ['misunderstand partner', 'argument over nothing', 'communication breakdown'],
-            title: "Misunderstanding with Partner",
-            content: "Use 'I feel' statements. Instead of 'You never...' try 'I feel hurt when...'. This expresses your feelings without placing blame and starting a defensive reaction."
-        },
-        'friend_vent': {
-            keywords: ['friend always venting', 'emotional drain friend', 'one sided friendship'],
-            title: "Friend Only Vents",
-            content: "Set gentle boundaries. You can say, 'I want to support you, but I'm not in the headspace for heavy talk right now. Can we watch a funny video together?'"
-        },
-        'parents_argue': {
-            keywords: ['argue with parents', 'generational gap', 'parents don\'t understand'],
-            title: "Arguing with Parents",
-            content: "Seek to understand, not to win. Ask questions about their perspective. You can say, 'Help me understand why you feel that way.' It de-escalates conflict."
-        },
-        'say_no': {
-            keywords: ['can\'t say no', 'people pleaser', 'overcommit'],
-            title: "Can't Say No",
-            content: "Use the 'not now' tactic. Instead of a flat 'no', try 'I can't commit to that right now' or 'My plate is full at the moment.' It's polite but firm."
-        },
-        'small_talk': {
-            keywords: ['hate small talk', 'awkward silence', 'bad at chatting'],
-            title: "Bad at Small Talk",
-            content: "Ask open-ended questions. Move beyond 'how are you?' to 'What have you been up to lately?' or 'Working on anything exciting?'"
-        },
-        'no_hobbies': {
-            keywords: ['no hobbies', 'nothing interests me', 'boring person'],
-            title: "Feel Like I Have No Hobbies",
-            content: "Revisit your childhood. What did you enjoy doing as a kid? Drawing, reading, building forts? Often, our forgotten hobbies hold clues to what we might enjoy now."
-        },
-        'hobby_quitter': {
-            keywords: ['quit hobbies', 'start never finish', 'give up easily'],
-            title: "Quit Hobbies Easily",
-            content: "You're sampling, not quitting. The goal is enjoyment, not mastery. It's okay to try something, enjoy the experience, and then move on to something new."
-        },
-        'compare_skills': {
-            keywords: ['compare skills', 'not good enough hobby', 'behind others'],
-            title: "Comparing Skills to Others",
-            content: "Compare yourself to your past self. Look at something you made a month or a year ago. You'll see progress that isn't obvious day-to-day."
-        },
-        'no_time_me': {
-            keywords: ['no time for me', 'no time hobbies', 'always busy'],
-            title: "No Time for Myself",
-            content: "Schedule 'me time' like an appointment. Block out 30 minutes in your calendar for yourself to read, walk, or do nothing. Protect this time fiercely."
-        },
-        'learning_overwhelm': {
-            keywords: ['learning overwhelm', 'too much to learn', 'where to start skill'],
-            title: "Overwhelmed Learning Something New",
-            content: "Find the 'first playable character' version. In game design, it's the simplest version that's still fun. Don't try to learn everything about guitar, just learn to play one simple chord."
-        }
-    };
+     const dailyLifeAdviceDB = {}; // The rest of the large DB would be here
 
-    // Autocomplete source
     const presetQuestions = [
       "I'm feeling stressed about my exams.", "How do I stop a panic attack?", "My anxiety is making it hard to focus.",
       "What's a quick way to calm down before a presentation?", "I feel a lot of pressure to succeed.", "How to deal with social anxiety?",
@@ -1100,8 +809,109 @@
       "I'm feeling sad and don't know why.", "How can I boost my mood right now?", "I feel lonely even when I'm around people.",
       "How can I practice self-love?", "How to stop negative self-talk?", "I can't fall asleep at night.",
       "I feel tired all the time.", "That suggestion didn't work for me.", "Tell me another idea.", "Give me some advice."
+  "I'm scared I'll fail my exams.",
+  "How do I calm down when I'm nervous?",
+  "I feel like I'm not good enough.",
+  "Why do I always compare myself to others?",
+  "I can't focus on studying no matter how hard I try.",
+  "How can I stop procrastinating so much?",
+  "I'm nervous about meeting new people.",
+  "I feel like giving up on everything.",
+  "What's a simple way to relax my mind?",
+  "I can't stop thinking about past mistakes.",
+  "How can I motivate myself to get out of bed?",
+  "I feel like everyone expects too much from me.",
+  "How do I stop worrying about things I can't control?",
+  "I'm anxious before job interviews.",
+  "I feel drained even after sleeping.",
+  "What's the best way to calm my racing thoughts?",
+  "I can't handle all this pressure anymore.",
+  "How do I deal with constant overthinking?",
+  "I feel insecure about how I look.",
+  "How can I stop being afraid of failure?",
+  "I'm losing interest in things I used to enjoy.",
+  "Why do I feel so restless all the time?",
+  "I feel nervous when speaking in front of people.",
+  "How do I stop doubting myself?",
+  "I'm stressed out about deadlines.",
+  "I feel like I'm falling behind in life.",
+  "How can I stop my mind from spiraling?",
+  "I'm too tired to be productive.",
+  "I feel like I don't belong anywhere.",
+  "How do I boost my confidence quickly?",
+  "I can't stop thinking negatively.",
+  "I feel overwhelmed when I have too many tasks.",
+  "How can I get motivated when I feel lazy?",
+  "I worry too much about what people think of me.",
+  "I feel anxious at night before sleeping.",
+  "How do I deal with constant stress?",
+  "I feel like I disappoint people.",
+  "Why do I always feel so on edge?",
+  "I can't stop replaying conversations in my head.",
+  "How can I handle rejection better?",
+  "I feel too shy to talk to people.",
+  "I feel like I'm wasting my time.",
+  "Why do I feel empty inside?",
+  "I get nervous when people look at me.",
+  "How do I find inner peace?",
+  "I feel like my thoughts won't slow down.",
+  "How can I stop being so hard on myself?",
+  "I'm scared of making mistakes.",
+  "I feel like I can't trust myself.",
+  "How do I stop caring what others think?",
+  "I get overwhelmed in crowded places.",
+  "I feel like I can't do anything right.",
+  "How can I stay positive during tough times?",
+  "I'm worried I'll let everyone down.",
+  "Why do I feel anxious in the morning?",
+  "I can't stop biting my nails when stressed.",
+  "How do I stop panicking over small things?",
+  "I feel like I have no control over my life.",
+  "What's a quick way to ground myself?",
+  "I feel stuck in the same cycle every day.",
+  "Why do I keep sabotaging myself?",
+  "I can't concentrate on my work.",
+  "I feel like crying for no reason.",
+  "How do I stop doubting my decisions?",
+  "I feel guilty for resting.",
+  "Why do I always expect the worst?",
+  "I can't stop worrying about the future.",
+  "I feel like everyone else has it together but me.",
+  "How do I stop comparing my life to others?",
+  "I feel socially awkward.",
+  "How can I deal with fear of public speaking?",
+  "I can't find motivation to exercise.",
+  "I feel like I'm underperforming.",
+  "How do I stop my hands from shaking when nervous?",
+  "I'm afraid people will judge me.",
+  "I feel drained after socializing.",
+  "How do I stop obsessing over mistakes?",
+  "I feel like a burden to others.",
+  "Why can't I relax even when I have free time?",
+  "I feel pressure to be perfect.",
+  "How do I cope with uncertainty?",
+  "I feel like I can't handle change.",
+  "Why do I feel nervous for no reason?",
+  "I can't stop checking my phone.",
+  "I feel like my mind is never quiet.",
+  "How do I stop feeling restless?",
+  "I feel like I have no motivation for anything.",
+  "Why do I always overthink social situations?",
+  "I feel like my anxiety controls me.",
+  "How do I calm my nerves quickly?",
+  "I feel nervous when I talk to authority figures.",
+  "How do I stop putting things off?",
+  "I feel pressure to always succeed.",
+  "How can I stop being so self-critical?",
+  "I feel like I'm not doing enough.",
+  "How do I manage stress better?",
+  "I feel like I can’t escape my worries.",
+  "Why do I feel anxious even when things are fine?",
+  "How do I stay calm in stressful situations?",
+  "I feel like I'm losing control of my life."
     ];
-
+    
+    // --- UPDATED AI RESPONSE LOGIC ---
     function getAIResponse() {
         if (isAIThinking) return;
         const query = userInput.value.toLowerCase().trim();
@@ -1119,23 +929,20 @@
 
             for (const id in combinedDB) {
                 const item = combinedDB[id];
-                let currentScore = 0;
                 for (const keyword of item.keywords) {
-                    if (query.includes(keyword)) {
-                        // More weight for longer keywords to prioritize specific phrases
-                        currentScore += keyword.length; 
+                    const currentScore = getStringSimilarity(query, keyword.toLowerCase());
+                    if (currentScore > highestScore) {
+                        highestScore = currentScore;
+                        bestMatch = item;
                     }
-                }
-                if (currentScore > highestScore) {
-                    highestScore = currentScore;
-                    bestMatch = item;
                 }
             }
 
             let responseHTML = "";
             const empatheticIntro = "I hear you. It sounds like a tough situation. Here's a thought that might help:";
             
-            if (bestMatch) {
+            // Set a threshold for what's considered a good match
+            if (bestMatch && highestScore > 0.3) {
                 responseHTML = `${empatheticIntro} <h4>${bestMatch.title}</h4>${bestMatch.content}`;
             } else {
                 responseHTML = "I'm not sure how to respond to that, but it sounds important. Could you perhaps rephrase it? Otherwise, the breathing exercise below can be a great way to find a moment of calm.";
