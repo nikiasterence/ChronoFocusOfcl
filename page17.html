@@ -17,6 +17,35 @@
             --blur: blur(10px);
         }
 
+        /* Cozy Theme */
+        .cozy-theme {
+            --primary: #d4a373;
+            --secondary: #a98467;
+            --accent: #e6bba5;
+            --dark: #6f5e53;
+            --light: #f0ead2;
+        }
+
+        /* Liquid Glass Theme */
+        .liquid-glass-theme {
+            --primary: #8ecae6;
+            --secondary: #219ebc;
+            --accent: #ffb4a2;
+            --dark: #1d3557;
+            --light: #f1faee;
+            --glass: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Aurora Theme */
+        .aurora-theme {
+            --primary: #ff7e5f;
+            --secondary: #feb47b;
+            --accent: #ffb4a2;
+            --dark: #1d3557;
+            --light: #f1faee;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -25,7 +54,7 @@
         }
 
         body {
-            background: linear-gradient(135deg, #1d3557, #457b9d);
+            background: linear-gradient(135deg, var(--dark), var(--secondary));
             color: var(--light);
             min-height: 100vh;
             padding: 20px;
@@ -33,6 +62,7 @@
             flex-direction: column;
             align-items: center;
             overflow-x: hidden;
+            transition: background 0.5s ease;
         }
 
         .container {
@@ -68,6 +98,21 @@
             grid-template-columns: 1fr 1fr;
             gap: 20px;
             height: 60vh;
+            transition: grid-template-columns 0.3s ease; /* Added for smooth transition */
+        }
+        
+        /* Styles for the full page views */
+        .editor-container.code-fullscreen .code-panel {
+            grid-column: 1 / -1;
+        }
+        .editor-container.code-fullscreen .preview-panel {
+            display: none;
+        }
+        .editor-container.preview-fullscreen .preview-panel {
+            grid-column: 1 / -1;
+        }
+        .editor-container.preview-fullscreen .code-panel {
+            display: none;
         }
 
         @media (max-width: 768px) {
@@ -154,6 +199,7 @@
             gap: 10px;
             justify-content: center;
             margin-top: 20px;
+            flex-wrap: wrap;
         }
 
         button {
@@ -253,7 +299,7 @@
         }
     </style>
 </head>
-<body>
+<body class="liquid-glass-theme">
     <div class="water-effect" id="waterEffect"></div>
     
     <div class="container">
@@ -349,12 +395,24 @@ button:hover {
             <button id="clearBtn">
                 <i>🗑️</i> Clear All
             </button>
+            <button id="previewFullscreenBtn">
+                <i>🖼️</i> Preview in Full Page
+            </button>
+            <button id="codeFullscreenBtn">
+                <i>💻</i> Code in Full Page
+            </button>
         </div>
         <div class="status" id="status">Ready to code!</div>
     </div>
     
     <div class="zen-elements">
-        <div class="zen-element" id="themeToggle">🌙</div>
+        <div class="zen-element" id="themeToggle">
+            <select id="themeSelector" style="background: transparent; border: none; color: var(--light); -webkit-appearance: none; -moz-appearance: none; appearance: none; text-align-last: center;">
+                <option value="liquid-glass-theme" style="color: black;">Liquid Glass</option>
+                <option value="cozy-theme" style="color: black;">Cozy</option>
+                <option value="aurora-theme" style="color: black;">Aurora</option>
+            </select>
+        </div>
         <div class="zen-element" id="fullscreenToggle">⛶</div>
     </div>
 
@@ -368,10 +426,15 @@ button:hover {
         const codeAreas = document.querySelectorAll('.code-area');
         const runBtn = document.getElementById('runBtn');
         const clearBtn = document.getElementById('clearBtn');
-        const themeToggle = document.getElementById('themeToggle');
+        const themeSelector = document.getElementById('themeSelector');
         const fullscreenToggle = document.getElementById('fullscreenToggle');
+        const previewFullscreenBtn = document.getElementById('previewFullscreenBtn');
+        const codeFullscreenBtn = document.getElementById('codeFullscreenBtn');
         const waterEffect = document.getElementById('waterEffect');
         const status = document.getElementById('status');
+        const codePanel = document.querySelector('.code-panel');
+        const previewPanel = document.querySelector('.preview-panel');
+        const editorContainer = document.querySelector('.editor-container'); // Get the parent container
 
         // Tab switching
         codeTabs.forEach(tab => {
@@ -447,19 +510,14 @@ button:hover {
             }
         }
 
-        // Toggle theme
-        function toggleTheme() {
-            document.body.classList.toggle('light-theme');
-            themeToggle.textContent = document.body.classList.contains('light-theme') ? '☀️' : '🌙';
-            
-            if (document.body.classList.contains('light-theme')) {
-                document.body.style.background = 'linear-gradient(135deg, #a8e6cf, #dcedc1)';
-                document.body.style.color = '#333';
-            } else {
-                document.body.style.background = 'linear-gradient(135deg, #1d3557, #457b9d)';
-                document.body.style.color = '#f1faee';
-            }
+        // Change theme
+        function changeTheme(theme) {
+            document.body.className = theme;
         }
+
+        themeSelector.addEventListener('change', (e) => {
+            changeTheme(e.target.value);
+        });
 
         // Toggle fullscreen
         function toggleFullscreen() {
@@ -473,6 +531,28 @@ button:hover {
                 }
             }
         }
+
+        // **** CORRECTED CODE STARTS HERE ****
+
+        // Preview in full page (focus mode)
+        previewFullscreenBtn.addEventListener('click', () => {
+            editorContainer.classList.toggle('preview-fullscreen');
+            // Ensure the other mode is off if this one is activated
+            if (editorContainer.classList.contains('preview-fullscreen')) {
+                editorContainer.classList.remove('code-fullscreen');
+            }
+        });
+
+        // Code in full page (focus mode)
+        codeFullscreenBtn.addEventListener('click', () => {
+            editorContainer.classList.toggle('code-fullscreen');
+            // Ensure the other mode is off if this one is activated
+            if (editorContainer.classList.contains('code-fullscreen')) {
+                editorContainer.classList.remove('preview-fullscreen');
+            }
+        });
+        
+        // **** CORRECTED CODE ENDS HERE ****
 
         // Create water ripple effect
         function createRipple() {
@@ -499,7 +579,6 @@ button:hover {
         // Event listeners
         runBtn.addEventListener('click', runCode);
         clearBtn.addEventListener('click', clearCode);
-        themeToggle.addEventListener('click', toggleTheme);
         fullscreenToggle.addEventListener('click', toggleFullscreen);
 
         // Auto-run code after a short delay when typing
