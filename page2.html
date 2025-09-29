@@ -489,7 +489,8 @@
             align-items: center; 
             justify-content: center;
             cursor: pointer; 
-            transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            /* Let JS handle transitions for smoothness */
+            /* transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1); */
             position: relative;
             color: white; 
             font-size: calc(var(--dock-icon-size) * 0.45);
@@ -530,9 +531,9 @@
             to { transform: rotate(360deg); }
         }
 
-        /* Magnetic Hover Effect */
+        /* Magnetic Hover Effect - Will be controlled by JS for smoothness */
         .dock-icon:hover { 
-            transform: translateY(-15px) scale(1.2); 
+            /* transform is now handled by JS */
             box-shadow: 
                 0 20px 60px rgba(0,0,0,0.6),
                 inset 0 2px 4px rgba(255,255,255,0.3),
@@ -541,11 +542,11 @@
         }
 
         .dock.dock-left .dock-icon:hover { 
-            transform: translateX(15px) scale(1.2); 
+            /* transform is now handled by JS */
         }
         
         .dock.dock-right .dock-icon:hover { 
-            transform: translateX(-15px) scale(1.2); 
+            /* transform is now handled by JS */
         }
 
         /* Ripple Effect on Click */
@@ -1065,69 +1066,6 @@
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
         }
         
-        /* ===== ENHANCED CHONO COPILOT MODAL STYLES ===== */
-        .chono-modal-overlay {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-            opacity: 0;
-            transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-        }
-
-        .chono-modal-overlay.visible {
-            display: flex;
-            opacity: 1;
-        }
-
-        .chono-modal-content {
-            background: var(--card-bg);
-            backdrop-filter: blur(25px);
-            border: 1px solid var(--glass-border);
-            padding: 30px;
-            border-radius: 28px;
-            width: 90%;
-            max-width: 700px;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 
-                0 25px 80px rgba(0,0,0,0.6),
-                inset 0 1px 0 rgba(255, 255, 255, 0.2);
-            position: relative;
-            transform: scale(var(--mobile-scale));
-        }
-
-        .chono-modal-close-btn {
-            position: absolute;
-            top: 15px; right: 15px;
-            background: rgba(255,255,255,0.1);
-            backdrop-filter: blur(10px);
-            border: none;
-            color: var(--text-primary);
-            width: 35px; height: 35px;
-            border-radius: 50%;
-            font-size: 1.4rem;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            line-height: 1;
-        }
-        
-        .chono-modal-close-btn:hover {
-            background: var(--accent);
-            color: var(--background);
-            transform: rotate(90deg) scale(1.1);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
-        }
-
         /* ENHANCED RESPONSIVE STYLES */
         @media (max-width: 768px) {
             body {
@@ -1304,7 +1242,6 @@
         <a href="page13.html" class="dock-icon dock-booknest" aria-label="BookNest"><i class="fas fa-book-open-reader"></i><div class="dock-icon-label">BookNest</div></a>
         <a href="page11.html" class="dock-icon dock-moodly" aria-label="Moodly"><i class="fas fa-smile-beam"></i><div class="dock-icon-label">Moodly</div></a>
         <a href="page17.html" class="dock-icon dock-code-cody" aria-label="Code Cody"><i class="fas fa-code"></i><div class="dock-icon-label">Code Cody</div></a>
-        <div id="chono-copilot-icon" class="dock-icon dock-chono-copilot" aria-label="Chono Copilot"><i class="fab fa-microsoft"></i><div class="dock-icon-label">Chono Copilot</div></div>
     </div>
 
     <div class="app">
@@ -1370,15 +1307,6 @@
             </div>
         </div>
     </div>
-    
-    <!-- ===== ENHANCED CHONO COPILOT MODAL ===== -->
-    <div class="chono-modal-overlay" id="chono-modal-overlay">
-        <div class="chono-modal-content">
-            <button class="chono-modal-close-btn" id="chono-modal-close-btn">&times;</button>
-            <script async src="https://cse.google.com/cse.js?cx=200aa883980bb455a"></script>
-            <div class="gcse-searchbox-only"></div>
-        </div>
-    </div>
 
     <!-- ===== ENHANCED CHAT AI INTERFACE ===== -->
     <div class="chat-window" id="chat-window">
@@ -1417,11 +1345,6 @@
         const chatMessagesContainer = document.getElementById('chat-messages');
         const chatInput = document.getElementById('chat-input');
         const chatSendBtn = document.getElementById('chat-send-btn');
-        
-        // CHONO COPILOT MODAL SELECTORS
-        const chonoCopilotIcon = document.getElementById('chono-copilot-icon');
-        const chonoModalOverlay = document.getElementById('chono-modal-overlay');
-        const chonoModalCloseBtn = document.getElementById('chono-modal-close-btn');
 
         // --- APP STATE ---
         let caffeineIntake = 0;
@@ -1620,15 +1543,6 @@
 
         function closeThemeModal() {
             themeModalOverlay.classList.remove('visible');
-        }
-        
-        // --- CHONO COPILOT MODAL FUNCTIONS ---
-        function openChonoModal() {
-            chonoModalOverlay.classList.add('visible');
-        }
-
-        function closeChonoModal() {
-            chonoModalOverlay.classList.remove('visible');
         }
 
         /**
@@ -1850,6 +1764,70 @@
             generateCalendar();
             setupChatAI(); // Initialize the enhanced Chat AI
         }
+
+        /**
+         * Initializes the smooth, Mac-style dock animation.
+         */
+        function initializeMacDockEffect() {
+            const dock = document.querySelector('.dock');
+            if (!dock) return;
+
+            const icons = Array.from(dock.querySelectorAll('.dock-icon'));
+            const maxScale = 1.8; // How big the icon gets when mouse is directly over it
+            const influenceRadius = dock.offsetWidth / 3; // The "magnetic" radius of the mouse
+
+            let animationFrameId = null;
+
+            dock.addEventListener('mousemove', e => {
+                // Cancel any pending animation frame to avoid multiple updates
+                if (animationFrameId) {
+                    cancelAnimationFrame(animationFrameId);
+                }
+
+                // Request a new animation frame for the update
+                animationFrameId = requestAnimationFrame(() => {
+                    const isVertical = dock.classList.contains('dock-left') || dock.classList.contains('dock-right');
+                    const mousePos = isVertical ? e.clientY : e.clientX;
+
+                    icons.forEach(icon => {
+                        const rect = icon.getBoundingClientRect();
+                        const iconCenter = isVertical ? rect.top + rect.height / 2 : rect.left + rect.width / 2;
+                        
+                        const distance = Math.abs(mousePos - iconCenter);
+                        
+                        let scale = 1;
+                        // Only apply effect if within the influence radius
+                        if (distance < influenceRadius) {
+                            // Use a cosine-based curve for a smoother falloff effect
+                            scale = 1 + (maxScale - 1) * (1 - Math.sin((distance / influenceRadius) * (Math.PI/2)));
+                        }
+
+                        // Apply a fast transition for responsive tracking
+                        icon.style.transition = 'transform 0.1s cubic-bezier(0.25, 0.8, 0.25, 1)'; 
+
+                        if (isVertical) {
+                            const moveDirection = dock.classList.contains('dock-left') ? 1 : -1;
+                            const translation = (scale - 1) * icon.offsetWidth * 0.5 * moveDirection;
+                            icon.style.transform = `translateX(${translation}px) scale(${scale})`;
+                        } else {
+                            const translation = (scale - 1) * icon.offsetHeight * 0.5;
+                            icon.style.transform = `translateY(-${translation}px) scale(${scale})`;
+                        }
+                    });
+                });
+            });
+
+            dock.addEventListener('mouseleave', () => {
+                if (animationFrameId) {
+                    cancelAnimationFrame(animationFrameId);
+                }
+                icons.forEach(icon => {
+                    // Apply a smoother, slower transition when the mouse leaves the dock
+                    icon.style.transition = 'transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)';
+                    icon.style.transform = 'translate(0, 0) scale(1)';
+                });
+            });
+        }
         
         // --- INITIALIZATION ---
         document.addEventListener("DOMContentLoaded", () => {
@@ -1867,16 +1845,11 @@
             themeModalOverlay.addEventListener('click', (event) => {
                 if (event.target === themeModalOverlay) closeThemeModal();
             });
-            
-            // Setup Chono Copilot Modal Listeners
-            chonoCopilotIcon.addEventListener('click', openChonoModal);
-            chonoModalCloseBtn.addEventListener('click', closeChonoModal);
-            chonoModalOverlay.addEventListener('click', (event) => {
-                if (event.target === chonoModalOverlay) closeChonoModal();
-            });
 
             // Load saved state
             loadState();
+            // Initialize the new and improved dock effect
+            initializeMacDockEffect();
         });
 
     </script>
