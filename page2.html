@@ -25,24 +25,25 @@
             --dock-icon-size: 60px;
             --dock-padding: 12px;
             --app-padding: 30px;
+            --mobile-scale: 1; /* Adjust scaling for mobile layout */
         }
 
         /* Mobile-first approach */
         @media (max-width: 768px) {
             :root {
-                --mobile-scale: 0.85;
-                --dock-icon-size: 50px;
-                --dock-padding: 8px;
-                --app-padding: 20px;
+                --mobile-scale: 0.95; /* Slightly smaller app on tablets */
+                --dock-icon-size: 55px;
+                --dock-padding: 10px;
+                --app-padding: 25px;
             }
         }
 
         @media (max-width: 480px) {
             :root {
-                --mobile-scale: 0.75;
-                --dock-icon-size: 45px;
-                --dock-padding: 6px;
-                --app-padding: 15px;
+                --mobile-scale: 0.9; /* More scaling for small phones */
+                --dock-icon-size: 50px;
+                --dock-padding: 8px;
+                --app-padding: 20px;
             }
         }
 
@@ -82,8 +83,9 @@
             color: var(--text-primary);
             flex-direction: column;
             gap: 20px;
-            padding-bottom: 150px;
-            transition: background-color 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            /* Increased padding-bottom to avoid overlap with bottom dock */
+            padding-bottom: 160px; 
+            transition: background-color 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), padding 0.5s ease;
             overflow-x: hidden;
         }
 
@@ -161,6 +163,7 @@
             position: relative; 
             z-index: 1;
             transform: scale(var(--mobile-scale));
+            margin-top: 20px; /* Add margin to avoid top overlap */
         }
 
         .app::before {
@@ -489,8 +492,6 @@
             align-items: center; 
             justify-content: center;
             cursor: pointer; 
-            /* Let JS handle transitions for smoothness */
-            /* transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1); */
             position: relative;
             color: white; 
             font-size: calc(var(--dock-icon-size) * 0.45);
@@ -530,23 +531,14 @@
             from { transform: rotate(0deg); }
             to { transform: rotate(360deg); }
         }
-
-        /* Magnetic Hover Effect - Will be controlled by JS for smoothness */
+        
+        /* JS-controlled hover effect styles */
         .dock-icon:hover { 
-            /* transform is now handled by JS */
             box-shadow: 
                 0 20px 60px rgba(0,0,0,0.6),
                 inset 0 2px 4px rgba(255,255,255,0.3),
                 0 0 30px var(--accent);
             z-index: 10;
-        }
-
-        .dock.dock-left .dock-icon:hover { 
-            /* transform is now handled by JS */
-        }
-        
-        .dock.dock-right .dock-icon:hover { 
-            /* transform is now handled by JS */
         }
 
         /* Ripple Effect on Click */
@@ -586,7 +578,7 @@
             pointer-events: none;
             border: 1px solid rgba(255, 255, 255, 0.2);
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
-            transform: translateY(10px); /* Initial state for smooth appearance */
+            transform: translateY(10px);
         }
 
         .dock-icon:hover .dock-icon-label {
@@ -620,9 +612,9 @@
         .dock.dock-right .dock-icon:hover .dock-icon-label {
             transform: translateY(-50%) translateX(0);
         }
-
-
+        
         /* Enhanced Dock Icon Gradients */
+        .dock-launchpad { background: linear-gradient(135deg, #A7A6A7 0%, #767576 100%);}
         .dock-tip { background: linear-gradient(135deg, #FF9A8B 0%, #FF6A88 50%, #FF99AC 100%); }
         .dock-study { background: linear-gradient(135deg, #FAD961 0%, #F76B1C 100%); }
         .dock-measure { background: linear-gradient(135deg, #42E695 0%, #3BB2B8 100%); }
@@ -733,10 +725,6 @@
             gap: 12px;
         }
         
-        .control-group { 
-            position: relative; 
-        }
-        
         .control-icon { 
             font-size: clamp(1.1rem, 2.5vw, 1.3rem); 
             cursor: pointer; 
@@ -749,66 +737,91 @@
             background: rgba(255, 255, 255, 0.1);
         }
         
-        .control-group:hover .control-icon:not(#theme-control-icon) { 
+        .control-icon:hover {  
             transform: scale(1.2) rotate(25deg); 
             color: var(--secondary-glow); 
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
         }
         
-        .control-icon#theme-control-icon:hover {  
-            transform: scale(1.2) rotate(25deg); 
-            color: var(--secondary-glow); 
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-        }
-
-        .control-options {
-            position: absolute; 
-            top: 120%; 
-            right: 0;
-            background: var(--card-bg); 
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border);
-            border-radius: 16px; 
-            padding: 12px;
-            display: flex; 
-            gap: 8px; 
+        /* ===== ENHANCED SETTINGS MODAL STYLES ===== */
+        .settings-modal-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
             opacity: 0;
-            visibility: hidden; 
-            transform: translateY(15px) scale(0.9);
-            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55); 
-            min-width: max-content; 
-            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
-            z-index: 10;
+            transition: opacity 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        .settings-modal-overlay.visible {
+            display: flex;
+            opacity: 1;
         }
 
-        .control-group:hover .control-options { 
-            opacity: 1; 
-            visibility: visible; 
-            transform: translateY(0) scale(1); 
+        .settings-modal-content {
+            background: var(--card-bg);
+            backdrop-filter: blur(25px);
+            border: 1px solid var(--glass-border);
+            padding: 30px;
+            border-radius: 28px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 25px 80px rgba(0,0,0,0.6);
+            position: relative;
+        }
+        .settings-modal-content h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: var(--accent);
+            font-size: clamp(1.6rem, 4vw, 2rem);
+            text-shadow: 0 3px 15px rgba(0, 0, 0, 0.3);
+        }
+        .settings-modal-close-btn {
+            position: absolute; top: 15px; right: 15px;
+            background: rgba(255,255,255,0.1);
+            border: none; color: var(--text-primary);
+            width: 35px; height: 35px; border-radius: 50%;
+            font-size: 1.4rem; cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        }
+        .settings-modal-close-btn:hover {
+            background: var(--accent); color: var(--background);
+            transform: rotate(90deg) scale(1.1);
         }
 
-        .pos-btn, .size-btn { 
-            background: rgba(255,255,255,0.1); 
-            backdrop-filter: blur(10px);
-            border: 1px solid transparent;
-            color: var(--text-primary); 
-            padding: 8px 12px; 
-            border-radius: 10px;
-            cursor: pointer; 
-            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94); 
-            font-size: clamp(0.75rem, 1.8vw, 0.85rem);
+        .settings-group {
+            margin-bottom: 25px;
+        }
+        .settings-group h3 {
+            font-size: clamp(1rem, 2.5vw, 1.1rem);
+            color: var(--text-secondary);
+            margin-bottom: 12px;
             font-weight: 500;
+            text-align: left;
+            border-bottom: 1px solid var(--glass-border);
+            padding-bottom: 8px;
         }
-        
-        .pos-btn:hover, .size-btn:hover { 
-            background: rgba(255,255,255,0.2); 
-            transform: scale(1.05);
+        .settings-options {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
         }
-        
-        .pos-btn.active, .size-btn.active { 
+        .settings-btn { 
+            background: rgba(255,255,255,0.1); 
+            border: 1px solid transparent; color: var(--text-primary); 
+            padding: 8px 12px; border-radius: 10px; cursor: pointer; 
+            transition: all 0.3s ease; font-size: clamp(0.8rem, 2vw, 0.9rem);
+            font-weight: 500; flex-grow: 1;
+        }
+        .settings-btn:hover { background: rgba(255,255,255,0.2); transform: scale(1.05); }
+        .settings-btn.active { 
             background: linear-gradient(135deg, var(--accent), var(--primary-glow)); 
-            border-color: rgba(255,255,255,0.5);
-            color: var(--background);
+            border-color: rgba(255,255,255,0.5); color: var(--background);
             box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
         }
 
@@ -823,7 +836,7 @@
             display: none;
             justify-content: center;
             align-items: center;
-            z-index: 1000;
+            z-index: 1001; /* Must be higher than settings modal */
             opacity: 0;
             transition: opacity 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
@@ -937,6 +950,112 @@
             text-overflow: ellipsis;
             font-weight: 500;
         }
+        
+        /* ===== 20x BETTER LAUNCHPAD STYLES ===== */
+        .launchpad-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(15px) saturate(1.8); /* Less blurry */
+            -webkit-backdrop-filter: blur(15px) saturate(1.8);
+            z-index: 999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            gap: 40px;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.5s cubic-bezier(0.25, 1, 0.5, 1), visibility 0.5s;
+        }
+        .launchpad-overlay.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        #launchpad-search {
+            width: clamp(300px, 60vw, 500px);
+            height: 50px;
+            background: rgba(0,0,0,0.4);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 0 20px;
+            font-size: 1.2rem;
+            color: var(--text-primary);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+
+        .launchpad-overlay.visible #launchpad-search {
+            opacity: 1;
+            transform: translateY(0);
+            transition-delay: 0.1s;
+        }
+        
+        #launchpad-search:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 25px rgba(187, 134, 252, 0.5);
+        }
+        
+        .launchpad-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+            gap: 35px;
+            width: 90%;
+            max-width: 1200px;
+            padding: 40px;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+        
+        .launchpad-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: var(--text-primary);
+            gap: 12px;
+            transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            opacity: 0;
+            transform: scale(0.9);
+            animation: launchpad-item-appear 0.5s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
+        }
+
+        .launchpad-overlay.visible .launchpad-item {
+            /* Stagger the animation */
+            animation-delay: calc(0.2s + (var(--item-index) * 0.03s));
+        }
+
+        @keyframes launchpad-item-appear {
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        .launchpad-item:hover {
+            transform: scale(1.1) !important; /* !important to override staggered animation transform */
+        }
+
+        .launchpad-item .dock-icon {
+            width: 80px;
+            height: 80px;
+            font-size: 36px;
+            border-radius: 22px;
+            margin-bottom: 5px;
+        }
+
+        .launchpad-item .launchpad-item-label {
+            font-size: 1rem;
+            font-weight: 500;
+            text-shadow: 0 2px 8px var(--shadow-color);
+        }
+
 
         /* ===== ENHANCED CHAT AI STYLES ===== */
         .chat-window {
@@ -1071,6 +1190,7 @@
             body {
                 padding: 15px;
                 padding-bottom: 120px;
+                gap: 15px; /* Reduce gap on mobile */
             }
             
             .dock.dock-bottom {
@@ -1089,7 +1209,14 @@
                 max-height: 80vh;
                 overflow-y: auto;
                 padding: 15px 8px;
+                top: 50%;
+                transform: translateY(-50%);
+                /* Make sure it doesnt overlap the main card */
+                 max-height: calc(100vh - 40px);
             }
+            .dock.dock-left { left: 10px; }
+            .dock.dock-right { right: 10px; }
+
 
             .dock.dock-left::-webkit-scrollbar, .dock.dock-right::-webkit-scrollbar {
                  display: none;
@@ -1116,12 +1243,30 @@
                 right: 2.5vw;
                 max-width: none;
             }
+
+            .launchpad-grid {
+                grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+                gap: 20px;
+                padding: 20px;
+            }
+             .launchpad-item .dock-icon {
+                width: 65px;
+                height: 65px;
+                font-size: 30px;
+            }
+            .launchpad-item .launchpad-item-label {
+                font-size: 0.85rem;
+            }
         }
 
         @media (max-width: 480px) {
             body {
                 padding: 10px;
+                padding-top: 10px;
                 padding-bottom: 100px;
+                /* This ensures vertical scrolling for all content */
+                justify-content: flex-start; 
+                min-height: 100vh;
             }
             
             .caffeine-counter {
@@ -1218,7 +1363,19 @@
         <div class="aurora-item"></div><div class="aurora-item"></div>
     </div>
 
+    <!-- ===== BETTER LAUNCHPAD OVERLAY ===== -->
+    <div class="launchpad-overlay" id="launchpad-overlay">
+        <input type="text" id="launchpad-search" placeholder="Search Apps...">
+        <div class="launchpad-grid" id="launchpad-grid">
+            <!-- App icons will be dynamically inserted here by JavaScript -->
+        </div>
+    </div>
+
+
     <div class="dock dock-bottom size-medium">
+        <!-- New Launchpad Icon -->
+        <div id="launchpad-dock-icon" class="dock-icon dock-launchpad" aria-label="Launchpad"><i class="fas fa-th"></i><div class="dock-icon-label">Launchpad</div></div>
+
         <div class="dock-icon dock-tip" onclick="newTip()" aria-label="New Tip"><i class="fas fa-lightbulb"></i><div class="dock-icon-label">New Tip</div></div>
         <a href="page12.html" class="dock-icon dock-motivation" aria-label="Motivation"><i class="fas fa-fist-raised"></i><div class="dock-icon-label">Motivation</div></a>
         <a href="page16.html" class="dock-icon dock-task" aria-label="Tasks"><i class="fas fa-tasks"></i><div class="dock-icon-label">Tasks</div></a>
@@ -1247,23 +1404,10 @@
     <div class="app">
         <div class="app-controls">
              <div class="control-group">
-                <i class="fas fa-ruler-horizontal control-icon"></i>
-                <div class="control-options">
-                    <button class="size-btn" data-size="small">S</button>
-                    <button class="size-btn active" data-size="medium">M</button>
-                    <button class="size-btn" data-size="large">L</button>
-                </div>
-            </div>
-             <div class="control-group">
-                <i class="fas fa-cog control-icon"></i>
-                <div class="control-options">
-                    <button class="pos-btn" data-pos="left">Left</button>
-                    <button class="pos-btn active" data-pos="bottom">Bottom</button>
-                    <button class="pos-btn" data-pos="right">Right</button>
-                </div>
+                <i class="fas fa-cog control-icon" id="settings-control-icon" title="Settings"></i>
             </div>
             <div class="control-group">
-                <i class="fas fa-palette control-icon" id="theme-control-icon"></i>
+                <i class="fas fa-palette control-icon" id="theme-control-icon" title="Choose Theme"></i>
             </div>
         </div>
 
@@ -1296,6 +1440,43 @@
             </div>
         </div>
     </div>
+    
+    <!-- ===== ENHANCED SETTINGS MODAL ===== -->
+    <div class="settings-modal-overlay" id="settings-modal-overlay">
+        <div class="settings-modal-content">
+            <button class="settings-modal-close-btn" id="settings-modal-close-btn">&times;</button>
+            <h2>Settings</h2>
+
+            <div class="settings-group">
+                <h3>Dock Position</h3>
+                <div class="settings-options" id="dock-pos-options">
+                    <button class="settings-btn" data-pos="left">Left</button>
+                    <button class="settings-btn active" data-pos="bottom">Bottom</button>
+                    <button class="settings-btn" data-pos="right">Right</button>
+                </div>
+            </div>
+
+            <div class="settings-group">
+                <h3>Dock Size</h3>
+                <div class="settings-options" id="dock-size-options">
+                    <button class="settings-btn" data-size="small">S</button>
+                    <button class="settings-btn active" data-size="medium">M</button>
+                    <button class="settings-btn" data-size="large">L</button>
+                </div>
+            </div>
+
+            <div class="settings-group">
+                <h3>Dock Animation</h3>
+                <div class="settings-options" id="dock-anim-options">
+                    <button class="settings-btn active" data-anim="none">Off</button>
+                    <button class="settings-btn" data-anim="scale">Scale</button>
+                    <button class="settings-btn" data-anim="bubble">Bubble</button>
+                </div>
+                 <p style="font-size: 0.8rem; text-align:center; margin-top:10px; opacity: 0.7;">Choose how the dock icons react to your mouse.</p>
+            </div>
+        </div>
+    </div>
+
 
     <!-- ===== ENHANCED THEME MODAL ===== -->
     <div class="theme-modal-overlay" id="theme-modal-overlay">
@@ -1326,13 +1507,19 @@
         const caffeineCountEl = document.getElementById("caffeine-count");
         const caffeineWarningEl = document.getElementById("caffeine-warning");
         const dockElement = document.querySelector(".dock");
-        const posButtons = document.querySelectorAll('.pos-btn');
-        const sizeButtons = document.querySelectorAll('.size-btn');
         const calendarElement = document.getElementById("calendar");
         const dayTipElement = document.getElementById("day-tip");
         const calendarToggleIcon = document.getElementById("calendar-toggle-icon");
         const copyFeedbackEl = document.getElementById('copy-feedback');
         
+        // SETTINGS MODAL SELECTORS
+        const settingsControlIcon = document.getElementById('settings-control-icon');
+        const settingsModalOverlay = document.getElementById('settings-modal-overlay');
+        const settingsModalCloseBtn = document.getElementById('settings-modal-close-btn');
+        const dockPosButtons = document.querySelectorAll('#dock-pos-options .settings-btn');
+        const dockSizeButtons = document.querySelectorAll('#dock-size-options .settings-btn');
+        const dockAnimButtons = document.querySelectorAll('#dock-anim-options .settings-btn');
+
         // THEME MODAL SELECTORS
         const themeControlIcon = document.getElementById('theme-control-icon');
         const themeModalOverlay = document.getElementById('theme-modal-overlay');
@@ -1345,10 +1532,17 @@
         const chatMessagesContainer = document.getElementById('chat-messages');
         const chatInput = document.getElementById('chat-input');
         const chatSendBtn = document.getElementById('chat-send-btn');
+        
+        // LAUNCHPAD SELECTORS
+        const launchpadDockIcon = document.getElementById('launchpad-dock-icon');
+        const launchpadOverlay = document.getElementById('launchpad-overlay');
+        const launchpadGrid = document.getElementById('launchpad-grid');
+        const launchpadSearch = document.getElementById('launchpad-search');
 
         // --- APP STATE ---
         let caffeineIntake = 0;
         let calendarVisible = true;
+        let dockAnimationType = 'none'; // 'none', 'scale', 'bubble'
         
         const tips = [ 
             "Break your study time into 25-minute intervals with the Pomodoro Technique.", "Use active recall by testing yourself, not just rereading notes.", "Explain what you've learned to someone else to solidify your understanding.", "Create a dedicated, distraction-free study zone.", "Use flashcards for key terms and concepts.", "Review material consistently, a little bit each day.", "Prioritize sleep; it's crucial for memory consolidation.", "Stay hydrated and eat nutritious brain food.", "Use mind maps to visualize connections between ideas.", "Take short, regular breaks to avoid burnout.", "Teach concepts to an imaginary audience to identify knowledge gaps.", "Use the Feynman Technique: simplify complex topics as if explaining to a child.", "Change study locations occasionally to improve memory retention.", "Practice spaced repetition for long-term memorization.", "Start with the most challenging material when your mind is freshest.", "Use mnemonic devices to remember complex information.", "Set specific, achievable goals for each study session.", "Connect new information to what you already know.", "Take notes by hand to improve information processing.", "Use background music without lyrics to enhance focus.", "Schedule regular review sessions instead of cramming.", "Break large projects into smaller, manageable tasks.", "Use the 80/20 rule: focus on the 20% that gives 80% of results.", "Test yourself frequently to monitor your progress.", "Reward yourself after completing study milestones.", "Use different colored pens for different types of information.", "Create a study schedule and stick to it consistently.", "Find a study partner for accountability and discussion.", "Avoid multitasking—focus on one subject at a time.", "Use online resources and educational videos for difficult concepts.", "Practice problems actively instead of passively reading solutions."
@@ -1459,12 +1653,6 @@
             caffeineIntake += Math.floor(Math.random() * 81) + 40; // Add 40-120mg
             localStorage.setItem('caffeineIntake', caffeineIntake);
             updateCaffeineDisplay();
-
-            const currentTransform = element.style.transform;
-            element.style.transform = `${currentTransform} scale(1.1)`;
-            setTimeout(() => { 
-                element.style.transform = currentTransform.replace(/ scale\(.+\)/, '') || 'scale(1)';
-            }, 200);
         }
         
         /**
@@ -1536,14 +1724,11 @@
             }
         }
         
-        // --- THEME MODAL FUNCTIONS ---
-        function openThemeModal() {
-            themeModalOverlay.classList.add('visible');
-        }
-
-        function closeThemeModal() {
-            themeModalOverlay.classList.remove('visible');
-        }
+        // --- MODAL FUNCTIONS (THEME & SETTINGS) ---
+        function openThemeModal() { themeModalOverlay.classList.add('visible'); }
+        function closeThemeModal() { themeModalOverlay.classList.remove('visible'); }
+        function openSettingsModal() { settingsModalOverlay.classList.add('visible'); }
+        function closeSettingsModal() { settingsModalOverlay.classList.remove('visible'); }
 
         /**
          * Sets the position of the dock.
@@ -1556,8 +1741,17 @@
             dockElement.classList.remove('dock-left', 'dock-bottom', 'dock-right');
             dockElement.classList.add(`dock-${position}`);
 
-            posButtons.forEach(btn => btn.classList.toggle('active', btn.dataset.pos === position));
+            if(position === 'left') {
+                document.body.style.paddingLeft = '100px'; document.body.style.paddingRight = '20px'; document.body.style.paddingBottom = '20px';
+            } else if (position === 'right') {
+                document.body.style.paddingLeft = '20px'; document.body.style.paddingRight = '100px'; document.body.style.paddingBottom = '20px';
+            } else { // bottom
+                document.body.style.paddingLeft = '20px'; document.body.style.paddingRight = '20px'; document.body.style.paddingBottom = '160px';
+            }
+
+            dockPosButtons.forEach(btn => btn.classList.toggle('active', btn.dataset.pos === position));
             localStorage.setItem('studyVerseDockPosition', position);
+            setDockAnimation(dockAnimationType); // Re-initialize animation for new layout
         }
 
         /**
@@ -1571,8 +1765,9 @@
             dockElement.classList.remove('size-small', 'size-medium', 'size-large');
             dockElement.classList.add(`size-${size}`);
 
-            sizeButtons.forEach(btn => btn.classList.toggle('active', btn.dataset.size === size));
+            dockSizeButtons.forEach(btn => btn.classList.toggle('active', btn.dataset.size === size));
             localStorage.setItem('studyVerseDockSize', size);
+            setDockAnimation(dockAnimationType); // Re-initialize animation for new layout
         }
         
         /**
@@ -1627,42 +1822,84 @@
             }
         }
         
+        // --- LAUNCHPAD LOGIC ---
+
+        function populateLaunchpad() {
+            launchpadGrid.innerHTML = ''; // Clear previous items
+            const icons = dockElement.querySelectorAll('.dock-icon:not(.dock-launchpad)');
+
+            icons.forEach((icon, index) => {
+                const iconClone = icon.cloneNode(true);
+                const dockLabel = icon.querySelector('.dock-icon-label');
+                const labelText = dockLabel ? dockLabel.textContent : (icon.getAttribute('aria-label') || 'App');
+
+                const launchpadItem = document.createElement(icon.tagName.toLowerCase() === 'a' ? 'a' : 'div');
+                launchpadItem.className = 'launchpad-item';
+                if(icon.tagName.toLowerCase() === 'a') {
+                    launchpadItem.href = icon.href;
+                    if (icon.target === '_blank') {
+                        launchpadItem.target = '_blank';
+                    }
+                }
+                
+                if (icon.onclick) {
+                    launchpadItem.onclick = icon.onclick;
+                }
+                
+                launchpadItem.innerHTML = `<div class="launchpad-item-label">${labelText}</div>`;
+                launchpadItem.prepend(iconClone);
+
+                launchpadItem.style.setProperty('--item-index', index);
+
+                const internalLabel = iconClone.querySelector('.dock-icon-label');
+                if (internalLabel) internalLabel.remove();
+                
+                const submenu = iconClone.querySelector('.focus-submenu');
+                if (submenu) submenu.remove();
+
+                launchpadGrid.appendChild(launchpadItem);
+            });
+        }
+        
+        function toggleLaunchpad() {
+            const isVisible = launchpadOverlay.classList.contains('visible');
+            if (!isVisible) {
+                populateLaunchpad(); 
+                launchpadOverlay.classList.add('visible');
+                launchpadSearch.focus(); 
+            } else {
+                launchpadOverlay.classList.remove('visible');
+                launchpadSearch.value = ''; 
+                filterLaunchpadApps(''); 
+            }
+        }
+        
+        function filterLaunchpadApps(query) {
+            const searchTerm = query.toLowerCase().trim();
+            const apps = launchpadGrid.querySelectorAll('.launchpad-item');
+            
+            apps.forEach(app => {
+                const label = app.querySelector('.launchpad-item-label').textContent.toLowerCase();
+                if(label.includes(searchTerm)) {
+                    app.style.display = 'flex';
+                } else {
+                    app.style.display = 'none';
+                }
+            });
+        }
+
+
         // --- ENHANCED CHAT AI LOGIC ---
         
         const pageNavigationMap = {
-            'motivation': 'page12.html',
-            'tasks': 'page16.html',
-            'task': 'page16.html',
-            'pomodoro': 'page13.html',
-            'deep focus': 'page9.html',
-            'measure': 'page10.html',
-            'researcho': 'page5.html',
-            'research': 'page5.html',
-            'typing test': 'page6.html',
-            'typing': 'page6.html',
-            'puzzle': 'page7.html',
-            'puzzles': 'page7.html',
-            'formulas': 'page4.html',
-            'formula station': 'page4.html',
-            'whiteboard': 'page8.html',
-            'white board': 'page8.html',
-            'booknest': 'page13.html',
-            'books': 'page13.html',
-            'mood': 'page11.html',
-            'moodly': 'page11.html',
-            'code cody': 'page17.html',
-            'code': 'page17.html',
-            'coding': 'page17.html'
+            'motivation': 'page12.html', 'tasks': 'page16.html', 'task': 'page16.html', 'pomodoro': 'page13.html', 'deep focus': 'page9.html', 'measure': 'page10.html', 'researcho': 'page5.html', 'research': 'page5.html', 'typing test': 'page6.html', 'typing': 'page6.html', 'puzzle': 'page7.html', 'puzzles': 'page7.html', 'formulas': 'page4.html', 'formula station': 'page4.html', 'whiteboard': 'page8.html', 'white board': 'page8.html', 'booknest': 'page13.html', 'books': 'page13.html', 'mood': 'page11.html', 'moodly': 'page11.html', 'code cody': 'page17.html', 'code': 'page17.html', 'coding': 'page17.html'
         };
 
         function setupChatAI() {
             chatAiDockIcon.addEventListener('click', () => chatWindow.classList.toggle('open'));
             chatSendBtn.addEventListener('click', handleUserMessage);
-            chatInput.addEventListener('keyup', (event) => {
-                if (event.key === 'Enter') handleUserMessage();
-            });
+            chatInput.addEventListener('keyup', (event) => { if (event.key === 'Enter') handleUserMessage(); });
 
-            // Add an initial welcome message
             if(chatMessagesContainer.children.length === 0) {
                appendAiMessage("Hello! I'm the StudyVERSE assistant. How can I help you? You can ask me to change the theme or take you to a page.");
             }
@@ -1671,15 +1908,10 @@
         function handleUserMessage() {
             const messageText = chatInput.value.trim();
             if (messageText === "") return;
-            
             appendUserMessage(messageText);
             chatInput.value = "";
-
-            setTimeout(() => {
-                processAiCommand(messageText.toLowerCase());
-            }, 500 + Math.random() * 400); // Simulate thinking
+            setTimeout(() => { processAiCommand(messageText.toLowerCase()); }, 500 + Math.random() * 400);
         }
-
         function appendUserMessage(text) {
             const messageEl = document.createElement('div');
             messageEl.classList.add('chat-message', 'user');
@@ -1687,7 +1919,6 @@
             chatMessagesContainer.appendChild(messageEl);
             chatMessagesContainer.scrollTop = chatMessagesContainer.scrollHeight;
         }
-
         function appendAiMessage(text) {
             const messageEl = document.createElement('div');
             messageEl.classList.add('chat-message', 'ai');
@@ -1695,14 +1926,11 @@
             chatMessagesContainer.appendChild(messageEl);
             chatMessagesContainer.scrollTop = chatMessagesContainer.scrollHeight;
         }
-
         function processAiCommand(command) {
-            // Command: Change Theme
             const themeMatch = command.match(/(change|set) theme to (.+)/);
             if (themeMatch) {
                 const requestedTheme = themeMatch[2].trim().replace(/\s+/g, '-');
                 const themeDisplayName = requestedTheme.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-                
                 if (setTheme(requestedTheme)) {
                     appendAiMessage(`Of course! I've changed the theme to ${themeDisplayName}.`);
                 } else {
@@ -1711,10 +1939,9 @@
                 return;
             }
 
-            // Command: Navigation
             const navMatch = command.match(/(go to|take me to|open) (the )?(.+)/);
             if (navMatch) {
-                const pageQuery = navMatch[3].trim().replace(/ page$/, ''); // "the puzzles page" -> "puzzles"
+                const pageQuery = navMatch[3].trim().replace(/ page$/, ''); 
                 if (pageNavigationMap[pageQuery]) {
                     const pageName = pageQuery.charAt(0).toUpperCase() + pageQuery.slice(1);
                     appendAiMessage(`Certainly, heading to the ${pageName} page now!`);
@@ -1724,19 +1951,8 @@
                 }
                 return;
             }
-            
-            // Basic conversation
-            if (command.includes('hello') || command.includes('hi')) {
-                appendAiMessage("Hi there! What can I assist you with today?");
-                return;
-            }
-
-            if (command.includes('how are you')) {
-                appendAiMessage("I'm just a set of instructions, but I'm operating perfectly! Ready to help you study.");
-                return;
-            }
-
-            // Default fallback
+            if (command.includes('hello') || command.includes('hi')) { appendAiMessage("Hi there! What can I assist you with today?"); return; }
+            if (command.includes('how are you')) { appendAiMessage("I'm just a set of instructions, but I'm operating perfectly! Ready to help you study."); return; }
             appendAiMessage("I'm not sure how to respond to that. You can ask me to 'change theme to...' or 'go to tasks'.");
         }
         
@@ -1750,7 +1966,7 @@
             const savedTip = localStorage.getItem('currentTip');
             if (savedTip) { tipElement.textContent = savedTip; }
 
-            populateThemeSelector(); // Generate themes inside the modal
+            populateThemeSelector(); 
             
             const savedTheme = localStorage.getItem('studyVerseTheme');
             setTheme(savedTheme && themes[savedTheme] ? savedTheme : 'cosmic-dark');
@@ -1761,95 +1977,172 @@
             const savedDockSize = localStorage.getItem('studyVerseDockSize');
             setDockSize(savedDockSize || 'medium');
             
+            const savedAnimType = localStorage.getItem('studyVerseDockAnimationType');
+            setDockAnimation(savedAnimType || 'none');
+            
             generateCalendar();
-            setupChatAI(); // Initialize the enhanced Chat AI
+            setupChatAI();
+        }
+        
+        // --- NEW DOCK ANIMATION LOGIC ---
+        let dockIconListeners = []; // Store listeners to easily remove them
+
+        /**
+         * Master function to set the dock animation type.
+         * @param {string} type - The animation type ('none', 'scale', 'bubble').
+         */
+        function setDockAnimation(type) {
+            destroyDockAnimation(); // Clean up previous animation listeners first
+            
+            dockAnimationType = type;
+            localStorage.setItem('studyVerseDockAnimationType', type);
+            
+            if (type === 'scale') {
+                initializeScaleAnimation();
+            } else if (type === 'bubble') {
+                initializeBubbleAnimation();
+            }
+            // If type is 'none', do nothing after cleanup.
+            
+            // Update active button in settings
+            dockAnimButtons.forEach(btn => btn.classList.toggle('active', btn.dataset.anim === type));
         }
 
         /**
-         * Initializes the smooth, Mac-style dock animation.
+         * Removes all active animation event listeners and resets icon styles.
          */
-        function initializeMacDockEffect() {
-            const dock = document.querySelector('.dock');
-            if (!dock) return;
+        function destroyDockAnimation() {
+            // Remove all stored listeners
+            dockIconListeners.forEach(({element, type, handler}) => {
+                element.removeEventListener(type, handler);
+            });
+            dockIconListeners = []; // Clear the array
 
-            const icons = Array.from(dock.querySelectorAll('.dock-icon'));
-            const maxScale = 1.8; // How big the icon gets when mouse is directly over it
-            const influenceRadius = dock.offsetWidth / 3; // The "magnetic" radius of the mouse
-
+            // Reset any lingering transformations
+            Array.from(dockElement.querySelectorAll('.dock-icon')).forEach(icon => {
+                icon.style.transition = 'transform 0.25s ease';
+                icon.style.transform = 'scale(1)';
+            });
+        }
+        
+        /**
+         * Initializes the smooth, Mac-style dock "scale" animation.
+         */
+        function initializeScaleAnimation() {
             let animationFrameId = null;
-
-            dock.addEventListener('mousemove', e => {
-                // Cancel any pending animation frame to avoid multiple updates
-                if (animationFrameId) {
-                    cancelAnimationFrame(animationFrameId);
-                }
-
-                // Request a new animation frame for the update
+            const icons = Array.from(dockElement.querySelectorAll('.dock-icon'));
+            const maxScale = 1.8;
+            
+            const handleMouseMove = e => {
+                if (animationFrameId) cancelAnimationFrame(animationFrameId);
                 animationFrameId = requestAnimationFrame(() => {
-                    const isVertical = dock.classList.contains('dock-left') || dock.classList.contains('dock-right');
+                    const isVertical = dockElement.classList.contains('dock-left') || dockElement.classList.contains('dock-right');
+                    const influenceRadius = isVertical ? dockElement.offsetHeight / 3.5 : dockElement.offsetWidth / 3.5;
                     const mousePos = isVertical ? e.clientY : e.clientX;
 
                     icons.forEach(icon => {
                         const rect = icon.getBoundingClientRect();
                         const iconCenter = isVertical ? rect.top + rect.height / 2 : rect.left + rect.width / 2;
-                        
                         const distance = Math.abs(mousePos - iconCenter);
                         
                         let scale = 1;
-                        // Only apply effect if within the influence radius
                         if (distance < influenceRadius) {
-                            // Use a cosine-based curve for a smoother falloff effect
-                            scale = 1 + (maxScale - 1) * (1 - Math.sin((distance / influenceRadius) * (Math.PI/2)));
+                            scale = 1 + (maxScale - 1) * (Math.cos(distance / influenceRadius * (Math.PI / 2)));
                         }
-
-                        // Apply a fast transition for responsive tracking
-                        icon.style.transition = 'transform 0.1s cubic-bezier(0.25, 0.8, 0.25, 1)'; 
-
-                        if (isVertical) {
-                            const moveDirection = dock.classList.contains('dock-left') ? 1 : -1;
-                            const translation = (scale - 1) * icon.offsetWidth * 0.5 * moveDirection;
-                            icon.style.transform = `translateX(${translation}px) scale(${scale})`;
-                        } else {
-                            const translation = (scale - 1) * icon.offsetHeight * 0.5;
-                            icon.style.transform = `translateY(-${translation}px) scale(${scale})`;
-                        }
+                        icon.style.transition = 'transform 0.1s cubic-bezier(0.2, 0.8, 0.2, 1)';
+                        const translation = (scale - 1) * (isVertical ? icon.offsetWidth : icon.offsetHeight) * 0.5;
+                        icon.style.transform = isVertical 
+                            ? `translateX(${dockElement.classList.contains('dock-left') ? translation : -translation}px) scale(${scale})`
+                            : `translateY(-${translation}px) scale(${scale})`;
                     });
                 });
-            });
+            };
 
-            dock.addEventListener('mouseleave', () => {
-                if (animationFrameId) {
-                    cancelAnimationFrame(animationFrameId);
-                }
+            const handleMouseLeave = () => {
+                if (animationFrameId) cancelAnimationFrame(animationFrameId);
                 icons.forEach(icon => {
-                    // Apply a smoother, slower transition when the mouse leaves the dock
-                    icon.style.transition = 'transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)';
+                    icon.style.transition = 'transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1)';
                     icon.style.transform = 'translate(0, 0) scale(1)';
                 });
+            };
+            
+            dockElement.addEventListener('mousemove', handleMouseMove);
+            dockElement.addEventListener('mouseleave', handleMouseLeave);
+            // Store listeners for removal
+            dockIconListeners.push({ element: dockElement, type: 'mousemove', handler: handleMouseMove });
+            dockIconListeners.push({ element: dockElement, type: 'mouseleave', handler: handleMouseLeave });
+        }
+        
+        /**
+         * Initializes the individual "bubble" animation on hover.
+         */
+        function initializeBubbleAnimation() {
+            const icons = Array.from(dockElement.querySelectorAll('.dock-icon'));
+            icons.forEach(icon => {
+                const handleMouseEnter = () => {
+                    icon.style.transition = 'transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+                    icon.style.transform = 'scale(1.6)';
+                    
+                    const prev = icon.previousElementSibling;
+                    const next = icon.nextElementSibling;
+                    if (prev && prev.classList.contains('dock-icon')) {
+                         prev.style.transition = 'transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+                         prev.style.transform = 'scale(1.2)';
+                    }
+                    if (next && next.classList.contains('dock-icon')) {
+                         next.style.transition = 'transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+                         next.style.transform = 'scale(1.2)';
+                    }
+                };
+                
+                const handleMouseLeave = () => {
+                     icon.style.transition = 'transform 0.2s ease-out';
+                     icon.style.transform = 'scale(1)';
+                     
+                    const prev = icon.previousElementSibling;
+                    const next = icon.nextElementSibling;
+                     if (prev && prev.classList.contains('dock-icon')) {
+                        prev.style.transition = 'transform 0.2s ease-out';
+                        prev.style.transform = 'scale(1)';
+                     }
+                     if (next && next.classList.contains('dock-icon')) {
+                        next.style.transition = 'transform 0.2s ease-out';
+                        next.style.transform = 'scale(1)';
+                     }
+                };
+
+                icon.addEventListener('mouseenter', handleMouseEnter);
+                icon.addEventListener('mouseleave', handleMouseLeave);
+                // Store listeners for removal
+                dockIconListeners.push({ element: icon, type: 'mouseenter', handler: handleMouseEnter });
+                dockIconListeners.push({ element: icon, type: 'mouseleave', handler: handleMouseLeave });
             });
         }
         
+        
         // --- INITIALIZATION ---
         document.addEventListener("DOMContentLoaded", () => {
-            // Setup Event Listeners for controls
-            posButtons.forEach(btn => {
-                btn.addEventListener('click', () => setDockPosition(btn.dataset.pos));
-            });
-            sizeButtons.forEach(btn => {
-                btn.addEventListener('click', () => setDockSize(btn.dataset.size));
-            });
-            
+            // Setup Settings Modal listeners
+            settingsControlIcon.addEventListener('click', openSettingsModal);
+            settingsModalCloseBtn.addEventListener('click', closeSettingsModal);
+            settingsModalOverlay.addEventListener('click', e => { if (e.target === settingsModalOverlay) closeSettingsModal(); });
+
+            dockPosButtons.forEach(btn => btn.addEventListener('click', () => setDockPosition(btn.dataset.pos)));
+            dockSizeButtons.forEach(btn => btn.addEventListener('click', () => setDockSize(btn.dataset.size)));
+            dockAnimButtons.forEach(btn => btn.addEventListener('click', () => setDockAnimation(btn.dataset.anim)));
+
             // Setup Theme Modal Listeners
             themeControlIcon.addEventListener('click', openThemeModal);
             themeModalCloseBtn.addEventListener('click', closeThemeModal);
-            themeModalOverlay.addEventListener('click', (event) => {
-                if (event.target === themeModalOverlay) closeThemeModal();
-            });
+            themeModalOverlay.addEventListener('click', (event) => { if (event.target === themeModalOverlay) closeThemeModal(); });
 
-            // Load saved state
+            // Setup Launchpad Listeners
+            launchpadDockIcon.addEventListener('click', toggleLaunchpad);
+            launchpadOverlay.addEventListener('click', (event) => { if(event.target === launchpadOverlay) toggleLaunchpad(); });
+            launchpadSearch.addEventListener('input', (e) => filterLaunchpadApps(e.target.value));
+            
+            // Load all user preferences and states
             loadState();
-            // Initialize the new and improved dock effect
-            initializeMacDockEffect();
         });
 
     </script>
