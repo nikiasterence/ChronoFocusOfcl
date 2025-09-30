@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -29,7 +28,7 @@
             /* Increased default blur for a more "liquid" feel */
             --blur-effect: blur(20px);
             --shadow-color: rgba(93, 64, 55, 0.15);
-            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
             
             /* New variables for dark mode */
             --dark-background: #1E1E2E;
@@ -75,7 +74,6 @@
 
         /* --- REFINED AURORA THEMES --- */
         @keyframes auroraGradient { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
-        .aurora-bg { background-size: 400% 400%; animation: auroraGradient 20s ease infinite; }
         
         body.theme-aurora-boreal { --background: #0d1a26; --surface: rgba(22, 34, 48, 0.85); --primary: #50E3C2; --primary-rgb: 80, 227, 194; --primary-light: rgba(80, 227, 194, 0.15); --text-primary: #E0F5FF; --text-secondary: #A0B8D0; --border-color: rgba(80, 227, 194, 0.2); --shadow-color: rgba(0, 0, 0, 0.25); background: linear-gradient(-45deg, #0d1a26, #1a3a52, #3c164f, #1a233b); }
         body.theme-aurora-sunrise { --background: #fff8f0; --surface: rgba(255, 255, 255, 0.9); --primary: #FF7B54; --primary-rgb: 255, 123, 84; --primary-light: #FFF0EB; --text-primary: #6B3E2E; --text-secondary: #A87E70; --border-color: #FCE8E0; --shadow-color: rgba(107, 62, 46, 0.15); background: linear-gradient(-45deg, #FFDAB9, #FFA07A, #FFFFE0, #FFC0CB); }
@@ -94,13 +92,12 @@
         body.theme-minimalist-dark { --background: #121212; --surface: rgba(28, 28, 28, 0.8); --primary: #FFFFFF; --primary-rgb: 255, 255, 255; --primary-light: #333333; --text-primary: #FFFFFF; --text-secondary: #AAAAAA; --border-color: rgba(255, 255, 255, 0.2); --shadow-color: rgba(0, 0, 0, 0.5); }
         body.theme-minimalist-light { --background: #FFFFFF; --surface: rgba(245, 245, 245, 0.8); --primary: #121212; --primary-rgb: 18, 18, 18; --primary-light: #EEEEEE; --text-primary: #121212; --text-secondary: #666666; --border-color: rgba(0, 0, 0, 0.1); --shadow-color: rgba(0, 0, 0, 0.05); }
 
-
         body[class*="theme-aurora"] {
             background-size: 400% 400%; animation: auroraGradient 20s ease infinite;
         }
 
         /* Enhanced glass effect */
-        .glass-effect {
+        .glass-effect, .task-card, .stats-card, .app-container, .settings-panel, .theme-dashboard, .ai-assistant-panel {
             background: var(--surface);
             backdrop-filter: var(--blur-effect);
             -webkit-backdrop-filter: var(--blur-effect);
@@ -121,15 +118,14 @@
             transition: background 0.5s ease, color 0.5s ease;
             overflow-x: hidden;
             background: var(--background);
-            padding: 20px;
+            padding: 10px;
             box-sizing: border-box;
         }
 
         .app-container {
-            width: 95%;
+            width: 100%;
             max-width: 1200px;
-            min-height: 90vh;
-            height: auto;
+            height: 95vh;
             display: flex;
             flex-direction: column;
             overflow: hidden;
@@ -137,27 +133,31 @@
             transition: opacity 0.5s, transform 0.5s;
         }
         
-        /* Apply glass effect directly to the container */
-        .app-container {
-             background: var(--surface);
-            backdrop-filter: var(--blur-effect);
-            -webkit-backdrop-filter: var(--blur-effect);
-            border-radius: var(--border-radius);
-            box-shadow: 0 8px 32px 0 var(--shadow-color);
-            border: 1px solid var(--border-color);
-        }
-
-        @media (min-width: 768px) { .app-container { flex-direction: row; height: 90vh; } }
         .app-container.hidden { opacity: 0; transform: scale(0.95); pointer-events: none; }
-
+        
+        /* Sidebar layout for desktop */
+        @media (min-width: 768px) { .app-container { flex-direction: row; } }
+        
         .icon-sidebar {
-            width: 100%;
-            padding: 10px;
             display: flex;
-            justify-content: center;
+            justify-content: space-around;
+            padding: 10px;
             border-bottom: 1px solid var(--border-color);
         }
-        @media (min-width: 768px) { .icon-sidebar { width: 70px; flex-shrink: 0; border-right: 1px solid var(--border-color); border-bottom: none; padding: 20px 0; flex-direction: column; align-items: center; gap: 15px; } }
+        /* Desktop Sidebar */
+        @media (min-width: 768px) { 
+            .icon-sidebar { 
+                width: 70px; 
+                flex-shrink: 0; 
+                border-right: 1px solid var(--border-color); 
+                border-bottom: none; 
+                padding: 20px 0; 
+                flex-direction: column; 
+                align-items: center; 
+                justify-content: flex-start;
+                gap: 15px; 
+            } 
+        }
 
         .icon-sidebar button {
             background: rgba(var(--primary-rgb), 0.1);
@@ -177,122 +177,193 @@
         .icon-sidebar button svg { width: 24px; height: 24px; fill: var(--text-primary); }
         .icon-sidebar button:hover { background: rgba(var(--primary-rgb), 0.2); transform: scale(1.1); }
         
-        .main-content { flex-grow: 1; padding: 20px; display: flex; flex-direction: column; overflow-y: auto; }
+        .main-content { flex-grow: 1; padding: 15px; display: flex; flex-direction: column; overflow-y: auto; }
         @media (min-width: 768px) { .main-content { padding: 30px; } }
-        #calendar-view { display: flex; flex-direction: column; height: 100%; }
-        #welcome-view { text-align: center; margin: auto; display: none; }
         
-        header { display: flex; justify-content: space-between; align-items: center; padding: 0 10px; margin-bottom: 20px; }
-        header h1 { font-size: 1.5rem; }
+        #calendar-view { display: flex; flex-direction: column; height: 100%; }
+        #welcome-view { text-align: center; margin: auto; display: none; padding: 15px; }
+        
+        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        header h1 { font-size: 1.3rem; margin: 0; }
         @media (min-width: 768px) { header h1 { font-size: 2rem; } }
         
-        .calendar-nav button { background: none; border: none; font-size: 28px; cursor: pointer; color: var(--text-primary); transition: transform 0.2s ease; }
+        .calendar-nav button { background: none; border: none; font-size: 24px; cursor: pointer; color: var(--text-primary); transition: transform 0.2s ease; }
+        @media (min-width: 768px) { .calendar-nav button { font-size: 28px; } }
         .calendar-nav button:hover { transform: scale(1.2); }
         
         .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; text-align: center; flex-grow: 1; }
-        @media (min-width: 768px) { .calendar-grid { gap: 10px; } }
         
-        .calendar-grid div { padding: 8px; border-radius: 12px; cursor: pointer; transition: background-color 0.3s ease; position: relative; min-height: 40px; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; }
-        @media (min-width: 768px) { .calendar-grid div { padding: 10px; min-height: 60px; font-size: 1rem; } }
+        .calendar-grid div { 
+            padding: 5px; 
+            border-radius: 12px; 
+            cursor: pointer; 
+            transition: background-color 0.3s ease; 
+            position: relative; 
+            min-height: 35px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-size: 0.8rem; 
+        }
+        @media (min-width: 768px) { 
+            .calendar-grid { gap: 10px; }
+            .calendar-grid div { 
+                padding: 10px; 
+                min-height: 60px; 
+                font-size: 1rem; 
+            } 
+        }
         
         .calendar-grid .day-name { font-weight: 600; color: var(--text-secondary); cursor: default; }
         .calendar-grid .calendar-day:not(.day-name):hover { background: var(--primary-light); }
-        .calendar-grid .today { background-color: var(--primary-light); color: var(--primary); font-weight: 600; border: 1px solid var(--primary); }
-        .calendar-grid .selected { background-color: var(--primary-light); border: 1px solid var(--primary); }
+        .calendar-grid .today { background-color: var(--primary-light); color: var(--primary); font-weight: 600; }
+        .calendar-grid .selected { box-shadow: 0 0 0 2px var(--primary); }
         
-        .calendar-grid .has-tasks::after { content: ''; position: absolute; bottom: 5px; left: 50%; transform: translateX(-50%); width: 6px; height: 6px; background-color: var(--primary); border-radius: 50%; }
+        .calendar-grid .has-tasks::after { content: ''; position: absolute; bottom: 4px; left: 50%; transform: translateX(-50%); width: 5px; height: 5px; background-color: var(--primary); border-radius: 50%; }
+        @media (min-width: 768px) { .calendar-grid .has-tasks::after { bottom: 8px; width: 6px; height: 6px; } }
         .calendar-grid .has-completed-tasks::after { background-color: var(--success); }
 
         #welcome-view h2 { font-size: 1.8rem; font-weight: 500; margin-bottom: 10px; }
         @media (min-width: 768px) { #welcome-view h2 { font-size: 2.5rem; } }
         #welcome-view p { color: var(--text-secondary); margin-bottom: 20px; }
 
-        .task-sidebar { width: 100%; flex-shrink: 0; background: transparent; padding: 20px; border-top: 1px solid var(--border-color); display: flex; flex-direction: column; overflow-y: auto; }
-        @media (min-width: 768px) { .task-sidebar { width: 350px; border-top: none; border-left: 1px solid var(--border-color); } }
-        
-        .task-card {
-             background: var(--surface);
-            backdrop-filter: var(--blur-effect);
-            -webkit-backdrop-filter: var(--blur-effect);
-            border-radius: var(--border-radius);
-            box-shadow: 0 8px 32px 0 var(--shadow-color);
-            border: 1px solid var(--border-color);
-            padding: 15px; margin-bottom: 15px; 
+        .task-sidebar { 
+            width: 100%; 
+            flex-shrink: 0; 
+            background: transparent; 
+            padding: 15px; 
+            border-top: 1px solid var(--border-color); 
+            display: flex; 
+            flex-direction: column; 
+            overflow-y: auto; 
+            max-height: 40vh; /* Limit height on mobile */
         }
-        @media (min-width: 768px) { .task-card { padding: 20px; margin-bottom: 20px; } }
+        @media (min-width: 768px) { 
+            .task-sidebar { 
+                width: 350px; 
+                border-top: none; 
+                border-left: 1px solid var(--border-color); 
+                max-height: none; /* No height limit on desktop */
+            } 
+        }
 
+        .task-card { padding: 15px; margin-bottom: 15px; }
+        
         #new-task-form h3 { margin-top: 0; margin-bottom: 15px; color: var(--text-primary); }
         #new-task-form .time-inputs { display: flex; gap: 10px; }
         #new-task-form input, #new-task-form textarea, #new-task-form button, #new-task-form #task-date { 
-            width: 100%; padding: 12px; margin-bottom: 10px; border-radius: 10px; border: 1px solid var(--border-color); box-sizing: border-box; background: var(--primary-light); color: var(--text-primary); font-family: 'Poppins', sans-serif; 
+            width: 100%; 
+            padding: 12px; 
+            margin-bottom: 10px; 
+            border-radius: 10px; 
+            border: 1px solid var(--border-color); 
+            box-sizing: border-box; 
+            background: var(--primary-light); 
+            color: var(--text-primary); 
+            font-family: 'Poppins', sans-serif; 
         }
         #new-task-form input::placeholder, #new-task-form textarea::placeholder { color: var(--text-secondary); }
         .duration-inputs { display: flex; gap: 10px; }
         .duration-inputs input { flex: 1; }
         .or-divider { text-align: center; margin: 10px 0; color: var(--text-secondary); font-size: 0.9em; }
-        #new-task-form button[type="submit"] { background-color: var(--primary); font-size: 16px; cursor: pointer; color: white; transition: var(--transition); font-weight: 500; border: none; }
+        #new-task-form button[type="submit"] { 
+            background-color: var(--primary); 
+            font-size: 16px; 
+            cursor: pointer; 
+            color: white; 
+            transition: var(--transition); 
+            font-weight: 500; 
+            border: none; 
+        }
         #new-task-form button[type="submit"]:hover { filter: brightness(1.1); }
 
-        /* Animation for new tasks */
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateX(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
+        /* Animation for new/old tasks */
+        @keyframes item-in { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes item-out { from { opacity: 1; transform: scale(1); } to { opacity: 0; transform: scale(0.8); } }
+        .task-item { animation: item-in 0.4s ease-out forwards; }
+        .task-item.removing { animation: item-out 0.3s ease-in forwards; }
 
-        #task-list .task-item { display: flex; align-items: center; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid var(--border-color); transition: opacity 0.3s ease; animation: slideIn 0.5s ease-out forwards; }
+        #task-list .task-item { 
+            display: flex; 
+            align-items: center; 
+            margin-bottom: 10px; 
+            padding-bottom: 10px; 
+            border-bottom: 1px solid var(--border-color); 
+            transition: opacity 0.3s ease; 
+        }
         #task-list .task-item:last-child { border-bottom: none; }
         #task-list .task-item-content { flex-grow: 1; overflow: hidden; }
         #task-list .task-item-icon { margin-right: 15px; font-size: 20px; color: var(--primary); flex-shrink: 0; }
-        #task-list .task-item button { background: none; border: none; cursor: pointer; padding: 5px; color: var(--text-primary); font-size: 16px; flex-shrink: 0; }
-        #task-list .task-item-meta, #task-list .task-notes { font-size: 0.9em; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        #task-list .task-notes { margin-top: 5px; font-size: 0.85em; }
+        #task-list .task-item .actions { display: flex; align-items: center; }
+        #task-list .task-item button { background: none; border: none; cursor: pointer; padding: 5px; color: var(--text-primary); font-size: 14px; flex-shrink: 0; }
+        @media (min-width: 768px) { #task-list .task-item button { font-size: 16px; }}
+        #task-list .task-item-meta, #task-list .task-notes { font-size: 0.8em; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        #task-list .task-notes { margin-top: 5px; }
         #task-list .start-focus { font-weight: bold; color: var(--primary); }
         #task-list .task-item.completed { opacity: 0.7; }
         #task-list .task-item.completed .task-item-content { text-decoration: line-through; color: var(--text-secondary); }
         #task-list .task-item.completed .task-item-icon { color: var(--success); }
+        
+        @keyframes breathe {
+            0% { transform: scale(1); box-shadow: 0 0 5px rgba(255, 255, 255, 0); }
+            50% { transform: scale(1.01); box-shadow: 0 0 20px rgba(255, 255, 255, 0.4); }
+            100% { transform: scale(1); box-shadow: 0 0 5px rgba(255, 255, 255, 0); }
+        }
 
-        .focus-view-container { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 1000; opacity: 0; transition: opacity 0.5s ease-in-out; }
+        .focus-view-container { 
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; 
+            display: none; flex-direction: column; justify-content: center; align-items: center; 
+            z-index: 1000; opacity: 0; transition: opacity 0.5s ease-in-out, backdrop-filter 0.5s; 
+        }
         .focus-view-container.visible { display: flex; opacity: 1; }
-        .color-fill-bg { position: absolute; top: 0; left: 0; width: 100%; height: 0; z-index: -1; transition: height 1s linear, background-color 0.4s ease; }
-        .focus-content { text-align: center; color: #fff; padding: 20px; max-width: 90%; text-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+        .color-fill-bg { 
+            position: absolute; top: 0; left: 0; width: 100%; height: 0; 
+            background: var(--primary); z-index: -1; transition: height 1s linear, background-color 0.4s ease; 
+        }
+        .focus-content { text-align: center; color: #fff; padding: 20px; max-width: 95%; text-shadow: 0 2px 8px rgba(0,0,0,0.3); }
         
-        #focus-task-icon { font-size: 2.5em; margin-bottom: 10px; }
-        @media (min-width: 768px) { #focus-task-icon { font-size: 3em; } }
-        .focus-content h2 { font-size: 2rem; font-weight: 500; margin-bottom: 10px; word-break: break-word; }
-        @media (min-width: 768px) { .focus-content h2 { font-size: 3em; } }
+        #focus-task-icon { font-size: 2rem; margin-bottom: 10px; }
+        .focus-content h2 { font-size: 1.5rem; font-weight: 500; margin-bottom: 10px; word-break: break-word; }
+        #focus-timer { 
+            font-size: 3.5rem; 
+            margin: 20px 0; 
+            font-weight: 300; 
+            letter-spacing: 2px;
+            animation: breathe 4s ease-in-out infinite;
+        }
+        #focus-status-text { font-size: 1em; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 20px; min-height: 25px; }
         
-        #focus-timer { font-size: 3.5rem; margin: 20px 0; font-weight: 300; letter-spacing: 2px; }
-        @media (min-width: 768px) { #focus-timer { font-size: 7em; } }
+        /* Mobile font size adjustments */
+        @media (min-width: 768px) { 
+            #focus-task-icon { font-size: 3em; }
+            .focus-content h2 { font-size: 3em; }
+            #focus-timer { font-size: 7em; }
+            #focus-status-text { font-size: 1.5em; }
+        }
         
-        #focus-status-text { font-size: 1.2em; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 20px; min-height: 30px; }
-        @media (min-width: 768px) { #focus-status-text { font-size: 1.5em; } }
-        
-        .focus-controls { display: flex; flex-wrap: wrap; justify-content: center; }
-        .focus-controls button { background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.3); color: white; padding: 12px 20px; margin: 8px; border-radius: 8px; font-size: 16px; cursor: pointer; transition: background 0.3s; min-width: 140px; }
-        @media (min-width: 768px) { .focus-controls button { padding: 12px 24px; margin: 10px; min-width: 160px; font-size: 18px; } }
+        .focus-controls { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+        .focus-controls button { 
+            background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.3); 
+            color: white; padding: 12px 18px; margin: 5px; border-radius: 8px; font-size: 14px; 
+            cursor: pointer; transition: background 0.3s; min-width: 120px; 
+        }
+        @media (min-width: 768px) { .focus-controls button { padding: 12px 24px; font-size: 18px; min-width: 160px;} }
         .focus-controls button:hover { background: rgba(255, 255, 255, 0.2); }
         
         .pomodoro-info { margin-top: 20px; font-size: 1rem; }
         @media (min-width: 768px) { .pomodoro-info { font-size: 1.2em; } }
         .pomodoro-session { display: inline-block; background: rgba(255, 255, 255, 0.2); padding: 5px 15px; border-radius: 20px; margin-top: 10px; }
 
-        .pomodoro-button { margin-top: 20px; background-color: var(--primary); color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: 500; transition: var(--transition); }
-        .pomodoro-button:hover { filter: brightness(1.1); }
-
-        .settings-panel { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); padding: 20px; z-index: 1000; width: 90%; max-width: 450px; display: none; }
-        .settings-panel {
-             background: var(--surface);
-            backdrop-filter: var(--blur-effect);
-            -webkit-backdrop-filter: var(--blur-effect);
-            border-radius: var(--border-radius);
-            box-shadow: 0 8px 32px 0 var(--shadow-color);
-            border: 1px solid var(--border-color);
+        /* Animation for modals */
+        @keyframes modal-in {
+            from { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+            to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        }
+        
+        .settings-panel, .theme-dashboard {
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+            padding: 20px; z-index: 1000; width: 90%; max-width: 450px; 
+            display: none; animation: modal-in 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
         .settings-panel h3 { margin-top: 0; margin-bottom: 20px; text-align: center; }
         .settings-option { margin-bottom: 15px; }
@@ -303,21 +374,17 @@
         .settings-buttons button { padding: 10px 20px; border-radius: 8px; border: none; cursor: pointer; font-weight: 500; }
         #save-settings { background-color: var(--primary); color: white; }
         
-        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(5px); z-index: 999; display: none; }
-        
-        /* Theme Dashboard */
-        .theme-dashboard { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); padding: 20px; z-index: 1000; width: 90%; max-width: 600px; display: none; max-height: 80vh; overflow-y: auto; }
-        .theme-dashboard {
-            background: var(--surface);
-            backdrop-filter: var(--blur-effect);
-            -webkit-backdrop-filter: var(--blur-effect);
-            border-radius: var(--border-radius);
-            box-shadow: 0 8px 32px 0 var(--shadow-color);
-            border: 1px solid var(--border-color);
+        .overlay { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(5px); z-index: 999; 
+            display: none; opacity: 0; transition: opacity 0.3s;
         }
+        .overlay.visible { display: block; opacity: 1; }
+        
+        .theme-dashboard { max-width: 600px; max-height: 80vh; overflow-y: auto; }
         .theme-dashboard h3 { margin-top: 0; margin-bottom: 20px; text-align: center; }
-        .theme-categories { display: flex; margin-bottom: 15px; border-bottom: 1px solid var(--border-color); }
-        .theme-category { padding: 10px 15px; cursor: pointer; transition: var(--transition); }
+        .theme-categories { display: flex; margin-bottom: 15px; border-bottom: 1px solid var(--border-color); flex-wrap: wrap; }
+        .theme-category { padding: 10px 15px; cursor: pointer; transition: var(--transition); font-size: 0.9em;}
         .theme-category.active { border-bottom: 2px solid var(--primary); font-weight: 500; }
         .theme-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 15px; margin-top: 15px; }
         .theme-item { height: 80px; border-radius: 12px; cursor: pointer; transition: var(--transition); position: relative; overflow: hidden; }
@@ -327,100 +394,61 @@
         
         /* AI Assistant */
         @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(var(--primary-rgb), 0.4); } 70% { box-shadow: 0 0 0 10px rgba(var(--primary-rgb), 0); } 100% { box-shadow: 0 0 0 0 rgba(var(--primary-rgb), 0); } }
-        .ai-assistant-btn { position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px; border-radius: 50%; background: var(--primary); color: white; border: none; cursor: pointer; z-index: 10; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); display: flex; align-items: center; justify-content: center; transition: var(--transition); animation: pulse 2s infinite; }
+        .ai-assistant-btn { 
+            position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px; 
+            border-radius: 50%; background: var(--primary); color: white; border: none; 
+            cursor: pointer; z-index: 10; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); 
+            display: flex; align-items: center; justify-content: center; 
+            transition: var(--transition); animation: pulse 2s infinite; 
+        }
         .ai-assistant-btn:hover { transform: scale(1.1); animation-play-state: paused; }
         .ai-assistant-btn i { font-size: 24px; }
         
-        .ai-assistant-panel { position: fixed; bottom: 90px; right: 20px; width: 350px; max-height: 500px; z-index: 1000; display: none; flex-direction: column; }
-        .ai-assistant-panel {
-            background: var(--surface);
-            backdrop-filter: var(--blur-effect);
-            -webkit-backdrop-filter: var(--blur-effect);
-            border-radius: var(--border-radius);
-            box-shadow: 0 8px 32px 0 var(--shadow-color);
-            border: 1px solid var(--border-color);
+        .ai-assistant-panel { 
+            position: fixed; bottom: 90px; right: 20px; width: 90%; max-width: 350px;
+            max-height: 500px; z-index: 1000; display: none; flex-direction: column; 
+            animation: modal-in 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform-origin: bottom right;
         }
+        @keyframes modal-in {
+             from { opacity: 0; transform: scale(0.9) translateY(20px); }
+             to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
         .ai-header { padding: 15px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
         .ai-header h4 { margin: 0; }
         .ai-close { background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-primary); }
         .ai-conversation { flex-grow: 1; padding: 15px; overflow-y: auto; max-height: 350px; }
-        .ai-message { margin-bottom: 15px; padding: 10px; border-radius: 10px; max-width: 80%; line-break: anywhere; }
+        .ai-message { margin-bottom: 15px; padding: 10px; border-radius: 10px; max-width: 80%; word-wrap: break-word; }
         .ai-user { background: var(--primary-light); margin-left: auto; }
         .ai-bot { background: var(--surface); margin-right: auto; }
         .ai-input-area { padding: 15px; border-top: 1px solid var(--border-color); display: flex; }
         .ai-input { flex-grow: 1; padding: 10px; border-radius: 20px; border: 1px solid var(--border-color); background: var(--primary-light); color: var(--text-primary); }
-        .ai-send { background: var(--primary); color: white; border: none; border-radius: 20px; padding: 10px 15px; margin-left: 10px; cursor: pointer; }
+        .ai-send { background: var(--primary); color: white; border: none; border-radius: 50%; width: 40px; height: 40px; margin-left: 10px; cursor: pointer; display:flex; align-items:center; justify-content:center; }
         
-        /* Enhanced UI elements */
-        .enhanced-button {
-            background: rgba(var(--primary-rgb), 0.1);
-            border: 1px solid var(--border-color);
-            color: var(--text-primary);
-            padding: 10px 15px;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: var(--transition);
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .enhanced-button:hover {
-            background: rgba(var(--primary-rgb), 0.2);
-            transform: translateY(-2px);
-        }
-        
-        .stats-card {
-            background: var(--surface);
-            backdrop-filter: var(--blur-effect);
-            -webkit-backdrop-filter: var(--blur-effect);
-            border-radius: var(--border-radius);
-            box-shadow: 0 8px 32px 0 var(--shadow-color);
-            border: 1px solid var(--border-color);
-            padding: 15px;
-            margin-bottom: 15px;
-            text-align: center;
-        }
-        
-        .stats-number {
-            font-size: 2rem;
-            font-weight: 600;
-            color: var(--primary);
-            margin: 10px 0;
-        }
-        
-        .stats-label {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-        }
+        .stats-number { font-size: 2rem; font-weight: 600; color: var(--primary); margin: 10px 0; }
+        .stats-label { color: var(--text-secondary); font-size: 0.9rem; }
 
-        /* Focus Lock Screen */
         #focus-lock-overlay {
-            position: fixed;
-            top: 0; left: 0;
+            position: fixed; top: 0; left: 0;
             width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(10px);
-            z-index: 2000;
-            display: none; /* Changed from 'none' to 'flex' in JS */
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            color: white;
-            padding: 20px;
+            background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(10px);
+            z-index: 2000; display: none;
+            flex-direction: column; justify-content: center; align-items: center;
+            text-align: center; color: white; padding: 20px;
         }
-        #focus-lock-overlay h2 { font-size: 2.5rem; margin-bottom: 15px; }
+        #focus-lock-overlay h2 { font-size: 2rem; margin-bottom: 15px; }
         #focus-lock-overlay p { font-size: 1.2rem; }
-
+        
     </style>
 </head>
 <body>
     <audio id="complete-sound" src="https://actions.google.com/sounds/v1/alarms/notification_bell.ogg" preload="auto"></audio>
+    <audio id="cancel-sound" src="https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg" preload="auto"></audio>
 
     <div class="overlay" id="settings-overlay"></div>
 
-    <!-- NEW Focus Lock Screen -->
+    <!-- Focus Lock Screen -->
     <div id="focus-lock-overlay">
         <div class="focus-lock-content">
             <h2>Time to Rest</h2>
@@ -428,12 +456,8 @@
         </div>
     </div>
     
-    <!-- AI Assistant Button -->
-    <button class="ai-assistant-btn" id="ai-assistant-btn">
-        <i class="fas fa-wand-magic-sparkles"></i>
-    </button>
-    
-    <!-- AI Assistant Panel -->
+    <!-- AI Assistant -->
+    <button class="ai-assistant-btn" id="ai-assistant-btn"><i class="fas fa-wand-magic-sparkles"></i></button>
     <div class="ai-assistant-panel" id="ai-assistant-panel">
         <div class="ai-header">
             <h4>AI Focus Assistant</h4>
@@ -441,42 +465,39 @@
         </div>
         <div class="ai-conversation" id="ai-conversation">
             <div class="ai-message ai-bot">
-                Hello! How can I help you focus today? Try: "Schedule physics study for 45 minutes" or "Add work from 3pm to 4:30pm". You can also ask me to "motivate me" or ask for "help".
+                Hello! How can I help? Try: "Schedule physics study for 45 minutes" or "Add work from 3pm to 4:30pm". You can also ask me to "motivate me" or ask for "help".
             </div>
         </div>
         <div class="ai-input-area">
-            <input type="text" class="ai-input" id="ai-input" placeholder="Ask me to create a task...">
+            <input type="text" class="ai-input" id="ai-input" placeholder="Ask me anything...">
             <button class="ai-send" id="ai-send"><i class="fas fa-paper-plane"></i></button>
         </div>
     </div>
 
+    <!-- Main App Container -->
     <div class="app-container">
         <div class="icon-sidebar">
              <button id="calendar-toggle-btn" title="Toggle Calendar">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 3H21C21.5523 3 22 3.44772 22 4V20C22 20.5523 21.5523 21 21 21H3C2.44772 21 2 20.5523 2 20V4C2 3.44772 2.44772 3 3 3H7V1H9V3H15V1H17V3ZM4 9V19H20V9H4ZM6 11H8V13H6V11ZM11 11H13V13H11V11ZM16 11H18V13H16V11Z"></path></svg>
+                <svg xmlns="http://www.w.org/2000/svg" viewBox="0 0 24 24"><path d="M17 3H21C21.5523 3 22 3.44772 22 4V20C22 20.5523 21.5523 21 21 21H3C2.44772 21 2 20.5523 2 20V4C2 3.44772 2.44772 3 3 3H7V1H9V3H15V1H17V3ZM4 9V19H20V9H4ZM6 11H8V13H6V11ZM11 11H13V13H11V11ZM16 11H18V13H16V11Z"></path></svg>
             </button>
             <button id="pomodoro-mode-btn" title="Pomodoro Technique">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8zm-1-9V7h2v6h-2zm0 4v-2h2v2h-2z"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2C6.486 2 2 6.486 2 12s4.486 10 10 10 10-4.486 10-10S17.514 2 12 2zm0 18c-4.411 0-8-3.589-8-8s3.589-8 8-8 8 3.589 8 8-3.589 8-8 8z"/><path fill="currentColor" d="M13 11.261 16.438 8 15 6.562 11 10.938V7h-2v6h6v-2h-3.739z"/></svg>
             </button>
             <button id="theme-dashboard-btn" title="Themes">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="currentColor" d="M12 22C6.49 22 2 17.51 2 12S6.49 2 12 2s10 4.49 10 10-4.49 10-10 10zm0-18c-4.41 0-8 3.59-8 8s3.59 8 8 8 8-3.59 8-8-3.59-8-8-8z"/><circle cx="12" cy="12" r="5" fill="currentColor"/></svg>
+                <svg xmlns="http://www.w.org/2000/svg" viewBox="0 0 24 24"><path fill="currentColor" d="m12 22 4-4h-3v-4h-2v4H8l4 4zM8 2l-4 4h3v4h2V6h3L8 2z"/></svg>
             </button>
             <button id="settings-btn" title="Settings">
-                 <!-- Updated Settings Icon -->
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="currentColor" d="M14 6V4h-4v2h4zm-2-5c4.97 0 9 4.03 9 9s-4.03 9-9 9-9-4.03-9-9 4.03-9 9-9zm7 9c0-3.86-3.14-7-7-7s-7 3.14-7 7 3.14 7 7 7 7-3.14 7-7zm-7 5c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24px" height="24px"><path d="M10 18h4v-2h-4v2zM3 6v2h18V6H3zm3 7h12v-2H6v2z"/></svg>
+                <svg xmlns="http://www.w.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24px" height="24px"><path d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z"/></svg>
             </button>
         </div>
         <div class="main-content">
             <div id="welcome-view">
-                <h2>Welcome to Focus Timer</h2>
+                <h2>Welcome to ChronoFocus</h2>
                 <p>Select a task or open the calendar to get started.</p>
-                <button class="pomodoro-button" id="pomodoro-btn">Try Pomodoro Technique</button>
-                
                 <div class="stats-card">
                     <div class="stats-label">Total Focus Time Today</div>
                     <div class="stats-number" id="today-focus-time">0h 0m</div>
-                    <div class="stats-label">Tasks Completed</div>
+                    <div class="stats-label">Tasks Completed Today</div>
                     <div class="stats-number" id="tasks-completed">0</div>
                 </div>
             </div>
@@ -497,20 +518,13 @@
                     <h3>New Task</h3>
                      <input type="text" id="task-name" placeholder="What is your focus?" required list="task-suggestions">
                      <datalist id="task-suggestions">
-                         <option value="Work on project">
-                         <option value="Study for exam">
-                         <option value="Read a book">
-                         <option value="Exercise">
-                         <option value="Meditate">
-                         <option value="Coding session">
-                         <option value="Writing session">
-                         <option value="Language learning">
-                         <option value="Research">
-                         <option value="Planning">
-                         <option value="Physics homework">
-                         <option value="Math practice">
-                         <option value="Chemistry lab report">
-                         <option value="Unwind and relax">
+                         <option value="Work on project"></option><option value="Study for exam"></option>
+                         <option value="Read a book"></option><option value="Exercise"></option>
+                         <option value="Meditate"></option><option value="Coding session"></option>
+                         <option value="Writing session"></option><option value="Language learning"></option>
+                         <option value="Research"></option><option value="Planning"></option>
+                         <option value="Physics homework"></option><option value="Math practice"></option>
+                         <option value="Chemistry lab report"></option><option value="Unwind and relax"></option>
                      </datalist>
                      <input type="date" id="task-date" required>
                       <div class="time-inputs">
@@ -530,6 +544,7 @@
         </div>
     </div>
 
+    <!-- Focus View Container -->
     <div class="focus-view-container" id="focus-view">
         <div class="color-fill-bg" id="color-fill-bg"></div>
         <div class="focus-content" id="focus-content">
@@ -548,7 +563,8 @@
             </div>
         </div>
     </div>
-
+    
+    <!-- Settings Panel -->
     <div class="settings-panel" id="settings-panel">
         <h3>Settings</h3>
         <div class="settings-option">
@@ -559,41 +575,23 @@
         <div class="settings-option">
             <label for="auto-delete">Auto-delete completed tasks after</label>
             <select id="auto-delete">
-                <option value="0">Never</option>
-                <option value="1">1 day</option>
-                <option value="3">3 days</option>
-                <option value="7">1 week</option>
+                <option value="0">Never</option><option value="1">1 day</option>
+                <option value="3">3 days</option><option value="7">1 week</option>
                 <option value="30">1 month</option>
             </select>
-        </div>
-        <hr>
+        </div><hr>
         <h4>Pomodoro</h4>
-        <div class="settings-option">
-            <label for="pomodoro-duration">Pomodoro Duration (minutes)</label>
-            <input type="number" id="pomodoro-duration" min="5" max="60" value="25">
-        </div>
-        <div class="settings-option">
-            <label for="break-duration">Short Break (minutes)</label>
-            <input type="number" id="break-duration" min="1" max="30" value="5">
-        </div>
-         <div class="settings-option">
-            <label for="long-break-duration">Long Break (minutes)</label>
-            <input type="number" id="long-break-duration" min="5" max="60" value="15">
-        </div>
-        <hr>
+        <div class="settings-option"><label for="pomodoro-duration">Pomodoro Duration (min)</label><input type="number" id="pomodoro-duration" min="5" max="60" value="25"></div>
+        <div class="settings-option"><label for="break-duration">Short Break (min)</label><input type="number" id="break-duration" min="1" max="30" value="5"></div>
+        <div class="settings-option"><label for="long-break-duration">Long Break (min)</label><input type="number" id="long-break-duration" min="5" max="60" value="15"></div><hr>
         <h4>Work Hours</h4>
-        <div class="settings-option">
-             <label><input type="checkbox" id="work-hours-enabled"> Enforce work hours</label>
-        </div>
+        <div class="settings-option"><label><input type="checkbox" id="work-hours-enabled"> Enforce work hours</label></div>
         <div class="settings-option" id="work-hours-inputs" style="display: none;">
-             <label for="work-hours-start">From</label>
-             <input type="time" id="work-hours-start">
-             <label for="work-hours-end">To</label>
-             <input type="time" id="work-hours-end">
+             <label for="work-hours-start">From</label><input type="time" id="work-hours-start">
+             <label for="work-hours-end">To</label><input type="time" id="work-hours-end">
          </div>
         <div class="settings-buttons">
-            <button id="cancel-settings">Cancel</button>
-            <button id="save-settings">Save</button>
+            <button id="cancel-settings">Cancel</button><button id="save-settings">Save</button>
         </div>
     </div>
     
@@ -602,14 +600,10 @@
         <h3>Choose a Theme</h3>
         <div class="theme-categories">
             <div class="theme-category active" data-category="all">All</div>
-            <div class="theme-category" data-category="light">Light</div>
-            <div class="theme-category" data-category="dark">Dark</div>
-            <div class="theme-category" data-category="glass">Glass</div>
-            <div class="theme-category" data-category="aurora">Aurora</div>
+            <div class="theme-category" data-category="light">Light</div><div class="theme-category" data-category="dark">Dark</div>
+            <div class="theme-category" data-category="glass">Glass</div><div class="theme-category" data-category="aurora">Aurora</div>
         </div>
-        <div class="theme-grid" id="theme-grid">
-            <!-- Themes will be populated by JavaScript -->
-        </div>
+        <div class="theme-grid" id="theme-grid"></div>
     </div>
 
     <script>
@@ -622,7 +616,6 @@
             const pomodoroModeBtn = document.getElementById('pomodoro-mode-btn');
             const themeDashboardBtn = document.getElementById('theme-dashboard-btn');
             const settingsBtn = document.getElementById('settings-btn');
-            const pomodoroBtn = document.getElementById('pomodoro-btn');
             const monthYearEl = document.getElementById('month-year');
             const prevMonthBtn = document.getElementById('prev-month');
             const nextMonthBtn = document.getElementById('next-month');
@@ -670,42 +663,29 @@
             const todayFocusTimeEl = document.getElementById('today-focus-time');
             const tasksCompletedEl = document.getElementById('tasks-completed');
             const completeSound = document.getElementById('complete-sound');
+            const cancelSound = document.getElementById('cancel-sound');
             const focusLockOverlay = document.getElementById('focus-lock-overlay');
             const workHoursEnabled = document.getElementById('work-hours-enabled');
             const workHoursInputs = document.getElementById('work-hours-inputs');
             const workHoursStart = document.getElementById('work-hours-start');
             const workHoursEnd = document.getElementById('work-hours-end');
             
-            // --- ALL THEMES ---
+            // --- ALL THEMES (as a constant)---
             const ALL_THEMES = [
-                {name: 'Cozy Mocha', value: 'default', category: 'light', color: '#8D6E63'},
-                {name: 'Sage', value: 'theme-sage', category: 'light', color: '#799975'},
-                {name: 'Rose', value: 'theme-rose', category: 'light', color: '#D4A6B2'},
-                {name: 'Mist', value: 'theme-mist', category: 'light', color: '#94AEC3'},
-                {name: 'Sand', value: 'theme-sand', category: 'light', color: '#D6BA9A'},
-                {name: 'Lavender', value: 'theme-lavender', category: 'light', color: '#9E8FB2'},
-                {name: 'Ocean', value: 'theme-ocean', category: 'light', color: '#7AB3D0'},
-                {name: 'Citrus', value: 'theme-citrus', category: 'light', color: '#E3C567'},
-                {name: 'Berry', value: 'theme-berry', category: 'light', color: '#D6729B'},
-                {name: 'Minimalist Light', value: 'theme-minimalist-light', category: 'light', color: '#f5f5f5'},
-                {name: 'Dark Mode', value: 'dark-mode', category: 'dark', color: '#1E1E2E'},
-                {name: 'Cyberpunk', value: 'theme-cyberpunk', category: 'dark', color: 'linear-gradient(45deg, #0d0221, #241452, #0d0221)'},
-                {name: 'Earthy', value: 'theme-earthy', category: 'light', color: '#D8C3A5'},
-                {name: 'Minimalist Dark', value: 'theme-minimalist-dark', category: 'dark', color: '#121212'},
-                {name: 'Emerald Glass', value: 'theme-glass-emerald', category: 'glass', color: 'rgba(46, 125, 50, 0.8)'},
-                {name: 'Sapphire Glass', value: 'theme-glass-sapphire', category: 'glass', color: 'rgba(21, 101, 192, 0.8)'},
-                {name: 'Ruby Glass', value: 'theme-glass-ruby', category: 'glass', color: 'rgba(198, 40, 40, 0.8)'},
-                {name: 'Amethyst Glass', value: 'theme-glass-amethyst', category: 'glass', color: 'rgba(106, 27, 154, 0.8)'},
-                {name: 'Obsidian Glass', value: 'theme-glass-obsidian', category: 'glass', color: 'rgba(50, 50, 50, 0.8)'},
-                {name: 'Aurora Boreal', value: 'theme-aurora-boreal', category: 'aurora', color: 'linear-gradient(-45deg, #0d1a26, #1a3a52, #3c164f, #1a233b)'},
-                {name: 'Aurora Twilight', value: 'theme-aurora-twilight', category: 'aurora', color: 'linear-gradient(-45deg, #1e1e2f, #3a2e5d, #6a538d, #2f274a)'},
-                {name: 'Aurora Cosmos', value: 'theme-aurora-cosmos', category: 'aurora', color: 'linear-gradient(-45deg, #000428, #004e92, #072a4f, #000a3a)'},
-                {name: 'Aurora Nebula', value: 'theme-aurora-nebula', category: 'aurora', color: 'linear-gradient(-45deg, #2a0a4a, #da2a9a, #751a75, #411059)'},
-                {name: 'Aurora Forest', value: 'theme-aurora-forest', category: 'aurora', color: 'linear-gradient(-45deg, #0d2618, #1b5e20, #2e7d32, #1b5e20)'},
-                {name: 'Aurora Sunset', value: 'theme-aurora-sunset', category: 'aurora', color: 'linear-gradient(-45deg, #2c0d2c, #6a1b9a, #ad1457, #8e24aa)'},
-                {name: 'Aurora Midnight', value: 'theme-aurora-midnight', category: 'aurora', color: 'linear-gradient(-45deg, #0a0a1a, #283593, #3949AB, #1A237E)'},
-                {name: 'Aurora Sunrise', value: 'theme-aurora-sunrise', category: 'aurora', color: 'linear-gradient(-45deg, #FFDAB9, #FFA07A, #FFFFE0, #FFC0CB)'},
-                {name: 'Cotton Candy', value: 'theme-aurora-cottoncandy', category: 'aurora', color: 'linear-gradient(-45deg, #fce4ec, #f8bbd0, #f48fb1, #ff80ab)'},
+                {name: 'Cozy Mocha', value: 'default', category: 'light', color: '#8D6E63'},{name: 'Sage', value: 'theme-sage', category: 'light', color: '#799975'},
+                {name: 'Rose', value: 'theme-rose', category: 'light', color: '#D4A6B2'},{name: 'Mist', value: 'theme-mist', category: 'light', color: '#94AEC3'},
+                {name: 'Sand', value: 'theme-sand', category: 'light', color: '#D6BA9A'},{name: 'Lavender', value: 'theme-lavender', category: 'light', color: '#9E8FB2'},
+                {name: 'Ocean', value: 'theme-ocean', category: 'light', color: '#7AB3D0'},{name: 'Citrus', value: 'theme-citrus', category: 'light', color: '#E3C567'},
+                {name: 'Berry', value: 'theme-berry', category: 'light', color: '#D6729B'},{name: 'Minimalist Light', value: 'theme-minimalist-light', category: 'light', color: '#f5f5f5'},
+                {name: 'Dark Mode', value: 'dark-mode', category: 'dark', color: '#1E1E2E'},{name: 'Cyberpunk', value: 'theme-cyberpunk', category: 'dark', color: 'linear-gradient(45deg, #0d0221, #241452, #0d0221)'},
+                {name: 'Earthy', value: 'theme-earthy', category: 'light', color: '#D8C3A5'},{name: 'Minimalist Dark', value: 'theme-minimalist-dark', category: 'dark', color: '#121212'},
+                {name: 'Emerald Glass', value: 'theme-glass-emerald', category: 'glass', color: 'rgba(46, 125, 50, 0.8)'},{name: 'Sapphire Glass', value: 'theme-glass-sapphire', category: 'glass', color: 'rgba(21, 101, 192, 0.8)'},
+                {name: 'Ruby Glass', value: 'theme-glass-ruby', category: 'glass', color: 'rgba(198, 40, 40, 0.8)'},{name: 'Amethyst Glass', value: 'theme-glass-amethyst', category: 'glass', color: 'rgba(106, 27, 154, 0.8)'},
+                {name: 'Obsidian Glass', value: 'theme-glass-obsidian', category: 'glass', color: 'rgba(50, 50, 50, 0.8)'},{name: 'Aurora Boreal', value: 'theme-aurora-boreal', category: 'aurora', color: 'linear-gradient(-45deg, #0d1a26, #1a3a52, #3c164f, #1a233b)'},
+                {name: 'Aurora Twilight', value: 'theme-aurora-twilight', category: 'aurora', color: 'linear-gradient(-45deg, #1e1e2f, #3a2e5d, #6a538d, #2f274a)'},{name: 'Aurora Cosmos', value: 'theme-aurora-cosmos', category: 'aurora', color: 'linear-gradient(-45deg, #000428, #004e92, #072a4f, #000a3a)'},
+                {name: 'Aurora Nebula', value: 'theme-aurora-nebula', category: 'aurora', color: 'linear-gradient(-45deg, #2a0a4a, #da2a9a, #751a75, #411059)'},{name: 'Aurora Forest', value: 'theme-aurora-forest', category: 'aurora', color: 'linear-gradient(-45deg, #0d2618, #1b5e20, #2e7d32, #1b5e20)'},
+                {name: 'Aurora Sunset', value: 'theme-aurora-sunset', category: 'aurora', color: 'linear-gradient(-45deg, #2c0d2c, #6a1b9a, #ad1457, #8e24aa)'},{name: 'Aurora Midnight', value: 'theme-aurora-midnight', category: 'aurora', color: 'linear-gradient(-45deg, #0a0a1a, #283593, #3949AB, #1A237E)'},
+                {name: 'Aurora Sunrise', value: 'theme-aurora-sunrise', category: 'aurora', color: 'linear-gradient(-45deg, #FFDAB9, #FFA07A, #FFFFE0, #FFC0CB)'},{name: 'Cotton Candy', value: 'theme-aurora-cottoncandy', category: 'aurora', color: 'linear-gradient(-45deg, #fce4ec, #f8bbd0, #f48fb1, #ff80ab)'},
                 {name: 'Golden Hour', value: 'theme-aurora-golden', category: 'aurora', color: 'linear-gradient(-45deg, #fffde7, #fff9c4, #fff59d, #ffeb3b)'},
             ];
 
@@ -718,6 +698,7 @@
             let currentTaskName = '';
             let totalDuration;
             let currentTaskID = null;
+            let currentTaskEndTime = null; // For time-aware tasks
             let isPomodoroMode = false;
             let pomodoroCount = 0;
             let isBreakTime = false;
@@ -731,24 +712,12 @@
             let workHoursCheckInterval;
             
             // --- Helper Functions ---
-            /**
-             * Safely formats a Date object to a YYYY-MM-DD string in local time.
-             * @param {Date} date The date to format.
-             * @returns {string} The formatted date string.
-             */
-            const toYYYYMMDD = (date) => {
-                const y = date.getFullYear();
-                const m = String(date.getMonth() + 1).padStart(2, '0');
-                const d = String(date.getDate()).padStart(2, '0');
-                return `${y}-${m}-${d}`;
-            };
+            const toYYYYMMDD = (date) => `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
             
             // --- Theme Management ---
             const applyTheme = (theme) => {
-                document.body.className = ''; // Clear all classes
-                if (theme && theme !== 'default') {
-                    document.body.classList.add(theme);
-                }
+                document.body.className = '';
+                if (theme && theme !== 'default') document.body.classList.add(theme);
                 localStorage.setItem('focusTimerTheme', theme);
                 document.querySelectorAll('.theme-item.active').forEach(item => item.classList.remove('active'));
                 const activeThemeItem = document.querySelector(`.theme-item[data-theme="${theme}"]`);
@@ -758,21 +727,14 @@
             const populateThemeDashboard = () => {
                 themeGrid.innerHTML = '';
                 const currentTheme = localStorage.getItem('focusTimerTheme') || 'default';
-
                 ALL_THEMES.forEach(theme => {
                     const themeItem = document.createElement('div');
                     themeItem.className = 'theme-item';
                     themeItem.dataset.theme = theme.value;
                     themeItem.dataset.category = theme.category;
                     themeItem.style.background = theme.color;
-                    
-                    const themeName = document.createElement('div');
-                    themeName.className = 'theme-name';
-                    themeName.textContent = theme.name;
-                    themeItem.appendChild(themeName);
-                    
+                    themeItem.innerHTML = `<div class="theme-name">${theme.name}</div>`;
                     if (theme.value === currentTheme) themeItem.classList.add('active');
-                    
                     themeItem.addEventListener('click', () => applyTheme(theme.value));
                     themeGrid.appendChild(themeItem);
                 });
@@ -780,11 +742,7 @@
             
             const filterThemes = (category) => {
                 document.querySelectorAll('.theme-item').forEach(item => {
-                    if (category === 'all' || item.dataset.category === category) {
-                        item.style.display = 'block';
-                    } else {
-                        item.style.display = 'none';
-                    }
+                    item.style.display = (category === 'all' || item.dataset.category === category) ? 'block' : 'none';
                 });
             };
 
@@ -792,33 +750,24 @@
             const saveTasks = () => localStorage.setItem('focusTimerTasks', JSON.stringify(tasks));
             const loadTasks = () => {
                 const storedTasks = localStorage.getItem('focusTimerTasks');
-                tasks = storedTasks ? JSON.parse(storedTasks).map(task => ({
-                    ...task,
-                    id: task.id || Date.now() + Math.random().toString(16).slice(2),
-                    completed: task.completed || false,
-                    createdAt: task.createdAt || new Date().toISOString() 
-                })) : [];
+                tasks = storedTasks ? JSON.parse(storedTasks).map(task => ({ ...task, id: task.id || Date.now() + Math.random().toString(16).slice(2), completed: task.completed || false, createdAt: task.createdAt || new Date().toISOString() })) : [];
                 cleanupOldTasks();
             };
 
             const cleanupOldTasks = () => {
                 const autoDeleteDays = parseInt(localStorage.getItem('autoDeleteDays') || '0');
                 if (autoDeleteDays === 0) return;
-                
                 const cutoffDate = new Date();
                 cutoffDate.setDate(cutoffDate.getDate() - autoDeleteDays);
-                
                 tasks = tasks.filter(task => !task.completed || !task.createdAt || new Date(task.createdAt) > cutoffDate);
                 saveTasks();
             };
             
-             // --- Sound Effects ---
-            const playSound = () => {
-                completeSound.currentTime = 0;
-                completeSound.play().catch(error => console.log("Audio playback failed:", error));
+            const playSound = (soundElement) => {
+                soundElement.currentTime = 0;
+                soundElement.play().catch(error => console.log("Audio playback failed:", error));
             };
 
-            // --- Calendar Logic ---
             const toggleCalendar = () => {
                 const isVisible = calendarView.style.display !== 'none';
                 calendarView.style.display = isVisible ? 'none' : 'flex';
@@ -890,10 +839,7 @@
                 const tasksForDate = tasks.filter(task => task.date === dateStr).sort((a, b) => (a.startTime || '').localeCompare(b.startTime || ''));
                 taskListEl.innerHTML = `<h3>Tasks for ${date.toLocaleDateString()}</h3>`;
                 
-                if (tasksForDate.length === 0) {
-                    taskListEl.innerHTML += '<p>No tasks. Add one!</p>';
-                    return;
-                }
+                if (tasksForDate.length === 0) { taskListEl.innerHTML += '<p>No tasks. Add one!</p>'; return; }
                 
                 tasksForDate.forEach(task => {
                     const taskItem = document.createElement('div');
@@ -909,7 +855,7 @@
                              ${meta ? `<p class="task-item-meta">${meta}</p>` : ''}
                              ${task.notes ? `<p class="notes">${task.notes}</p>` : ''}
                         </div>
-                        <div>
+                        <div class="actions">
                            ${!task.completed ? `<button class="start-focus" data-id="${task.id}" title="Start Focus" ${!task.duration ? 'disabled' : ''}><i class="fas fa-play"></i></button>` : ''}
                            <button class="complete-task" data-id="${task.id}" title="${task.completed ? 'Mark Incomplete' : 'Mark Complete'}">${task.completed ? '<i class="fas fa-undo"></i>' : '<i class="fas fa-check"></i>'}</button>
                            <button class="delete-task" data-id="${task.id}" title="Delete Task"><i class="fas fa-trash"></i></button>
@@ -920,6 +866,7 @@
             };
 
             const formatTime = (seconds) => {
+                if (seconds < 0) seconds = 0;
                 const h = Math.floor(seconds / 3600).toString().padStart(2, '0');
                 const m = Math.floor((seconds % 3600) / 60).toString().padStart(2, '0');
                 const s = (seconds % 60).toString().padStart(2, '0');
@@ -928,30 +875,21 @@
             
             const handleTimerCompletion = () => {
                  clearInterval(timerInterval);
-                 playSound();
+                 playSound(completeSound);
                  
                  if (isPomodoroMode) {
                      if (!isBreakTime) {
-                        pomodoroCount++;
-                        updateStats(pomodoroDuration * 60, 0); // Log focus time
-                        
-                        if (pomodoroCount >= 4) { // Time for a long break
-                            isBreakTime = true;
-                            timeRemaining = totalDuration = longBreakDuration * 60;
-                            focusStatusTextEl.textContent = `Long Break!`;
-                            pomodoroSessionTypeEl.textContent = 'Long Break';
-                            pomodoroCount = 0; // Reset for next cycle
-                        } else { // Time for a short break
-                            isBreakTime = true;
-                            timeRemaining = totalDuration = breakDuration * 60;
-                            focusStatusTextEl.textContent = `Pomodoro ${pomodoroCount} done. Time for a break!`;
-                            pomodoroSessionTypeEl.textContent = 'Short Break';
+                        pomodoroCount++; updateStats(pomodoroDuration * 60, 0);
+                        if (pomodoroCount >= 4) { // Long break
+                            isBreakTime = true; timeRemaining = totalDuration = longBreakDuration * 60;
+                            focusStatusTextEl.textContent = `Long Break!`; pomodoroSessionTypeEl.textContent = 'Long Break'; pomodoroCount = 0;
+                        } else { // Short break
+                            isBreakTime = true; timeRemaining = totalDuration = breakDuration * 60;
+                            focusStatusTextEl.textContent = `Pomodoro ${pomodoroCount} done. Time for a break!`; pomodoroSessionTypeEl.textContent = 'Short Break';
                         }
-                     } else { // Break finished, start next focus
-                         isBreakTime = false;
-                         timeRemaining = totalDuration = pomodoroDuration * 60;
-                         currentPomodoroEl.textContent = pomodoroCount + 1;
-                         focusStatusTextEl.textContent = 'Next session starting...';
+                     } else { // Next focus session
+                         isBreakTime = false; timeRemaining = totalDuration = pomodoroDuration * 60;
+                         currentPomodoroEl.textContent = pomodoroCount + 1; focusStatusTextEl.textContent = 'Next session starting...';
                          pomodoroSessionTypeEl.textContent = 'Focus Time';
                      }
                      startTimer();
@@ -965,7 +903,18 @@
             const startTimer = () => {
                 timerInterval = setInterval(() => {
                     if (isPaused) return;
+
+                    // New: Check if time has exceeded the task's end time
+                    if (currentTaskEndTime && new Date() > currentTaskEndTime) {
+                        clearInterval(timerInterval);
+                        playSound(cancelSound);
+                        focusStatusTextEl.textContent = `Time is up! The session has been cancelled.`;
+                        setTimeout(endFocusSession, 2500);
+                        return;
+                    }
+                    
                     if (timeRemaining <= 0) { handleTimerCompletion(); return; }
+                    
                     timeRemaining--;
                     const formattedTime = formatTime(timeRemaining);
                     focusTimerEl.textContent = formattedTime;
@@ -976,31 +925,53 @@
 
             const startFocusSession = (task, isPomodoro = false) => {
                 appContainer.classList.add('hidden');
+                let sessionStartTimeRemaining = isPomodoro ? pomodoroDuration * 60 : task.duration * 60;
+                
+                // NEW: Logic for time-aware tasks
+                currentTaskEndTime = null; // Reset
+                if (!isPomodoro && task.startTime && task.endTime) {
+                    const now = new Date();
+                    const taskStartDateTime = new Date(`${task.date}T${task.startTime}`);
+                    const taskEndDateTime = new Date(`${task.date}T${task.endTime}`);
+                    currentTaskEndTime = taskEndDateTime; // Store end time
+
+                    if (now > taskEndDateTime) {
+                        alert("The scheduled time for this task has already passed.");
+                        appContainer.classList.remove('hidden');
+                        return;
+                    }
+
+                    if (now > taskStartDateTime && now < taskEndDateTime) {
+                        sessionStartTimeRemaining = Math.round((taskEndDateTime - now) / 1000);
+                    }
+                }
                 
                 setTimeout(() => {
                     focusView.classList.add('visible');
                     isPomodoroMode = isPomodoro;
                     
                     if (isPomodoro) {
-                        pomodoroCount = 0; 
-                        isBreakTime = false; 
+                        pomodoroCount = 0; isBreakTime = false; 
                         totalDuration = pomodoroDuration * 60;
                         pomodoroInfo.style.display = 'block'; 
                         currentPomodoroEl.textContent = '1';
                         pomodoroSessionTypeEl.textContent = 'Focus Time';
-                        completeBtn.style.display = 'none'; // Cannot "complete" a pomodoro session
+                        completeBtn.style.display = 'none';
                     } else {
-                        totalDuration = task.duration * 60; 
+                        totalDuration = sessionStartTimeRemaining;
                         pomodoroInfo.style.display = 'none';
                         completeBtn.style.display = 'inline-block';
                     }
                     
-                    timeRemaining = totalDuration; 
+                    timeRemaining = sessionStartTimeRemaining; 
                     currentTaskName = task.name; 
                     currentTaskID = task.id; 
                     isPaused = false;
                     
-                    colorFillBg.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--primary').trim();
+                    // Dynamic color for focus background
+                    const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--primary').trim();
+                    colorFillBg.style.background = `linear-gradient(to top, ${primaryColor}, transparent)`;
+                    
                     colorFillBg.style.height = '0%';
                     focusTaskIconEl.innerHTML = `<i class="${task.icon}"></i>`; 
                     focusTaskNameEl.textContent = task.name;
@@ -1016,6 +987,7 @@
             const togglePause = () => {
                 isPaused = !isPaused; 
                 pauseResumeBtn.textContent = isPaused ? 'Resume' : 'Pause';
+                focusTimerEl.style.animationPlayState = isPaused ? 'paused' : 'running';
             };
             
             const completeTask = (taskId, updateFocusTime = false) => {
@@ -1027,7 +999,6 @@
                  
                  const focusTimeToAdd = updateFocusTime ? (tasks[taskIndex].duration * 60) : 0;
                  updateStats(focusTimeToAdd, 1);
-                 
                  saveTasks();
             };
 
@@ -1036,6 +1007,7 @@
                 focusView.classList.remove('visible');
                 document.title = 'Focus Timer'; 
                 isPomodoroMode = false;
+                currentTaskEndTime = null;
 
                 setTimeout(() => {
                     appContainer.classList.remove('hidden');
@@ -1043,37 +1015,18 @@
                     renderCalendar();
                 }, 500);
             };
-
-            const showSettings = () => { 
-                settingsPanel.style.display = 'block'; 
-                settingsOverlay.style.display = 'block';
-                blurIntensityInput.value = blurIntensity; 
-                blurValueDisplay.textContent = `${blurIntensity}px`;
-                autoDeleteSelect.value = localStorage.getItem('autoDeleteDays') || '0';
-                pomodoroDurationInput.value = pomodoroDuration;
-                breakDurationInput.value = breakDuration;
-                longBreakDurationInput.value = longBreakDuration;
-                workHoursEnabled.checked = localStorage.getItem('workHoursEnabled') === 'true';
-                workHoursStart.value = localStorage.getItem('workHoursStart') || '09:00';
-                workHoursEnd.value = localStorage.getItem('workHoursEnd') || '17:00';
-                workHoursInputs.style.display = workHoursEnabled.checked ? 'flex' : 'none';
+            
+            // Generic function for modal visibility
+            const setModalVisible = (panel, overlay, isVisible) => {
+                if(isVisible) {
+                    overlay.classList.add('visible');
+                    panel.style.display = 'block';
+                } else {
+                    overlay.classList.remove('visible');
+                    panel.style.display = 'none';
+                }
             };
             
-            const hideSettings = () => { 
-                settingsPanel.style.display = 'none'; 
-                settingsOverlay.style.display = 'none'; 
-            };
-            
-            const showThemeDashboard = () => {
-                themeDashboard.style.display = 'block';
-                settingsOverlay.style.display = 'block';
-            };
-            
-            const hideThemeDashboard = () => {
-                themeDashboard.style.display = 'none';
-                settingsOverlay.style.display = 'none';
-            };
-
             const saveSettingsToStorage = () => {
                 blurIntensity = parseInt(blurIntensityInput.value);
                 document.documentElement.style.setProperty('--blur-effect', `blur(${blurIntensity}px)`);
@@ -1094,32 +1047,17 @@
                 checkFocusHours(); // Immediately check after saving
                 
                 cleanupOldTasks();
-                hideSettings();
+                setModalVisible(settingsPanel, settingsOverlay, false);
             };
             
              const checkFocusHours = () => {
                 const isEnabled = localStorage.getItem('workHoursEnabled') === 'true';
-                if (!isEnabled) {
-                    focusLockOverlay.style.display = 'none';
-                    return;
-                }
-
-                const startTime = localStorage.getItem('workHoursStart');
-                const endTime = localStorage.getItem('workHoursEnd');
-
-                if (!startTime || !endTime) {
-                    focusLockOverlay.style.display = 'none';
-                    return;
-                }
-                
+                if (!isEnabled) { focusLockOverlay.style.display = 'none'; return; }
+                const startTime = localStorage.getItem('workHoursStart'), endTime = localStorage.getItem('workHoursEnd');
+                if (!startTime || !endTime) { focusLockOverlay.style.display = 'none'; return; }
                 const now = new Date();
                 const currentTime = now.getHours().toString().padStart(2, '0') + ":" + now.getMinutes().toString().padStart(2, '0');
-                
-                if (currentTime >= startTime && currentTime < endTime) {
-                    focusLockOverlay.style.display = 'none'; // Inside work hours, so hide overlay
-                } else {
-                    focusLockOverlay.style.display = 'flex'; // Outside work hours, show overlay
-                }
+                focusLockOverlay.style.display = (currentTime >= startTime && currentTime < endTime) ? 'none' : 'flex';
             };
 
             const updateStats = (focusSecondsToAdd, tasksCompletedToAdd) => {
@@ -1137,142 +1075,76 @@
             };
             
             const loadStats = () => {
-                const lastUpdate = localStorage.getItem('lastStatsUpdate');
-                const today = new Date().toDateString();
-                
-                if (lastUpdate !== today) { // Reset stats for new day
-                    todayFocusTime = 0;
-                    todayTasksCompleted = 0;
+                if (localStorage.getItem('lastStatsUpdate') !== new Date().toDateString()) {
+                    todayFocusTime = 0; todayTasksCompleted = 0;
                 } else {
                     todayFocusTime = parseInt(localStorage.getItem('todayFocusTime') || '0');
                     todayTasksCompleted = parseInt(localStorage.getItem('todayTasksCompleted') || '0');
                 }
-                
-                updateStats(0, 0); // Initial render
+                updateStats(0, 0);
             };
             
-            // --- Improved AI Logic ---
-             const processAIRequest = (message) => {
-                 let userMessage = message.toLowerCase();
-                 const today = new Date();
-
-                const motivationalQuotes = ["The secret of getting ahead is getting started.", "The only way to do great work is to love what you do.", "Believe you can and you're halfway there.", "Don't watch the clock; do what it does. Keep going."];
-                const productivityTips = ["Try the Pomodoro Technique: 25 minutes of focused work followed by a 5-minute break.", "Use the 2-minute rule: if a task takes less than two minutes, do it now.", "Batch similar tasks together to maintain focus.", "Take regular breaks to rest your mind and body."];
+            // --- AI Logic ---
+            const processAIRequest = (message) => {
+                let userMessage = message.toLowerCase(); const today = new Date();
+                const motivationalQuotes = ["The secret of getting ahead is getting started.", "The only way to do great work is to love what you do.", "Believe you can and you're halfway there."];
+                const productivityTips = ["Try the Pomodoro Technique: 25 minutes of focused work followed by a 5-minute break.", "Use the 2-minute rule: if a task takes less than two minutes, do it now.", "Batch similar tasks together to maintain focus."];
 
                 if (userMessage.includes("plan my day")) {
                     const tasksForToday = tasks.filter(task => task.date === toYYYYMMDD(today) && !task.completed);
                     if(tasksForToday.length === 0) return "You have no upcoming tasks for today! Add some to get started.";
-                    
                     let plan = "Here's your plan for today: ";
-                    tasksForToday.forEach(t => {
-                        plan += `${t.name} ${t.startTime ? 'at ' + t.startTime : 'for ' + t.duration + ' minutes'}. `;
-                    });
+                    tasksForToday.forEach(t => { plan += `${t.name} ${t.startTime ? 'at ' + t.startTime : 'for ' + t.duration + ' minutes'}. `; });
                     return plan;
-                } else if (userMessage.includes("motivate") || userMessage.includes("quote")) {
-                     return motivationalQuotes[Math.floor(Math.random() * motivationalQuotes.length)];
-                } else if (userMessage.includes("tip") || userMessage.includes("advice")) {
-                     return productivityTips[Math.floor(Math.random() * productivityTips.length)];
-                } else if (userMessage.includes("help") || userMessage.includes("what can you do")) {
-                     return "I can create tasks for you! Just tell me the task name and duration (e.g., 'Read for 30 minutes') or a time range ('Work from 2pm to 3pm'). You can also ask me for motivation or a productivity tip.";
-                }
+                } else if (userMessage.includes("motivate") || userMessage.includes("quote")) { return motivationalQuotes[Math.floor(Math.random() * motivationalQuotes.length)]; }
+                else if (userMessage.includes("tip") || userMessage.includes("advice")) { return productivityTips[Math.floor(Math.random() * productivityTips.length)]; }
+                else if (userMessage.includes("help") || userMessage.includes("what can you do")) { return "I can create tasks! Try 'Read for 30 minutes' or 'Work from 2pm to 3pm'. You can also ask for motivation or tips."; }
 
-                let taskDetails = { name: '', duration: 0, startTime: null, endTime: null, };
-                 let foundTime = false;
-
+                let taskDetails = { name: '', duration: 0, startTime: null, endTime: null };
                 const timeRangeRegex = /(?:from\s+)?(\d{1,2}(?::\d{2})?\s*(?:am|pm)?)\s+(?:to|-)\s+(\d{1,2}(?::\d{2})?\s*(?:am|pm)?)/i;
-                const singleTimeRegex = /(?:at\s+)?(\d{1,2}(?::\d{2})?\s*(?:am|pm))/i;
                 const durationRegex = /(\d+(?:\.\d+)?)\s*(minute|min|hour|hr)s?/i;
 
                 let match = userMessage.match(timeRangeRegex);
                 if (match) {
-                    const startTimeStr = parseTime(match[1]);
-                    const endTimeStr = parseTime(match[2]);
+                    const startTimeStr = parseTime(match[1]), endTimeStr = parseTime(match[2]);
                     if (startTimeStr && endTimeStr) {
-                        const start = new Date(`1970-01-01T${startTimeStr}:00`);
-                        const end = new Date(`1970-01-01T${endTimeStr}:00`);
-                        const durationMins = (end - start) / 60000;
+                        const durationMins = (new Date(`1970-01-01T${endTimeStr}:00`) - new Date(`1970-01-01T${startTimeStr}:00`)) / 60000;
                         if (durationMins > 0) {
-                            taskDetails.startTime = startTimeStr;
-                            taskDetails.endTime = endTimeStr;
-                            taskDetails.duration = durationMins;
+                            taskDetails = {...taskDetails, startTime: startTimeStr, endTime: endTimeStr, duration: durationMins};
                             userMessage = userMessage.replace(match[0], '');
-                            foundTime = true;
                         }
                     }
-                }
-
-                match = userMessage.match(durationRegex);
-                if (!foundTime && match) {
-                    let duration = parseFloat(match[1]);
-                    if (match[2].startsWith('h')) duration *= 60;
-                    taskDetails.duration = duration;
-                    userMessage = userMessage.replace(match[0], '');
-                    foundTime = true;
-                }
-                
-                match = userMessage.match(singleTimeRegex);
-                if(!foundTime && match && taskDetails.duration > 0) {
-                    taskDetails.startTime = parseTime(match[1]);
-                     userMessage = userMessage.replace(match[0], '');
+                } else {
+                     match = userMessage.match(durationRegex);
+                     if (match) {
+                        taskDetails.duration = parseFloat(match[1]) * (match[2].startsWith('h') ? 60 : 1);
+                        userMessage = userMessage.replace(match[0], '');
+                     }
                 }
 
                 taskDetails.name = userMessage.replace(/schedule|create|add|a|an|task|for|me|to|session/g, '').trim();
                 taskDetails.name = taskDetails.name.charAt(0).toUpperCase() + taskDetails.name.slice(1);
-
-
                 if (taskDetails.name && taskDetails.duration > 0) {
-                    tasks.push({
-                        id: Date.now() + Math.random().toString(16).slice(2),
-                        name: taskDetails.name,
-                        date: toYYYYMMDD(today),
-                        startTime: taskDetails.startTime,
-                        endTime: taskDetails.endTime,
-                        notes: "Created by AI assistant",
-                        duration: taskDetails.duration,
-                        icon: getIconForTask(taskDetails.name),
-                        completed: false,
-                        createdAt: new Date().toISOString()
-                    });
-                    
-                    saveTasks();
-                    renderTasksForDate(selectedCalendarDate);
-                    renderCalendar();
-                    let response = `OK! I've scheduled "${taskDetails.name}" for ${taskDetails.duration} minutes`;
-                    if(taskDetails.startTime) response += ` starting at ${taskDetails.startTime}`;
-                    response += ".";
-                    return response;
+                    tasks.push({ id: Date.now() + Math.random().toString(16).slice(2), name: taskDetails.name, date: toYYYYMMDD(today), ...taskDetails, icon: getIconForTask(taskDetails.name), completed: false, createdAt: new Date().toISOString() });
+                    saveTasks(); renderTasksForDate(selectedCalendarDate); renderCalendar();
+                    let response = `OK! Scheduled "${taskDetails.name}" for ${taskDetails.duration} minutes`;
+                    if(taskDetails.startTime) response += ` from ${taskDetails.startTime} to ${taskDetails.endTime}`;
+                    return response + ".";
                 }
-
-                return "I'm sorry, I couldn't understand that. Please specify a task and a duration (e.g., 'read for 30 minutes') or time range (e.g., 'work meeting from 2pm to 3pm').";
+                return "Sorry, I couldn't understand. Please specify a task and duration (e.g., 'read for 30 min') or time range ('work from 2pm to 3pm').";
             };
 
             const parseTime = (timeStr) => {
-                if (!timeStr) return null;
-                let hours = 0;
-                let minutes = 0;
-                const lcTimeStr = timeStr.toLowerCase();
-                const pm = lcTimeStr.includes('pm');
-                const am = lcTimeStr.includes('am');
-                
-                let timeParts = lcTimeStr.replace(/am|pm/i, '').trim().split(':');
-                hours = parseInt(timeParts[0]);
-                minutes = timeParts.length > 1 ? parseInt(timeParts[1]) : 0;
-                
-                if (isNaN(hours)) return null;
-
-                if (pm && hours < 12) { hours += 12; } 
-                else if (am && hours === 12) { hours = 0; }
-                else if (!am && !pm && hours < 8) { hours += 12; }
-                
+                if (!timeStr) return null; let hours = 0, minutes = 0; const lc = timeStr.toLowerCase(), pm = lc.includes('pm'), am = lc.includes('am');
+                let parts = lc.replace(/am|pm/i, '').trim().split(':'); hours = parseInt(parts[0]); minutes = parts.length > 1 ? parseInt(parts[1]) : 0; if (isNaN(hours)) return null;
+                if (pm && hours < 12) hours += 12; else if (am && hours === 12) hours = 0;
                 return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
             };
             
             const addAIMessage = (message, isUser = false) => {
                 const messageEl = document.createElement('div');
-                messageEl.className = `ai-message ${isUser ? 'ai-user' : 'ai-bot'}`;
-                messageEl.textContent = message;
-                aiConversation.appendChild(messageEl);
-                aiConversation.scrollTop = aiConversation.scrollHeight;
+                messageEl.className = `ai-message ${isUser ? 'ai-user' : 'ai-bot'}`; messageEl.textContent = message;
+                aiConversation.appendChild(messageEl); aiConversation.scrollTop = aiConversation.scrollHeight;
             };
 
             taskForm.addEventListener('submit', (e) => {
@@ -1280,100 +1152,77 @@
                 let duration = (parseInt(taskHoursInput.value) || 0) * 60 + (parseInt(taskMinutesInput.value) || 0);
                 
                 if (!duration && taskStartTimeInput.value && taskEndTimeInput.value) {
-                    const start = new Date(`1970-01-01T${taskStartTimeInput.value}`);
-                    const end = new Date(`1970-01-01T${taskEndTimeInput.value}`);
+                    const start = new Date(`1970-01-01T${taskStartTimeInput.value}`), end = new Date(`1970-01-01T${taskEndTimeInput.value}`);
                     if (end <= start) { alert("End time must be after start time."); return; }
                     duration = Math.round((end - start) / 60000);
                 }
 
-                if (!taskNameInput.value.trim()) { alert("Please provide a task name."); return; }
-                if (duration <= 0) { alert("Please provide a valid duration or time range."); return; }
+                if (!taskNameInput.value.trim() || duration <= 0) { alert("Please provide a task name and a valid duration or time range."); return; }
 
                 tasks.push({
-                    id: Date.now() + Math.random().toString(16).slice(2),
-                    name: taskNameInput.value.trim(), date: taskDateInput.value, 
-                    startTime: taskStartTimeInput.value, endTime: taskEndTimeInput.value, 
-                    notes: taskNotesInput.value.trim(), duration: duration,
-                    icon: getIconForTask(taskNameInput.value), completed: false, 
-                    createdAt: new Date().toISOString()
+                    id: Date.now() + Math.random().toString(16).slice(2), name: taskNameInput.value.trim(), date: taskDateInput.value, 
+                    startTime: taskStartTimeInput.value, endTime: taskEndTimeInput.value, notes: taskNotesInput.value.trim(), duration: duration,
+                    icon: getIconForTask(taskNameInput.value), completed: false, createdAt: new Date().toISOString()
                 });
 
-                saveTasks();
-                renderTasksForDate(selectedCalendarDate); 
-                renderCalendar(); 
-                taskForm.reset();
-                taskDateInput.value = toYYYYMMDD(selectedCalendarDate);
+                saveTasks(); renderTasksForDate(selectedCalendarDate); renderCalendar(); 
+                taskForm.reset(); taskDateInput.value = toYYYYMMDD(selectedCalendarDate);
             });
 
             taskListEl.addEventListener('click', e => {
-                const button = e.target.closest('button');
-                if (!button) return;
-                const taskId = button.dataset.id;
-                
+                const button = e.target.closest('button'); if (!button) return; const taskId = button.dataset.id;
                 if (button.classList.contains('delete-task')) {
                     if (confirm("Are you sure?")) {
-                        tasks = tasks.filter(t => t.id !== taskId);
-                        saveTasks(); 
-                        renderTasksForDate(selectedCalendarDate || new Date()); 
-                        renderCalendar();
+                        const taskItem = button.closest('.task-item');
+                        taskItem.classList.add('removing');
+                        taskItem.addEventListener('animationend', () => {
+                            tasks = tasks.filter(t => t.id !== taskId);
+                            saveTasks(); renderTasksForDate(selectedCalendarDate || new Date()); renderCalendar();
+                        });
                     }
                 } else if (button.classList.contains('complete-task')) {
                      const taskIndex = tasks.findIndex(t => t.id === taskId);
-                     if(taskIndex === -1) return;
                      if (tasks[taskIndex].completed) { tasks[taskIndex].completed = false; updateStats(0, -1); } 
                      else { completeTask(taskId, false); }
-                    saveTasks(); 
-                    renderTasksForDate(selectedCalendarDate || new Date()); 
-                    renderCalendar();
+                    saveTasks(); renderTasksForDate(selectedCalendarDate || new Date()); renderCalendar();
                 } else if (button.classList.contains('start-focus')) {
-                    const taskToStart = tasks.find(t => t.id === taskId);
-                    if(taskToStart) startFocusSession(taskToStart);
+                    const taskToStart = tasks.find(t => t.id === taskId); if(taskToStart) startFocusSession(taskToStart);
                 }
             });
 
             pauseResumeBtn.addEventListener('click', togglePause);
-            completeBtn.addEventListener('click', () => {
-                if (currentTaskID) completeTask(currentTaskID, true);
-                endFocusSession();
-            });
+            completeBtn.addEventListener('click', () => { if (currentTaskID) completeTask(currentTaskID, true); endFocusSession(); });
             exitFocusBtn.addEventListener('click', endFocusSession);
 
             prevMonthBtn.addEventListener('click', () => { currentDate.setMonth(currentDate.getMonth() - 1); renderCalendar(); });
             nextMonthBtn.addEventListener('click', () => { currentDate.setMonth(currentDate.getMonth() + 1); renderCalendar(); });
             calendarToggleBtn.addEventListener('click', toggleCalendar);
             pomodoroModeBtn.addEventListener('click', () => startFocusSession({ name: "Pomodoro Session", icon: "fas fa-clock", duration: pomodoroDuration, id: null }, true));
-            pomodoroBtn.addEventListener('click', () => startFocusSession({ name: "Pomodoro Session", icon: "fas fa-clock", duration: pomodoroDuration, id: null }, true));
-            settingsBtn.addEventListener('click', showSettings);
-            themeDashboardBtn.addEventListener('click', showThemeDashboard);
+            settingsBtn.addEventListener('click', () => { setModalVisible(settingsPanel, settingsOverlay, true) });
+            themeDashboardBtn.addEventListener('click', () => { setModalVisible(themeDashboard, settingsOverlay, true) });
             saveSettingsBtn.addEventListener('click', saveSettingsToStorage);
-            cancelSettingsBtn.addEventListener('click', hideSettings);
-            settingsOverlay.addEventListener('click', () => { hideSettings(); hideThemeDashboard(); });
+            cancelSettingsBtn.addEventListener('click', () => { setModalVisible(settingsPanel, settingsOverlay, false) });
+            settingsOverlay.addEventListener('click', () => { setModalVisible(settingsPanel, settingsOverlay, false); setModalVisible(themeDashboard, settingsOverlay, false); });
             blurIntensityInput.addEventListener('input', () => { 
                 blurValueDisplay.textContent = `${blurIntensityInput.value}px`;
                 document.documentElement.style.setProperty('--blur-effect', `blur(${blurIntensityInput.value}px)`);
              });
             workHoursEnabled.addEventListener('change', () => { workHoursInputs.style.display = workHoursEnabled.checked ? 'flex' : 'none'; });
             
-            themeCategories.forEach(category => {
-                category.addEventListener('click', () => {
-                    document.querySelector('.theme-category.active').classList.remove('active');
-                    category.classList.add('active');
-                    filterThemes(category.dataset.category);
-                });
-            });
+            themeCategories.forEach(cat => cat.addEventListener('click', () => {
+                document.querySelector('.theme-category.active').classList.remove('active');
+                cat.classList.add('active'); filterThemes(cat.dataset.category);
+            }));
             
             aiAssistantBtn.addEventListener('click', () => { aiAssistantPanel.style.display = 'flex'; aiInput.focus(); });
             aiCloseBtn.addEventListener('click', () => { aiAssistantPanel.style.display = 'none'; });
-            
             const handleAISubmit = () => {
                 const query = aiInput.value.trim();
                 if (query) {
-                    addAIMessage(query, true);
-                    aiInput.value = '';
-                    setTimeout(() => { const response = processAIRequest(query); addAIMessage(response, false); }, 500);
+                    addAIMessage(query, true); aiInput.value = '';
+                    setTimeout(() => addAIMessage(processAIRequest(query), false), 500);
                 }
             };
-            
             aiSendBtn.addEventListener('click', handleAISubmit);
             aiInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') handleAISubmit(); });
 
@@ -1385,17 +1234,12 @@
                 longBreakDuration = parseInt(localStorage.getItem('longBreakDuration') || '15');
                 
                 applyTheme(localStorage.getItem('focusTimerTheme') || 'default');
-                populateThemeDashboard();
-                loadTasks(); loadStats();
+                populateThemeDashboard(); loadTasks(); loadStats();
                 
-                const today = new Date();
-                selectedCalendarDate = today;
-                taskDateInput.value = toYYYYMMDD(today);
-                renderCalendar();
-                renderTasksForDate(today);
+                selectedCalendarDate = new Date(); taskDateInput.value = toYYYYMMDD(selectedCalendarDate);
+                renderCalendar(); renderTasksForDate(selectedCalendarDate);
                 
-                calendarView.style.display = 'flex';
-                welcomeView.style.display = 'none';
+                calendarView.style.display = 'flex'; welcomeView.style.display = 'none';
 
                 checkFocusHours();
                 workHoursCheckInterval = setInterval(checkFocusHours, 60 * 1000); // Check every minute
