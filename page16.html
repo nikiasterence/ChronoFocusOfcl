@@ -87,6 +87,42 @@ body.theme-forest {
 --text-secondary: #A4B0BE;
 --border-color: #34495E;
 }
+/* --- NEW COZY THEMES --- */
+body.theme-sunset {
+--background: #0F0C29;
+--surface: #2c215c;
+--surface-elevated: #3C2E6B;
+--primary: #FF8C42;
+--primary-rgb: 255, 140, 66;
+--primary-light: rgba(255, 140, 66, 0.1);
+--text-primary: #FAD0C4;
+--text-secondary: #AFA6C3;
+--border-color: #554585;
+--background-image: linear-gradient(to top, #302b63, #24243e, #0f0c29);
+}
+
+body.theme-autumn {
+--background: #f3e9d2;
+--surface: #ffffff;
+--surface-elevated: #f8f5f0;
+--primary: #c67643;
+--primary-rgb: 198, 118, 67;
+--primary-light: rgba(198, 118, 67, 0.1);
+--text-primary: #6B4F4F;
+--text-secondary: #9a8c78;
+--border-color: #e5dace;
+}
+body.theme-cafe-latte {
+--background: #e3dcd2;
+--surface: #f1ede8;
+--surface-elevated: #f8f6f2;
+--primary: #8d6e63;
+--primary-rgb: 141, 110, 99;
+--primary-light: rgba(141, 110, 99, 0.1);
+--text-primary: #5f4c44;
+--text-secondary: #8c7b75;
+--border-color: #d7ccc8;
+}
 
 body.theme-liquid-glass {
 --background-image: url('https://images.unsplash.com/photo-1553095066-5014bc7b7f2d?q=80&w=2787&auto=format&fit=crop');
@@ -149,6 +185,11 @@ width: 100%;
 height: 100%;
 overflow: hidden;
 z-index: -1;
+display: none;
+}
+
+body.theme-aurora .aurora-background {
+display: block;
 }
 
 .aurora-shape {
@@ -203,6 +244,7 @@ overflow-x: hidden;
 background-image: var(--background-image, none);
 background-size: cover;
 background-attachment: fixed;
+background-repeat: no-repeat;
 }
 
 /* App Layout */
@@ -365,7 +407,7 @@ border-right: none;
 
 .tasks-section {
 flex: 1;
-background: var(--surface);
+background: var(--background); /* Use main background for task area */
 display: flex;
 flex-direction: column;
 overflow: hidden;
@@ -493,7 +535,7 @@ transform: translateX(-50%);
 .tasks-header {
 padding: 20px 24px;
 border-bottom: 1px solid var(--border-color);
-background: var(--surface-elevated);
+background: var(--surface); /* Header uses surface color */
 }
 
 .task-input-container {
@@ -514,7 +556,7 @@ padding: 16px 20px;
 border: 2px solid var(--border-color);
 border-radius: var(--border-radius-lg);
 font-size: 1rem;
-background: var(--surface);
+background: var(--surface-elevated); /* Changed for better contrast */
 color: var(--text-primary);
 transition: var(--transition);
 resize: none;
@@ -597,8 +639,9 @@ margin-bottom: 20px;
 padding-top: 20px;
 position: sticky;
 top: 0;
-background: var(--surface);
+background: var(--background); /* Sticky header uses main background */
 z-index: 10;
+padding-bottom: 10px; /* added padding */
 }
 
 .task-count {
@@ -642,7 +685,7 @@ display: flex;
 align-items: flex-start;
 gap: 16px;
 padding: 16px;
-background: var(--surface-elevated);
+background: var(--surface);
 border: 1px solid var(--border-color);
 border-radius: var(--border-radius-lg);
 margin-bottom: 12px;
@@ -668,10 +711,10 @@ border-color: rgba(var(--primary-rgb), 0.3);
 
 .task-item.completed {
 opacity: 0.7;
-background: var(--hover-overlay);
+background: rgba(128,128,128,0.05); /* slightly different background for completed */
 }
 
-.task-item.completed .task-text {
+.task-item.completed .task-text-content { /* target parent of task-text */
 text-decoration: line-through;
 color: var(--text-secondary);
 }
@@ -719,6 +762,27 @@ flex: 1;
 min-width: 0;
 }
 
+/* NEW: Style for task text and icon */
+.task-text-content {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Space between icon and text */
+}
+
+.task-icon {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    transition: color 0.3s;
+}
+
+.task-item:hover .task-icon {
+    color: var(--primary);
+}
+.task-item.completed .task-icon {
+    color: var(--text-disabled);
+}
+
+
 .task-text {
 font-size: 1rem;
 color: var(--text-primary);
@@ -734,6 +798,7 @@ gap: 12px;
 font-size: 0.75rem;
 color: var(--text-secondary);
 flex-wrap: wrap;
+margin-top: 8px; /* Added margin top */
 }
 
 .task-priority {
@@ -826,28 +891,48 @@ background: var(--hover-overlay);
 color: var(--text-primary);
 }
 
+/* --- MODIFIED FOR MODAL BEHAVIOR --- */
+.theme-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s;
+}
+.theme-modal-overlay.visible {
+    opacity: 1;
+    visibility: visible;
+}
+
 .theme-dropdown {
-position: absolute;
-top: 100%;
-right: 0;
-background: var(--surface-elevated);
-border: 1px solid var(--border-color);
-border-radius: var(--border-radius-lg);
-box-shadow: var(--shadow-xl);
-padding: 8px;
-min-width: 200px;
-z-index: 1000;
-opacity: 0;
-visibility: hidden;
-transform: translateY(-10px);
-transition: var(--transition);
+    position: fixed; /* Changed from absolute */
+    top: 50%;      /* Centering */
+    left: 50%;     /* Centering */
+    background: var(--surface-elevated);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-xl);
+    padding: 8px;
+    min-width: 250px; /* A bit wider for the modal view */
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transform: translate(-50%, -50%) scale(0.9); /* Start scaled down */
+    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
 }
 
 .theme-dropdown.visible {
-opacity: 1;
-visibility: visible;
-transform: translateY(0);
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, -50%) scale(1); /* Scale to full size */
 }
+/* --- END OF MODAL MODIFICATION --- */
+
 
 .theme-option {
 display: flex;
@@ -864,9 +949,10 @@ background: var(--hover-overlay);
 }
 
 .theme-color {
-width: 16px;
-height: 16px;
+width: 20px; /* made bigger */
+height: 20px; /* made bigger */
 border-radius: 50%;
+border: 1px solid var(--border-color); /* Added border */
 }
 
 /* Toast Notifications */
@@ -889,6 +975,14 @@ transform: translateX(120%);
 opacity: 0;
 transition: all 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
 max-width: 320px;
+display: flex; /* Added for icon */
+align-items: center; /* Added for icon */
+gap: 12px; /* Added for icon */
+}
+.toast::before {
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+    font-size: 1.2rem;
 }
 .toast.show {
 transform: translateX(0);
@@ -898,9 +992,17 @@ opacity: 1;
 .toast.success {
 border-left: 4px solid var(--success);
 }
+.toast.success::before {
+    content: "\f058"; /* check-circle icon */
+    color: var(--success);
+}
 
 .toast.error {
 border-left: 4px solid var(--danger);
+}
+.toast.error::before {
+    content: "\f071"; /* exclamation-triangle icon */
+    color: var(--danger);
 }
 
 /* Animations */
@@ -1014,11 +1116,6 @@ border: 0;
     .calendar-day {
         font-size: 0.75rem;
     }
-
-    .theme-dropdown {
-        right: auto;
-        left: 0;
-    }
 }
 
 /* Scrollbar Styling */
@@ -1122,7 +1219,7 @@ box-shadow: none;
 }
 </style>
 </head>
-<body>
+<body class="theme-dark"> <!-- Start with dark theme by default -->
 <div class="aurora-background">
     <div class="aurora-shape aurora-shape1"></div>
     <div class="aurora-shape aurora-shape2"></div>
@@ -1181,36 +1278,7 @@ box-shadow: none;
           <button class="theme-btn" id="themeButton" title="Change Theme" aria-label="Change Theme">
             <i class="fas fa-palette"></i>
           </button>
-          <div class="theme-dropdown" id="themeDropdown">
-            <div class="theme-option" data-theme="default">
-              <div class="theme-color" style="background: #1A73E8;"></div>
-              <span>Light</span>
-            </div>
-            <div class="theme-option" data-theme="theme-dark">
-              <div class="theme-color" style="background: #58A6FF;"></div>
-              <span>Dark</span>
-            </div>
-            <div class="theme-option" data-theme="theme-midnight">
-              <div class="theme-color" style="background: #E94560;"></div>
-              <span>Midnight</span>
-            </div>
-            <div class="theme-option" data-theme="theme-forest">
-              <div class="theme-color" style="background: #4ECDC4;"></div>
-              <span>Forest</span>
-            </div>
-            <div class="theme-option" data-theme="theme-liquid-glass">
-                <div class="theme-color" style="background-image: linear-gradient(to right, #86A8E7, #7F7FD5); "></div>
-                <span>Liquid Glass</span>
-              </div>
-              <div class="theme-option" data-theme="theme-zen">
-                <div class="theme-color" style="background: #6B8E23;"></div>
-                <span>Zen</span>
-              </div>
-              <div class="theme-option" data-theme="theme-aurora">
-                  <div class="theme-color" style="background-image: linear-gradient(to right, #A77DF4, #FF00FF, #00FFFF); "></div>
-                  <span>Aurora</span>
-              </div>
-          </div>
+          <!-- THEME DROPDOWN MOVED outside main app container to handle z-indexing properly with the overlay -->
         </div>
       </div>
     </header>
@@ -1310,6 +1378,52 @@ box-shadow: none;
 <!-- Toast Container -->
 <div class="toast-container" id="toastContainer"></div>
 
+<!-- THEME MODAL ELEMENTS (Moved Here) -->
+<div class="theme-modal-overlay" id="themeModalOverlay"></div>
+<div class="theme-dropdown" id="themeDropdown">
+  <div class="theme-option" data-theme="default">
+    <div class="theme-color" style="background: #1A73E8;"></div>
+    <span>Light</span>
+  </div>
+  <div class="theme-option" data-theme="theme-dark">
+    <div class="theme-color" style="background: #58A6FF;"></div>
+    <span>Dark</span>
+  </div>
+   <div class="theme-option" data-theme="theme-sunset">
+    <div class="theme-color" style="background: linear-gradient(to right, #ff8c42, #ff3c83); "></div>
+    <span>Sunset</span>
+  </div>
+   <div class="theme-option" data-theme="theme-autumn">
+    <div class="theme-color" style="background: #c67643;"></div>
+    <span>Autumn</span>
+  </div>
+  <div class="theme-option" data-theme="theme-cafe-latte">
+    <div class="theme-color" style="background: #8d6e63;"></div>
+    <span>Café Latte</span>
+  </div>
+  <div class="theme-option" data-theme="theme-midnight">
+    <div class="theme-color" style="background: #E94560;"></div>
+    <span>Midnight</span>
+  </div>
+  <div class="theme-option" data-theme="theme-forest">
+    <div class="theme-color" style="background: #4ECDC4;"></div>
+    <span>Forest</span>
+  </div>
+  <div class="theme-option" data-theme="theme-liquid-glass">
+      <div class="theme-color" style="background-image: linear-gradient(to right, #86A8E7, #7F7FD5); "></div>
+      <span>Liquid Glass</span>
+    </div>
+    <div class="theme-option" data-theme="theme-zen">
+      <div class="theme-color" style="background: #6B8E23;"></div>
+      <span>Zen</span>
+    </div>
+    <div class="theme-option" data-theme="theme-aurora">
+        <div class="theme-color" style="background-image: linear-gradient(to right, #A77DF4, #FF00FF, #00FFFF); "></div>
+        <span>Aurora</span>
+    </div>
+</div>
+
+
 <script>
 class ChronoFocusPro {
   constructor() {
@@ -1341,6 +1455,7 @@ class ChronoFocusPro {
       toggleCalendar: document.getElementById('toggleCalendar'),
       themeButton: document.getElementById('themeButton'),
       themeDropdown: document.getElementById('themeDropdown'),
+      themeModalOverlay: document.getElementById('themeModalOverlay'), // Added
 
       // Calendar
       calendarSection: document.getElementById('calendarSection'),
@@ -1400,23 +1515,25 @@ class ChronoFocusPro {
       btn.addEventListener('click', () => this.setFilter(btn.dataset.filter));
     });
 
-    // Theme switcher
+    // --- MODIFIED THEME SWITCHER LOGIC ---
     this.elements.themeButton.addEventListener('click', (e) => {
         e.stopPropagation();
         this.toggleThemeDropdown();
     });
-    document.addEventListener('click', (e) => {
-      if (!this.elements.themeButton.contains(e.target) && !this.elements.themeDropdown.contains(e.target)) {
-        this.elements.themeDropdown.classList.remove('visible');
-      }
-    });
+
+    // Close modal when clicking overlay
+    this.elements.themeModalOverlay.addEventListener('click', () => this.toggleThemeDropdown());
+
+    // Prevent clicks inside the dropdown from closing it
+    this.elements.themeDropdown.addEventListener('click', (e) => e.stopPropagation());
 
     document.querySelectorAll('.theme-option').forEach(option => {
       option.addEventListener('click', () => {
         this.setTheme(option.dataset.theme);
-        this.elements.themeDropdown.classList.remove('visible');
+        this.toggleThemeDropdown(); // This will hide both
       });
     });
+    // --- END OF MODIFICATION ---
 
     // Drag and drop for tasks
     this.elements.dropZone.addEventListener('dragover', (e) => {
@@ -1483,8 +1600,9 @@ class ChronoFocusPro {
 
   selectDate(date) {
     this.selectedDate = new Date(date);
-    const dateString = this.selectedDate.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+    const dateString = this.isSameDate(this.selectedDate, new Date()) ? 'Today' : this.selectedDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric' });
     this.elements.taskInput.placeholder = `Add a task for ${dateString}...`;
+
 
     if (this.currentView === 'today') this.switchView('all');
     else this.updateView();
@@ -1532,7 +1650,7 @@ class ChronoFocusPro {
     this.elements.taskInput.style.height = 'auto';
     this.updateView();
     this.renderCalendar();
-    this.showToast('Task added successfully!', 'success');
+    this.showToast('Task added!', 'success');
   }
 
   toggleTask(taskId) {
@@ -1586,6 +1704,34 @@ class ChronoFocusPro {
       this.showToast(`Task moved to ${newDate.toLocaleDateString()}`, 'success');
     }
   }
+
+  // --- NEW: Method to get automatic icon based on task text ---
+  getIconForTask(text) {
+        const lowerCaseText = text.toLowerCase();
+        const iconMap = {
+            'fas fa-envelope': ['email', 'mail', 'message'],
+            'fas fa-users': ['meeting', 'call', 'zoom', 'interview'],
+            'fas fa-shopping-cart': ['buy', 'shop', 'grocery', 'order'],
+            'fas fa-book-open': ['read', 'book', 'study', 'learn'],
+            'fas fa-dumbbell': ['workout', 'gym', 'run', 'exercise', 'fit'],
+            'fas fa-code': ['code', 'develop', 'project', 'deploy', 'debug'],
+            'fas fa-plane': ['fly', 'trip', 'travel', 'flight'],
+            'fas fa-utensils': ['eat', 'lunch', 'dinner', 'breakfast', 'cook'],
+            'fas fa-briefcase-medical': ['doctor', 'appointment', 'health'],
+            'fas fa-file-invoice-dollar': ['pay', 'bill', 'invoice', 'budget'],
+            'fas fa-lightbulb': ['idea', 'brainstorm', 'plan', 'design'],
+            'fas fa-broom': ['clean', 'tidy', 'laundry']
+        };
+
+        for (const icon in iconMap) {
+            for (const keyword of iconMap[icon]) {
+                if (lowerCaseText.includes(keyword)) {
+                    return icon;
+                }
+            }
+        }
+        return 'fas fa-check'; // Default icon
+    }
   
   // View Methods
   switchView(view) {
@@ -1609,6 +1755,10 @@ class ChronoFocusPro {
       this.selectedDate = new Date();
       this.currentDate = new Date();
       this.renderCalendar();
+      this.elements.taskInput.placeholder = 'Add a task for Today...';
+    } else {
+        const dateString = this.selectedDate.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+        this.elements.taskInput.placeholder = `Add a task for ${dateString}...`;
     }
     
     this.updateView();
@@ -1629,7 +1779,7 @@ class ChronoFocusPro {
         tasks = tasks.filter(task => task.date === todayStr);
         break;
       case 'upcoming':
-        tasks = tasks.filter(task => task.date >= todayStr && !task.completed);
+        tasks = tasks.filter(task => task.date >= todayStr && !task.completed).sort((a,b) => new Date(a.date) - new Date(b.date));
         break;
       case 'completed':
         tasks = tasks.filter(task => task.completed);
@@ -1676,15 +1826,19 @@ class ChronoFocusPro {
     li.draggable = true;
     if (task.completed) li.classList.add('completed');
     const categoryIcons = { general: '📋', work: '💼', personal: '👤', shopping: '🛒', health: '❤️', learning: '📚' };
+    const taskIconClass = this.getIconForTask(task.text);
 
     li.innerHTML = `
       <div class="task-checkbox ${task.completed ? 'checked' : ''}" data-action="toggle"></div>
       <div class="task-content">
-        <div class="task-text">${task.text}</div>
+        <div class="task-text-content">
+          <i class="task-icon ${taskIconClass}"></i>
+          <div class="task-text">${task.text}</div>
+        </div>
         <div class="task-meta">
           <span class="task-priority ${task.priority}">${task.priority}</span>
-          <span class="task-date"><i class="fas fa-calendar"></i>${new Date(task.date.replace(/-/g, '/')).toLocaleDateString()}</span>
-          <span>${categoryIcons[task.category]} ${task.category}</span>
+          <span class="task-date"><i class="fas fa-calendar-alt"></i> ${new Date(task.date.replace(/-/g, '/')).toLocaleDateString()}</span>
+          <span>${categoryIcons[task.category]} ${task.category.charAt(0).toUpperCase() + task.category.slice(1)}</span>
         </div>
       </div>
       <div class="task-actions">
@@ -1730,7 +1884,7 @@ class ChronoFocusPro {
     else this.elements.calendarSection.classList.toggle('hidden');
   }
   closeCalendarOnMobile() { if (window.innerWidth <= 768) this.elements.calendarSection.classList.remove('visible'); }
-  showDropZone() { if (this.draggedTask) this.elements.dropZone.style.display = 'flex'; }
+  showDropZone() { if (this.draggedTask && this.currentView === 'all') this.elements.dropZone.style.display = 'flex'; }
   hideDropZone() { this.elements.dropZone.style.display = 'none'; }
   updateTaskCount(count) { this.elements.taskCount.textContent = `${count} task${count !== 1 ? 's' : ''}`; }
   autoResizeTextarea() {
@@ -1750,13 +1904,16 @@ class ChronoFocusPro {
 
 
   // Theme Methods
-  toggleThemeDropdown() { this.elements.themeDropdown.classList.toggle('visible'); }
+  toggleThemeDropdown() {
+      this.elements.themeDropdown.classList.toggle('visible');
+      this.elements.themeModalOverlay.classList.toggle('visible');
+  }
   setTheme(theme) {
     this.elements.body.className = theme === 'default' ? '' : theme;
     localStorage.setItem('chronoFocusProTheme', theme);
   }
   loadTheme() {
-    const savedTheme = localStorage.getItem('chronoFocusProTheme') || 'default';
+    const savedTheme = localStorage.getItem('chronoFocusProTheme') || 'theme-dark';
     this.setTheme(savedTheme);
   }
 
@@ -1793,4 +1950,3 @@ document.addEventListener('DOMContentLoaded', () => {
 
 </body>
 </html>
-
