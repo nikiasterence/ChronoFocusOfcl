@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <link rel="icon" href="Chronofocus.png" type="image/x-icon">
-    <title>Researcho - AI Document Assistant</title>
+    <title>OptiChain - AI Document Assistant</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+
     <!-- PDF & Download Libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -73,7 +73,21 @@
         --theme-accent-translucent: rgba(88, 166, 255, 0.15);
         --theme-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
     }
-    /* --- NEW THEME: OCEAN --- */
+
+    /* --- NEW GRAMMARLY THEME --- */
+    [data-theme="grammarly"] {
+        --theme-bg-gradient: linear-gradient(135deg, #F9F9F9 0%, #FFFFFF 100%);
+        --theme-bg-color: #FFFFFF;
+        --theme-surface-bg: rgba(255, 255, 255, 0.9);
+        --theme-text-primary: #0E161A;
+        --theme-text-secondary: #6D7578;
+        --theme-border-color: #E6E8E9;
+        --theme-accent-primary: #15C39A; /* Grammarly Green */
+        --theme-accent-secondary: #027E6F;
+        --theme-accent-translucent: rgba(21, 195, 154, 0.15);
+        --theme-shadow: 0 4px 20px rgba(0, 0, 0, 0.07);
+    }
+
     [data-theme="ocean"] {
         --theme-bg-gradient: linear-gradient(135deg, #00C9FF 0%, #92FE9D 100%);
         --theme-bg-color: #f0f7ff;
@@ -87,7 +101,6 @@
         --theme-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
     }
 
-    /* --- NEW THEME: SLATE --- */
     [data-theme="slate"] {
         --theme-bg-gradient: linear-gradient(135deg, #304352 0%, #d7d2cc 100%);
         --theme-bg-color: #263238;
@@ -103,10 +116,10 @@
 
 
     /* --- Base Styles --- */
-    * { 
-        margin: 0; 
-        padding: 0; 
-        box-sizing: border-box; 
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
         font-family: var(--font-family);
         -webkit-touch-callout: text;
         -webkit-user-select: text;
@@ -115,204 +128,205 @@
         -ms-user-select: text;
         user-select: text;
     }
-    
+
     html {
         -webkit-tap-highlight-color: transparent;
     }
-    
-    body { 
-        background: var(--theme-bg-gradient); 
-        color: var(--theme-text-primary); 
-        display: flex; 
-        flex-direction: column; 
-        min-height: 100vh; 
+
+    body {
+        background: var(--theme-bg-color);
+        background-image: var(--theme-bg-gradient);
+        color: var(--theme-text-primary);
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
         overflow-x: hidden;
         -webkit-text-size-adjust: 100%;
         text-size-adjust: 100%;
         touch-action: manipulation;
     }
-    
-    .app-container { 
-        display: flex; 
-        flex: 1; 
-        overflow: hidden; 
+
+    .app-container {
+        display: flex;
+        flex: 1;
+        overflow: hidden;
         position: relative;
     }
 
     .glass {
         background: var(--theme-surface-bg);
-        backdrop-filter: blur(12px); 
+        backdrop-filter: blur(12px);
         -webkit-backdrop-filter: blur(12px);
-        border-radius: var(--border-radius); 
+        border-radius: var(--border-radius);
         border: 1px solid var(--theme-border-color);
         box-shadow: var(--theme-shadow);
     }
 
     /* --- Main Layout --- */
     .main-content {
-        flex-grow: 1; 
-        display: flex; 
-        flex-direction: column; 
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
         overflow: hidden;
-        padding: 12px; 
+        padding: 12px;
         transition: var(--transition);
         position: relative;
     }
-    
+
     .main-content.sidebar-open {
         filter: brightness(0.7);
         transform: scale(0.98);
     }
-    
-    header { 
-        display: flex; 
-        justify-content: space-between; 
-        align-items: center; 
-        padding: 0 clamp(12px, 4vw, 24px); 
-        height: var(--header-height); 
-        flex-shrink: 0; 
+
+    header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 clamp(12px, 4vw, 24px);
+        height: var(--header-height);
+        flex-shrink: 0;
         margin-bottom: 16px;
         position: relative;
         z-index: 10;
     }
-    
-    .header-title { 
-        font-weight: 700; 
-        font-size: clamp(1.2rem, 4vw, 1.6rem); 
-        background: linear-gradient(135deg, var(--theme-accent-primary), var(--theme-accent-secondary)); 
-        -webkit-background-clip: text; 
+
+    .header-title {
+        font-weight: 700;
+        font-size: clamp(1.2rem, 4vw, 1.6rem);
+        background: linear-gradient(135deg, var(--theme-accent-primary), var(--theme-accent-secondary));
+        -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
     }
-    
-    .header-controls { 
-        display: flex; 
-        gap: 8px; 
-        align-items: center; 
+
+    .header-controls {
+        display: flex;
+        gap: 8px;
+        align-items: center;
         flex-wrap: wrap;
     }
-    
+
     .header-btn {
-        background: transparent; 
-        color: var(--theme-text-secondary); 
-        width: 44px; 
-        height: 44px; 
-        border-radius: 50%; 
-        display: flex; 
-        align-items: center; 
+        background: transparent;
+        color: var(--theme-text-secondary);
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
         justify-content: center;
-        cursor: pointer; 
-        border: none; 
-        font-size: clamp(1rem, 3vw, 1.2rem); 
+        cursor: pointer;
+        border: none;
+        font-size: clamp(1rem, 3vw, 1.2rem);
         transition: var(--transition);
         touch-action: manipulation;
         -webkit-tap-highlight-color: transparent;
     }
-    
-    .header-btn:hover, 
-    .header-btn.active, 
-    .header-btn:active { 
-        background-color: var(--theme-accent-translucent); 
-        color: var(--theme-accent-primary); 
+
+    .header-btn:hover,
+    .header-btn.active,
+    .header-btn:active {
+        background-color: var(--theme-accent-translucent);
+        color: var(--theme-accent-primary);
         transform: scale(0.95);
     }
-    
-    #download-pdf-btn { 
-        display: none; 
+
+    #download-pdf-btn {
+        display: none;
     }
 
-    .content-area { 
-        flex-grow: 1; 
-        overflow-y: auto; 
-        padding: clamp(12px, 3vw, 20px); 
-        border-radius: var(--border-radius); 
+    .content-area {
+        flex-grow: 1;
+        overflow-y: auto;
+        padding: clamp(12px, 3vw, 20px);
+        border-radius: var(--border-radius);
         position: relative;
         -webkit-overflow-scrolling: touch;
     }
-    
-    .empty-state { 
-        display: flex; 
-        flex-direction: column; 
-        align-items: center; 
-        justify-content: center; 
-        height: 100%; 
-        text-align: center; 
+
+    .empty-state {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        text-align: center;
         padding: 2rem;
     }
-    
-    .empty-state i { 
-        font-size: clamp(3rem, 8vw, 5rem); 
-        color: var(--theme-accent-primary); 
-        opacity: 0.6; 
-        margin-bottom: 1.5rem; 
+
+    .empty-state i {
+        font-size: clamp(3rem, 8vw, 5rem);
+        color: var(--theme-accent-primary);
+        opacity: 0.6;
+        margin-bottom: 1.5rem;
     }
-    
+
     .empty-state h2 {
         font-size: clamp(1.2rem, 4vw, 1.8rem);
         margin-bottom: 1rem;
     }
-    
+
     .empty-state p {
         font-size: clamp(0.9rem, 3vw, 1rem);
         color: var(--theme-text-secondary);
         max-width: 300px;
         line-height: 1.5;
     }
-    
+
     /* --- Drag & Drop Overlay --- */
     #drag-drop-overlay {
-        position: absolute; 
-        top: 0; 
-        left: 0; 
-        width: 100%; 
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
         height: 100%;
-        background: rgba(0,0,0,0.7); 
-        border: 3px dashed var(--theme-accent-primary); 
+        background: rgba(0,0,0,0.7);
+        border: 3px dashed var(--theme-accent-primary);
         border-radius: var(--border-radius);
-        display: none; 
-        align-items: center; 
+        display: none;
+        align-items: center;
         justify-content: center;
-        font-size: clamp(1.2rem, 4vw, 1.5rem); 
-        font-weight: 600; 
-        color: white; 
+        font-size: clamp(1.2rem, 4vw, 1.5rem);
+        font-weight: 600;
+        color: white;
         z-index: var(--z-overlay);
         text-align: center;
         padding: 2rem;
     }
-    
-    #drag-drop-overlay.visible { 
-        display: flex; 
+
+    #drag-drop-overlay.visible {
+        display: flex;
     }
-    
+
     /* --- PDF Viewer & Text Editor --- */
-    #pdf-viewer { 
+    #pdf-viewer {
         position: relative;
     }
-    
-    #pdf-viewer .page-container { 
-        margin: 0 auto 20px auto; 
+
+    #pdf-viewer .page-container {
+        margin: 0 auto 20px auto;
         box-shadow: var(--theme-shadow);
         max-width: 100%;
         overflow: hidden;
     }
-    
-    #pdf-viewer canvas { 
-        display: block; 
-        width: 100%; 
-        height: auto; 
+
+    #pdf-viewer canvas {
+        display: block;
+        width: 100%;
+        height: auto;
         max-width: 100%;
     }
-    
-    #text-editor { 
-        display: none; 
-        min-height: 70vh; 
-        width: 100%; 
-        padding: clamp(1rem, 4vw, 2rem); 
-        font-size: clamp(0.9rem, 3vw, 1.1rem); 
-        line-height: 1.8; 
-        color: var(--theme-text-primary); 
-        border: none; 
-        outline: none; 
+
+    #text-editor {
+        display: none;
+        min-height: 70vh;
+        width: 100%;
+        padding: clamp(1rem, 4vw, 2rem);
+        font-size: clamp(0.9rem, 3vw, 1.1rem);
+        line-height: 1.8;
+        color: var(--theme-text-primary);
+        border: none;
+        outline: none;
         background: transparent;
         white-space: pre-wrap;
         word-wrap: break-word;
@@ -322,14 +336,14 @@
         -ms-user-select: text;
         user-select: text;
     }
-    
-    #text-editor:empty:before { 
-        content: attr(data-placeholder); 
-        color: var(--theme-text-secondary); 
-        opacity: 0.7; 
+
+    #text-editor:empty:before {
+        content: attr(data-placeholder);
+        color: var(--theme-text-secondary);
+        opacity: 0.7;
         pointer-events: none;
     }
-    
+
     /* --- PDF Text Overlay --- */
     .pdf-text-layer {
         position: absolute;
@@ -338,18 +352,18 @@
         right: 0;
         bottom: 0;
         overflow: hidden;
-        opacity: 0.2; /* Make it slightly visible for debugging, but transparent in practice */
+        opacity: 0.2;
         line-height: 1;
         -webkit-user-select: text;
         -moz-user-select: text;
         -ms-user-select: text;
         user-select: text;
     }
-    
+
     .pdf-text-layer::selection {
         background: var(--theme-accent-translucent);
     }
-    
+
     .pdf-text-layer span {
         color: transparent;
         position: absolute;
@@ -357,78 +371,78 @@
         cursor: text;
         transform-origin: 0% 0%;
     }
-    
+
     /* --- AI Sidebar --- */
     .ai-sidebar {
-        position: fixed; 
-        top: 0; 
-        right: 0; 
-        width: var(--sidebar-width); 
+        position: fixed;
+        top: 0;
+        right: 0;
+        width: var(--sidebar-width);
         height: 100vh;
-        transform: translateX(100%); 
-        transition: transform var(--transition); 
+        transform: translateX(100%);
+        transition: transform var(--transition);
         z-index: var(--z-sidebar);
-        display: flex; 
-        flex-direction: column; 
-        padding: 20px; 
+        display: flex;
+        flex-direction: column;
+        padding: 20px;
         box-shadow: -10px 0 40px rgba(0, 0, 0, 0.2);
         overflow-y: auto;
         -webkit-overflow-scrolling: touch;
     }
-    
-    .ai-sidebar.open { 
-        transform: translateX(0); 
+
+    .ai-sidebar.open {
+        transform: translateX(0);
     }
-    
-    .sidebar-header { 
-        display: flex; 
-        justify-content: space-between; 
-        align-items: center; 
-        padding-bottom: 15px; 
-        margin-bottom: 20px; 
+
+    .sidebar-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-bottom: 15px;
+        margin-bottom: 20px;
         border-bottom: 1px solid var(--theme-border-color);
         position: sticky;
         top: 0;
         background: var(--theme-surface-bg);
         backdrop-filter: blur(12px);
         z-index: 10;
-        margin: -20px -20px 20px -20px; /* Adjust for padding */
+        margin: -20px -20px 20px -20px;
         padding: 15px 20px;
     }
-    
-    .sidebar-content { 
-        flex-grow: 1; 
+
+    .sidebar-content {
+        flex-grow: 1;
         overflow-y: auto;
         -webkit-overflow-scrolling: touch;
     }
-    
-    .ai-section { 
-        margin-bottom: 25px; 
+
+    .ai-section {
+        margin-bottom: 25px;
     }
-    
-    .ai-section h4 { 
-        display: flex; 
-        align-items: center; 
-        gap: 10px; 
-        font-size: clamp(1rem, 3vw, 1.1rem); 
-        font-weight: 600; 
-        margin-bottom: 15px; 
-        padding-bottom: 10px; 
-        border-bottom: 1px solid var(--theme-border-color); 
-        color: var(--theme-text-primary); 
+
+    .ai-section h4 {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: clamp(1rem, 3vw, 1.1rem);
+        font-weight: 600;
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid var(--theme-border-color);
+        color: var(--theme-text-primary);
     }
-    
-    .ai-section i { 
-        color: var(--theme-accent-primary); 
+
+    .ai-section i {
+        color: var(--theme-accent-primary);
     }
-    
-    .ai-output { 
-        background: rgba(0, 0, 0, 0.05); 
-        padding: 15px; 
-        border-radius: 12px; 
-        min-height: 80px; 
-        font-size: clamp(0.85rem, 2.5vw, 0.95rem); 
-        line-height: 1.6; 
+
+    .ai-output {
+        background: rgba(0, 0, 0, 0.05);
+        padding: 15px;
+        border-radius: 12px;
+        min-height: 80px;
+        font-size: clamp(0.85rem, 2.5vw, 0.95rem);
+        line-height: 1.6;
         color: var(--theme-text-secondary);
         white-space: pre-wrap;
         word-wrap: break-word;
@@ -437,15 +451,15 @@
         -ms-user-select: text;
         user-select: text;
     }
-    
-    .ai-output mark { 
-        background-color: var(--theme-accent-translucent); 
-        border-radius: 3px; 
+
+    .ai-output mark {
+        background-color: var(--theme-accent-translucent);
+        border-radius: 3px;
         padding: 2px 4px;
         color: var(--theme-text-primary);
         font-weight: 600;
     }
-    
+
     .ai-input {
         width: 100%;
         padding: 12px;
@@ -458,107 +472,123 @@
         outline: none;
         transition: var(--transition);
     }
-    
+
     .ai-input:focus {
         border-color: var(--theme-accent-primary);
         box-shadow: 0 0 0 3px var(--theme-accent-translucent);
     }
-    
-    .ai-button {
-        width: 100%; 
-        padding: 12px; 
-        background-color: var(--theme-accent-primary); 
+
+    .ai-button, .summary-option-btn {
+        width: 100%;
+        padding: 12px;
+        background-color: var(--theme-accent-primary);
         color: white;
-        border: none; 
-        border-radius: 10px; 
-        cursor: pointer; 
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
         font-weight: 600;
-        transition: var(--transition); 
-        display: flex; 
-        align-items: center; 
-        justify-content: center; 
-        gap: 8px; 
+        transition: var(--transition);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
         margin-top: 10px;
         font-size: clamp(0.9rem, 3vw, 1rem);
         touch-action: manipulation;
         -webkit-tap-highlight-color: transparent;
     }
-    
-    .ai-button:hover, 
-    .ai-button:active { 
-        background-color: var(--theme-accent-secondary); 
+
+    .ai-button:hover,
+    .ai-button:active,
+    .summary-option-btn:hover,
+    .summary-option-btn:active {
+        background-color: var(--theme-accent-secondary);
         transform: scale(0.98);
     }
-    
-    .ai-button:disabled {
+
+    .ai-button:disabled, .summary-option-btn:disabled {
         opacity: 0.6;
         cursor: not-allowed;
         transform: none;
         background-color: var(--theme-accent-secondary);
     }
-    
+
+    .summary-options {
+        display: flex;
+        gap: 8px;
+        margin-top: 10px;
+    }
+
+    .summary-option-btn {
+        flex: 1;
+        margin-top: 0;
+        padding: 8px;
+        font-size: 0.8rem;
+    }
+
+
     /* --- Settings Panel --- */
     .panel-overlay {
-        position: fixed; 
-        inset: 0; 
-        background: rgba(0,0,0,0.5); 
-        backdrop-filter: blur(5px); 
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.5);
+        backdrop-filter: blur(5px);
         z-index: var(--z-modal);
-        display: none; 
-        align-items: center; 
+        display: none;
+        align-items: center;
         justify-content: center;
         padding: 1rem;
     }
-    
-    .panel-overlay.visible { 
-        display: flex; 
+
+    .panel-overlay.visible {
+        display: flex;
     }
-    
-    .settings-panel { 
-        padding: 30px; 
-        width: 100%; 
+
+    .settings-panel {
+        padding: 30px;
+        width: 100%;
         max-width: 450px;
         max-height: 90vh;
         overflow-y: auto;
         -webkit-overflow-scrolling: touch;
     }
-    
-    .setting-group { 
-        margin-bottom: 25px; 
+
+    .setting-group {
+        margin-bottom: 25px;
     }
-    
+
     .setting-group label:first-child {
         display: block;
         font-weight: 600;
         margin-bottom: 10px;
         color: var(--theme-text-primary);
     }
-    
-    .theme-options { 
+
+    .theme-options {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-        gap: 12px; 
+        gap: 12px;
     }
-    
-    .theme-options input { 
-        display: none; 
+
+    .theme-options input {
+        display: none;
     }
-    
+
     .theme-options label {
-        padding: 12px 18px; 
-        border-radius: 10px; 
-        cursor: pointer; 
-        border: 2px solid var(--theme-border-color); 
+        padding: 12px 18px;
+        border-radius: 10px;
+        cursor: pointer;
+        border: 2px solid var(--theme-border-color);
         transition: var(--transition);
         text-align: center;
         font-size: 0.9rem;
         touch-action: manipulation;
     }
-    
-    .theme-options input:checked + label { 
-        border-color: var(--theme-accent-primary); 
-        background-color: var(--theme-accent-translucent); 
-        transform: translateY(-2px); 
+
+    .theme-options input:checked + label {
+        border-color: var(--theme-accent-primary);
+        background-color: var(--theme-accent-translucent);
+        transform: translateY(-2px);
         font-weight: 600;
         color: var(--theme-accent-primary);
     }
@@ -581,10 +611,10 @@
     /* --- Mobile Responsive --- */
     @media (max-width: 768px) {
         body {
-            font-size: 16px; /* Prevents auto-zoom on form inputs on iOS */
+            font-size: 16px;
         }
 
-        .main-content { 
+        .main-content {
             padding: 8px;
             transform-origin: center center;
         }
@@ -594,15 +624,15 @@
             border-radius: var(--border-radius);
             overflow: hidden;
         }
-        
-        header { 
+
+        header {
             padding: 0 12px;
             flex-wrap: wrap;
             min-height: var(--header-height);
             height: auto;
             row-gap: 8px;
         }
-        
+
         .header-controls {
             order: 3;
             width: 100%;
@@ -616,28 +646,28 @@
         .header-title {
             order: 1;
         }
-        
+
         #ai-toggle-btn {
-            order: 2; /* Move AI button next to title on mobile */
+            order: 2;
         }
-        
-        .ai-sidebar { 
-            width: 95vw; /* Don't cover entire screen */
+
+        .ai-sidebar {
+            width: 95vw;
             padding: 15px;
             border-top-left-radius: var(--border-radius);
             border-bottom-left-radius: var(--border-radius);
         }
-        
+
         .content-area {
             padding: 12px;
         }
-        
+
         #text-editor {
             padding: 1rem;
         }
-        
+
         .ai-input {
-            font-size: 16px; /* Prevent zoom on iOS */
+            font-size: 16px;
         }
     }
 
@@ -645,27 +675,27 @@
         .header-title {
             font-size: 1.2rem;
         }
-        
+
         .header-btn {
             width: 40px;
             height: 40px;
             font-size: 1rem;
         }
-        
+
         .empty-state {
             padding: 1rem;
         }
-        
+
         .ai-sidebar {
             padding: 12px;
         }
-        
+
         .sidebar-header {
             margin-bottom: 15px;
             padding-left: 15px;
             padding-right: 15px;
         }
-        
+
         .ai-section {
             margin-bottom: 20px;
         }
@@ -677,11 +707,11 @@
             min-width: 48px;
             min-height: 48px;
         }
-        
-        .ai-button {
+
+        .ai-button, .summary-option-btn {
             min-height: 48px;
         }
-        
+
         .theme-options label {
             min-height: 48px;
             display: flex;
@@ -699,12 +729,12 @@
             Drop PDF Here to Analyze
         </div>
     </div>
-    
+
     <div class="app-container">
         <!-- Main Content Area -->
         <main class="main-content" id="mainContent">
             <header class="glass">
-                <h1 class="header-title">Researcho</h1>
+                <h1 class="header-title">OptiChain</h1>
                 <div class="header-controls">
                     <button class="header-btn" id="mode-toggle-btn" title="Switch Mode" aria-label="Switch between PDF and text mode">
                         <i class="fas fa-file-alt"></i>
@@ -713,6 +743,9 @@
                         <i class="fas fa-upload"></i>
                     </label>
                     <input type="file" id="pdf-upload" accept=".pdf" style="display: none;" aria-label="PDF file input">
+                    <button class="header-btn" id="copy-paste-btn" title="Paste Text" aria-label="Paste text from clipboard">
+                        <i class="fas fa-paste"></i>
+                    </button>
                     <button class="header-btn" id="download-pdf-btn" title="Download as PDF" aria-label="Download text as PDF">
                         <i class="fas fa-file-pdf"></i>
                     </button>
@@ -726,14 +759,15 @@
             </header>
 
             <div id="content-area" class="content-area glass">
+                <input type="text" id="document-title" placeholder="Enter document title here..." style="width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 8px; border: 1px solid var(--theme-border-color); background-color: var(--theme-surface-bg); color: var(--theme-text-primary);">
                 <div id="pdf-viewer"></div>
-                <div id="text-editor" 
-                     contenteditable="true" 
+                <div id="text-editor"
+                     contenteditable="true"
                      spellcheck="true"
                      data-placeholder="Type or paste your text here... You can copy and paste from anywhere!"></div>
                 <div class="empty-state" id="emptyState">
                     <i class="fas fa-search"></i>
-                    <h2>Welcome to Researcho</h2>
+                    <h2>Welcome to OptiChain</h2>
                     <p>Upload a PDF document or switch to Text Mode to start analyzing and get AI-powered insights.</p>
                 </div>
             </div>
@@ -742,7 +776,7 @@
         <!-- AI Assistant Sidebar -->
         <aside class="ai-sidebar glass" id="aiSidebar" role="complementary">
             <div class="sidebar-header">
-                <h2 class="sidebar-title">AI Assistant</h2>
+                <h2 class="sidebar-title">OptiChain AI</h2>
                 <button class="header-btn" id="ai-close-btn" aria-label="Close AI assistant">
                     <i class="fas fa-times"></i>
                 </button>
@@ -751,50 +785,61 @@
                 <!-- Smart Summary Section -->
                 <div class="ai-section">
                     <h4><i class="fas fa-file-alt"></i>Smart Summary</h4>
-                    <div id="summary-output" class="ai-output">Click generate to create an intelligent summary of your document using advanced text analysis.</div>
-                    <button id="summarize-btn" class="ai-button">
-                        <i class="fas fa-magic"></i>Generate Summary
+                    <div id="summary-output" class="ai-output">Click a size to generate an intelligent summary of your document.</div>
+                    <div class="summary-options">
+                        <button id="summarize-btn-small" class="summary-option-btn" data-size="small">Small</button>
+                        <button id="summarize-btn-medium" class="summary-option-btn" data-size="medium">Medium</button>
+                        <button id="summarize-btn-large" class="summary-option-btn" data-size="large">Large</button>
+                    </div>
+                </div>
+
+                <!-- NEW: Writing Assistant Section -->
+                <div class="ai-section">
+                    <h4><i class="fas fa-pen-ruler"></i>Writing Assistant</h4>
+                    <div id="writing-output" class="ai-output">Get suggestions to improve your writing clarity, style, and impact.</div>
+                    <button id="writing-btn" class="ai-button">
+                        <i class="fas fa-magic"></i>Analyze Writing
                     </button>
                 </div>
                 
                 <!-- Ask Anything Section -->
                 <div class="ai-section">
                     <h4><i class="fas fa-question-circle"></i>Ask Anything</h4>
-                    <input type="text" 
-                           id="qa-input" 
+                    <input type="text"
+                           id="qa-input"
                            class="ai-input"
-                           placeholder="Ask any question about the content..."
+                           placeholder="Ask a question about the content..."
                            aria-label="Question input">
-                    <div id="qa-answer" class="ai-output">Ask any question about your document and get intelligent answers based on the content.</div>
+                    <div id="qa-answer" class="ai-output">Get intelligent answers based on the content.</div>
                     <button id="qa-btn" class="ai-button">
                         <i class="fas fa-search"></i>Get Answer
-                    </button>
-                </div>
-                
-                <!-- Quiz Generator Section -->
-                <div class="ai-section">
-                    <h4><i class="fas fa-graduation-cap"></i>Study Quiz</h4>
-                    <div id="quiz-question" class="ai-output">Generate study questions to test your understanding of the material.</div>
-                    <button id="quiz-new-btn" class="ai-button">
-                        <i class="fas fa-redo"></i>New Question
                     </button>
                 </div>
                 
                 <!-- Key Points Section -->
                 <div class="ai-section">
                     <h4><i class="fas fa-list-ul"></i>Key Points</h4>
-                    <div id="keypoints-output" class="ai-output">Extract the most important points and concepts from your document.</div>
+                    <div id="keypoints-output" class="ai-output">Extract the most important points from your document.</div>
                     <button id="keypoints-btn" class="ai-button">
                         <i class="fas fa-lightbulb"></i>Extract Key Points
                     </button>
                 </div>
                 
-                <!-- Content Analysis Section -->
+                <!-- NEW: Study Quiz Section -->
                 <div class="ai-section">
-                    <h4><i class="fas fa-chart-bar"></i>Content Analysis</h4>
-                    <div id="analysis-output" class="ai-output">Get detailed analysis including readability, complexity, and content insights.</div>
+                    <h4><i class="fas fa-graduation-cap"></i>Study Quiz</h4>
+                    <div id="quiz-output" class="ai-output">Generate a quiz to test your knowledge of the document.</div>
+                    <button id="quiz-btn" class="ai-button">
+                        <i class="fas fa-question"></i>Generate Quiz
+                    </button>
+                </div>
+
+                <!-- NEW: Content Analysis Section -->
+                <div class="ai-section">
+                    <h4><i class="fas fa-chart-pie"></i>Content Analysis</h4>
+                    <div id="analysis-output" class="ai-output">Analyze the sentiment and tone of your document.</div>
                     <button id="analysis-btn" class="ai-button">
-                        <i class="fas fa-microscope"></i>Analyze Content
+                        <i class="fas fa-magnifying-glass-chart"></i>Analyze Content
                     </button>
                 </div>
             </div>
@@ -815,13 +860,14 @@
                 <div class="theme-options" id="themeOptions" role="radiogroup" aria-labelledby="settings-title">
                     <input type="radio" id="theme-light" name="theme" value="light" checked>
                     <label for="theme-light">Light</label>
+                    <input type="radio" id="theme-grammarly" name="theme" value="grammarly">
+                    <label for="theme-grammarly">Grammarly</label>
                     <input type="radio" id="theme-dark" name="theme" value="dark">
                     <label for="theme-dark">Dark</label>
                     <input type="radio" id="theme-sepia" name="theme" value="sepia">
                     <label for="theme-sepia">Sepia</label>
                     <input type="radio" id="theme-midnight" name="theme" value="midnight">
                     <label for="theme-midnight">Midnight</label>
-                    <!-- NEW THEME OPTIONS ADDED HERE -->
                     <input type="radio" id="theme-ocean" name="theme" value="ocean">
                     <label for="theme-ocean">Ocean</label>
                     <input type="radio" id="theme-slate" name="theme" value="slate">
@@ -834,115 +880,68 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     'use strict';
-    
-    // --- ENHANCED GLOBALS & STATE ---
+
     let state = {
         pdfDoc: null,
         extractedText: '',
-        currentMode: 'pdf', // 'pdf' or 'text'
+        currentMode: 'pdf',
         isAiProcessing: false,
         isPdfLoading: false,
     };
 
-    /**
-     * AdvancedAI - A significantly enhanced AI analysis engine for client-side processing.
-     * This version includes more sophisticated algorithms for summarization, Q&A, and content analysis
-     * to provide much more accurate and helpful insights.
-     */
-    class AdvancedAI {
+    class OptiChainAI {
         constructor() {
-            // Expanded stop words for better keyword filtering
-            this.stopWords = new Set([
-                'a', 'about', 'above', 'after', 'again', 'against', 'all', 'am', 'an', 'and', 'any', 'are', 'aren\'t', 'as', 'at',
-                'be', 'because', 'been', 'before', 'being', 'below', 'between', 'both', 'but', 'by', 'can', 'can\'t', 'cannot',
-                'could', 'couldn\'t', 'did', 'didn\'t', 'do', 'does', 'doesn\'t', 'doing', 'don\'t', 'down', 'during', 'each',
-                'few', 'for', 'from', 'further', 'had', 'hadn\'t', 'has', 'hasn\'t', 'have', 'haven\'t', 'having', 'he', 'he\'d',
-                'he\'ll', 'he\'s', 'her', 'here', 'here\'s', 'hers', 'herself', 'him', 'himself', 'his', 'how', 'how\'s', 'i',
-                'i\'d', 'i\'ll', 'i\'m', 'i\'ve', 'if', 'in', 'into', 'is', 'isn\'t', 'it', 'it\'s', 'its', 'itself', 'let\'s', 'me',
-                'more', 'most', 'mustn\'t', 'my', 'myself', 'no', 'nor', 'not', 'of', 'off', 'on', 'once', 'only', 'or', 'other',
-                'ought', 'our', 'ours', 'ourselves', 'out', 'over', 'own', 'same', 'shan\'t', 'she', 'she\'d', 'she\'ll', 'she\'s',
-                'should', 'shouldn\'t', 'so', 'some', 'such', 'than', 'that', 'that\'s', 'the', 'their', 'theirs', 'them',
-                'themselves', 'then', 'there', 'there\'s', 'these', 'they', 'they\'d', 'they\'ll', 'they\'re', 'they\'ve', 'this',
-                'those', 'through', 'to', 'too', 'under', 'until', 'up', 'very', 'was', 'wasn\'t', 'we', 'we\'d', 'we\'ll',
-                'we\'re', 'we\'ve', 'were', 'weren\'t', 'what', 'what\'s', 'when', 'when\'s', 'where', 'where\'s', 'which', 'while',
-                'who', 'who\'s', 'whom', 'why', 'why\'s', 'with', 'won\'t', 'would', 'wouldn\'t', 'you', 'you\'d', 'you\'ll',
-                'you\'re', 'you\'ve', 'your', 'yours', 'yourself', 'yourselves'
-            ]);
+            this.stopWords = new Set(['a', 'about', 'above', 'after', 'again', 'against', 'all', 'am', 'an', 'and', 'any', 'are', 'as', 'at', 'be', 'because', 'been', 'before', 'being', 'below', 'between', 'both', 'but', 'by', 'can', 'cannot', 'could', 'did', 'do', 'does', 'doing', 'down', 'during', 'each', 'few', 'for', 'from', 'further', 'had', 'has', 'have', 'having', 'he', 'her', 'here', 'hers', 'herself', 'him', 'himself', 'his', 'how', 'i', 'if', 'in', 'into', 'is', 'it', 'its', 'itself', 'me', 'more', 'most', 'my', 'myself', 'no', 'nor', 'not', 'of', 'off', 'on', 'once', 'only', 'or', 'other', 'our', 'ours', 'ourselves', 'out', 'over', 'own', 'same', 'she', 'should', 'so', 'some', 'such', 'than', 'that', 'the', 'their', 'theirs', 'them', 'themselves', 'then', 'there', 'these', 'they', 'this', 'those', 'through', 'to', 'too', 'under', 'until', 'up', 'very', 'was', 'we', 'were', 'what', 'when', 'where', 'which', 'while', 'who', 'whom', 'why', 'with', 'you', 'your', 'yours', 'yourself', 'yourselves']);
         }
-
-        // --- Core Text Processing ---
 
         preprocessText(text) {
             if (!text || typeof text !== 'string') return '';
             let processed = text;
-            processed = processed.replace(/ﬁ/g, 'fi').replace(/ﬂ/g, 'fl'); // Handle common ligatures
-            processed = processed.replace(/\s+/g, ' ').trim(); // Normalize whitespace
-            processed = processed.replace(/([a-z])-\s+([a-z])/g, '$1$2'); // Rejoin hyphenated words at line breaks
-            processed = processed.replace(/([a-z])([A-Z])/g, '$1 $2'); // Add space between camelCase words
+            processed = processed.replace(/ﬁ/g, 'fi').replace(/ﬂ/g, 'fl');
+            processed = processed.replace(/\s+/g, ' ').trim();
+            processed = processed.replace(/([a-z])-\s+([a-z])/g, '$1$2');
             return processed;
         }
 
         tokenizeSentences(text) {
             if (!text) return [];
-            // Use a more robust regex for splitting sentences, handling abbreviations.
             return text.match(/[^.!?]+[.!?]\s*(?=[A-Z]|\d|"|“|‘|$)/g)
                 ?.map(s => s.trim())
                 .filter(s => s.length > 15 && s.length < 1500) || [];
         }
 
-        // --- Enhanced AI Features ---
+        generateSummary(text, size = 'medium') {
+            let targetSentenceCount;
+            switch (size) {
+                case 'small': targetSentenceCount = 3; break;
+                case 'large': targetSentenceCount = 8; break;
+                default: targetSentenceCount = 5;
+            }
 
-        /**
-         * Generates a much higher-quality summary using a multi-factor scoring algorithm.
-         * Sentences are scored based on their position, keyword density, and use of cue phrases.
-         */
-        generateSummary(text, targetSentenceCount = 5) {
             const sentences = this.tokenizeSentences(this.preprocessText(text));
             if (sentences.length <= targetSentenceCount) {
                 return sentences.join(' ');
             }
 
-            const keywords = this.extractKeyWords(text, 20); // Get top 20 keywords
-            const titleWords = new Set(sentences[0]?.toLowerCase().split(/\s+/) || []);
+            const keywords = this.extractKeyWords(text, 20);
 
             const scoredSentences = sentences.map((sentence, i) => {
                 const sentenceLower = sentence.toLowerCase();
                 let score = 0;
-
-                // 1. Position Score: Boost sentences at the beginning and end.
                 const positionRatio = i / sentences.length;
-                if (positionRatio < 0.2) score += 2.0; // First 20%
-                if (positionRatio > 0.8) score += 1.5; // Last 20%
-
-                // 2. Keyword Score: Higher score for containing important keywords.
+                if (positionRatio < 0.2) score += 2.0;
+                if (positionRatio > 0.8) score += 1.5;
                 keywords.forEach(kw => {
                     if (sentenceLower.includes(kw.word)) {
-                        score += kw.score; // Add TF-IDF like score of the keyword
+                        score += kw.score;
                     }
                 });
-
-                // 3. Title word score: Boost sentences with words from the first sentence (likely title).
-                titleWords.forEach(word => {
-                    if (sentenceLower.includes(word) && !this.stopWords.has(word)) {
-                        score += 0.5;
-                    }
-                });
-
-                // 4. Length Normalization: Penalize very short or very long sentences.
-                if (sentence.length < 20 || sentence.length > 800) {
-                    score *= 0.5;
-                }
-                
-                // 5. Cue Phrase Score: Boost sentences with summary indicators.
+                if (sentence.length < 20 || sentence.length > 800) score *= 0.5;
                 const cuePhrases = ['in conclusion', 'in summary', 'the main point', 'importantly', 'essentially'];
-                if (cuePhrases.some(phrase => sentenceLower.startsWith(phrase))) {
-                    score *= 2.0;
-                }
-
+                if (cuePhrases.some(phrase => sentenceLower.startsWith(phrase))) score *= 2.0;
                 return { sentence, score, index: i };
             });
 
-            // Sort by score, take the top sentences, then re-sort by original index
             const topSentences = scoredSentences
                 .sort((a, b) => b.score - a.score)
                 .slice(0, targetSentenceCount)
@@ -951,137 +950,124 @@ document.addEventListener('DOMContentLoaded', function() {
             return topSentences.map(item => item.sentence).join(' ');
         }
         
-        /**
-         * Finds a concise and direct answer to a question. It identifies the best sentence
-         * and then tries to narrow it down to the most relevant clause for a "small answer".
-         */
         answerQuestion(text, question) {
             const sentences = this.tokenizeSentences(this.preprocessText(text));
-            const questionWords = new Set(
-                question.toLowerCase().replace('?','').split(/\s+/).filter(w => !this.stopWords.has(w) && w.length > 2)
-            );
-
-            if (questionWords.size === 0) return "Your question seems too generic. Please ask something more specific.";
-
+            const questionWords = new Set(question.toLowerCase().replace('?','').split(/\s+/).filter(w => !this.stopWords.has(w) && w.length > 2));
+            if (questionWords.size === 0) return "Please ask a more specific question.";
             let bestSentence = { text: "", score: -1 };
-
             sentences.forEach(sentence => {
                 const sentenceLower = sentence.toLowerCase();
                 let score = 0;
                 let matchedWords = 0;
-                
                 questionWords.forEach(qWord => {
                     if (sentenceLower.includes(qWord)) {
-                        score += 2; // Basic word match score
+                        score += 2;
                         matchedWords++;
                     }
                 });
-                
-                // Boost score for matching multiple words (high relevance)
-                if (matchedWords > 1) {
-                    score += matchedWords * 3;
-                }
-                
-                // Give a high bonus if the sentence seems to define a term from the question
-                if (/\b(is|are|was|were)\b/i.test(sentence) && sentence.length < 250) {
-                    score *= 1.5;
-                }
-
-                if (score > bestSentence.score) {
-                    bestSentence = { text: sentence, score: score };
-                }
+                if (matchedWords > 1) score += matchedWords * 3;
+                if (/\b(is|are|was|were)\b/i.test(sentence) && sentence.length < 250) score *= 1.5;
+                if (score > bestSentence.score) bestSentence = { text: sentence, score: score };
             });
-
-            if (bestSentence.score <= 1) {
-                return "I could not find a confident answer in the document. Try rephrasing your question.";
-            }
-
-            // Highlight the matching keywords in the final answer
+            if (bestSentence.score <= 1) return "I could not find a confident answer. Try rephrasing your question.";
             let answerText = bestSentence.text;
             questionWords.forEach(word => {
                 const regex = new RegExp(`\\b(${word})\\b`, 'gi');
                 answerText = answerText.replace(regex, `<mark>$1</mark>`);
             });
-
             return answerText;
         }
 
-
-        // Re-using the other AI methods from your original code as they were well-implemented.
-        // We'll focus on the summary and QA as requested for major improvements.
         extractKeyWords(text, count = 10) {
-            const words = this.preprocessText(text).toLowerCase()
-                .replace(/[^\w\s]/g, ' ')
-                .split(/\s+/)
-                .filter(word => word.length > 3 && !this.stopWords.has(word));
-            
+            const words = this.preprocessText(text).toLowerCase().replace(/[^\w\s]/g, ' ').split(/\s+/).filter(word => word.length > 3 && !this.stopWords.has(word));
             const wordFreq = {};
             words.forEach(word => { wordFreq[word] = (wordFreq[word] || 0) + 1; });
-            
             const scores = Object.entries(wordFreq).map(([word, freq]) => ({
                 word,
-                score: freq * Math.log(words.length / (wordFreq[word] || 1)) // TF-IDF like score
+                score: freq * Math.log(words.length / (wordFreq[word] || 1))
             }));
-            
             return scores.sort((a, b) => b.score - a.score).slice(0, count);
         }
 
-        generateQuizQuestion(text) {
-            const sentences = this.tokenizeSentences(text);
-            if (sentences.length < 3) return "Not enough content to create a quiz.";
-
-            // Find sentences that look like definitions or explanations
-            const definitionSentences = sentences.filter(s =>
-                s.includes(' is ') || s.includes(' are ') || s.includes(' means ')
-            );
-            
-            let chosenSentence;
-            if (definitionSentences.length > 0) {
-                chosenSentence = definitionSentences[Math.floor(Math.random() * definitionSentences.length)];
-            } else {
-                chosenSentence = sentences[Math.floor(Math.random() * sentences.length)];
-            }
-            
-            // Generate a "fill in the blank" style question
-            const keywords = this.extractKeyWords(chosenSentence, 1);
-            if (keywords.length > 0) {
-                const keyword = keywords[0].word;
-                const question = chosenSentence.replace(new RegExp(keyword, 'gi'), ' [______] ');
-                return `${question}\n\n(What fills in the blank? Answer: ${keyword})`;
-            }
-            
-            return `What is the main idea of the following sentence: "${chosenSentence}"`;
-        }
-        
         extractKeyPoints(text) {
-            const summary = this.generateSummary(text, 8); // Use the improved summarizer to get key points
+            const summary = this.generateSummary(text, 'large');
             const points = summary.split('. ').filter(p => p.trim().length > 0).map(p => p.trim() + '.');
             return points.map((point, index) => `${index + 1}. ${point}`).join('\n\n') || "No key points could be extracted.";
         }
+        
+        analyzeWriting(text) {
+            const sentences = this.tokenizeSentences(this.preprocessText(text));
+            let results = { passive: [], fillers: [], weasels: [] };
+            
+            // Passive voice (simple check)
+            const passiveRegex = /\b(am|is|are|was|were|be|being|been)\b\s\w+ed\b/i;
+            sentences.forEach(s => { if(passiveRegex.test(s)) results.passive.push(s); });
+            
+            // Filler words
+            const fillerRegex = /\b(basically|actually|literally|like|just|really|very|stuff|things|you know|sort of|kind of)\b/gi;
+            const fillerMatches = text.match(fillerRegex);
+            if (fillerMatches) results.fillers = [...new Set(fillerMatches)];
+            
+            // Weasel words
+            const weaselRegex = /\b(many|various|several|some|few|most|often|sometimes|arguably|perhaps|could|might)\b/gi;
+            const weaselMatches = text.match(weaselRegex);
+            if (weaselMatches) results.weasels = [...new Set(weaselMatches)];
+            
+            let report = "✍️ **Writing Analysis**\n\n";
+            if (results.passive.length > 0) {
+                report += `**Passive Voice:** ${results.passive.length} sentence(s) might be in passive voice. Consider making them more active.\n*Example: "${results.passive[0]}"*\n\n`;
+            }
+            if (results.fillers.length > 0) {
+                report += `**Filler Words:** Found common filler words. Your writing might be stronger without them.\n*Examples: ${results.fillers.slice(0, 5).join(', ')}*\n\n`;
+            }
+            if (results.weasels.length > 0) {
+                report += `**Vague Language:** These words can make your writing less direct.\n*Examples: ${results.weasels.slice(0, 5).join(', ')}*\n\n`;
+            }
+            if (report.length < 50) return "✅ Your writing looks clear and direct! No major issues found.";
+
+            return report;
+        }
+
+        generateQuiz(text) {
+            const sentences = this.tokenizeSentences(this.preprocessText(text));
+            const keywords = this.extractKeyWords(text, 10);
+            let quiz = [];
+            
+            keywords.forEach(kw => {
+                const keywordSentences = sentences.filter(s => s.toLowerCase().includes(kw.word));
+                if(keywordSentences.length > 0) {
+                    const questionSentence = keywordSentences[0];
+                    const question = questionSentence.replace(new RegExp(kw.word, 'ig'), '_____');
+                    quiz.push({question: question, answer: kw.word});
+                }
+            });
+
+            if (quiz.length === 0) return "Could not generate a quiz from this text.";
+            return quiz.slice(0, 5).map((item, index) => `${index + 1}. ${item.question}\n   <mark>Answer: ${item.answer}</mark>`).join('\n\n');
+        }
 
         analyzeContent(text) {
-            const cleanText = this.preprocessText(text);
-            const sentences = this.tokenizeSentences(cleanText);
-            const words = cleanText.split(/\s+/).filter(w => w.length > 0);
+            const positiveWords = ['good', 'great', 'excellent', 'amazing', 'awesome', 'love', 'like', 'happy', 'beautiful', 'wonderful'];
+            const negativeWords = ['bad', 'terrible', 'horrible', 'awful', 'hate', 'dislike', 'sad', 'ugly', 'boring'];
             
-            const topKeywords = this.extractKeyWords(cleanText, 5).map(k => k.word).join(', ');
-            const readingTime = Math.ceil(words.length / 200);
+            let positiveScore = 0;
+            let negativeScore = 0;
+            const words = this.preprocessText(text).toLowerCase().split(/\s+/);
+            
+            words.forEach(word => {
+                if(positiveWords.includes(word)) positiveScore++;
+                if(negativeWords.includes(word)) negativeScore++;
+            });
 
-            return `📊 CONTENT ANALYSIS
-• Word Count: ${words.length}
-• Sentence Count: ${sentences.length}
-• Reading Time: ~${readingTime} min
-• Top Concepts: ${topKeywords || 'N/A'}`;
+            let sentiment = "Neutral";
+            if (positiveScore > negativeScore * 1.5) sentiment = "Positive";
+            else if (negativeScore > positiveScore * 1.5) sentiment = "Negative";
+            
+            return `**Sentiment Analysis:** ${sentiment}\n\n**Positive Keywords:** ${positiveScore}\n**Negative Keywords:** ${negativeScore}`;
         }
     }
 
-
-    // --- Core Application Logic ---
-
-    // Initialize AI Engine
-    const AI = new AdvancedAI();
-
-    // DOM Elements
+    const AI = new OptiChainAI();
     const DOMElements = {
         mainContent: document.getElementById('mainContent'),
         pdfUpload: document.getElementById('pdf-upload'),
@@ -1096,9 +1082,10 @@ document.addEventListener('DOMContentLoaded', function() {
         uploadLabel: document.getElementById('upload-label'),
         settingsOverlay: document.getElementById('settingsOverlay'),
         themeOptions: document.getElementById('themeOptions'),
+        copyPasteBtn: document.getElementById('copy-paste-btn'),
+        documentTitle: document.getElementById('document-title'),
     };
     
-    // --- Initialization ---
     function initialize() {
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.worker.min.js';
         setupEventListeners();
@@ -1108,51 +1095,53 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function setupEventListeners() {
-        // File handling
         DOMElements.pdfUpload.addEventListener('change', handleFileSelect, false);
-        
-        // UI controls
         document.getElementById('ai-toggle-btn').addEventListener('click', toggleAiSidebar);
         document.getElementById('ai-close-btn').addEventListener('click', toggleAiSidebar);
         DOMElements.modeToggleBtn.addEventListener('click', toggleMode);
         DOMElements.downloadPdfBtn.addEventListener('click', downloadTextAsPDF);
-        
-        // Drag and Drop
+        DOMElements.copyPasteBtn.addEventListener('click', pasteFromClipboard);
         ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(evt => document.body.addEventListener(evt, preventDefaults, false));
         ['dragenter', 'dragover'].forEach(evt => DOMElements.mainContent.addEventListener(evt, showDropOverlay, false));
         ['dragleave', 'drop'].forEach(evt => DOMElements.mainContent.addEventListener(evt, hideDropOverlay, false));
         DOMElements.mainContent.addEventListener('drop', handleDrop, false);
-
-        // Settings
         document.getElementById('settings-btn').addEventListener('click', () => DOMElements.settingsOverlay.classList.add('visible'));
         document.getElementById('settings-close-btn').addEventListener('click', () => DOMElements.settingsOverlay.classList.remove('visible'));
         DOMElements.settingsOverlay.addEventListener('click', e => { if (e.target === DOMElements.settingsOverlay) DOMElements.settingsOverlay.classList.remove('visible'); });
         DOMElements.themeOptions.addEventListener('change', handleThemeChange);
-
-        // AI Buttons
-        document.getElementById('summarize-btn').addEventListener('click', () => handleAIAction('summarize'));
+        
+        document.getElementById('summarize-btn-small').addEventListener('click', (e) => handleAIAction('summarize', { size: e.target.dataset.size }));
+        document.getElementById('summarize-btn-medium').addEventListener('click', (e) => handleAIAction('summarize', { size: e.target.dataset.size }));
+        document.getElementById('summarize-btn-large').addEventListener('click', (e) => handleAIAction('summarize', { size: e.target.dataset.size }));
+        document.getElementById('writing-btn').addEventListener('click', () => handleAIAction('writing'));
         document.getElementById('qa-btn').addEventListener('click', () => handleAIAction('qa'));
-        document.getElementById('quiz-new-btn').addEventListener('click', () => handleAIAction('quiz'));
         document.getElementById('keypoints-btn').addEventListener('click', () => handleAIAction('keypoints'));
+        document.getElementById('quiz-btn').addEventListener('click', () => handleAIAction('quiz'));
         document.getElementById('analysis-btn').addEventListener('click', () => handleAIAction('analysis'));
         
-        // QA input on Enter key
         document.getElementById('qa-input').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); handleAIAction('qa'); } });
-
-        // Text Editor paste handling to ensure clean text
         DOMElements.textEditor.addEventListener('paste', handlePaste);
     }
     
-    // Fix for copy-paste bug: this ensures only plain text is pasted, preventing broken formatting.
     function handlePaste(e) {
         e.preventDefault();
         const text = (e.clipboardData || window.clipboardData).getData('text/plain');
         document.execCommand('insertText', false, text);
     }
+    
+    async function pasteFromClipboard() {
+        try {
+            const text = await navigator.clipboard.readText();
+            DOMElements.textEditor.textContent += text;
+            toggleMode('text');
+        } catch (err) {
+            console.error('Failed to read clipboard contents: ', err);
+            showError("Could not paste from clipboard. Please try again.");
+        }
+    }
 
-    // --- UI & State Management ---
-    function toggleMode() {
-        state.currentMode = (state.currentMode === 'pdf') ? 'text' : 'pdf';
+    function toggleMode(mode = null) {
+        state.currentMode = mode ? mode : (state.currentMode === 'pdf') ? 'text' : 'pdf';
         if (state.currentMode === 'text' && state.extractedText) {
              DOMElements.textEditor.textContent = state.extractedText;
         }
@@ -1165,6 +1154,7 @@ document.addEventListener('DOMContentLoaded', function() {
             DOMElements.pdfViewer.style.display = 'block';
             DOMElements.textEditor.style.display = 'none';
             DOMElements.downloadPdfBtn.style.display = 'none';
+            DOMElements.copyPasteBtn.style.display = 'none';
             DOMElements.uploadLabel.style.display = 'flex';
             DOMElements.modeToggleBtn.innerHTML = '<i class="fas fa-file-alt"></i>';
             DOMElements.modeToggleBtn.title = "Switch to Text Mode";
@@ -1172,6 +1162,7 @@ document.addEventListener('DOMContentLoaded', function() {
             DOMElements.pdfViewer.style.display = 'none';
             DOMElements.textEditor.style.display = 'block';
             DOMElements.downloadPdfBtn.style.display = 'flex';
+            DOMElements.copyPasteBtn.style.display = 'flex';
             DOMElements.uploadLabel.style.display = 'none';
             if(state.extractedText || DOMElements.textEditor.textContent){
                 DOMElements.emptyState.style.display = 'none';
@@ -1187,7 +1178,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     function loadSettings() {
-        const theme = localStorage.getItem('researcho_theme') || 'light';
+        const theme = localStorage.getItem('optichain_theme') || 'grammarly';
         document.documentElement.setAttribute('data-theme', theme);
         const themeInput = document.querySelector(`#themeOptions input[value="${theme}"]`);
         if (themeInput) themeInput.checked = true;
@@ -1195,13 +1186,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function handleThemeChange(e) {
         document.documentElement.setAttribute('data-theme', e.target.value);
-        localStorage.setItem('researcho_theme', e.target.value);
+        localStorage.setItem('optichain_theme', e.target.value);
     }
 
-    // --- PDF Handling ---
     function handleFileSelect(event) {
         const file = event.target.files[0];
         if (file && file.type === 'application/pdf') {
+            DOMElements.documentTitle.value = file.name.replace('.pdf', '');
             loadPdfFromFile(file);
         } else {
             showError('Please select a valid PDF file.');
@@ -1211,6 +1202,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function handleDrop(e) {
         const file = e.dataTransfer.files[0];
         if (file && file.type === 'application/pdf') {
+            DOMElements.documentTitle.value = file.name.replace('.pdf', '');
             loadPdfFromFile(file);
         } else {
             showError('Dropped file is not a valid PDF.');
@@ -1233,7 +1225,6 @@ document.addEventListener('DOMContentLoaded', function() {
             DOMElements.pdfViewer.innerHTML = '';
             DOMElements.emptyState.style.display = 'none';
             
-            // Extract text from all pages first for efficiency
             let textPromises = [];
             for (let i = 1; i <= state.pdfDoc.numPages; i++) {
                 textPromises.push(state.pdfDoc.getPage(i).then(page => page.getTextContent()));
@@ -1241,12 +1232,11 @@ document.addEventListener('DOMContentLoaded', function() {
             const allTextContents = await Promise.all(textPromises);
             state.extractedText = allTextContents.map(tc => tc.items.map(item => item.str).join(' ')).join('\n\n');
 
-            // Then render all pages
             for (let pageNum = 1; pageNum <= state.pdfDoc.numPages; pageNum++) {
                 await renderPage(pageNum, allTextContents[pageNum - 1]);
             }
             resetAiOutputs();
-
+            toggleMode('pdf');
         } catch (error) {
             console.error('Error loading PDF:', error);
             showError('Failed to load PDF. It may be corrupt or protected.');
@@ -1259,29 +1249,22 @@ document.addEventListener('DOMContentLoaded', function() {
     async function renderPage(pageNum, textContent) {
         const page = await state.pdfDoc.getPage(pageNum);
         const viewport = page.getViewport({ scale: 1.5 });
-
         const pageContainer = document.createElement('div');
         pageContainer.className = 'page-container';
         pageContainer.style.position = 'relative';
-
         const canvas = document.createElement('canvas');
         canvas.height = viewport.height;
         canvas.width = viewport.width;
-
         const textLayerDiv = document.createElement('div');
         textLayerDiv.className = 'pdf-text-layer';
-        
         pageContainer.append(canvas, textLayerDiv);
         DOMElements.pdfViewer.appendChild(pageContainer);
-
         await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
-        
         textLayerDiv.style.width = viewport.width + 'px';
         textLayerDiv.style.height = viewport.height + 'px';
         pdfjsLib.renderTextLayer({ textContent, container: textLayerDiv, viewport, textDivs: [] });
     }
     
-    // --- AI Functionality ---
     function getDocumentText() {
         return (state.currentMode === 'pdf' ? state.extractedText : DOMElements.textEditor.textContent).trim();
     }
@@ -1289,27 +1272,36 @@ document.addEventListener('DOMContentLoaded', function() {
     function resetAiOutputs() {
         document.getElementById('summary-output').textContent = 'Generate an intelligent summary of your document.';
         document.getElementById('qa-answer').textContent = 'Ask a question to get answers based on the content.';
-        document.getElementById('quiz-question').textContent = 'Generate study questions to test your knowledge.';
+        document.getElementById('writing-output').textContent = 'Get suggestions to improve your writing.';
         document.getElementById('keypoints-output').textContent = 'Extract the most important points and concepts.';
-        document.getElementById('analysis-output').textContent = 'Get insights like readability, complexity, etc.';
+        document.getElementById('quiz-output').textContent = 'Generate a quiz to test your knowledge.';
+        document.getElementById('analysis-output').textContent = 'Analyze the sentiment and tone of the document.';
     }
 
-    async function handleAIAction(action) {
+    async function handleAIAction(action, options = {}) {
         if (state.isAiProcessing) return;
         
-        const text = getDocumentText();
-        if (text.length < 100) {
-            showError('Please provide at least 100 characters of text for AI analysis.');
+        const title = DOMElements.documentTitle.value.trim();
+        if (!title) {
+            showError('Please provide a title for the document before using AI features.');
             return;
         }
 
+        const text = getDocumentText();
+        if (text.length < 50) {
+            showError('Please provide at least 50 characters of text for AI analysis.');
+            return;
+        }
+        
         const buttonMap = {
-            summarize: 'summarize-btn', qa: 'qa-btn', quiz: 'quiz-new-btn',
-            keypoints: 'keypoints-btn', analysis: 'analysis-btn'
+            summarize: 'summarize-btn-medium', qa: 'qa-btn', 
+            writing: 'writing-btn', keypoints: 'keypoints-btn',
+            quiz: 'quiz-btn', analysis: 'analysis-btn'
         };
         const outputMap = {
-            summarize: 'summary-output', qa: 'qa-answer', quiz: 'quiz-question',
-            keypoints: 'keypoints-output', analysis: 'analysis-output'
+            summarize: 'summary-output', qa: 'qa-answer', 
+            writing: 'writing-output', keypoints: 'keypoints-output',
+            quiz: 'quiz-output', analysis: 'analysis-output'
         };
 
         const button = document.getElementById(buttonMap[action]);
@@ -1317,27 +1309,50 @@ document.addEventListener('DOMContentLoaded', function() {
         const originalHTML = button.innerHTML;
         
         state.isAiProcessing = true;
-        button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Thinking...';
-        button.disabled = true;
+        document.querySelectorAll('.ai-button, .summary-option-btn').forEach(btn => btn.disabled = true);
+        if (action !== 'summarize') {
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Thinking...';
+        } else {
+            document.querySelectorAll('.summary-option-btn').forEach(b => {
+                b.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            });
+        }
 
-        // Use a short timeout to allow the UI to update before the heavy AI work locks the thread
+
         await new Promise(resolve => setTimeout(resolve, 50));
         
         try {
             let result;
             switch (action) {
-                case 'summarize': result = AI.generateSummary(text); break;
+                case 'summarize': 
+                    result = AI.generateSummary(text, options.size);
+                    await typeEffect(outputEl, result);
+                    break;
+                case 'writing':
+                    result = AI.analyzeWriting(text);
+                    outputEl.innerHTML = result.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>'); // Support Markdown-like bolding
+                    break;
                 case 'qa':
                     const question = document.getElementById('qa-input').value.trim();
                     if (!question) { showError('Please enter a question.'); throw new Error('No Question'); }
                     result = AI.answerQuestion(text, question);
+                    outputEl.innerHTML = result;
                     break;
-                case 'quiz': result = AI.generateQuizQuestion(text); break;
-                case 'keypoints': result = AI.extractKeyPoints(text); break;
-                case 'analysis': result = AI.analyzeContent(text); break;
+                case 'keypoints': 
+                    result = AI.extractKeyPoints(text);
+                    await typeEffect(outputEl, result);
+                    break;
+                case 'quiz':
+                    result = AI.generateQuiz(text);
+                    outputEl.innerHTML = result;
+                    break;
+                case 'analysis':
+                    result = AI.analyzeContent(text);
+                    outputEl.innerHTML = result.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                    break;
                 default: throw new Error('Unknown action.');
             }
-            outputEl.innerHTML = result; // Use innerHTML to render <mark> tags
+
         } catch (error) {
             if(error.message !== 'No Question') {
                 console.error(`AI action '${action}' failed:`, error);
@@ -1345,12 +1360,24 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         } finally {
             state.isAiProcessing = false;
-            button.innerHTML = originalHTML;
-            button.disabled = false;
+            document.querySelectorAll('.ai-button, .summary-option-btn').forEach(btn => btn.disabled = false);
+            if (action !== 'summarize') button.innerHTML = originalHTML;
+            else {
+                document.getElementById('summarize-btn-small').innerHTML = "Small";
+                document.getElementById('summarize-btn-medium').innerHTML = "Medium";
+                document.getElementById('summarize-btn-large').innerHTML = "Large";
+            }
+        }
+    }
+
+    async function typeEffect(element, text, speed = 15) {
+        element.textContent = '';
+        for (let i = 0; i < text.length; i++) {
+            element.textContent += text.charAt(i);
+            await new Promise(resolve => setTimeout(resolve, speed));
         }
     }
     
-    // --- Utilities ---
     function preventDefaults(e) { e.preventDefault(); e.stopPropagation(); }
     function showDropOverlay() { DOMElements.dragDropOverlay.classList.add('visible'); }
     function hideDropOverlay() { DOMElements.dragDropOverlay.classList.remove('visible'); }
@@ -1373,9 +1400,35 @@ document.addEventListener('DOMContentLoaded', function() {
         setTimeout(() => toast.remove(), 4000);
     }
     
-    function downloadTextAsPDF() { /* Function remains the same as it was correctly implemented */ }
+    async function downloadTextAsPDF() {
+        const { jsPDF } = window.jspdf;
+        const editor = DOMElements.textEditor;
+        const title = DOMElements.documentTitle.value.trim();
+        
+        if (!editor.textContent.trim()) {
+            showError("There's no text to download.");
+            return;
+        }
+
+        if (!title) {
+            showError("Please provide a title for the document.");
+            return;
+        }
+
+        setLoadingState(true, "Generating PDF...");
+
+        const doc = new jsPDF();
+        doc.setFontSize(18);
+        doc.text(title, 10, 10);
+        doc.setFontSize(12);
+        const text = editor.textContent;
+        const splitText = doc.splitTextToSize(text, 180); 
+        doc.text(splitText, 10, 20);
+        doc.save(`${title.replace(/ /g, '_')}.pdf`);
+        
+        setLoadingState(false);
+    }
     
-    // Start the application
     initialize();
 });
 </script>
