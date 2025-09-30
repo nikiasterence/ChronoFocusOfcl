@@ -176,6 +176,7 @@
         @media (min-width: 768px) { .icon-sidebar button { margin: 0; } }
         .icon-sidebar button svg { width: 24px; height: 24px; fill: var(--text-primary); }
         .icon-sidebar button:hover { background: rgba(var(--primary-rgb), 0.2); transform: scale(1.1); }
+        .icon-sidebar button.active { background: rgba(var(--primary-rgb), 0.25); } /* Style for active toggle buttons */
         
         .main-content { flex-grow: 1; padding: 15px; display: flex; flex-direction: column; overflow-y: auto; }
         @media (min-width: 768px) { .main-content { padding: 30px; } }
@@ -236,16 +237,25 @@
             display: flex; 
             flex-direction: column; 
             overflow-y: auto; 
-            max-height: 40vh; /* Limit height on mobile */
+            /* NEW: Improved mobile sizing */
+            flex-grow: 1;
         }
         @media (min-width: 768px) { 
             .task-sidebar { 
                 width: 350px; 
                 border-top: none; 
                 border-left: 1px solid var(--border-color); 
-                max-height: none; /* No height limit on desktop */
+                flex-grow: 0; /* Revert on desktop */
             } 
         }
+        /* NEW: Task Mode styles */
+        body.task-mode .main-content { display: none; }
+        body.task-mode .task-sidebar {
+            border-left: none;
+            width: 100%;
+        }
+        body.task-mode #calendar-toggle-btn { display: none; }
+
 
         .task-card { padding: 15px; margin-bottom: 15px; }
         
@@ -477,17 +487,21 @@
     <!-- Main App Container -->
     <div class="app-container">
         <div class="icon-sidebar">
-             <button id="calendar-toggle-btn" title="Toggle Calendar">
-                <svg xmlns="http://www.w.org/2000/svg" viewBox="0 0 24 24"><path d="M17 3H21C21.5523 3 22 3.44772 22 4V20C22 20.5523 21.5523 21 21 21H3C2.44772 21 2 20.5523 2 20V4C2 3.44772 2.44772 3 3 3H7V1H9V3H15V1H17V3ZM4 9V19H20V9H4ZM6 11H8V13H6V11ZM11 11H13V13H11V11ZM16 11H18V13H16V11Z"></path></svg>
+             <button id="calendar-toggle-btn" title="Calendar View">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 3H21C21.5523 3 22 3.44772 22 4V20C22 20.5523 21.5523 21 21 21H3C2.44772 21 2 20.5523 2 20V4C2 3.44772 2.44772 3 3 3H7V1H9V3H15V1H17V3ZM4 9V19H20V9H4ZM6 11H8V13H6V11ZM11 11H13V13H11V11ZM16 11H18V13H16V11Z"></path></svg>
+            </button>
+             <!-- NEW: Task View Toggle Button -->
+            <button id="task-view-btn" title="Task View">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M3 4H21V6H3V4ZM3 11H21V13H3V11ZM3 18H21V20H3V18Z"></path></svg>
             </button>
             <button id="pomodoro-mode-btn" title="Pomodoro Technique">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2C6.486 2 2 6.486 2 12s4.486 10 10 10 10-4.486 10-10S17.514 2 12 2zm0 18c-4.411 0-8-3.589-8-8s3.589-8 8-8 8 3.589 8 8-3.589 8-8 8z"/><path fill="currentColor" d="M13 11.261 16.438 8 15 6.562 11 10.938V7h-2v6h6v-2h-3.739z"/></svg>
             </button>
             <button id="theme-dashboard-btn" title="Themes">
-                <svg xmlns="http://www.w.org/2000/svg" viewBox="0 0 24 24"><path fill="currentColor" d="m12 22 4-4h-3v-4h-2v4H8l4 4zM8 2l-4 4h3v4h2V6h3L8 2z"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="currentColor" d="m12 22 4-4h-3v-4h-2v4H8l4 4zM8 2l-4 4h3v4h2V6h3L8 2z"/></svg>
             </button>
             <button id="settings-btn" title="Settings">
-                <svg xmlns="http://www.w.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24px" height="24px"><path d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24px" height="24px"><path d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z"/></svg>
             </button>
         </div>
         <div class="main-content">
@@ -613,6 +627,7 @@
             const calendarView = document.getElementById('calendar-view');
             const welcomeView = document.getElementById('welcome-view');
             const calendarToggleBtn = document.getElementById('calendar-toggle-btn');
+            const taskViewBtn = document.getElementById('task-view-btn'); // NEW: Task view button
             const pomodoroModeBtn = document.getElementById('pomodoro-mode-btn');
             const themeDashboardBtn = document.getElementById('theme-dashboard-btn');
             const settingsBtn = document.getElementById('settings-btn');
@@ -716,7 +731,7 @@
             
             // --- Theme Management ---
             const applyTheme = (theme) => {
-                document.body.className = '';
+                document.body.className = document.body.className.split(' ').filter(c => !c.startsWith('theme-') && c !== 'dark-mode').join(' ');
                 if (theme && theme !== 'default') document.body.classList.add(theme);
                 localStorage.setItem('focusTimerTheme', theme);
                 document.querySelectorAll('.theme-item.active').forEach(item => item.classList.remove('active'));
@@ -768,11 +783,27 @@
                 soundElement.play().catch(error => console.log("Audio playback failed:", error));
             };
 
-            const toggleCalendar = () => {
-                const isVisible = calendarView.style.display !== 'none';
-                calendarView.style.display = isVisible ? 'none' : 'flex';
-                welcomeView.style.display = isVisible ? 'block' : 'none';
+             // NEW: Function to toggle between calendar and task-only views
+            const setViewMode = (mode) => {
+                if (mode === 'task') {
+                    document.body.classList.add('task-mode');
+                    taskViewBtn.classList.add('active');
+                    calendarToggleBtn.classList.remove('active');
+                } else { // 'calendar' or 'welcome'
+                    document.body.classList.remove('task-mode');
+                    taskViewBtn.classList.remove('active');
+                    calendarToggleBtn.classList.add('active');
+                }
+                localStorage.setItem('viewMode', mode);
             };
+
+
+            const toggleCalendar = () => {
+                const isCalendarVisible = calendarView.style.display !== 'none';
+                calendarView.style.display = isCalendarVisible ? 'none' : 'flex';
+                welcomeView.style.display = isCalendarVisible ? 'block' : 'none';
+            };
+
 
             const renderCalendar = () => {
                 calendarGrid.innerHTML = '';
@@ -1196,7 +1227,20 @@
 
             prevMonthBtn.addEventListener('click', () => { currentDate.setMonth(currentDate.getMonth() - 1); renderCalendar(); });
             nextMonthBtn.addEventListener('click', () => { currentDate.setMonth(currentDate.getMonth() + 1); renderCalendar(); });
-            calendarToggleBtn.addEventListener('click', toggleCalendar);
+            
+            // MODIFIED: Handle main view toggling
+            calendarToggleBtn.addEventListener('click', () => {
+                 const isWelcomeVisible = welcomeView.style.display !== 'none';
+                if (document.body.classList.contains('task-mode')) {
+                    setViewMode(isWelcomeVisible ? 'welcome' : 'calendar');
+                } else {
+                    toggleCalendar();
+                }
+            });
+
+            taskViewBtn.addEventListener('click', () => { setViewMode('task'); });
+
+
             pomodoroModeBtn.addEventListener('click', () => startFocusSession({ name: "Pomodoro Session", icon: "fas fa-clock", duration: pomodoroDuration, id: null }, true));
             settingsBtn.addEventListener('click', () => { setModalVisible(settingsPanel, settingsOverlay, true) });
             themeDashboardBtn.addEventListener('click', () => { setModalVisible(themeDashboard, settingsOverlay, true) });
@@ -1239,7 +1283,13 @@
                 selectedCalendarDate = new Date(); taskDateInput.value = toYYYYMMDD(selectedCalendarDate);
                 renderCalendar(); renderTasksForDate(selectedCalendarDate);
                 
+                // NEW: Initialize view mode
+                const savedViewMode = localStorage.getItem('viewMode') || 'calendar';
+                setViewMode(savedViewMode);
+                
                 calendarView.style.display = 'flex'; welcomeView.style.display = 'none';
+                if(savedViewMode === 'calendar') { calendarToggleBtn.classList.add('active');}
+
 
                 checkFocusHours();
                 workHoursCheckInterval = setInterval(checkFocusHours, 60 * 1000); // Check every minute
