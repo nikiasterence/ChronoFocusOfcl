@@ -5,12 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="icon" href="Chronofocus.png" type="image/x-icon">
   <title>Chrono Focus — Enter</title>
-
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-
   <!-- Internal CSS -->
   <style>
     :root {
@@ -58,7 +56,7 @@
 
     body {
       margin: 0;
-      height: 100%;
+      min-height: 100vh; /* Use min-height to allow content to expand */
       font-family: 'Inter', sans-serif;
       color: var(--text-primary);
       background: linear-gradient(-45deg, var(--bg-gradient-start), var(--bg-gradient-end), #4A00E0, #8E2DE2);
@@ -67,7 +65,7 @@
       display: grid;
       place-items: center;
       padding: 1rem;
-      overflow: hidden;
+      overflow-y: auto; /* Allow vertical scrolling if needed */
     }
 
     /* --- Animations --- */
@@ -119,6 +117,7 @@
       transform: translateY(0) scale(1);
       visibility: visible;
       animation: fadeIn 0.5s cubic-bezier(0.25, 1, 0.5, 1) forwards, float 6s ease-in-out infinite;
+      position: relative; /* Change to relative when active to allow page scrolling */
     }
     .hidden { display: none; }
 
@@ -235,54 +234,92 @@
         opacity: 0;
         pointer-events: none;
     }
+
+    /* --- ⭐ RESPONSIVE IMPROVEMENTS FOR MOBILE ⭐ --- */
+    @media (max-width: 480px) {
+      body {
+        /* Use full height of the viewport to allow centering */
+        min-height: -webkit-fill-available;
+      }
+      .container {
+        padding: 24px;
+        box-shadow: 0 8px 32px var(--shadow-color);
+      }
+      .container.active {
+         /* Disable distracting float animation on mobile */
+        animation: fadeIn 0.5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+      }
+      h1 {
+        font-size: 22px;
+      }
+      p {
+        font-size: 15px;
+      }
+      .logo {
+        width: 50px;
+        height: 50px;
+        font-size: 24px;
+      }
+      header {
+        margin-bottom: 24px;
+      }
+      .pin-keypad {
+        gap: 16px;
+      }
+      .pin-keypad button {
+        width: 65px;
+        height: 65px;
+        font-size: 24px;
+      }
+    }
+
   </style>
 </head>
 <body>
     <div id="loader">Loading...</div>
-  
-    <div id="registration-container" class="container">
-      <header><div class="logo">🚀</div><h1>Create Your Profile</h1><p>Start your journey to focus and tranquility. This is a one-time setup.</p></header>
-      <form id="registration-form" novalidate>
-        <div class="profile-pic-group">
-            <div id="pfp-preview">👤</div>
-            <input type="file" id="pfp-upload" class="sr-only" accept="image/*">
-            <label for="pfp-upload" id="pfp-upload-label" tabindex="0">Upload a Profile Picture</label>
-        </div>
-        <div class="form-group"><label for="name">Name</label><input type="text" id="name" class="form-control" required placeholder="Enter your name"></div>
-        <div class="form-group"><label for="email">Email</label><input type="email" id="email" class="form-control" required placeholder="Enter your email"></div>
-        <div class="form-group"><label for="password">Password</label><input type="password" id="password" class="form-control" required placeholder="Create a password"></div>
-        <div class="form-group"><label for="gender">Gender</label><div class="select-container"><select id="gender" class="form-control" required><option value="" disabled selected>Select...</option><option value="Male">Male</option><option value="Female">Female</option><option value="Prefer not to say">Prefer not to say</option></select></div></div>
-        <div class="form-group"><label for="age">Age</label><input type="number" id="age" class="form-control" required min="12" placeholder="Your age (must be 12+)"></div>
-        <button type="submit" class="btn" id="registerBtn">Create Profile</button>
-      </form>
-    </div>
 
-    <div id="pin-container" class="container">
-        <header><div class="logo" id="pin-logo">🔒</div><h1 id="pin-title">Set Your 4-Digit PIN</h1><p id="pin-subtitle">For quick and secure access.</p></header>
-        <div class="pin-display" id="pin-display"><div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div></div>
-        <div class="pin-keypad" id="pin-keypad">
-            <button data-key="1">1</button><button data-key="2">2</button><button data-key="3">3</button>
-            <button data-key="4">4</button><button data-key="5">5</button><button data-key="6">6</button>
-            <button data-key="7">7</button><button data-key="8">8</button><button data-key="9">9</button>
-            <span style="grid-column: 1;"></span><button data-key="0">0</button><button data-key="del">⌫</button>
-        </div>
+<div id="registration-container" class="container">
+  <header><div class="logo">🚀</div><h1>Create Your Profile</h1><p>Start your journey to focus and tranquility. This is a one-time setup.</p></header>
+  <form id="registration-form" novalidate>
+    <div class="profile-pic-group">
+        <div id="pfp-preview">👤</div>
+        <input type="file" id="pfp-upload" class="sr-only" accept="image/*">
+        <label for="pfp-upload" id="pfp-upload-label" tabindex="0">Upload a Profile Picture</label>
     </div>
-  
-    <main id="main-content" class="container">
-        <button id="settings-btn" class="settings-button" title="Settings" aria-label="Open Settings">⚙️</button>
-        <header class="user-profile-header">
-            <div id="user-pfp"></div><h1 id="user-greeting">Welcome!</h1>
-        </header>
-        <p style="margin-top:0;">Find your flow, peacefully.</p>
-        <div class="region-selector-wrapper" style="margin: 32px 0;">
-            <label for="region-select" class="sr-only">Select Your Region</label>
-            <div class="select-container"><select id="region-select" class="form-control" required><option value="" disabled selected>Choose your region...</option><option value="USA">USA</option><option value="Canada">Canada</option><option value="China">China</option><option value="Bangladesh">Bangladesh</option><option value="UK">United Kingdom</option><option value="Australia">Australia</option><option value="Japan">Japan</option><option value="Germany">Germany</option><option value="India">India</option></select></div>
-        </div>
-        <button class="btn enter" id="enterBtn" disabled>Enter</button>
-        <div id="success" class="success" role="status"></div>
-        <footer class="footer"><p>© <span id="year"></span> Chrono Focus · Crafted by CozytuStudios Team</p></footer>
-    </main>
+    <div class="form-group"><label for="name">Name</label><input type="text" id="name" class="form-control" required placeholder="Enter your name"></div>
+    <div class="form-group"><label for="email">Email</label><input type="email" id="email" class="form-control" required placeholder="Enter your email"></div>
+    <div class="form-group"><label for="password">Password</label><input type="password" id="password" class="form-control" required placeholder="Create a password"></div>
+    <div class="form-group"><label for="gender">Gender</label><div class="select-container"><select id="gender" class="form-control" required><option value="" disabled selected>Select...</option><option value="Male">Male</option><option value="Female">Female</option><option value="Prefer not to say">Prefer not to say</option></select></div></div>
+    <div class="form-group"><label for="age">Age</label><input type="number" id="age" class="form-control" required min="12" placeholder="Your age (must be 12+)"></div>
+    <button type="submit" class="btn" id="registerBtn">Create Profile</button>
+  </form>
+</div>
 
+<div id="pin-container" class="container">
+    <header><div class="logo" id="pin-logo">🔒</div><h1 id="pin-title">Set Your 4-Digit PIN</h1><p id="pin-subtitle">For quick and secure access.</p></header>
+    <div class="pin-display" id="pin-display"><div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div></div>
+    <div class="pin-keypad" id="pin-keypad">
+        <button data-key="1">1</button><button data-key="2">2</button><button data-key="3">3</button>
+        <button data-key="4">4</button><button data-key="5">5</button><button data-key="6">6</button>
+        <button data-key="7">7</button><button data-key="8">8</button><button data-key="9">9</button>
+        <span style="grid-column: 1;"></span><button data-key="0">0</button><button data-key="del">⌫</button>
+    </div>
+</div>
+
+<main id="main-content" class="container">
+    <button id="settings-btn" class="settings-button" title="Settings" aria-label="Open Settings">⚙️</button>
+    <header class="user-profile-header">
+        <div id="user-pfp"></div><h1 id="user-greeting">Welcome!</h1>
+    </header>
+    <p style="margin-top:0;">Find your flow, peacefully.</p>
+    <div class="region-selector-wrapper" style="margin: 32px 0;">
+        <label for="region-select" class="sr-only">Select Your Region</label>
+        <div class="select-container"><select id="region-select" class="form-control" required><option value="" disabled selected>Choose your region...</option><option value="USA">USA</option><option value="Canada">Canada</option><option value="China">China</option><option value="Bangladesh">Bangladesh</option><option value="UK">United Kingdom</option><option value="Australia">Australia</option><option value="Japan">Japan</option><option value="Germany">Germany</option><option value="India">India</option></select></div>
+    </div>
+    <button class="btn enter" id="enterBtn" disabled>Enter</button>
+    <div id="success" class="success" role="status"></div>
+    <footer class="footer"><p>© <span id="year"></span> Chrono Focus · Crafted by CozytuStudios Team</p></footer>
+</main>
   <script>
     (function() {
       'use strict';
