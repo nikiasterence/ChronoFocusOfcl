@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cody - Code Runner</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <style>
         :root {
             --primary: #8ecae6;
@@ -33,8 +34,6 @@
             --accent: #ffb4a2;
             --dark: #1d3557;
             --light: #f1faee;
-            --glass: rgba(255, 255, 255, 0.1);
-            --glass-border: rgba(255, 255, 255, 0.2);
         }
 
         /* Aurora Theme */
@@ -44,6 +43,17 @@
             --accent: #ffb4a2;
             --dark: #1d3557;
             --light: #f1faee;
+        }
+        
+        /* NEW: Material 3 Theme */
+        .material3-theme {
+            --primary: #6750A4;    /* M3 Primary */
+            --secondary: #958DA5;   /* M3 Secondary */
+            --accent: #FFB570;      /* M3 Tertiary/Accent */
+            --dark: #1C1B1F;        /* M3 Dark Neutral */
+            --light: #EADDFF;       /* M3 Light Neutral/On Primary Container */
+            --glass: rgba(74, 68, 88, 0.25);
+            --glass-border: rgba(231, 224, 236, 0.3);
         }
 
         * {
@@ -299,7 +309,7 @@
         }
     </style>
 </head>
-<body class="liquid-glass-theme">
+<body class="material3-theme">
     <div class="water-effect" id="waterEffect"></div>
     
     <div class="container">
@@ -320,62 +330,9 @@
                     <div class="code-tab" data-tab="css">CSS</div>
                     <div class="code-tab" data-tab="js">JavaScript</div>
                 </div>
-                <textarea class="code-area" id="htmlCode" placeholder="Write your HTML code here...">&lt;!DOCTYPE html&gt;
-&lt;html&gt;
-&lt;head&gt;
-    &lt;title&gt;My Page&lt;/title&gt;
-&lt;/head&gt;
-&lt;body&gt;
-    &lt;h1&gt;Hello, Cody!&lt;/h1&gt;
-    &lt;p&gt;This is a sample HTML page.&lt;/p&gt;
-    &lt;button onclick="showMessage()"&gt;Click Me&lt;/button&gt;
-    &lt;div id="output"&gt;&lt;/div&gt;
-&lt;/body&gt;
-&lt;/html&gt;</textarea>
-                <textarea class="code-area hidden" id="cssCode" placeholder="Write your CSS code here...">body {
-    font-family: Arial, sans-serif;
-    text-align: center;
-    padding: 50px;
-    background: linear-gradient(135deg, #8EC5FC, #E0C3FC);
-    color: #333;
-}
-
-h1 {
-    color: #2c3e50;
-    margin-bottom: 20px;
-}
-
-button {
-    background-color: #3498db;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    margin-top: 20px;
-}
-
-button:hover {
-    background-color: #2980b9;
-}
-
-#output {
-    margin-top: 20px;
-    font-size: 18px;
-    font-weight: bold;
-}</textarea>
-                <textarea class="code-area hidden" id="jsCode" placeholder="Write your JavaScript code here...">function showMessage() {
-    const output = document.getElementById('output');
-    output.innerHTML = 'Welcome to Cody Code Runner!';
-    output.style.color = '#e74c3c';
-    
-    // Add a little animation
-    output.style.transform = 'scale(1.1)';
-    setTimeout(() => {
-        output.style.transform = 'scale(1)';
-    }, 300);
-}</textarea>
+                <textarea class="code-area" id="htmlCode" placeholder="Write your HTML code here..."></textarea>
+                <textarea class="code-area hidden" id="cssCode" placeholder="Write your CSS code here..."></textarea>
+                <textarea class="code-area hidden" id="jsCode" placeholder="Write your JavaScript code here..."></textarea>
             </div>
             
             <div class="preview-panel">
@@ -401,6 +358,12 @@ button:hover {
             <button id="codeFullscreenBtn">
                 <i>💻</i> Code in Full Page
             </button>
+            <button id="downloadBtn">
+                <i>💾</i> Download Code
+            </button>
+            <button id="backBtn" class="hidden">
+                <i>↩️</i> Back to Editor
+            </button>
         </div>
         <div class="status" id="status">Ready to code!</div>
     </div>
@@ -408,6 +371,7 @@ button:hover {
     <div class="zen-elements">
         <div class="zen-element" id="themeToggle">
             <select id="themeSelector" style="background: transparent; border: none; color: var(--light); -webkit-appearance: none; -moz-appearance: none; appearance: none; text-align-last: center;">
+                <option value="material3-theme" style="color: black;">Material 3</option>
                 <option value="liquid-glass-theme" style="color: black;">Liquid Glass</option>
                 <option value="cozy-theme" style="color: black;">Cozy</option>
                 <option value="aurora-theme" style="color: black;">Aurora</option>
@@ -434,9 +398,79 @@ button:hover {
         const status = document.getElementById('status');
         const codePanel = document.querySelector('.code-panel');
         const previewPanel = document.querySelector('.preview-panel');
-        const editorContainer = document.querySelector('.editor-container'); // Get the parent container
+        const editorContainer = document.querySelector('.editor-container');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const backBtn = document.getElementById('backBtn');
+        
+        // --- Local Storage ---
+        
+        function saveCode() {
+            localStorage.setItem('cody_html_code', htmlCode.value);
+            localStorage.setItem('cody_css_code', cssCode.value);
+            localStorage.setItem('cody_js_code', jsCode.value);
+        }
+        
+        function loadCode() {
+            htmlCode.value = localStorage.getItem('cody_html_code') || `<!DOCTYPE html>
+<html>
+<head>
+    <title>My Page</title>
+</head>
+<body>
+    <h1>Hello, Cody!</h1>
+    <p>This is a sample HTML page.</p>
+    <button onclick="showMessage()">Click Me</button>
+    <div id="output"></div>
+</body>
+</html>`;
+            cssCode.value = localStorage.getItem('cody_css_code') || `body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    padding: 50px;
+    background: linear-gradient(135deg, #EADDFF, #B39DDB);
+    color: #333;
+}
 
-        // Tab switching
+h1 {
+    color: #311B92;
+    margin-bottom: 20px;
+}
+
+button {
+    background-color: #6750A4;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 20px;
+}
+
+button:hover {
+    background-color: #533E85;
+}
+
+#output {
+    margin-top: 20px;
+    font-size: 18px;
+    font-weight: bold;
+}`;
+            jsCode.value = localStorage.getItem('cody_js_code') || `function showMessage() {
+    const output = document.getElementById('output');
+    output.innerHTML = 'Welcome to Cody Code Runner!';
+    output.style.color = '#B00020'; /* M3 Error Color */
+    
+    // Add a little animation
+    output.style.transform = 'scale(1.1)';
+    setTimeout(() => {
+        output.style.transform = 'scale(1)';
+    }, 300);
+}`;
+        }
+        
+        // --- Tab switching ---
+        
         codeTabs.forEach(tab => {
             tab.addEventListener('click', () => {
                 const tabName = tab.getAttribute('data-tab');
@@ -455,14 +489,14 @@ button:hover {
             });
         });
 
-        // Run code
+        // --- Core Functions ---
+
         function runCode() {
             try {
                 const html = htmlCode.value;
                 const css = cssCode.value;
                 const js = jsCode.value;
                 
-                // Create a complete HTML document
                 const fullHtml = `
                     <!DOCTYPE html>
                     <html>
@@ -484,9 +518,7 @@ button:hover {
                     </html>
                 `;
                 
-                // Write to iframe using srcdoc for better compatibility
                 preview.srcdoc = fullHtml;
-                
                 status.textContent = "Code executed successfully!";
                 status.style.color = "#a8e6cf";
             } catch (error) {
@@ -496,30 +528,38 @@ button:hover {
             }
         }
 
-        // Clear all code
         function clearCode() {
             if (confirm('Are you sure you want to clear all code?')) {
                 htmlCode.value = '';
                 cssCode.value = '';
                 jsCode.value = '';
+                saveCode();
                 
-                // Clear the preview
                 preview.srcdoc = '<html><body style="display: flex; align-items: center; justify-content: center; height: 100%; font-family: Arial;"><div>Preview will appear here</div></body></html>';
-                
                 status.textContent = "All code cleared!";
             }
         }
+        
+        function downloadCode() {
+            const zip = new JSZip();
+            zip.file("index.html", htmlCode.value);
+            zip.file("style.css", cssCode.value);
+            zip.file("script.js", jsCode.value);
+            
+            zip.generateAsync({type:"blob"}).then(function(content) {
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(content);
+                link.download = "cody-project.zip";
+                link.click();
+            });
+        }
+        
+        // --- UI Functions ---
 
-        // Change theme
         function changeTheme(theme) {
             document.body.className = theme;
         }
 
-        themeSelector.addEventListener('change', (e) => {
-            changeTheme(e.target.value);
-        });
-
-        // Toggle fullscreen
         function toggleFullscreen() {
             if (!document.fullscreenElement) {
                 document.documentElement.requestFullscreen();
@@ -531,30 +571,33 @@ button:hover {
                 }
             }
         }
-
-        // **** CORRECTED CODE STARTS HERE ****
-
-        // Preview in full page (focus mode)
-        previewFullscreenBtn.addEventListener('click', () => {
-            editorContainer.classList.toggle('preview-fullscreen');
-            // Ensure the other mode is off if this one is activated
-            if (editorContainer.classList.contains('preview-fullscreen')) {
-                editorContainer.classList.remove('code-fullscreen');
-            }
-        });
-
-        // Code in full page (focus mode)
-        codeFullscreenBtn.addEventListener('click', () => {
-            editorContainer.classList.toggle('code-fullscreen');
-            // Ensure the other mode is off if this one is activated
-            if (editorContainer.classList.contains('code-fullscreen')) {
-                editorContainer.classList.remove('preview-fullscreen');
-            }
-        });
         
-        // **** CORRECTED CODE ENDS HERE ****
+        function setFocusMode(mode) {
+            editorContainer.classList.remove('code-fullscreen', 'preview-fullscreen');
+            if (mode) {
+                editorContainer.classList.add(mode);
+                backBtn.classList.remove('hidden');
+                runBtn.classList.add('hidden');
+                clearBtn.classList.add('hidden');
+                previewFullscreenBtn.classList.add('hidden');
+                codeFullscreenBtn.classList.add('hidden');
+                downloadBtn.classList.add('hidden');
+            } else {
+                backBtn.classList.add('hidden');
+                runBtn.classList.remove('hidden');
+                clearBtn.classList.remove('hidden');
+                previewFullscreenBtn.classList.remove('hidden');
+                codeFullscreenBtn.classList.remove('hidden');
+                downloadBtn.classList.remove('hidden');
+            }
+        }
 
-        // Create water ripple effect
+        previewFullscreenBtn.addEventListener('click', () => setFocusMode('preview-fullscreen'));
+        codeFullscreenBtn.addEventListener('click', () => setFocusMode('code-fullscreen'));
+        backBtn.addEventListener('click', () => setFocusMode(null));
+        
+        // --- Water Effect ---
+
         function createRipple() {
             const ripple = document.createElement('div');
             ripple.classList.add('ripple');
@@ -576,35 +619,41 @@ button:hover {
             }, 3000);
         }
 
-        // Event listeners
+        // --- Event Listeners ---
+
         runBtn.addEventListener('click', runCode);
         clearBtn.addEventListener('click', clearCode);
+        downloadBtn.addEventListener('click', downloadCode);
         fullscreenToggle.addEventListener('click', toggleFullscreen);
+        themeSelector.addEventListener('change', (e) => changeTheme(e.target.value));
 
-        // Auto-run code after a short delay when typing
         let timeout;
         [htmlCode, cssCode, jsCode].forEach(editor => {
             editor.addEventListener('input', () => {
                 clearTimeout(timeout);
-                timeout = setTimeout(runCode, 1000);
+                timeout = setTimeout(() => {
+                    runCode();
+                    saveCode();
+                }, 1000);
                 status.textContent = "Typing...";
                 status.style.color = "#ffd3b6";
             });
         });
 
-        // Initialize with some ripples
+        // --- Initialization ---
+
+        loadCode();
+        
         for (let i = 0; i < 5; i++) {
             setTimeout(createRipple, i * 500);
         }
 
-        // Continue creating ripples
         setInterval(createRipple, 2000);
 
-        // Initialize preview with default content
         preview.srcdoc = '<html><body style="display: flex; align-items: center; justify-content: center; height: 100%; font-family: Arial;"><div>Preview will appear here</div></body></html>';
         
-        // Run initial code
         setTimeout(runCode, 500);
     </script>
 </body>
 </html>
+
