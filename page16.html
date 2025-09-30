@@ -116,6 +116,74 @@ body.theme-liquid-glass .task-item {
     -webkit-backdrop-filter: blur(15px);
     border: 1px solid var(--border-color);
 }
+body.theme-zen {
+--background: #F0F2EB;
+--surface: #FFFFFF;
+--surface-elevated: #F8F9F2;
+--primary: #6B8E23;
+--primary-rgb: 107, 142, 35;
+--primary-light: rgba(107, 142, 35, 0.1);
+--text-primary: #34495E;
+--text-secondary: #7F8C8D;
+--border-color: #E0E0E0;
+}
+
+body.theme-aurora {
+--background: #000000;
+--surface: rgba(22, 27, 34, 0.6);
+--surface-elevated: rgba(33, 38, 45, 0.7);
+--primary: #A77DF4;
+--primary-rgb: 167, 125, 244;
+--primary-light: rgba(167, 125, 244, 0.15);
+--text-primary: #F0F6FC;
+--text-secondary: #8B949E;
+--border-color: rgba(255, 255, 255, 0.2);
+backdrop-filter: blur(20px);
+}
+
+.aurora-background {
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+overflow: hidden;
+z-index: -1;
+}
+
+.aurora-shape {
+position: absolute;
+border-radius: 50%;
+filter: blur(100px);
+opacity: 0.5;
+}
+
+.aurora-shape1 {
+width: 500px;
+height: 500px;
+background: #FF00FF;
+top: -250px;
+left: -250px;
+animation: aurora-anim 15s infinite alternate;
+}
+
+.aurora-shape2 {
+width: 400px;
+height: 400px;
+background: #00FFFF;
+bottom: -200px;
+right: -200px;
+animation: aurora-anim 20s infinite alternate-reverse;
+}
+
+@keyframes aurora-anim {
+from {
+transform: translate(0, 0) rotate(0deg);
+}
+to {
+transform: translate(200px, 100px) rotate(360deg);
+}
+}
 
 
 /* Global Styles */
@@ -1055,7 +1123,10 @@ box-shadow: none;
 </style>
 </head>
 <body>
-
+<div class="aurora-background">
+    <div class="aurora-shape aurora-shape1"></div>
+    <div class="aurora-shape aurora-shape2"></div>
+</div>
 <div class="app-container">
   <!-- Sidebar -->
   <div class="sidebar" id="sidebar">
@@ -1131,6 +1202,14 @@ box-shadow: none;
                 <div class="theme-color" style="background-image: linear-gradient(to right, #86A8E7, #7F7FD5); "></div>
                 <span>Liquid Glass</span>
               </div>
+              <div class="theme-option" data-theme="theme-zen">
+                <div class="theme-color" style="background: #6B8E23;"></div>
+                <span>Zen</span>
+              </div>
+              <div class="theme-option" data-theme="theme-aurora">
+                  <div class="theme-color" style="background-image: linear-gradient(to right, #A77DF4, #FF00FF, #00FFFF); "></div>
+                  <span>Aurora</span>
+              </div>
           </div>
         </div>
       </div>
@@ -1142,7 +1221,7 @@ box-shadow: none;
       <section class="calendar-section" id="calendarSection">
         <div class="calendar-header">
           <div class="calendar-top-controls">
-              <a href="page16.html" class="calendar-back-btn" id="calendarBackBtn" aria-label="Go Back">
+              <a href="#" class="calendar-back-btn" id="calendarBackBtn" aria-label="Go Back">
                   <i class="fas fa-arrow-left"></i>
               </a>
               <div class="calendar-nav">
@@ -1302,6 +1381,10 @@ class ChronoFocusPro {
     this.elements.prevMonth.addEventListener('click', () => this.changeMonth(-1));
     this.elements.nextMonth.addEventListener('click', () => this.changeMonth(1));
     this.elements.todayBtn.addEventListener('click', () => this.goToToday());
+    this.elements.calendarBackBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        this.closeCalendarOnMobile();
+    });
 
     // Task input and actions
     this.elements.taskInput.addEventListener('keypress', (e) => {
@@ -1658,9 +1741,13 @@ class ChronoFocusPro {
   }
   handleResize() {
     if (window.innerWidth > 992) this.elements.sidebar.classList.remove('visible');
-    if (window.innerWidth > 768) this.elements.calendarSection.classList.remove('visible');
-    else this.elements.calendarSection.classList.remove('hidden');
+    if (window.innerWidth > 768) {
+      this.elements.calendarSection.classList.remove('visible');
+    } else {
+      this.elements.calendarSection.classList.remove('hidden');
+    }
   }
+
 
   // Theme Methods
   toggleThemeDropdown() { this.elements.themeDropdown.classList.toggle('visible'); }
@@ -1706,3 +1793,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
 </body>
 </html>
+
