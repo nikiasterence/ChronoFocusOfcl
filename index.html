@@ -61,13 +61,13 @@
       height: 100%;
       font-family: 'Inter', sans-serif;
       color: var(--text-primary);
-      background: linear-gradient(-45deg, var(--bg-gradient-start), var(--bg-gradient-end));
-      background-size: 200% 200%;
-      animation: gradient 15s ease infinite;
+      background: linear-gradient(-45deg, var(--bg-gradient-start), var(--bg-gradient-end), #4A00E0, #8E2DE2);
+      background-size: 400% 400%;
+      animation: gradient 25s ease infinite;
       display: grid;
       place-items: center;
       padding: 1rem;
-      overflow: hidden; /* Prevents scrollbars during animations */
+      overflow: hidden;
     }
 
     /* --- Animations --- */
@@ -89,6 +89,11 @@
       from { opacity: 1; transform: translateY(0) scale(1); }
       to { opacity: 0; transform: translateY(-20px) scale(0.98); }
     }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
 
     /* --- Base Container & Modules --- */
     .container {
@@ -97,8 +102,8 @@
       background: var(--glass-bg);
       border-radius: 28px;
       box-shadow: 0 16px 40px var(--shadow-color);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
+      backdrop-filter: blur(25px) saturate(150%);
+      -webkit-backdrop-filter: blur(25px) saturate(150%);
       border: 1px solid var(--glass-border);
       text-align: center;
       z-index: 2;
@@ -107,12 +112,13 @@
       visibility: hidden;
       transition: opacity 0.5s cubic-bezier(0.25, 1, 0.5, 1), transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
       position: absolute;
+      animation: float 6s ease-in-out infinite;
     }
     .container.active {
       opacity: 1;
       transform: translateY(0) scale(1);
       visibility: visible;
-      animation: fadeIn 0.5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+      animation: fadeIn 0.5s cubic-bezier(0.25, 1, 0.5, 1) forwards, float 6s ease-in-out infinite;
     }
     .hidden { display: none; }
 
@@ -326,17 +332,38 @@
           });
       }
 
-      function setupRegistration() {
+      function setupRegistration(isUpdate = false) {
           const form = document.getElementById('registration-form');
           const pfpUpload = document.getElementById('pfp-upload');
           const pfpPreview = document.getElementById('pfp-preview');
+          const nameInput = document.getElementById('name');
+          const emailInput = document.getElementById('email');
+          const genderInput = document.getElementById('gender');
+          const ageInput = document.getElementById('age');
+          const registerBtn = document.getElementById('registerBtn');
           let pfpData = null;
+
+          if (isUpdate) {
+            const userData = JSON.parse(localStorage.getItem(USER_DATA_KEY));
+            pfpData = userData.pfp;
+            if (pfpData) {
+                pfpPreview.style.backgroundImage = `url(${pfpData})`;
+                pfpPreview.textContent = '';
+            }
+            nameInput.value = userData.name;
+            emailInput.value = userData.email;
+            genderInput.value = userData.gender;
+            ageInput.value = userData.age;
+            registerBtn.textContent = 'Update Profile';
+            document.querySelector('#registration-container h1').textContent = 'Update Your Profile';
+            document.querySelector('#registration-container p').textContent = 'Keep your information up to date.';
+          }
+
 
           pfpUpload.addEventListener('change', (e) => {
               const file = e.target.files?.[0];
               if (!file) return;
 
-              // Simple file size check (e.g., 5MB)
               if (file.size > 5 * 1024 * 1024) {
                 alert('File is too large. Please select an image under 5MB.');
                 return;
@@ -354,13 +381,13 @@
               reader.readAsDataURL(file);
           });
           
-          form.addEventListener('submit', (e) => {
+          form.onsubmit = (e) => {
               e.preventDefault();
               if (form.checkValidity() === false) {
                   alert("Please fill out all fields correctly.");
                   return;
               }
-              const age = parseInt(document.getElementById('age').value, 10);
+              const age = parseInt(ageInput.value, 10);
               if (age < 12) {
                   alert("You must be at least 12 years old to register.");
                   return;
@@ -368,16 +395,21 @@
               
               const newUserData = {
                   pfp: pfpData, 
-                  name: document.getElementById('name').value.trim(),
-                  email: document.getElementById('email').value.trim(), 
-                  gender: document.getElementById('gender').value,
+                  name: nameInput.value.trim(),
+                  email: emailInput.value.trim(), 
+                  gender: genderInput.value,
                   age: age
               };
               
               localStorage.setItem(USER_DATA_KEY, JSON.stringify(newUserData));
-              showModule('pin-container');
-              setupPinScreen('set', newUserData);
-          });
+              if(isUpdate) {
+                alert('Profile updated successfully!');
+                showMainApp(newUserData);
+              } else {
+                showModule('pin-container');
+                setupPinScreen('set', newUserData);
+              }
+          };
       }
 
       function setupPinScreen(mode, userData) {
@@ -401,7 +433,6 @@
           
           function handleIncorrectPin() {
               pinDisplay.classList.add('shake');
-              // Clear pin after a short delay
               setTimeout(() => {
                   pinDisplay.classList.remove('shake');
                   resetPinDisplay();
@@ -411,7 +442,19 @@
           const modes = {
               set: { title: 'Set Your 4-Digit PIN', subtitle: 'This will be used for quick, secure access.', logo: '🔒', next: (newPin) => { localStorage.setItem(USER_PIN_KEY, newPin); showMainApp(userData); } },
               login: { title: `Welcome Back, ${userData.name}`, subtitle: 'Please enter your PIN to continue.', logo: '🔑', next: (enteredPin) => (enteredPin === savedPin ? showMainApp(userData) : handleIncorrectPin()) },
-              confirmOld: { title: 'Enter Your Current PIN', subtitle: 'Please confirm your old PIN to proceed.', logo: '🔐', next: (enteredPin) => (enteredPin === savedPin ? setupPinScreen('setNew', userData) : handleIncorrectPin()) },
+              confirmOld: { title: 'Enter Your Current PIN', subtitle: 'Please confirm your old PIN to proceed.', logo: '🔐', next: (enteredPin) => {
+                  if (enteredPin === savedPin) {
+                    const action = confirm("Do you want to change your PIN? OK for PIN change, Cancel to edit your profile.");
+                    if(action) {
+                      setupPinScreen('setNew', userData);
+                    } else {
+                      showModule('registration-container');
+                      setupRegistration(true);
+                    }
+                  } else {
+                    handleIncorrectPin();
+                  }
+              }},
               setNew: { title: 'Set a New PIN', subtitle: 'Enter your new 4-digit PIN.', logo: '🔒', next: (newPin) => { tempPin = newPin; resetPinDisplay(); setupPinScreen('confirmNew', userData); } },
               confirmNew: { title: 'Confirm Your New PIN', subtitle: 'Please re-enter your new PIN.', logo: '✅', next: (confirmedPin) => (confirmedPin === tempPin ? (localStorage.setItem(USER_PIN_KEY, confirmedPin), alert('PIN updated successfully!'), showMainApp(userData)) : (alert('PINs do not match. Please try again.'), setupPinScreen('setNew', userData))) }
           };
@@ -421,7 +464,6 @@
           logo.textContent = modes[mode].logo;
           resetPinDisplay();
 
-          // Crucial bug fix: Remove old listener before adding a new one
           if (pinKeypadHandler) {
             keypad.removeEventListener('click', pinKeypadHandler);
           }
@@ -439,7 +481,6 @@
               updatePinDisplay();
               
               if (currentPin.length === 4) {
-                  // A brief delay allows user to see the last dot fill
                   setTimeout(() => modes[mode].next(currentPin), 250); 
               }
           };
@@ -480,14 +521,12 @@
         const handleEntry = () => {
             const selectedRegion = regionSelect.value;
             enterBtn.disabled = true;
-            regionSelect.disabled = true;
-            enterBtn.classList.add('loading'); // Use class for loading state
+            enterBtn.classList.add('loading'); 
             
             successMsg.textContent = `✓ Preparing your sanctuary in ${selectedRegion}…`;
             successMsg.style.display = 'block';
             localStorage.setItem(SAVED_REGION_KEY, selectedRegion);
             
-            // Simulate loading and redirect
             setTimeout(() => {
                 window.location.href = 'page1.html';
             }, 1800);
@@ -498,10 +537,9 @@
             setupPinScreen('confirmOld', userData);
         };
 
-        // Attach event listeners
-        regionSelect.addEventListener('change', validateSelection);
-        enterBtn.addEventListener('click', handleEntry);
-        settingsBtn.addEventListener('click', handleSettings);
+        regionSelect.onchange = validateSelection;
+        enterBtn.onclick = handleEntry;
+        settingsBtn.onclick = handleSettings;
         
         personalizeHeader();
         loadSavedRegion();
