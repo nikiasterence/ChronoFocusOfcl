@@ -98,8 +98,11 @@
 
         .aurora-item {
             position: absolute; border-radius: 50%;
-            filter: blur(120px); opacity: 0;
+            /* --- PERFORMANCE OPTIMIZATION: Reduced blur radius significantly --- */
+            filter: blur(80px); opacity: 0;
             transition: all 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            /* --- PERFORMANCE OPTIMIZATION: Hinting browser about upcoming animations --- */
+            will-change: transform, opacity;
         }
 
         .aurora-item:nth-child(1) {
@@ -150,8 +153,9 @@
         .app {
             width: min(95%, 600px); 
             background: var(--card-bg);
-            backdrop-filter: blur(25px) saturate(1.8);
-            -webkit-backdrop-filter: blur(25px) saturate(1.8);
+            /* --- PERFORMANCE NOTE: backdrop-filter is intensive. This value is a compromise. --- */
+            backdrop-filter: blur(20px) saturate(1.8);
+            -webkit-backdrop-filter: blur(20px) saturate(1.8);
             border-radius: 28px; 
             padding: var(--app-padding); 
             box-shadow: 
@@ -445,8 +449,8 @@
             align-items: center; 
             padding: var(--dock-padding); 
             background: rgba(18, 18, 30, 0.85);
-            backdrop-filter: blur(30px) saturate(1.8); 
-            -webkit-backdrop-filter: blur(30px) saturate(1.8);
+            backdrop-filter: blur(25px) saturate(1.8); 
+            -webkit-backdrop-filter: blur(25px) saturate(1.8);
             box-shadow: 
                 0 12px 50px var(--shadow-color),
                 inset 0 1px 0 rgba(255, 255, 255, 0.2),
@@ -504,6 +508,8 @@
             overflow: hidden;
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.1);
+             /* --- PERFORMANCE OPTIMIZATION: Faster transform animations --- */
+            will-change: transform;
         }
 
         /* Liquid Shine Effect */
@@ -540,6 +546,28 @@
                 0 0 30px var(--accent);
             z-index: 10;
         }
+
+        /* --- DOCK ANIMATION OPTIMIZATION: Switched to pure CSS for performance --- */
+        .dock.anim-bubble .dock-icon, .dock.anim-scale .dock-icon {
+             transition: transform 0.15s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+        /* Bubble Animation */
+        .dock.anim-bubble .dock-icon:hover {
+            transform: scale(1.4);
+        }
+        /* Fisheye/Scale Animation */
+        .dock.anim-scale .dock-icon:hover {
+            transform: scale(1.7);
+        }
+        .dock.anim-scale .dock-icon:hover + .dock-icon,
+        .dock.anim-scale .dock-icon:has(+ .dock-icon:hover) {
+            transform: scale(1.4);
+        }
+        .dock.anim-scale .dock-icon:hover + .dock-icon + .dock-icon,
+        .dock.anim-scale .dock-icon:has(+ .dock-icon + .dock-icon:hover) {
+            transform: scale(1.15);
+        }
+        /* End of Dock Animation */
 
         /* Ripple Effect on Click */
         .dock-icon::after {
@@ -951,14 +979,14 @@
             font-weight: 500;
         }
         
-        /* ===== 20x BETTER LAUNCHPAD STYLES ===== */
+        /* ===== 20x BETTER LAUNCHPAD STYLES (IMPROVEMENT) ===== */
         .launchpad-overlay {
             position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
             background-color: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(15px) saturate(1.8); /* Less blurry */
-            -webkit-backdrop-filter: blur(15px) saturate(1.8);
+            backdrop-filter: blur(12px) saturate(1.8);
+            -webkit-backdrop-filter: blur(12px) saturate(1.8);
             z-index: 999;
             display: flex;
             justify-content: center;
@@ -974,6 +1002,36 @@
             visibility: visible;
         }
 
+        /* --- IMPROVEMENT: Added dedicated launchpad close button --- */
+        #launchpad-close-btn {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            background: rgba(0,0,0,0.4);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            color: var(--text-primary);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-size: 2rem;
+            line-height: 1;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            opacity: 0;
+        }
+
+        .launchpad-overlay.visible #launchpad-close-btn {
+            opacity: 1;
+            transition-delay: 0.3s;
+        }
+
+        #launchpad-close-btn:hover {
+            transform: scale(1.1) rotate(90deg);
+            background: var(--accent);
+            color: var(--background);
+        }
+
         #launchpad-search {
             width: clamp(300px, 60vw, 500px);
             height: 50px;
@@ -985,7 +1043,7 @@
             font-size: 1.2rem;
             color: var(--text-primary);
             box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            transition: all 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
             opacity: 0;
             transform: translateY(-20px);
         }
@@ -1020,28 +1078,39 @@
             text-decoration: none;
             color: var(--text-primary);
             gap: 12px;
-            transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-            opacity: 0;
-            transform: scale(0.9);
-            animation: launchpad-item-appear 0.5s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
+            /* --- IMPROVEMENT: Using separate animations for entrance and exit --- */
+            animation-duration: 0.5s;
+            animation-timing-function: cubic-bezier(0.25, 0.8, 0.25, 1);
+            animation-fill-mode: forwards;
+        }
+
+        .launchpad-item:hover {
+            /* --- IMPROVEMENT: Use !important to override animation transforms during hover --- */
+            transform: scale(1.1) !important;
+            transition: transform 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
         .launchpad-overlay.visible .launchpad-item {
-            /* Stagger the animation */
+            animation-name: launchpad-item-appear;
+             /* Stagger the entrance animation */
             animation-delay: calc(0.2s + (var(--item-index) * 0.03s));
+        }
+        /* --- IMPROVEMENT: Added exit animation --- */
+        .launchpad-overlay.hiding .launchpad-item {
+            animation-name: launchpad-item-disappear;
+             /* Stagger the exit animation in reverse */
+            animation-delay: calc(var(--item-index-rev) * 0.02s);
         }
 
         @keyframes launchpad-item-appear {
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        @keyframes launchpad-item-disappear {
+            from { opacity: 1; transform: scale(1); }
+            to { opacity: 0; transform: scale(0.9); }
         }
         
-        .launchpad-item:hover {
-            transform: scale(1.1) !important; /* !important to override staggered animation transform */
-        }
-
         .launchpad-item .dock-icon {
             width: 80px;
             height: 80px;
@@ -1078,6 +1147,8 @@
             opacity: 0;
             visibility: hidden;
             transition: all 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+             /* --- PERFORMANCE OPTIMIZATION: Prepare for transform/opacity changes --- */
+            will-change: transform, opacity;
         }
 
         .chat-window.open {
@@ -1269,6 +1340,12 @@
                 min-height: 100vh;
             }
             
+            #launchpad-close-btn {
+                top: 20px; right: 20px;
+                width: 40px; height: 40px;
+                font-size: 1.5rem;
+            }
+            
             .caffeine-counter {
                 flex-direction: column;
                 gap: 15px;
@@ -1363,8 +1440,10 @@
         <div class="aurora-item"></div><div class="aurora-item"></div>
     </div>
 
-    <!-- ===== BETTER LAUNCHPAD OVERLAY ===== -->
+    <!-- ===== BETTER LAUNCHPAD OVERLAY (IMPROVEMENT) ===== -->
     <div class="launchpad-overlay" id="launchpad-overlay">
+        <!-- IMPROVEMENT: Added a dedicated close button -->
+        <button class="launchpad-close-btn" id="launchpad-close-btn" title="Close (Esc)">&times;</button>
         <input type="text" id="launchpad-search" placeholder="Search Apps...">
         <div class="launchpad-grid" id="launchpad-grid">
             <!-- App icons will be dynamically inserted here by JavaScript -->
@@ -1502,7 +1581,7 @@
     </div>
 
     <script>
-        // --- DOM ELEMENT SELECTORS ---
+        // --- DOM ELEMENT SELECTORS (Cached for performance) ---
         const tipElement = document.getElementById("tip");
         const caffeineCountEl = document.getElementById("caffeine-count");
         const caffeineWarningEl = document.getElementById("caffeine-warning");
@@ -1538,11 +1617,12 @@
         const launchpadOverlay = document.getElementById('launchpad-overlay');
         const launchpadGrid = document.getElementById('launchpad-grid');
         const launchpadSearch = document.getElementById('launchpad-search');
+        const launchpadCloseBtn = document.getElementById('launchpad-close-btn'); // IMPROVEMENT: New button
 
         // --- APP STATE ---
         let caffeineIntake = 0;
         let calendarVisible = true;
-        let dockAnimationType = 'none'; // 'none', 'scale', 'bubble'
+        let launchpadTimeout; // IMPROVEMENT: For handling launchpad close animation
         
         const tips = [ 
             "Break your study time into 25-minute intervals with the Pomodoro Technique.", "Use active recall by testing yourself, not just rereading notes.", "Explain what you've learned to someone else to solidify your understanding.", "Create a dedicated, distraction-free study zone.", "Use flashcards for key terms and concepts.", "Review material consistently, a little bit each day.", "Prioritize sleep; it's crucial for memory consolidation.", "Stay hydrated and eat nutritious brain food.", "Use mind maps to visualize connections between ideas.", "Take short, regular breaks to avoid burnout.", "Teach concepts to an imaginary audience to identify knowledge gaps.", "Use the Feynman Technique: simplify complex topics as if explaining to a child.", "Change study locations occasionally to improve memory retention.", "Practice spaced repetition for long-term memorization.", "Start with the most challenging material when your mind is freshest.", "Use mnemonic devices to remember complex information.", "Set specific, achievable goals for each study session.", "Connect new information to what you already know.", "Take notes by hand to improve information processing.", "Use background music without lyrics to enhance focus.", "Schedule regular review sessions instead of cramming.", "Break large projects into smaller, manageable tasks.", "Use the 80/20 rule: focus on the 20% that gives 80% of results.", "Test yourself frequently to monitor your progress.", "Reward yourself after completing study milestones.", "Use different colored pens for different types of information.", "Create a study schedule and stick to it consistently.", "Find a study partner for accountability and discussion.", "Avoid multitasking—focus on one subject at a time.", "Use online resources and educational videos for difficult concepts.", "Practice problems actively instead of passively reading solutions."
@@ -1708,7 +1788,6 @@
                 dot.title = displayName;
                 dot.dataset.theme = themeName;
                 
-                // Create the color swatches inside the box
                 dot.innerHTML = `
                     <span class="theme-color-swatch" style="background-color: ${themeColors['--primary-glow']}"></span>
                     <span class="theme-color-swatch" style="background-color: ${themeColors['--accent']}"></span>
@@ -1718,7 +1797,7 @@
 
                 dot.addEventListener('click', () => {
                     setTheme(themeName);
-                    closeThemeModal(); // Close modal after selection
+                    closeThemeModal();
                 });
                 themeGridContainer.appendChild(dot);
             }
@@ -1751,7 +1830,6 @@
 
             dockPosButtons.forEach(btn => btn.classList.toggle('active', btn.dataset.pos === position));
             localStorage.setItem('studyVerseDockPosition', position);
-            setDockAnimation(dockAnimationType); // Re-initialize animation for new layout
         }
 
         /**
@@ -1767,7 +1845,6 @@
 
             dockSizeButtons.forEach(btn => btn.classList.toggle('active', btn.dataset.size === size));
             localStorage.setItem('studyVerseDockSize', size);
-            setDockAnimation(dockAnimationType); // Re-initialize animation for new layout
         }
         
         /**
@@ -1822,11 +1899,11 @@
             }
         }
         
-        // --- LAUNCHPAD LOGIC ---
-
+        // --- IMPROVED LAUNCHPAD LOGIC ---
         function populateLaunchpad() {
             launchpadGrid.innerHTML = ''; // Clear previous items
             const icons = dockElement.querySelectorAll('.dock-icon:not(.dock-launchpad)');
+            const totalIcons = icons.length;
 
             icons.forEach((icon, index) => {
                 const iconClone = icon.cloneNode(true);
@@ -1837,19 +1914,18 @@
                 launchpadItem.className = 'launchpad-item';
                 if(icon.tagName.toLowerCase() === 'a') {
                     launchpadItem.href = icon.href;
-                    if (icon.target === '_blank') {
-                        launchpadItem.target = '_blank';
-                    }
+                    if (icon.target === '_blank') launchpadItem.target = '_blank';
                 }
                 
-                if (icon.onclick) {
-                    launchpadItem.onclick = icon.onclick;
-                }
+                if (icon.onclick) launchpadItem.onclick = icon.onclick;
                 
                 launchpadItem.innerHTML = `<div class="launchpad-item-label">${labelText}</div>`;
                 launchpadItem.prepend(iconClone);
 
+                // For staggering animations
                 launchpadItem.style.setProperty('--item-index', index);
+                launchpadItem.style.setProperty('--item-index-rev', totalIcons - index - 1);
+
 
                 const internalLabel = iconClone.querySelector('.dock-icon-label');
                 if (internalLabel) internalLabel.remove();
@@ -1863,14 +1939,22 @@
         
         function toggleLaunchpad() {
             const isVisible = launchpadOverlay.classList.contains('visible');
+            clearTimeout(launchpadTimeout);
+
             if (!isVisible) {
+                launchpadOverlay.classList.remove('hiding'); // Ensure hiding class is removed
                 populateLaunchpad(); 
                 launchpadOverlay.classList.add('visible');
                 launchpadSearch.focus(); 
             } else {
-                launchpadOverlay.classList.remove('visible');
-                launchpadSearch.value = ''; 
-                filterLaunchpadApps(''); 
+                launchpadOverlay.classList.add('hiding');
+                // Wait for the exit animation to finish before hiding the overlay
+                launchpadTimeout = setTimeout(() => {
+                    launchpadOverlay.classList.remove('visible');
+                    launchpadOverlay.classList.remove('hiding');
+                    launchpadSearch.value = ''; 
+                    filterLaunchpadApps(''); 
+                }, 500); // This duration should match the longest animation
             }
         }
         
@@ -1880,17 +1964,12 @@
             
             apps.forEach(app => {
                 const label = app.querySelector('.launchpad-item-label').textContent.toLowerCase();
-                if(label.includes(searchTerm)) {
-                    app.style.display = 'flex';
-                } else {
-                    app.style.display = 'none';
-                }
+                app.style.display = label.includes(searchTerm) ? 'flex' : 'none';
             });
         }
 
 
         // --- ENHANCED CHAT AI LOGIC ---
-        
         const pageNavigationMap = {
             'motivation': 'page12.html', 'tasks': 'page16.html', 'task': 'page16.html', 'pomodoro': 'page13.html', 'deep focus': 'page9.html', 'measure': 'page10.html', 'researcho': 'page5.html', 'research': 'page5.html', 'typing test': 'page6.html', 'typing': 'page6.html', 'puzzle': 'page7.html', 'puzzles': 'page7.html', 'formulas': 'page4.html', 'formula station': 'page4.html', 'whiteboard': 'page8.html', 'white board': 'page8.html', 'booknest': 'page13.html', 'books': 'page13.html', 'mood': 'page11.html', 'moodly': 'page11.html', 'code cody': 'page17.html', 'code': 'page17.html', 'coding': 'page17.html'
         };
@@ -1984,142 +2063,24 @@
             setupChatAI();
         }
         
-        // --- NEW DOCK ANIMATION LOGIC ---
-        let dockIconListeners = []; // Store listeners to easily remove them
+        // --- OPTIMIZED DOCK ANIMATION LOGIC ---
 
         /**
-         * Master function to set the dock animation type.
+         * Master function to set the dock animation type. This is much more performant as
+         * it offloads all animation logic to CSS classes.
          * @param {string} type - The animation type ('none', 'scale', 'bubble').
          */
         function setDockAnimation(type) {
-            destroyDockAnimation(); // Clean up previous animation listeners first
+            dockElement.classList.remove('anim-scale', 'anim-bubble');
             
-            dockAnimationType = type;
-            localStorage.setItem('studyVerseDockAnimationType', type);
-            
-            if (type === 'scale') {
-                initializeScaleAnimation();
-            } else if (type === 'bubble') {
-                initializeBubbleAnimation();
+            if (type === 'scale' || type === 'bubble') {
+                dockElement.classList.add(`anim-${type}`);
             }
-            // If type is 'none', do nothing after cleanup.
             
-            // Update active button in settings
+            localStorage.setItem('studyVerseDockAnimationType', type);
             dockAnimButtons.forEach(btn => btn.classList.toggle('active', btn.dataset.anim === type));
         }
 
-        /**
-         * Removes all active animation event listeners and resets icon styles.
-         */
-        function destroyDockAnimation() {
-            // Remove all stored listeners
-            dockIconListeners.forEach(({element, type, handler}) => {
-                element.removeEventListener(type, handler);
-            });
-            dockIconListeners = []; // Clear the array
-
-            // Reset any lingering transformations
-            Array.from(dockElement.querySelectorAll('.dock-icon')).forEach(icon => {
-                icon.style.transition = 'transform 0.25s ease';
-                icon.style.transform = 'scale(1)';
-            });
-        }
-        
-        /**
-         * Initializes the smooth, Mac-style dock "scale" animation.
-         */
-        function initializeScaleAnimation() {
-            let animationFrameId = null;
-            const icons = Array.from(dockElement.querySelectorAll('.dock-icon'));
-            const maxScale = 1.8;
-            
-            const handleMouseMove = e => {
-                if (animationFrameId) cancelAnimationFrame(animationFrameId);
-                animationFrameId = requestAnimationFrame(() => {
-                    const isVertical = dockElement.classList.contains('dock-left') || dockElement.classList.contains('dock-right');
-                    const influenceRadius = isVertical ? dockElement.offsetHeight / 3.5 : dockElement.offsetWidth / 3.5;
-                    const mousePos = isVertical ? e.clientY : e.clientX;
-
-                    icons.forEach(icon => {
-                        const rect = icon.getBoundingClientRect();
-                        const iconCenter = isVertical ? rect.top + rect.height / 2 : rect.left + rect.width / 2;
-                        const distance = Math.abs(mousePos - iconCenter);
-                        
-                        let scale = 1;
-                        if (distance < influenceRadius) {
-                            scale = 1 + (maxScale - 1) * (Math.cos(distance / influenceRadius * (Math.PI / 2)));
-                        }
-                        icon.style.transition = 'transform 0.1s cubic-bezier(0.2, 0.8, 0.2, 1)';
-                        const translation = (scale - 1) * (isVertical ? icon.offsetWidth : icon.offsetHeight) * 0.5;
-                        icon.style.transform = isVertical 
-                            ? `translateX(${dockElement.classList.contains('dock-left') ? translation : -translation}px) scale(${scale})`
-                            : `translateY(-${translation}px) scale(${scale})`;
-                    });
-                });
-            };
-
-            const handleMouseLeave = () => {
-                if (animationFrameId) cancelAnimationFrame(animationFrameId);
-                icons.forEach(icon => {
-                    icon.style.transition = 'transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1)';
-                    icon.style.transform = 'translate(0, 0) scale(1)';
-                });
-            };
-            
-            dockElement.addEventListener('mousemove', handleMouseMove);
-            dockElement.addEventListener('mouseleave', handleMouseLeave);
-            // Store listeners for removal
-            dockIconListeners.push({ element: dockElement, type: 'mousemove', handler: handleMouseMove });
-            dockIconListeners.push({ element: dockElement, type: 'mouseleave', handler: handleMouseLeave });
-        }
-        
-        /**
-         * Initializes the individual "bubble" animation on hover.
-         */
-        function initializeBubbleAnimation() {
-            const icons = Array.from(dockElement.querySelectorAll('.dock-icon'));
-            icons.forEach(icon => {
-                const handleMouseEnter = () => {
-                    icon.style.transition = 'transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
-                    icon.style.transform = 'scale(1.6)';
-                    
-                    const prev = icon.previousElementSibling;
-                    const next = icon.nextElementSibling;
-                    if (prev && prev.classList.contains('dock-icon')) {
-                         prev.style.transition = 'transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
-                         prev.style.transform = 'scale(1.2)';
-                    }
-                    if (next && next.classList.contains('dock-icon')) {
-                         next.style.transition = 'transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
-                         next.style.transform = 'scale(1.2)';
-                    }
-                };
-                
-                const handleMouseLeave = () => {
-                     icon.style.transition = 'transform 0.2s ease-out';
-                     icon.style.transform = 'scale(1)';
-                     
-                    const prev = icon.previousElementSibling;
-                    const next = icon.nextElementSibling;
-                     if (prev && prev.classList.contains('dock-icon')) {
-                        prev.style.transition = 'transform 0.2s ease-out';
-                        prev.style.transform = 'scale(1)';
-                     }
-                     if (next && next.classList.contains('dock-icon')) {
-                        next.style.transition = 'transform 0.2s ease-out';
-                        next.style.transform = 'scale(1)';
-                     }
-                };
-
-                icon.addEventListener('mouseenter', handleMouseEnter);
-                icon.addEventListener('mouseleave', handleMouseLeave);
-                // Store listeners for removal
-                dockIconListeners.push({ element: icon, type: 'mouseenter', handler: handleMouseEnter });
-                dockIconListeners.push({ element: icon, type: 'mouseleave', handler: handleMouseLeave });
-            });
-        }
-        
-        
         // --- INITIALIZATION ---
         document.addEventListener("DOMContentLoaded", () => {
             // Setup Settings Modal listeners
@@ -2136,11 +2097,22 @@
             themeModalCloseBtn.addEventListener('click', closeThemeModal);
             themeModalOverlay.addEventListener('click', (event) => { if (event.target === themeModalOverlay) closeThemeModal(); });
 
-            // Setup Launchpad Listeners
+            // IMPROVED LAUNCHPAD LISTENERS
             launchpadDockIcon.addEventListener('click', toggleLaunchpad);
+            launchpadCloseBtn.addEventListener('click', toggleLaunchpad);
             launchpadOverlay.addEventListener('click', (event) => { if(event.target === launchpadOverlay) toggleLaunchpad(); });
             launchpadSearch.addEventListener('input', (e) => filterLaunchpadApps(e.target.value));
             
+            // IMPROVEMENT: Close modals with the 'Escape' key for better accessibility and UX
+            document.addEventListener('keydown', (event) => {
+                if (event.key === 'Escape') {
+                    if (launchpadOverlay.classList.contains('visible')) toggleLaunchpad();
+                    if (settingsModalOverlay.classList.contains('visible')) closeSettingsModal();
+                    if (themeModalOverlay.classList.contains('visible')) closeThemeModal();
+                    if (chatWindow.classList.contains('open')) chatWindow.classList.remove('open');
+                }
+            });
+
             // Load all user preferences and states
             loadState();
         });
