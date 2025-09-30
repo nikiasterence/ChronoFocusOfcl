@@ -15,20 +15,21 @@
   <style>
     :root {
       /* Light Mode Palette - Calmer & Cleaner */
-      --bg-gradient-start: #DDEBF7;
-      --bg-gradient-end: #C8E0F0;
+      --bg-gradient-start: #E9F1F8;
+      --bg-gradient-end: #DDEBF7;
       --text-primary: #1F2937;
       --text-secondary: #4B5563;
       --text-on-accent: #FFFFFF;
       --header-text: #111827;
-      --glass-bg: rgba(255, 255, 255, 0.6);
-      --glass-border: rgba(255, 255, 255, 0.8);
-      --shadow-color: rgba(100, 116, 139, 0.2);
-      --button-focus: rgba(59, 130, 246, 0.5);
+      --glass-bg: rgba(255, 255, 255, 0.5);
+      --glass-border: rgba(200, 215, 230, 0.7);
+      --shadow-color: rgba(100, 116, 139, 0.15);
+      --button-focus: rgba(59, 130, 246, 0.4);
       --accent-gradient: linear-gradient(135deg, #3B82F6, #1D4ED8);
       --error-color: #EF4444;
       --icon-bg: #E0E7FF;
       --icon-fg: #3730A3;
+      --loader-color: #3B82F6;
     }
 
     @media (prefers-color-scheme: dark) {
@@ -40,30 +41,33 @@
         --text-secondary: #94A3B8;
         --text-on-accent: #FFFFFF;
         --header-text: #FFFFFF;
-        --glass-bg: rgba(30, 41, 59, 0.7);
-        --glass-border: rgba(71, 85, 105, 0.3);
-        --shadow-color: rgba(0, 0, 0, 0.4);
+        --glass-bg: rgba(30, 41, 59, 0.6);
+        --glass-border: rgba(71, 85, 105, 0.2);
+        --shadow-color: rgba(0, 0, 0, 0.3);
         --button-focus: rgba(96, 165, 250, 0.5);
         --accent-gradient: linear-gradient(135deg, #38BDF8, #3B82F6);
         --error-color: #F87171;
         --icon-bg: #1E293B;
         --icon-fg: #7DD3FC;
+        --loader-color: #38BDF8;
       }
     }
 
     *, *::before, *::after { box-sizing: border-box; }
-    html, body { height: 100%; }
+    html { height: 100%; }
 
     body {
       margin: 0;
-      font-family: 'Inter', sans-serif; /* A popular, clean font for UI */
+      height: 100%;
+      font-family: 'Inter', sans-serif;
       color: var(--text-primary);
       background: linear-gradient(-45deg, var(--bg-gradient-start), var(--bg-gradient-end));
       background-size: 200% 200%;
-      animation: gradient 10s ease infinite;
+      animation: gradient 15s ease infinite;
       display: grid;
       place-items: center;
-      padding: 1rem; /* Allow space around the container on small screens */
+      padding: 1rem;
+      overflow: hidden; /* Prevents scrollbars during animations */
     }
 
     /* --- Animations --- */
@@ -73,112 +77,175 @@
       100% { background-position: 0% 50%; }
     }
     @keyframes shake {
-      10%, 90% { transform: translate3d(-1px, 0, 0); } 20%, 80% { transform: translate3d(2px, 0, 0); }
-      30%, 50%, 70% { transform: translate3d(-4px, 0, 0); } 40%, 60% { transform: translate3d(4px, 0, 0); }
+      0%, 100% { transform: translateX(0); }
+      10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+      20%, 40%, 60%, 80% { transform: translateX(5px); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    @keyframes fadeOut {
+      from { opacity: 1; transform: translateY(0) scale(1); }
+      to { opacity: 0; transform: translateY(-20px) scale(0.98); }
     }
 
+    /* --- Base Container & Modules --- */
     .container {
       width: min(95vw, 450px);
       padding: 40px;
       background: var(--glass-bg);
-      border-radius: 24px;
-      box-shadow: 0 8px 32px 0 var(--shadow-color);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
+      border-radius: 28px;
+      box-shadow: 0 16px 40px var(--shadow-color);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
       border: 1px solid var(--glass-border);
       text-align: center;
       z-index: 2;
-      transition: opacity 0.4s ease, transform 0.4s ease;
       opacity: 0;
-      transform: translateY(25px);
+      transform: translateY(20px) scale(0.98);
       visibility: hidden;
+      transition: opacity 0.5s cubic-bezier(0.25, 1, 0.5, 1), transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
       position: absolute;
     }
-    .container.active { opacity: 1; transform: translateY(0); visibility: visible; }
+    .container.active {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      visibility: visible;
+      animation: fadeIn 0.5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+    }
     .hidden { display: none; }
 
-    header { margin-bottom: 32px; text-align:center; }
+    /* --- Header & Typography --- */
+    header { margin-bottom: 32px; }
     .logo {
-      width: 60px; height: 60px; border-radius: 16px; background: var(--icon-bg); color: var(--icon-fg);
-      display: inline-flex; align-items: center; justify-content: center; margin-bottom: 20px; font-size: 30px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); transition: transform 0.3s ease;
+      width: 60px; height: 60px; border-radius: 16px;
+      background: var(--icon-bg); color: var(--icon-fg);
+      display: inline-flex; align-items: center; justify-content: center;
+      margin-bottom: 20px; font-size: 30px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      transition: transform 0.3s ease-in-out;
     }
-    .logo:hover { transform: scale(1.1); }
+    .logo:hover { transform: scale(1.1) rotate(5deg); }
     h1 { font-size: 26px; margin: 0; font-weight: 700; color: var(--header-text); }
     p { margin: 8px 0 0; color: var(--text-secondary); font-size: 16px; line-height: 1.6; }
     .footer p { margin-top: 32px; font-size: 13px; color: var(--text-secondary); opacity: 0.8; }
 
-    /* Generic Form Styles */
+    /* --- Form Elements --- */
     .form-group { margin-bottom: 22px; text-align: left; }
     .form-group label { display: block; margin-bottom: 8px; font-weight: 500; color: var(--text-primary); font-size: 14px; }
     .form-control, .region-select {
-      appearance: none; -webkit-appearance: none; width: 100%; border: 1px solid var(--glass-border); border-radius: 12px;
+      appearance: none; -webkit-appearance: none;
+      width: 100%;
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
       padding: 15px; font-size: 16px; font-weight: 500; color: var(--text-primary);
-      background: var(--glass-bg); transition: all 0.2s ease;
+      background: transparent;
+      transition: all 0.2s ease-in-out;
     }
     .form-control::placeholder { color: var(--text-secondary); }
-    .form-control:focus, .region-select:focus { outline: none; box-shadow: 0 0 0 3px var(--button-focus); border-color: var(--glass-border); }
-
-    /* Button Styles */
+    .form-control:focus, .region-select:focus {
+      outline: none;
+      box-shadow: 0 0 0 4px var(--button-focus);
+      border-color: var(--glass-border);
+      background-color: rgba(255,255,255,0.1);
+    }
+    
+    /* --- Buttons --- */
     .btn {
       appearance: none; width: 100%; border: 0; border-radius: 12px; padding: 16px;
       font-size: 16px; font-weight: 600; color: var(--text-on-accent); cursor: pointer;
-      background: var(--accent-gradient); box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-      transition: all 0.2s ease;
+      background: var(--accent-gradient);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1), 0 2px 5px rgba(0,0,0,0.05);
+      transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.2s cubic-bezier(0.25, 1, 0.5, 1);
     }
-    .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25); }
-    .btn:active { transform: translateY(0); box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); }
-    .btn:focus-visible { outline: none; box-shadow: 0 0 0 3px var(--button-focus); }
+    .btn:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0,0,0,0.15), 0 4px 10px rgba(0,0,0,0.08); }
+    .btn:active { transform: translateY(-1px); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+    .btn:focus-visible { outline: none; box-shadow: 0 0 0 4px var(--button-focus); }
     .btn:disabled { cursor: not-allowed; opacity: 0.6; transform: none; box-shadow: none; }
+    .btn.loading { position: relative; color: transparent; }
+    .btn.loading::after {
+      content: '';
+      position: absolute;
+      top: 50%; left: 50%;
+      width: 20px; height: 20px;
+      margin-top: -10px; margin-left: -10px;
+      border: 3px solid rgba(255, 255, 255, 0.5);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* Registration Form Specifics */
+    /* --- Registration Specifics --- */
     .profile-pic-group { display: flex; flex-direction: column; align-items: center; gap: 12px; margin-bottom: 24px; }
-    #pfp-preview { width: 88px; height: 88px; border-radius: 50%; background: var(--glass-bg); color: var(--text-secondary); display: grid; place-items:center; font-size: 40px; background-size: cover; background-position: center; border: 2px solid var(--glass-border); }
-    #pfp-upload-label { cursor: pointer; color: #3B82F6; font-weight: 500; text-decoration: none; font-size: 15px; }
-    
-    /* PIN Lock Screen */
-    .pin-display { display: flex; justify-content: center; gap: 16px; margin: 32px 0; }
-    .pin-dot { width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--text-secondary); transition: background-color 0.2s, transform 0.2s; }
-    .pin-dot.filled { background-color: var(--header-text); transform: scale(1.1); }
-    .pin-display.shake { animation: shake 0.5s; }
+    #pfp-preview { width: 88px; height: 88px; border-radius: 50%; background: var(--glass-bg); color: var(--text-secondary); display: grid; place-items:center; font-size: 40px; background-size: cover; background-position: center; border: 2px solid var(--glass-border); transition: transform 0.3s ease; }
+    #pfp-upload-label { cursor: pointer; color: #3B82F6; font-weight: 500; font-size: 15px; }
+    #pfp-upload:focus + #pfp-upload-label { outline: 2px solid var(--button-focus); border-radius: 4px; }
+
+    /* --- PIN Lock Screen --- */
+    .pin-display { display: flex; justify-content: center; gap: 16px; margin: 32px 0; transition: transform 0.2s; }
+    .pin-dot { width: 16px; height: 16px; border-radius: 50%; border: 2px solid var(--text-secondary); transition: background-color 0.2s, transform 0.2s, border-color 0.2s; }
+    .pin-dot.filled { background-color: var(--header-text); border-color: var(--header-text); transform: scale(1.1); }
+    .pin-display.shake { animation: shake 0.5s ease-in-out; }
 
     .pin-keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; max-width: 280px; margin: 0 auto; }
     .pin-keypad button {
-      width: 75px; height: 75px; border-radius: 50%; border: none; background: var(--glass-bg); color: var(--header-text);
+      width: 75px; height: 75px; border-radius: 50%; border: none; background: transparent; color: var(--header-text);
       font-size: 28px; font-weight: 400; cursor: pointer; transition: all 0.2s;
     }
-    .pin-keypad button:hover { background: rgba(255, 255, 255, 0.1); transform: scale(1.05); }
-    .pin-keypad button:active { transform: scale(0.95); }
+    .pin-keypad button:hover { background: rgba(255, 255, 255, 0.1); }
+    .pin-keypad button:active { transform: scale(0.9); background: rgba(255, 255, 255, 0.2); }
 
-    /* Main App Screen */
+    /* --- Main App Screen --- */
     .user-profile-header { display: flex; flex-direction: column; align-items: center; gap: 16px; margin-bottom: 28px; }
     #user-pfp { width: 80px; height: 80px; border-radius: 50%; background-size: cover; background-position: center; border: 3px solid var(--glass-border); }
     #user-greeting { font-size: 24px; font-weight: 600; color: var(--header-text); }
 
     .select-container { position: relative; width: 100%; }
-    .select-container::after { content: '▼'; font-size: 14px; position: absolute; top: 50%; right: 20px; transform: translateY(-50%); color: var(--text-primary); pointer-events: none; }
+    .select-container::after { content: '⌄'; font-size: 16px; position: absolute; top: 50%; right: 20px; transform: translateY(-50%); color: var(--text-primary); pointer-events: none; }
     .success { display: none; margin-top: 16px; font-size: 15px; color: var(--header-text); font-weight: 500; }
-    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); border: 0; }
     
-    .settings-button { position: absolute; top: 16px; right: 16px; background: none; border: none; cursor: pointer; color: var(--text-secondary); font-size: 28px; padding: 8px; border-radius: 50%; transition: background-color 0.2s, color 0.2s;}
-    .settings-button:hover { background-color: var(--glass-bg); color: var(--text-primary); }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+    
+    .settings-button {
+      position: absolute; top: 16px; right: 16px; background: none; border: none; cursor: pointer;
+      color: var(--text-secondary); font-size: 28px; padding: 8px; border-radius: 50%;
+      transition: background-color 0.2s, color 0.2s, transform 0.2s;
+    }
+    .settings-button:hover { background-color: var(--glass-bg); color: var(--text-primary); transform: rotate(15deg); }
+    
+    /* --- Initial Loader --- */
+    #loader {
+        color: var(--loader-color);
+        font-size: 24px;
+        transition: opacity 0.4s ease;
+        position: absolute;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    #loader.hidden {
+        opacity: 0;
+        pointer-events: none;
+    }
   </style>
 </head>
 <body>
-    <div id="loader" style="color: white; font-size: 24px;">Loading...</div>
+    <div id="loader">Loading...</div>
   
     <div id="registration-container" class="container">
-      <header><div class="logo">🚀</div><h1>Create Your Profile</h1><p>Start your journey to focus and tranquility. This setup is a one-time process.</p></header>
+      <header><div class="logo">🚀</div><h1>Create Your Profile</h1><p>Start your journey to focus and tranquility. This is a one-time setup.</p></header>
       <form id="registration-form" novalidate>
         <div class="profile-pic-group">
             <div id="pfp-preview">👤</div>
-            <label for="pfp-upload" id="pfp-upload-label">Upload a Profile Picture</label>
             <input type="file" id="pfp-upload" class="sr-only" accept="image/*">
+            <label for="pfp-upload" id="pfp-upload-label" tabindex="0">Upload a Profile Picture</label>
         </div>
         <div class="form-group"><label for="name">Name</label><input type="text" id="name" class="form-control" required placeholder="Enter your name"></div>
         <div class="form-group"><label for="email">Email</label><input type="email" id="email" class="form-control" required placeholder="Enter your email"></div>
         <div class="form-group"><label for="password">Password</label><input type="password" id="password" class="form-control" required placeholder="Create a password"></div>
-        <div class="form-group"><label for="gender">Gender</label><select id="gender" class="form-control" required><option value="" disabled selected>Select...</option><option value="Male">Male</option><option value="Female">Female</option><option value="Prefer not to say">Prefer not to say</option></select></div>
+        <div class="form-group"><label for="gender">Gender</label><div class="select-container"><select id="gender" class="form-control" required><option value="" disabled selected>Select...</option><option value="Male">Male</option><option value="Female">Female</option><option value="Prefer not to say">Prefer not to say</option></select></div></div>
         <div class="form-group"><label for="age">Age</label><input type="number" id="age" class="form-control" required min="12" placeholder="Your age (must be 12+)"></div>
         <button type="submit" class="btn" id="registerBtn">Create Profile</button>
       </form>
@@ -196,7 +263,7 @@
     </div>
   
     <main id="main-content" class="container">
-        <button id="settings-btn" class="settings-button" title="Settings">⚙️</button>
+        <button id="settings-btn" class="settings-button" title="Settings" aria-label="Open Settings">⚙️</button>
         <header class="user-profile-header">
             <div id="user-pfp"></div><h1 id="user-greeting">Welcome!</h1>
         </header>
@@ -218,13 +285,15 @@
       const USER_PIN_KEY = 'chronoFocus-userPin';
       const SAVED_REGION_KEY = 'chronoFocus-userRegion';
 
-      let keypressHandler = null; // To hold the active pin handler
+      // Global reference to the keypad event handler to ensure it can be removed properly
+      let pinKeypadHandler = null;
 
       document.addEventListener('DOMContentLoaded', initialize);
 
       function initialize() {
         document.getElementById('year').textContent = new Date().getFullYear();
-        checkUserState();
+        // Brief delay to allow initial rendering before state check
+        setTimeout(checkUserState, 200);
       }
       
       function checkUserState() {
@@ -247,8 +316,14 @@
       }
 
       function showModule(moduleId) {
-          document.querySelectorAll('.container').forEach(c => c.classList.remove('active'));
-          setTimeout(() => document.getElementById(moduleId)?.classList.add('active'), 50);
+          const containers = document.querySelectorAll('.container');
+          containers.forEach(c => {
+            if (c.id === moduleId) {
+              c.classList.add('active');
+            } else {
+              c.classList.remove('active');
+            }
+          });
       }
 
       function setupRegistration() {
@@ -258,29 +333,46 @@
           let pfpData = null;
 
           pfpUpload.addEventListener('change', (e) => {
-              const file = e.target.files[0];
+              const file = e.target.files?.[0];
               if (!file) return;
+
+              // Simple file size check (e.g., 5MB)
+              if (file.size > 5 * 1024 * 1024) {
+                alert('File is too large. Please select an image under 5MB.');
+                return;
+              }
+
               const reader = new FileReader();
               reader.onload = (event) => {
                   pfpData = event.target.result;
                   pfpPreview.style.backgroundImage = `url(${pfpData})`;
                   pfpPreview.textContent = '';
               };
+              reader.onerror = () => {
+                alert('Error reading file. Please try another image.');
+              };
               reader.readAsDataURL(file);
           });
           
           form.addEventListener('submit', (e) => {
               e.preventDefault();
-              const newUserData = {
-                  pfp: pfpData, name: document.getElementById('name').value.trim(),
-                  email: document.getElementById('email').value.trim(), gender: document.getElementById('gender').value,
-                  age: document.getElementById('age').value
-              };
-
-              if (!newUserData.name || !newUserData.email || !document.getElementById('password').value || !newUserData.gender || newUserData.age < 12) {
-                  alert("Please fill out all fields. Age must be 12 or over.");
+              if (form.checkValidity() === false) {
+                  alert("Please fill out all fields correctly.");
                   return;
               }
+              const age = parseInt(document.getElementById('age').value, 10);
+              if (age < 12) {
+                  alert("You must be at least 12 years old to register.");
+                  return;
+              }
+              
+              const newUserData = {
+                  pfp: pfpData, 
+                  name: document.getElementById('name').value.trim(),
+                  email: document.getElementById('email').value.trim(), 
+                  gender: document.getElementById('gender').value,
+                  age: age
+              };
               
               localStorage.setItem(USER_DATA_KEY, JSON.stringify(newUserData));
               showModule('pin-container');
@@ -288,10 +380,10 @@
           });
       }
 
-      function setupPinScreen(mode, userData, oldPin = null) {
-          let pin = "";
-          let tempPin = "";
-          const pinDisplayDots = document.querySelectorAll('.pin-dot');
+      function setupPinScreen(mode, userData) {
+          let currentPin = "";
+          let tempPin = ""; // For confirming new PIN
+          const pinDisplayDots = document.querySelectorAll('#pin-display .pin-dot');
           const keypad = document.getElementById('pin-keypad');
           const title = document.getElementById('pin-title');
           const subtitle = document.getElementById('pin-subtitle');
@@ -299,15 +391,29 @@
           const pinDisplay = document.getElementById('pin-display');
           const savedPin = localStorage.getItem(USER_PIN_KEY);
 
-          const resetPinDisplay = () => { pin = ""; updatePinDisplay(); };
-          const updatePinDisplay = () => pinDisplayDots.forEach((dot, i) => dot.classList.toggle('filled', i < pin.length));
+          const resetPinDisplay = () => { 
+              currentPin = "";
+              updatePinDisplay();
+          };
+          const updatePinDisplay = () => {
+              pinDisplayDots.forEach((dot, i) => dot.classList.toggle('filled', i < currentPin.length));
+          };
+          
+          function handleIncorrectPin() {
+              pinDisplay.classList.add('shake');
+              // Clear pin after a short delay
+              setTimeout(() => {
+                  pinDisplay.classList.remove('shake');
+                  resetPinDisplay();
+              }, 600);
+          }
 
           const modes = {
               set: { title: 'Set Your 4-Digit PIN', subtitle: 'This will be used for quick, secure access.', logo: '🔒', next: (newPin) => { localStorage.setItem(USER_PIN_KEY, newPin); showMainApp(userData); } },
               login: { title: `Welcome Back, ${userData.name}`, subtitle: 'Please enter your PIN to continue.', logo: '🔑', next: (enteredPin) => (enteredPin === savedPin ? showMainApp(userData) : handleIncorrectPin()) },
               confirmOld: { title: 'Enter Your Current PIN', subtitle: 'Please confirm your old PIN to proceed.', logo: '🔐', next: (enteredPin) => (enteredPin === savedPin ? setupPinScreen('setNew', userData) : handleIncorrectPin()) },
-              setNew: { title: 'Set a New PIN', subtitle: 'Enter your new 4-digit PIN.', logo: '🔒', next: (newPin) => { tempPin = newPin; setupPinScreen('confirmNew', userData); } },
-              confirmNew: { title: 'Confirm Your New PIN', subtitle: 'Please re-enter your new PIN.', logo: '🔒', next: (confirmedPin) => (confirmedPin === tempPin ? (localStorage.setItem(USER_PIN_KEY, confirmedPin), alert('PIN updated successfully!'), showMainApp(userData)) : (alert('PINs do not match. Please try again.'), setupPinScreen('setNew', userData))) }
+              setNew: { title: 'Set a New PIN', subtitle: 'Enter your new 4-digit PIN.', logo: '🔒', next: (newPin) => { tempPin = newPin; resetPinDisplay(); setupPinScreen('confirmNew', userData); } },
+              confirmNew: { title: 'Confirm Your New PIN', subtitle: 'Please re-enter your new PIN.', logo: '✅', next: (confirmedPin) => (confirmedPin === tempPin ? (localStorage.setItem(USER_PIN_KEY, confirmedPin), alert('PIN updated successfully!'), showMainApp(userData)) : (alert('PINs do not match. Please try again.'), setupPinScreen('setNew', userData))) }
           };
 
           title.textContent = modes[mode].title;
@@ -315,26 +421,30 @@
           logo.textContent = modes[mode].logo;
           resetPinDisplay();
 
-          function handleIncorrectPin() {
-              pinDisplay.classList.add('shake');
-              setTimeout(() => { pinDisplay.classList.remove('shake'); resetPinDisplay(); }, 500);
+          // Crucial bug fix: Remove old listener before adding a new one
+          if (pinKeypadHandler) {
+            keypad.removeEventListener('click', pinKeypadHandler);
           }
           
-          if (keypressHandler) keypad.removeEventListener('click', keypressHandler);
-
-          keypressHandler = (e) => {
+          pinKeypadHandler = (e) => {
               const key = e.target.closest('[data-key]')?.dataset.key;
               if (!key) return;
 
-              if (key === 'del') { pin = pin.slice(0, -1); }
-              else if (pin.length < 4) { pin += key; }
+              if (key === 'del') { 
+                  currentPin = currentPin.slice(0, -1);
+              } else if (currentPin.length < 4) {
+                  currentPin += key;
+              }
               
               updatePinDisplay();
               
-              if (pin.length === 4) { setTimeout(() => modes[mode].next(pin), 200); }
+              if (currentPin.length === 4) {
+                  // A brief delay allows user to see the last dot fill
+                  setTimeout(() => modes[mode].next(currentPin), 250); 
+              }
           };
           
-          keypad.addEventListener('click', keypressHandler);
+          keypad.addEventListener('click', pinKeypadHandler);
       }
       
       function showMainApp(userData) {
@@ -348,7 +458,7 @@
         const successMsg = document.getElementById('success');
         const settingsBtn = document.getElementById('settings-btn');
         
-        const validateSelection = () => enterBtn.disabled = !regionSelect.value;
+        const validateSelection = () => { enterBtn.disabled = !regionSelect.value; };
 
         const loadSavedRegion = () => {
             regionSelect.value = localStorage.getItem(SAVED_REGION_KEY) || "";
@@ -358,23 +468,29 @@
         const personalizeHeader = () => {
             document.getElementById('user-greeting').textContent = `Welcome, ${userData.name}`;
             const userPfp = document.getElementById('user-pfp');
-            userPfp.style.backgroundImage = userData.pfp ? `url(${userData.pfp})` : '';
-            userPfp.textContent = userData.pfp ? '' : '👤';
+            if (userData.pfp) {
+                userPfp.style.backgroundImage = `url(${userData.pfp})`;
+                userPfp.textContent = '';
+            } else {
+                userPfp.style.backgroundImage = '';
+                userPfp.textContent = '👤';
+            }
         };
 
         const handleEntry = () => {
             const selectedRegion = regionSelect.value;
             enterBtn.disabled = true;
             regionSelect.disabled = true;
-            enterBtn.textContent = 'Entering…';
+            enterBtn.classList.add('loading'); // Use class for loading state
+            
             successMsg.textContent = `✓ Preparing your sanctuary in ${selectedRegion}…`;
             successMsg.style.display = 'block';
             localStorage.setItem(SAVED_REGION_KEY, selectedRegion);
             
+            // Simulate loading and redirect
             setTimeout(() => {
-                // REDIRECT to page1.html
                 window.location.href = 'page1.html';
-            }, 1500);
+            }, 1800);
         };
         
         const handleSettings = () => {
@@ -382,6 +498,7 @@
             setupPinScreen('confirmOld', userData);
         };
 
+        // Attach event listeners
         regionSelect.addEventListener('change', validateSelection);
         enterBtn.addEventListener('click', handleEntry);
         settingsBtn.addEventListener('click', handleSettings);
