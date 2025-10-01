@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <link rel="icon" href="Chronofocus.png" type="image/x-icon">
+    <title>AI Image Tag Generator</title>
+
+    <!-- 1. TensorFlow.js Core Library -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+
+    <!-- 2. MobileNet Model for Image Recognition -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@latest/dist/mobilenet.min.js"></script>
+
+    <style>
+        :root {
+            --primary: #5A67D8; --primary-light: #7F9CF5; --secondary: #2C3E50; --dark: #1A202C; --light: #F7FAFC;
+            --success: #38A169; --text: #2D3748; --text-light: #718096; --border: #E2E8F0;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --gradient: linear-gradient(135deg, var(--primary), #a37ef5);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+        body { background-color: var(--light); color: var(--text); line-height: 1.6; font-size: 16px; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 2rem 1.5rem; }
+        header { text-align: center; margin-bottom: 3rem; padding: 2.5rem 1.5rem; background: var(--gradient); color: white; border-radius: 12px; box-shadow: var(--shadow); }
+        h1 { font-size: 2.8rem; font-weight: 800; margin-bottom: 0.5rem; }
+        .subtitle { font-size: 1.25rem; opacity: 0.9; max-width: 600px; margin: 0 auto; }
+        .main-content { display: flex; flex-wrap: wrap; gap: 2.5rem; }
+        .upload-section, .results-section { background: white; padding: 2rem; border-radius: 12px; box-shadow: var(--shadow); border: 1px solid var(--border); }
+        .upload-section { flex: 1; min-width: 320px; }
+        .results-section { flex: 2; min-width: 320px; }
+        .section-title { font-size: 1.75rem; font-weight: 700; margin-bottom: 1.5rem; color: var(--dark); border-bottom: 3px solid var(--primary-light); padding-bottom: 0.75rem; }
+        .upload-area { border: 3px dashed var(--border); border-radius: 10px; padding: 2.5rem 1.5rem; text-align: center; margin-bottom: 1.5rem; cursor: pointer; transition: all 0.3s ease; }
+        .upload-area:not(.disabled):hover, .upload-area.dragover { border-color: var(--primary); background-color: #f0f2ff; }
+        .upload-area.disabled { cursor: not-allowed; background-color: #f8f8f8; }
+        .upload-icon { font-size: 3rem; color: var(--primary); margin-bottom: 1rem; }
+        .btn { background-color: var(--primary); color: white; border: none; padding: 14px 28px; border-radius: 8px; cursor: pointer; font-size: 1.1rem; font-weight: 600; transition: all 0.3s ease; display: inline-block; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .btn:hover:not(:disabled) { background-color: var(--secondary); transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.15); }
+        .btn:disabled { background-color: var(--text-light); cursor: not-allowed; opacity: 0.7; }
+        .options { margin: 2rem 0; } .option-item { margin-bottom: 1rem; } .option-label { display: flex; align-items: center; gap: 0.75rem; cursor: pointer; font-size: 1.1rem;}
+        .checkbox { width: 1.25rem; height: 1.25rem; accent-color: var(--primary); }
+        .image-preview { margin-top: 1.5rem; text-align: center; min-height: 100px;}
+        .preview-img { max-width: 100%; max-height: 300px; border-radius: 10px; box-shadow: var(--shadow); border: 1px solid var(--border); }
+        .result-item { margin-bottom: 2rem; } .result-title { font-size: 1.4rem; font-weight: 600; margin-bottom: 1rem; color: var(--dark); }
+        .hashtags { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 0.5rem; }
+        .hashtag { background-color: #eef2f7; padding: 6px 14px; border-radius: 20px; font-size: 0.95rem; color: var(--text); font-weight: 500; transition: background-color 0.2s; }
+        .hashtag:hover { background-color: #dde4ed; }
+        .caption-option { background-color: var(--light); padding: 1rem; border-radius: 8px; margin-bottom: 1rem; border-left: 5px solid var(--primary-light); }
+        .tip { background-color: #f0fff4; padding: 1rem; border-radius: 8px; margin-bottom: 1rem; border-left: 5px solid var(--success); }
+        .tip-title { font-weight: 700; margin-bottom: 0.25rem; color: var(--dark); }
+        .loading, .status-message { text-align: center; padding: 2.5rem; }
+        .spinner { border: 5px solid rgba(0, 0, 0, 0.1); border-left-color: var(--primary); border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin: 0 auto 1.5rem; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        footer { text-align: center; margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--border); color: var(--text-light); }
+        .ai-confidence { font-size: 0.8em; color: var(--text-light); }
+        .hashtag-category { margin-bottom: 1.5rem; }
+        .hashtag-category strong { font-size: 1rem; color: var(--secondary); }
+        @media (max-width: 768px) {
+            .container { padding: 1.5rem 1rem; } h1 { font-size: 2.2rem; } .subtitle { font-size: 1.1rem; } .main-content { flex-direction: column; }
+            .upload-section, .results-section { padding: 1.5rem; } .section-title { font-size: 1.5rem; } .btn { width: 100%; padding: 16px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Optichain Image Tag Generator</h1>
+            <p class="subtitle">Get relevant tags and captions based on your image content.</p>
+        </header>
+
+        <div class="main-content">
+            <div class="upload-section">
+                <h2 class="section-title">1. Upload Your Image</h2>
+                <div class="upload-area disabled" id="uploadArea">
+                    <div class="upload-icon">🖼️</div>
+                    <p class="upload-text" id="uploadText"><strong>Loading AI model...</strong></p>
+                    <input type="file" id="fileInput" accept="image/*" style="display: none;" disabled>
+                </div>
+                 <div class="image-preview" id="imagePreview"></div>
+                 <button class="btn" id="generateBtn" disabled>Analyze Image</button>
+            </div>
+
+            <div class="results-section">
+                <h2 class="section-title">2. Generated Content</h2>
+                <div class="loading" id="loadingIndicator" style="display: none;">
+                    <div class="spinner"></div>
+                    <p>🤖 AI is analyzing your image...</p>
+                </div>
+                <div id="resultsContent">
+                    <div class="status-message" id="initialMessage">
+                        <p>Upload an image to get started.</p>
+                    </div>
+                    <div id="resultsData" style="display:none;">
+                         <div class="result-item">
+                            <h3 class="result-title">AI Identified Keywords</h3>
+                            <p id="imageDescription"></p>
+                        </div>
+                        <div class="result-item">
+                            <h3 class="result-title">Suggested Hashtags</h3>
+                            <div id="hashtagsContainer"></div>
+                        </div>
+                        <div class="result-item">
+                            <h3 class="result-title">Caption Ideas</h3>
+                            <div id="captionsContainer"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>AI analysis powered by Optichain 14MB</p>
+        </footer>
+    </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    // UI Elements
+    const uploadArea = document.getElementById('uploadArea');
+    const uploadText = document.getElementById('uploadText');
+    const fileInput = document.getElementById('fileInput');
+    const imagePreview = document.getElementById('imagePreview');
+    const generateBtn = document.getElementById('generateBtn');
+    const loadingIndicator = document.getElementById('loadingIndicator');
+    const initialMessage = document.getElementById('initialMessage');
+    const resultsData = document.getElementById('resultsData');
+    const imageDescription = document.getElementById('imageDescription');
+    const hashtagsContainer = document.getElementById('hashtagsContainer');
+    const captionsContainer = document.getElementById('captionsContainer');
+
+    let aiModel = null;
+    let uploadedFile = null;
+
+    // --- AI Model Loading ---
+    async function loadModel() {
+        try {
+            aiModel = await mobilenet.load();
+            console.log("AI Model loaded successfully.");
+            uploadArea.classList.remove('disabled');
+            fileInput.disabled = false;
+            uploadText.innerHTML = '<strong>Drag & drop</strong> or <strong>click to browse</strong>';
+        } catch (error) {
+            console.error("Error loading model:", error);
+            uploadText.textContent = 'Failed to load AI model. Please refresh.';
+            alert('Could not load the AI model. Please check your internet connection or try a different browser.');
+        }
+    }
+    loadModel();
+
+    // --- File Upload Logic ---
+    uploadArea.addEventListener('click', () => { if (!fileInput.disabled) fileInput.click(); });
+    fileInput.addEventListener('change', (e) => handleFiles(e.target.files));
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eName => uploadArea.addEventListener(eName, preventDefaults, false));
+    ['dragenter', 'dragover'].forEach(eName => uploadArea.addEventListener(eName, () => { if (!fileInput.disabled) uploadArea.classList.add('dragover'); }, false));
+    ['dragleave', 'drop'].forEach(eName => uploadArea.addEventListener(eName, () => uploadArea.classList.remove('dragover'), false));
+    uploadArea.addEventListener('drop', (e) => handleFiles(e.dataTransfer.files), false);
+
+    function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+
+    function handleFiles(files) {
+        if (fileInput.disabled || !files || files.length === 0) return;
+        uploadedFile = files[0];
+        const imageURL = URL.createObjectURL(uploadedFile);
+        imagePreview.innerHTML = `<img src="${imageURL}" class="preview-img" id="uploadedImage" alt="Uploaded image">`;
+        generateBtn.disabled = false;
+    }
+
+    // --- Button Click & AI Analysis ---
+    generateBtn.addEventListener('click', async () => {
+        const imageElement = document.getElementById('uploadedImage');
+        if (!imageElement) {
+            alert('Please upload an image first!');
+            return;
+        }
+
+        initialMessage.style.display = 'none';
+        resultsData.style.display = 'none';
+        loadingIndicator.style.display = 'block';
+
+        try {
+            const predictions = await aiModel.classify(imageElement);
+            const keywords = predictions
+                .filter(p => p.probability > 0.1)
+                .map(p => ({
+                    name: p.className.split(',')[0].toLowerCase(),
+                    confidence: Math.round(p.probability * 100)
+                }));
+
+            if (keywords.length === 0) {
+                throw new Error("AI could not identify objects with high confidence.");
+            }
+
+            console.log('AI Keywords:', keywords);
+            generateContent(keywords);
+
+        } catch (error) {
+            console.error("Error during image analysis:", error);
+            alert("Could not analyze the image. It might be in an unsupported format or too complex. Please try a different one.");
+            loadingIndicator.style.display = 'none';
+            initialMessage.style.display = 'block';
+        }
+    });
+
+    // --- Content Generation & Display ---
+    function generateContent(keywords) {
+        const mainKeyword = keywords[0].name;
+        imageDescription.innerHTML = keywords.map(k => `<strong>${k.name}</strong> <span class="ai-confidence">(${k.confidence}% confidence)</span>`).join(', ');
+
+        const keywordNames = keywords.map(k => k.name);
+        const hashtags = generateHashtagLibrary(keywordNames);
+        const captions = [
+            `Embracing the beauty of this ${mainKeyword.toLowerCase()}.`,
+            `All about the details with this ${mainKeyword.toLowerCase()}.`,
+            `Creating memories with a ${keywordNames.slice(0, 2).join(' and a ').toLowerCase()}.`,
+            `Just enjoying the view. #bliss`,
+            `Here's a little slice of my day.`
+        ];
+
+        displayResults(hashtags, captions);
+    }
+
+    function displayResults(hashtags, captions) {
+        let hashtagsHTML = '';
+        if(hashtags.keywordSpecific.length > 0){
+             hashtagsHTML += `<div class="hashtag-category"><strong>Keyword-Specific:</strong><div class="hashtags">` +
+                hashtags.keywordSpecific.map(tag => `<span class="hashtag">${tag}</span>`).join('') +
+                '</div></div>';
+        }
+        if(hashtags.categorySpecific.length > 0){
+             hashtagsHTML += `<div class="hashtag-category"><strong>Relevant Categories:</strong><div class="hashtags">` +
+                hashtags.categorySpecific.map(tag => `<span class="hashtag">${tag}</span>`).join('') +
+                '</div></div>';
+        }
+         if(hashtags.popular.length > 0){
+             hashtagsHTML += `<div class="hashtag-category"><strong>Popular & Engaging:</strong><div class="hashtags">` +
+                hashtags.popular.map(tag => `<span class="hashtag">${tag}</span>`).join('') +
+                '</div></div>';
+        }
+        hashtagsContainer.innerHTML = hashtagsHTML;
+
+        captionsContainer.innerHTML = captions.map(cap => `<div class="caption-option">${cap}</div>`).join('');
+        loadingIndicator.style.display = 'none';
+        resultsData.style.display = 'block';
+    }
+
+    const hashtagLibrary = {
+        general: ['#instagood', '#photooftheday', '#picoftheday', '#instadaily', '#love', '#beautiful', '#happy', '#cute', '#followme', '#art', '#style', '#life', '#amazing', '#photography', '#explorepage'],
+        nature: ['#nature', '#naturephotography', '#landscape', '#travel', '#beautiful', '#sky', '#sunset', '#naturelovers', '#mountains', '#explore', '#hiking', '#adventure', '#wanderlust', '#outdoor', '#earth'],
+        travel: ['#travel', '#travelphotography', '#travelgram', '#wanderlust', '#instatravel', '#adventure', '#explore', '#trip', '#vacation', '#travelblogger', '#beautifuldestinations', '#holiday', '#travelling', '#tourist', '#goexplore'],
+        food: ['#food', '#foodie', '#foodporn', '#instafood', '#foodstagram', '#yummy', '#delicious', '#homemade', '#foodblogger', '#foodlover', '#eat', '#tasty', '#healthyfood', '#goodeats', '#nomnom'],
+        fashion: ['#fashion', '#style', '#ootd', '#instafashion', '#fashionblogger', '#love', '#streetstyle', '#styleinspiration', '#outfitoftheday', '#stylish', '#lookbook', '#fashionista', '#whatiwore', '#trendy'],
+        fitness: ['#fitness', '#gym', '#workout', '#fitnessmotivation', '#fit', '#motivation', '#bodybuilding', '#training', '#health', '#lifestyle', '#fitfam', '#gymlife', '#muscle', '#exercise', '#strong'],
+        art: ['#art', '#artist', '#artwork', '#drawing', '#painting', '#instaart', '#design', '#creative', '#sketch', '#artoftheday', '#illustration', '#digitalart', '#artistsoninstagram', '#contemporaryart'],
+        business: ['#business', '#entrepreneur', '#motivation', '#success', '#marketing', '#money', '#startup', '#inspiration', '#lifestyle', '#smallbusiness', '#digitalmarketing', '#entrepreneurship', '#businessowner'],
+        pets: ['#pets', '#dog', '#cat', '#dogsofinstagram', '#petstagram', '#catsofinstagram', ' #cute', '#love', '#instapet', '#puppy', '#kitty', '#animal', '#doglover', '#catlover'],
+        beauty: ['#beauty', '#makeup', '#skincare', '#love', '#makeupartist', '#fashion', '#beautiful', '#mua', '#skincareroutine', '#cosmetics', '#instabeauty', '#selfcare', '#naturalbeauty']
+    };
+
+    const keywordMap = {
+        'cat': ['pets'], 'dog': ['pets'], 'animal': ['pets', 'nature'],
+        'tree': ['nature'], 'mountain': ['nature', 'travel'], 'flower': ['nature'], 'forest': ['nature', 'travel'], 'beach': ['nature', 'travel'], 'sunset': ['nature', 'travel'],
+        'food': ['food'], 'plate': ['food'], 'fruit': ['food'],
+        'person': ['fashion', 'beauty'], 'woman': ['fashion', 'beauty'], 'man': ['fashion', 'beauty'], 'clothing': ['fashion'],
+        'building': ['travel', 'art'], 'city': ['travel'],
+        'car': ['travel', 'style'],
+        'art': ['art'], 'design': ['art', 'business']
+    };
+
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+    }
+
+    function generateHashtagLibrary(keywords) {
+        const keywordSpecific = new Set();
+        const categorySpecific = new Set();
+        const cleanKeywords = keywords.map(k => k.replace(/\s+/g, '').toLowerCase());
+
+        cleanKeywords.forEach(key => {
+            keywordSpecific.add(`#${key}`);
+            keywordSpecific.add(`#${key}photography`);
+            keywordSpecific.add(`#${key}love`);
+
+            // Find matching categories for the keyword
+            for(const mapKey in keywordMap){
+                if(key.includes(mapKey)){
+                    keywordMap[mapKey].forEach(category => {
+                        const tags = hashtagLibrary[category] || [];
+                         // Add a random selection of tags from the category
+                        shuffleArray(tags).slice(0, 5).forEach(tag => categorySpecific.add(tag));
+                    });
+                }
+            }
+        });
+
+        // Add a selection of general popular tags
+        const popular = new Set(shuffleArray([...hashtagLibrary.general]).slice(0, 10));
+
+        return {
+            keywordSpecific: Array.from(keywordSpecific),
+            categorySpecific: Array.from(categorySpecific),
+            popular: Array.from(popular)
+        };
+    }
+});
+</script>
+</body>
+</html>
