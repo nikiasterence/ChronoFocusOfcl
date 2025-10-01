@@ -662,6 +662,8 @@
         .dock-chono-copilot { background: linear-gradient(135deg, #4FACFE 0%, #21D4FD 100%); }
         .dock-code-cody { background: linear-gradient(135deg, #00C9FF 0%, #92FE9D 100%); }
         .dock-ai-chat { background: linear-gradient(135deg, #00B4DB, #0083B0); }
+        .dock-cv-maker { background: linear-gradient(135deg, #6c757d, #343a40); }
+        .dock-tag-generator { background: linear-gradient(135deg, #20c997, #17a2b8); }
 
         /* Enhanced Focus Submenu */
         .focus-submenu {
@@ -746,11 +748,9 @@
         /* SETTINGS AND THEME CONTROLS */
         .app-controls {
             position: absolute; 
-            top: 15px; 
+            top: 20px; 
             right: 20px;
             z-index: 10; 
-            display: flex; 
-            gap: 12px;
         }
         
         .control-icon { 
@@ -799,6 +799,9 @@
             border-radius: 28px;
             width: 90%;
             max-width: 500px;
+            max-height: 85vh; /* Added for themes */
+            display: flex; /* Added for themes */
+            flex-direction: column; /* Added for themes */
             box-shadow: 0 25px 80px rgba(0,0,0,0.6);
             position: relative;
         }
@@ -808,6 +811,7 @@
             color: var(--accent);
             font-size: clamp(1.6rem, 4vw, 2rem);
             text-shadow: 0 3px 15px rgba(0, 0, 0, 0.3);
+            flex-shrink: 0; /* prevent shrinking */
         }
         .settings-modal-close-btn {
             position: absolute; top: 15px; right: 15px;
@@ -816,6 +820,7 @@
             width: 35px; height: 35px; border-radius: 50%;
             font-size: 1.4rem; cursor: pointer;
             transition: all 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            z-index: 2; /* Ensure it's above content */
         }
         .settings-modal-close-btn:hover {
             background: var(--accent); color: var(--background);
@@ -824,6 +829,7 @@
 
         .settings-group {
             margin-bottom: 25px;
+            flex-shrink: 0;
         }
         .settings-group h3 {
             font-size: clamp(1rem, 2.5vw, 1.1rem);
@@ -852,109 +858,39 @@
             border-color: rgba(255,255,255,0.5); color: var(--background);
             box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
         }
-
-        /* ===== ENHANCED THEME MODAL STYLES ===== */
-        .theme-modal-overlay {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 1001; /* Must be higher than settings modal */
-            opacity: 0;
-            transition: opacity 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-        }
-
-        .theme-modal-overlay.visible {
-            display: flex;
-            opacity: 1;
-        }
-
-        .theme-modal-content {
-            background: var(--card-bg);
-            backdrop-filter: blur(25px);
-            border: 1px solid var(--glass-border);
-            padding: 35px;
-            border-radius: 28px;
-            width: 90%;
-            max-width: 900px;
-            max-height: 85vh;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 
-                0 25px 80px rgba(0,0,0,0.6),
-                inset 0 1px 0 rgba(255, 255, 255, 0.2);
-            position: relative;
-            transform: scale(var(--mobile-scale));
-        }
-
-        .theme-modal-content h2 {
-            text-align: center;
-            margin-bottom: 30px;
-            color: var(--accent);
-            font-size: clamp(1.6rem, 4vw, 2.2rem);
-            text-shadow: 0 3px 15px rgba(0, 0, 0, 0.3);
-        }
-
-        .theme-modal-close-btn {
-            position: absolute;
-            top: 18px; right: 18px;
-            background: rgba(255,255,255,0.1);
-            backdrop-filter: blur(10px);
-            border: none;
-            color: var(--text-primary);
-            width: 40px; height: 40px;
-            border-radius: 50%;
-            font-size: 1.6rem;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            line-height: 1;
-        }
         
-        .theme-modal-close-btn:hover {
-            background: var(--accent);
-            color: var(--background);
-            transform: rotate(90deg) scale(1.1);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
-        }
-
+        /* Integrated Theme Grid Styles */
         .theme-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(clamp(70px, 15vw, 90px), 1fr));
-            gap: 18px;
+            grid-template-columns: repeat(auto-fill, minmax(clamp(60px, 12vw, 70px), 1fr));
+            gap: 15px;
             overflow-y: auto;
-            padding: 15px;
-            max-height: 60vh;
+            padding: 10px;
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            background: rgba(0,0,0,0.1);
         }
-
+        
         .theme-dot {
             width: 100%;
             aspect-ratio: 1 / 1;
-            border-radius: 16px;
+            border-radius: 12px;
             cursor: pointer;
-            border: 2px solid rgba(255, 255, 255, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.2);
             transition: all 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
             display: flex;
             flex-direction: column;
             overflow: hidden;
             padding: 0;
             background-color: transparent;
             position: relative;
-            backdrop-filter: blur(10px);
         }
         
         .theme-dot:hover {
             transform: scale(1.1) rotate(5deg);
             border-color: var(--accent);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4);
         }
         
         .theme-dot .theme-color-swatch {
@@ -967,11 +903,11 @@
             position: absolute;
             bottom: 0; left: 0;
             width: 100%;
-            font-size: clamp(0.6rem, 1.5vw, 0.7rem);
+            font-size: clamp(0.55rem, 1.5vw, 0.65rem);
             background: rgba(0,0,0,0.8);
             backdrop-filter: blur(10px);
             color: white;
-            padding: 4px;
+            padding: 3px;
             text-align: center;
             white-space: nowrap;
             overflow: hidden;
@@ -1297,13 +1233,8 @@
                 height: clamp(28px, 8vw, 35px);
                 font-size: clamp(0.75rem, 2vw, 0.85rem);
             }
-            
-            .theme-grid {
-                grid-template-columns: repeat(auto-fill, minmax(65px, 1fr));
-                gap: 15px;
-            }
-            
-            .theme-modal-content h2 {
+
+            .settings-modal-content h2 {
                 font-size: clamp(1.4rem, 5vw, 1.8rem);
             }
             
@@ -1372,14 +1303,9 @@
                 font-size: 1.1rem;
                 padding: 6px;
             }
-            
-            .theme-grid {
-                grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
-                gap: 12px;
-            }
         }
 
-        /* Enhanced Loading Animation */
+        /* --- NEW: Enhanced Loading Animation --- */
         .app {
             animation: app-entrance 1s cubic-bezier(0.25, 1, 0.5, 1) forwards;
         }
@@ -1395,7 +1321,7 @@
             }
         }
 
-        /* Dock entrance animation */
+        /* --- NEW: Dock entrance animation --- */
         .dock {
             animation: dock-entrance 0.8s cubic-bezier(0.25, 1, 0.5, 1) 0.3s both;
         }
@@ -1478,16 +1404,13 @@
         <a href="page13.html" class="dock-icon dock-booknest" aria-label="BookNest"><i class="fas fa-book-open-reader"></i><div class="dock-icon-label">BookNest</div></a>
         <a href="page11.html" class="dock-icon dock-moodly" aria-label="Moodly"><i class="fas fa-smile-beam"></i><div class="dock-icon-label">Moodly</div></a>
         <a href="page17.html" class="dock-icon dock-code-cody" aria-label="Code Cody"><i class="fas fa-code"></i><div class="dock-icon-label">Code Cody</div></a>
+        <a href="page18.html" class="dock-icon dock-cv-maker" aria-label="CV Maker"><i class="fas fa-id-card"></i><div class="dock-icon-label">CV Maker</div></a>
+        <a href="page19.html" class="dock-icon dock-tag-generator" aria-label="Tag Generator"><i class="fas fa-tags"></i><div class="dock-icon-label">Tag Generator</div></a>
     </div>
 
     <div class="app">
         <div class="app-controls">
-            <div class="control-group">
-                <i class="fas fa-cog control-icon" id="settings-control-icon" title="Settings"></i>
-            </div>
-            <div class="control-group">
-                <i class="fas fa-palette control-icon" id="theme-control-icon" title="Choose Theme"></i>
-            </div>
+            <i class="fas fa-cog control-icon" id="settings-control-icon" title="Settings"></i>
         </div>
 
         <h1><i class="fas fa-brain"></i> StudyVERSE</h1>
@@ -1520,7 +1443,7 @@
         </div>
     </div>
 
-    <!-- ===== ENHANCED SETTINGS MODAL ===== -->
+    <!-- ===== ENHANCED SETTINGS MODAL (WITH THEMES) ===== -->
     <div class="settings-modal-overlay" id="settings-modal-overlay">
         <div class="settings-modal-content">
             <button class="settings-modal-close-btn" id="settings-modal-close-btn">&times;</button>
@@ -1551,19 +1474,14 @@
                     <button class="settings-btn" data-anim="scale">Scale</button>
                     <button class="settings-btn" data-anim="bubble">Bubble</button>
                 </div>
-                <p style="font-size: 0.8rem; text-align:center; margin-top:10px; opacity: 0.7;">Choose how the dock icons react to your mouse.</p>
             </div>
-        </div>
-    </div>
-
-
-    <!-- ===== ENHANCED THEME MODAL ===== -->
-    <div class="theme-modal-overlay" id="theme-modal-overlay">
-        <div class="theme-modal-content">
-            <button class="theme-modal-close-btn" id="theme-modal-close-btn">&times;</button>
-            <h2>Choose a Theme</h2>
-            <div class="theme-grid" id="theme-grid-container">
-                <!-- Theme boxes will be dynamically generated here by JavaScript -->
+            
+            <!-- NEW INTEGRATED THEME SECTION -->
+            <div class="settings-group" style="flex-grow: 1; display: flex; flex-direction: column;">
+                <h3>Choose a Theme</h3>
+                <div class="theme-grid" id="theme-grid-container">
+                    <!-- Theme boxes will be dynamically generated here by JavaScript -->
+                </div>
             </div>
         </div>
     </div>
@@ -1579,7 +1497,6 @@
             <button id="chat-send-btn"><i class="fas fa-paper-plane"></i></button>
         </div>
     </div>
-
 <script>
     // --- DOM ELEMENT SELECTORS (Cached for performance) ---
     const tipElement = document.getElementById("tip");
@@ -1598,13 +1515,8 @@
     const dockPosButtons = document.querySelectorAll('#dock-pos-options .settings-btn');
     const dockSizeButtons = document.querySelectorAll('#dock-size-options .settings-btn');
     const dockAnimButtons = document.querySelectorAll('#dock-anim-options .settings-btn');
-
-    // THEME MODAL SELECTORS
-    const themeControlIcon = document.getElementById('theme-control-icon');
-    const themeModalOverlay = document.getElementById('theme-modal-overlay');
-    const themeModalCloseBtn = document.getElementById('theme-modal-close-btn');
     const themeGridContainer = document.getElementById('theme-grid-container');
-    
+
     // CHAT AI SELECTORS
     const chatAiDockIcon = document.getElementById('chat-ai-dock-icon');
     const chatWindow = document.getElementById('chat-window');
@@ -1617,18 +1529,18 @@
     const launchpadOverlay = document.getElementById('launchpad-overlay');
     const launchpadGrid = document.getElementById('launchpad-grid');
     const launchpadSearch = document.getElementById('launchpad-search');
-    const launchpadCloseBtn = document.getElementById('launchpad-close-btn'); // IMPROVEMENT: New button
+    const launchpadCloseBtn = document.getElementById('launchpad-close-btn');
 
     // --- APP STATE ---
     let caffeineIntake = 0;
     let calendarVisible = true;
-    let launchpadTimeout; // IMPROVEMENT: For handling launchpad close animation
+    let launchpadTimeout;
     
     const tips = [ 
-        "Break your study time into 25-minute intervals with the Pomodoro Technique.", "Use active recall by testing yourself, not just rereading notes.", "Explain what you've learned to someone else to solidify your understanding.", "Create a dedicated, distraction-free study zone.", "Use flashcards for key terms and concepts.", "Review material consistently, a little bit each day.", "Prioritize sleep; it's crucial for memory consolidation.", "Stay hydrated and eat nutritious brain food.", "Use mind maps to visualize connections between ideas.", "Take short, regular breaks to avoid burnout.", "Teach concepts to an imaginary audience to identify knowledge gaps.", "Use the Feynman Technique: simplify complex topics as if explaining to a child.", "Change study locations occasionally to improve memory retention.", "Practice spaced repetition for long-term memorization.", "Start with the most challenging material when your mind is freshest.", "Use mnemonic devices to remember complex information.", "Set specific, achievable goals for each study session.", "Connect new information to what you already know.", "Take notes by hand to improve information processing.", "Use background music without lyrics to enhance focus.", "Schedule regular review sessions instead of cramming.", "Break large projects into smaller, manageable tasks.", "Use the 80/20 rule: focus on the 20% that gives 80% of results.", "Test yourself frequently to monitor your progress.", "Reward yourself after completing study milestones.", "Use different colored pens for different types of information.", "Create a study schedule and stick to it consistently.", "Find a study partner for accountability and discussion.", "Avoid multitasking—focus on one subject at a time.", "Use online resources and educational videos for difficult concepts.", "Practice problems actively instead of passively reading solutions."
+        "Break your study time into 25-minute intervals with the Pomodoro Technique.", "Use active recall by testing yourself, not just rereading notes.", "Explain what you've learned to someone else to solidify your understanding.", "Create a dedicated, distraction-free study zone.", "Use flashcards for key terms and concepts.", "Review material consistently, a little bit each day.", "Prioritize sleep; it's crucial for memory consolidation.", "Stay hydrated and eat nutritious brain food.", "Use mind maps to visualize connections between ideas.", "Take short, regular breaks to avoid burnout.", "Teach concepts to an imaginary audience to identify knowledge gaps.", "Use the Feynman Technique: simplify complex topics as if explaining to a child.", "Change study locations occasionally to improve memory retention.", "Practice spaced repetition for long-term memorization.", "Start with the most challenging material when your mind is freshest."
     ];
     
-    // --- THEME DEFINITIONS ---
+    // --- THEME DEFINITIONS (CURATED LIST FOR PERFORMANCE) ---
     const themes = { 
         "cosmic-dark": { "--primary-glow": "#8A2BE2", "--secondary-glow": "#5D3FD3", "--tertiary-glow": "#9370DB", "--background": "#121212", "--text-primary": "#FFFFFF", "--glass-bg": "rgba(255, 255, 255, 0.08)", "--glass-border": "rgba(255, 255, 255, 0.15)", "--card-bg": "rgba(30, 30, 46, 0.7)", "--accent": "#BB86FC" }, 
         "midnight-blue": { "--primary-glow": "#0f3460", "--secondary-glow": "#533483", "--tertiary-glow": "#1e90ff", "--background": "#1a1a2e", "--text-primary": "#e0e0e0", "--glass-bg": "rgba(0, 0, 0, 0.2)", "--glass-border": "rgba(255, 255, 255, 0.15)", "--card-bg": "rgba(39, 39, 62, 0.7)", "--accent": "#4cc9f0" }, 
@@ -1641,69 +1553,26 @@
         "crimson-study": { "--primary-glow": "#dc2626", "--secondary-glow": "#b91c1c", "--tertiary-glow": "#f87171", "--background": "#7f1d1d", "--text-primary": "#fecaca", "--glass-bg": "rgba(254, 202, 202, 0.08)", "--glass-border": "rgba(254, 202, 202, 0.2)", "--card-bg": "rgba(153, 27, 27, 0.7)", "--accent": "#ef4444" },
         "solarized-light": { "--primary-glow": "#eee8d5", "--secondary-glow": "#b58900", "--tertiary-glow": "#268bd2", "--background": "#fdf6e3", "--text-primary": "#657b83", "--glass-bg": "rgba(101, 123, 131, 0.08)", "--glass-border": "rgba(101, 123, 131, 0.15)", "--card-bg": "rgba(238, 232, 213, 0.7)", "--accent": "#d33682" },
         "liquid-gold": { "--primary-glow": "#FFD700", "--secondary-glow": "#FFA500", "--tertiary-glow": "#B8860B", "--background": "#000000", "--text-primary": "#FFFFFF", "--glass-bg": "rgba(255, 215, 0, 0.1)", "--glass-border": "rgba(255, 215, 0, 0.2)", "--card-bg": "rgba(20, 15, 0, 0.7)", "--accent": "#FFD700" },
-        "starfall": { "--primary-glow": "#a2a8d3", "--secondary-glow": "#e7eaf6", "--tertiary-glow": "#38598b", "--background": "#0a043c", "--text-primary": "#ffffff", "--glass-bg": "rgba(255, 255, 255, 0.08)", "--glass-border": "rgba(255, 255, 255, 0.15)", "--card-bg": "rgba(25, 20, 70, 0.7)", "--accent": "#e7eaf6" },
-        "cyberpunk-neon": { "--primary-glow": "#701ebd", "--secondary-glow": "#f0f", "--tertiary-glow": "#0ff", "--background": "#1f1d36", "--text-primary": "#e9f5f9", "--glass-bg": "rgba(0, 255, 255, 0.1)", "--glass-border": "rgba(0, 255, 255, 0.2)", "--card-bg": "rgba(50, 48, 80, 0.7)", "--accent": "#00f0b5" },
-        "enchanted-forest": { "--primary-glow": "#006400", "--secondary-glow": "#228b22", "--tertiary-glow": "#556b2f", "--background": "#102a24", "--text-primary": "#c4d8c6", "--glass-bg": "rgba(200, 220, 200, 0.1)", "--glass-border": "rgba(200, 220, 200, 0.2)", "--card-bg": "rgba(20, 50, 40, 0.7)", "--accent": "#98ff98" },
-        "sakura-dream": { "--primary-glow": "#ffb7c5", "--secondary-glow": "#ffc0cb", "--tertiary-glow": "#ff69b4", "--background": "#f9e6e6", "--text-primary": "#613a3a", "--glass-bg": "rgba(97, 58, 58, 0.08)", "--glass-border": "rgba(97, 58, 58, 0.15)", "--card-bg": "rgba(255, 240, 240, 0.7)", "--accent": "#ff69b4" },
-        "volcanic-ash": { "--primary-glow": "#ff4500", "--secondary-glow": "#ff8c00", "--tertiary-glow": "#ff6347", "--background": "#1e1e1e", "--text-primary": "#dcdcdc", "--glass-bg": "rgba(255, 255, 255, 0.08)", "--glass-border": "rgba(255, 255, 255, 0.15)", "--card-bg": "rgba(40, 40, 40, 0.7)", "--accent": "#ff4500" },
-        "arctic-dawn": { "--primary-glow": "#add8e6", "--secondary-glow": "#b0e0e6", "--tertiary-glow": "#87ceeb", "--background": "#f0f8ff", "--text-primary": "#003366", "--glass-bg": "rgba(0, 51, 102, 0.08)", "--glass-border": "rgba(0, 51, 102, 0.15)", "--card-bg": "rgba(225, 240, 255, 0.7)", "--accent": "#87cefa" },
-        "nebula-haze": { "--primary-glow": "#da70d6", "--secondary-glow": "#ba55d3", "--tertiary-glow": "#9932cc", "--background": "#4c2a4c", "--text-primary": "#f5e6f5", "--glass-bg": "rgba(255, 255, 255, 0.08)", "--glass-border": "rgba(255, 255, 255, 0.15)", "--card-bg": "rgba(90, 60, 90, 0.7)", "--accent": "#dda0dd" },
-        "charcoal-slate": { "--primary-glow": "#708090", "--secondary-glow": "#778899", "--tertiary-glow": "#2f4f4f", "--background": "#36454f", "--text-primary": "#d3d3d3", "--glass-bg": "rgba(255, 255, 255, 0.08)", "--glass-border": "rgba(255, 255, 255, 0.15)", "--card-bg": "rgba(60, 70, 80, 0.7)", "--accent": "#a9a9a9" },
-        "nautical-depth": { "--primary-glow": "#008080", "--secondary-glow": "#20b2aa", "--tertiary-glow": "#5f9ea0", "--background": "#003153", "--text-primary": "#e0ffff", "--glass-bg": "rgba(224, 255, 255, 0.1)", "--glass-border": "rgba(224, 255, 255, 0.2)", "--card-bg": "rgba(0, 60, 90, 0.7)", "--accent": "#48d1cc" },
-        "arcane-library": { "--primary-glow": "#483d8b", "--secondary-glow": "#8a2be2", "--tertiary-glow": "#9932cc", "--background": "#2e1a47", "--text-primary": "#e6e6fa", "--glass-bg": "rgba(230, 230, 250, 0.08)", "--glass-border": "rgba(230, 230, 250, 0.15)", "--card-bg": "rgba(50, 30, 70, 0.7)", "--accent": "#c792ea" },
-        "rose-quartz": { "--primary-glow": "#e070a0", "--secondary-glow": "#f08080", "--tertiary-glow": "#db7093", "--background": "#3c1321", "--text-primary": "#f8dde9", "--glass-bg": "rgba(255, 255, 255, 0.1)", "--glass-border": "rgba(255, 255, 255, 0.2)", "--card-bg": "rgba(80, 30, 50, 0.7)", "--accent": "#ff9eb8" },
-        "creamy-vanilla": { "--primary-glow": "#f3e5ab", "--secondary-glow": "#edeaaf", "--tertiary-glow": "#fafad2", "--background": "#fffdd0", "--text-primary": "#7a5c58", "--glass-bg": "rgba(122, 92, 88, 0.08)", "--glass-border": "rgba(122, 92, 88, 0.15)", "--card-bg": "rgba(255, 250, 230, 0.7)", "--accent": "#d4af37" },
-        "olive-noir": { "--primary-glow": "#6b8e23", "--secondary-glow": "#556b2f", "--tertiary-glow": "#808000", "--background": "#232b2b", "--text-primary": "#e9f5e3", "--glass-bg": "rgba(255, 255, 255, 0.08)", "--glass-border": "rgba(255, 255, 255, 0.15)", "--card-bg": "rgba(45, 55, 45, 0.7)", "--accent": "#bada55" },
-        "emerald-path": { "--primary-glow": "#00a95c", "--secondary-glow": "#009b77", "--tertiary-glow": "#3cb371", "--background": "#013220", "--text-primary": "#d9eee1", "--glass-bg": "rgba(217, 238, 225, 0.1)", "--glass-border": "rgba(217, 238, 225, 0.2)", "--card-bg": "rgba(5, 60, 40, 0.7)", "--accent": "#50c878" },
-        "graphite-gray": { "--primary-glow": "#8c92ac", "--secondary-glow": "#8d99ae", "--tertiary-glow": "#b3b3b3", "--background": "#353839", "--text-primary": "#edf2f4", "--glass-bg": "rgba(255, 255, 255, 0.08)", "--glass-border": "rgba(255, 255, 255, 0.15)", "--card-bg": "rgba(60, 65, 70, 0.7)", "--accent": "#d8d8d8" },
-        "bumblebee": { "--primary-glow": "#f4c430", "--secondary-glow": "#ffdb58", "--tertiary-glow": "#ffc300", "--background": "#202020", "--text-primary": "#ffffff", "--glass-bg": "rgba(255, 225, 0, 0.1)", "--glass-border": "rgba(255, 225, 0, 0.2)", "--card-bg": "rgba(40, 40, 40, 0.7)", "--accent": "#ffd700" },
-        "cobalt-blue": { "--primary-glow": "#0047ab", "--secondary-glow": "#002366", "--tertiary-glow": "#1e90ff", "--background": "#00204a", "--text-primary": "#cce5ff", "--glass-bg": "rgba(204, 229, 255, 0.1)", "--glass-border": "rgba(204, 229, 255, 0.2)", "--card-bg": "rgba(0, 40, 80, 0.7)", "--accent": "#6699ff" },
-        "mahogany": { "--primary-glow": "#c04000", "--secondary-glow": "#8b4513", "--tertiary-glow": "#a0522d", "--background": "#4a0404", "--text-primary": "#f8e8e8", "--glass-bg": "rgba(255, 255, 255, 0.08)", "--glass-border": "rgba(255, 255, 255, 0.15)", "--card-bg": "rgba(80, 20, 20, 0.7)", "--accent": "#e97451" },
-        "minimalist-beige": { "--primary-glow": "#e3dac9", "--secondary-glow": "#dcd0c0", "--tertiary-glow": "#c1b5a9", "--background": "#f5f5dc", "--text-primary": "#5d564c", "--glass-bg": "rgba(93, 86, 76, 0.08)", "--glass-border": "rgba(93, 86, 76, 0.15)", "--card-bg": "rgba(240, 240, 220, 0.7)", "--accent": "#8a795d" },
-        "oceanic-calm": { "--primary-glow": "#2c7a7b", "--secondary-glow": "#1f6f8b", "--tertiary-glow": "#89c9b8", "--background": "#d4f1f4", "--text-primary": "#1f6f8b", "--glass-bg": "rgba(31, 111, 139, 0.08)", "--glass-border": "rgba(31, 111, 139, 0.15)", "--card-bg": "rgba(220, 245, 245, 0.7)", "--accent": "#17a2b8" },
-        "retro-groove": { "--primary-glow": "#f9a826", "--secondary-glow": "#e67e22", "--tertiary-glow": "#d35400", "--background": "#3d2c22", "--text-primary": "#f5deb3", "--glass-bg": "rgba(245, 222, 179, 0.08)", "--glass-border": "rgba(245, 222, 179, 0.15)", "--card-bg": "rgba(78, 56, 42, 0.7)", "--accent": "#f9a826" },
-        "minty-fresh": { "--primary-glow": "#99f3bd", "--secondary-glow": "#7de8a8", "--tertiary-glow": "#5ce092", "--background": "#f0fff8", "--text-primary": "#005c3d", "--glass-bg": "rgba(0, 92, 61, 0.05)", "--glass-border": "rgba(0, 92, 61, 0.1)", "--card-bg": "rgba(230, 255, 245, 0.7)", "--accent": "#3ddc84" },
-        "gothic-elegance": { "--primary-glow": "#c0392b", "--secondary-glow": "#8e44ad", "--tertiary-glow": "#2c3e50", "--background": "#121013", "--text-primary": "#ecf0f1", "--glass-bg": "rgba(236, 240, 241, 0.08)", "--glass-border": "rgba(236, 240, 241, 0.15)", "--card-bg": "rgba(25, 22, 28, 0.7)", "--accent": "#9b59b6" },
-        "sunny-day": { "--primary-glow": "#f1c40f", "--secondary-glow": "#f39c12", "--tertiary-glow": "#3498db", "--background": "#eaf6ff", "--text-primary": "#2c3e50", "--glass-bg": "rgba(44, 62, 80, 0.08)", "--glass-border": "rgba(44, 62, 80, 0.15)", "--card-bg": "rgba(240, 248, 255, 0.7)", "--accent": "#3498db" },
-        "autumn-leaves": { "--primary-glow": "#d35400", "--secondary-glow": "#c0392b", "--tertiary-glow": "#f39c12", "--background": "#4e342e", "--text-primary": "#ffccbc", "--glass-bg": "rgba(255, 204, 188, 0.08)", "--glass-border": "rgba(255, 204, 188, 0.15)", "--card-bg": "rgba(94, 65, 55, 0.7)", "--accent": "#e67e22" },
-        "strawberry-cream": { "--primary-glow": "#ff8fab", "--secondary-glow": "#fb6f92", "--tertiary-glow": "#ffc2d1", "--background": "#fff0f3", "--text-primary": "#c9184a", "--glass-bg": "rgba(201, 24, 74, 0.08)", "--glass-border": "rgba(201, 24, 74, 0.15)", "--card-bg": "rgba(255, 230, 235, 0.7)", "--accent": "#ff6392" },
-        "hacker-matrix": { "--primary-glow": "#00ff00", "--secondary-glow": "#00dd00", "--tertiary-glow": "#00aa00", "--background": "#000000", "--text-primary": "#00ff00", "--glass-bg": "rgba(0, 255, 0, 0.08)", "--glass-border": "rgba(0, 255, 0, 0.15)", "--card-bg": "rgba(5, 20, 5, 0.7)", "--accent": "#00ff00" },
-        "sandstone-canyon": { "--primary-glow": "#e9a26e", "--secondary-glow": "#d88a53", "--tertiary-glow": "#c77238", "--background": "#fdf4e3", "--text-primary": "#6d4c41", "--glass-bg": "rgba(109, 76, 65, 0.08)", "--glass-border": "rgba(109, 76, 65, 0.15)", "--card-bg": "rgba(250, 235, 215, 0.7)", "--accent": "#bf6936" },
-        "wild-berries": { "--primary-glow": "#7209b7", "--secondary-glow": "#560bad", "--tertiary-glow": "#f72585", "--background": "#1e0c38", "--text-primary": "#f1e3ff", "--glass-bg": "rgba(241, 227, 255, 0.08)", "--glass-border": "rgba(241, 227, 255, 0.15)", "--card-bg": "rgba(48, 25, 72, 0.7)", "--accent": "#b5179e" }
+        "hacker-matrix": { "--primary-glow": "#00ff00", "--secondary-glow": "#00dd00", "--tertiary-glow": "#00aa00", "--background": "#000000", "--text-primary": "#00ff00", "--glass-bg": "rgba(0, 255, 0, 0.08)", "--glass-border": "rgba(0, 255, 0, 0.15)", "--card-bg": "rgba(5, 20, 5, 0.7)", "--accent": "#00ff00" }
     };
 
     // --- CORE FUNCTIONS ---
     
-    /**
-     * Plays a sound from a given URL.
-     * @param {string} url - The URL of the sound file.
-     */
     function playSound(url) { 
-        try {
-            new Audio(url).play(); 
-        } catch (e) {
-            console.error("Audio playback error:", e);
-        }
+        try { new Audio(url).play(); } catch (e) { console.error("Audio playback error:", e); }
     }
     
-    /**
-     * Fetches and displays a new random study tip.
-     */
     function newTip() {
         playSound('https://www.soundjay.com/buttons/sounds/button-16.mp3');
         tipElement.style.opacity = 0;
         setTimeout(() => {
-            const randomIndex = Math.floor(Math.random() * tips.length);
-            const newTip = tips[randomIndex];
+            const newTip = tips[Math.floor(Math.random() * tips.length)];
             tipElement.textContent = newTip;
             localStorage.setItem('currentTip', newTip);
             tipElement.style.opacity = 1;
         }, 300);
     }
     
-    /**
-     * Copies the current tip to the clipboard and shows feedback.
-     */
     function copyTip() { 
         navigator.clipboard.writeText(tipElement.textContent).then(() => { 
             playSound('https://www.soundjay.com/buttons/sounds/button-7.mp3');
@@ -1713,40 +1582,25 @@
                 copyFeedbackEl.style.opacity = 0;
                 copyFeedbackEl.style.transform = 'translate(-50%, -50%) scale(0.8)';
             }, 1500);
-        }).catch(err => {
-            console.error('Failed to copy text: ', err);
-        });
+        }).catch(err => console.error('Failed to copy text: ', err));
     }
     
-    /**
-     * Opens the "Study With Me" page in a new tab.
-     */
     function openStudyWithMe() { 
         window.open('page3.html', '_blank'); 
     }
 
-    /**
-     * Adds a random amount of caffeine and updates the display.
-     * @param {HTMLElement} element - The button element that was clicked.
-     */
-    function addCaffeine(element) {
+    function addCaffeine() {
         caffeineIntake += Math.floor(Math.random() * 81) + 40; // Add 40-120mg
         localStorage.setItem('caffeineIntake', caffeineIntake);
         updateCaffeineDisplay();
     }
     
-    /**
-     * Resets the caffeine intake to zero.
-     */
     function resetCaffeine() {
         caffeineIntake = 0;
         localStorage.setItem('caffeineIntake', caffeineIntake);
         updateCaffeineDisplay();
     }
 
-    /**
-     * Updates the caffeine counter and warning message on the UI.
-     */
     function updateCaffeineDisplay() {
         caffeineCountEl.textContent = caffeineIntake;
         caffeineWarningEl.style.display = 'none';
@@ -1759,10 +1613,6 @@
         }
     }
     
-    /**
-     * Applies a selected theme to the entire page.
-     * @param {string} themeName - The key of the theme in the `themes` object.
-     */
     function setTheme(themeName) {
         const selectedTheme = themes[themeName]; 
         if (!selectedTheme) return false;
@@ -1774,91 +1624,52 @@
         return true;
     }
 
-    /**
-     * Dynamically creates the theme selector boxes inside the theme modal.
-     */
     function populateThemeSelector() {
-        themeGridContainer.innerHTML = ''; // Clear existing options
+        themeGridContainer.innerHTML = '';
         for (const themeName in themes) {
             const themeColors = themes[themeName];
-            const displayName = themeName.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
-
-            const dot = document.createElement('button'); // Use button for accessibility
-            dot.classList.add('theme-dot');
+            const displayName = themeName.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+            const dot = document.createElement('button');
+            dot.className = 'theme-dot';
             dot.title = displayName;
             dot.dataset.theme = themeName;
-            
             dot.innerHTML = `
                 <span class="theme-color-swatch" style="background-color: ${themeColors['--primary-glow']}"></span>
                 <span class="theme-color-swatch" style="background-color: ${themeColors['--accent']}"></span>
                 <span class="theme-color-swatch" style="background-color: ${themeColors['--background']}"></span>
                 <div class="theme-dot-label">${displayName}</div>
             `;
-
-            dot.addEventListener('click', () => {
-                setTheme(themeName);
-                closeThemeModal();
-            });
+            dot.addEventListener('click', () => setTheme(themeName));
             themeGridContainer.appendChild(dot);
         }
     }
     
-    // --- MODAL FUNCTIONS (THEME & SETTINGS) ---
-    function openThemeModal() { themeModalOverlay.classList.add('visible'); }
-    function closeThemeModal() { themeModalOverlay.classList.remove('visible'); }
+    // --- MODAL FUNCTIONS (SETTINGS) ---
     function openSettingsModal() { settingsModalOverlay.classList.add('visible'); }
     function closeSettingsModal() { settingsModalOverlay.classList.remove('visible'); }
 
-    /**
-     * Sets the position of the dock.
-     * @param {string} position - 'left', 'bottom', or 'right'.
-     */
     function setDockPosition(position) {
-        const validPositions = ['left', 'bottom', 'right'];
-        if (!validPositions.includes(position)) position = 'bottom'; 
-
+        if (!['left', 'bottom', 'right'].includes(position)) position = 'bottom'; 
         dockElement.classList.remove('dock-left', 'dock-bottom', 'dock-right');
         dockElement.classList.add(`dock-${position}`);
-
-        if(position === 'left') {
-            document.body.style.paddingLeft = '100px'; document.body.style.paddingRight = '20px'; document.body.style.paddingBottom = '20px';
-        } else if (position === 'right') {
-            document.body.style.paddingLeft = '20px'; document.body.style.paddingRight = '100px'; document.body.style.paddingBottom = '20px';
-        } else { // bottom
-            document.body.style.paddingLeft = '20px'; document.body.style.paddingRight = '20px'; document.body.style.paddingBottom = '160px';
-        }
-
         dockPosButtons.forEach(btn => btn.classList.toggle('active', btn.dataset.pos === position));
         localStorage.setItem('studyVerseDockPosition', position);
     }
 
-    /**
-     * Sets the size of the dock icons.
-     * @param {string} size - 'small', 'medium', or 'large'.
-     */
     function setDockSize(size) {
-        const validSizes = ['small', 'medium', 'large'];
-        if (!validSizes.includes(size)) size = 'medium'; 
-
+        if (!['small', 'medium', 'large'].includes(size)) size = 'medium'; 
         dockElement.classList.remove('size-small', 'size-medium', 'size-large');
         dockElement.classList.add(`size-${size}`);
-
         dockSizeButtons.forEach(btn => btn.classList.toggle('active', btn.dataset.size === size));
         localStorage.setItem('studyVerseDockSize', size);
     }
     
-    /**
-     * Generates and displays the calendar for the current month.
-     */
     function generateCalendar() {
         const now = new Date();
-        const year = now.getFullYear();
-        const month = now.getMonth();
+        const year = now.getFullYear(), month = now.getMonth();
         const firstDay = new Date(year, month, 1).getDay();
         const daysInMonth = new Date(year, month + 1, 0).getDate();
-        const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-        let calendarHTML = '';
-        dayNames.forEach(day => { calendarHTML += `<div class="calendar-day header">${day}</div>`; });
+        let calendarHTML = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(d => `<div class="calendar-day header">${d}</div>`).join('');
         for (let i = 0; i < firstDay; i++) { calendarHTML += `<div class="calendar-day empty"></div>`; }
         for (let day = 1; day <= daysInMonth; day++) {
             const isToday = now.getDate() === day;
@@ -1867,140 +1678,95 @@
         }
         calendarElement.innerHTML = calendarHTML;
         document.querySelectorAll('.calendar-day.has-tip').forEach(day => {
-            day.addEventListener('click', () => {
-                const dayNum = day.getAttribute('data-day');
-                showDayTip(dayNum);
-            });
+            day.addEventListener('click', () => showDayTip(day.getAttribute('data-day')));
         });
     }
     
-    /**
-     * Shows a random tip associated with a specific day.
-     * @param {string|number} day - The day number clicked.
-     */
     function showDayTip(day) {
-        const randomTipIndex = Math.floor(Math.random() * tips.length);
-        dayTipElement.textContent = `Tip for day ${day}: ${tips[randomTipIndex]}`;
+        dayTipElement.textContent = `Tip for day ${day}: ${tips[Math.floor(Math.random() * tips.length)]}`;
         dayTipElement.style.display = 'block';
     }
     
-    /**
-     * Toggles the visibility of the calendar content.
-     */
     function toggleCalendar() {
-        const calendarContent = document.getElementById('calendar-content');
         calendarVisible = !calendarVisible;
-        if (calendarVisible) {
-            calendarContent.style.display = 'block';
-            calendarToggleIcon.className = 'fas fa-chevron-up';
-        } else {
-            calendarContent.style.display = 'none';
-            calendarToggleIcon.className = 'fas fa-chevron-down';
-        }
+        document.getElementById('calendar-content').style.display = calendarVisible ? 'block' : 'none';
+        calendarToggleIcon.className = calendarVisible ? 'fas fa-chevron-up' : 'fas fa-chevron-down';
     }
     
-    // --- IMPROVED LAUNCHPAD LOGIC ---
+    // --- LAUNCHPAD LOGIC ---
     function populateLaunchpad() {
-        launchpadGrid.innerHTML = ''; // Clear previous items
+        launchpadGrid.innerHTML = '';
         const icons = dockElement.querySelectorAll('.dock-icon:not(.dock-launchpad)');
-        const totalIcons = icons.length;
-
         icons.forEach((icon, index) => {
-            const iconClone = icon.cloneNode(true);
-            const dockLabel = icon.querySelector('.dock-icon-label');
-            const labelText = dockLabel ? dockLabel.textContent : (icon.getAttribute('aria-label') || 'App');
-
+            const labelText = icon.querySelector('.dock-icon-label')?.textContent || icon.getAttribute('aria-label') || 'App';
             const launchpadItem = document.createElement(icon.tagName.toLowerCase() === 'a' ? 'a' : 'div');
             launchpadItem.className = 'launchpad-item';
-            if(icon.tagName.toLowerCase() === 'a') {
+            if(icon.tagName === 'A') {
                 launchpadItem.href = icon.href;
                 if (icon.target === '_blank') launchpadItem.target = '_blank';
             }
-            
             if (icon.onclick) launchpadItem.onclick = icon.onclick;
+            
+            const iconClone = icon.cloneNode(true);
+            iconClone.querySelector('.dock-icon-label')?.remove();
+            iconClone.querySelector('.focus-submenu')?.remove();
             
             launchpadItem.innerHTML = `<div class="launchpad-item-label">${labelText}</div>`;
             launchpadItem.prepend(iconClone);
 
-            // For staggering animations
             launchpadItem.style.setProperty('--item-index', index);
-            launchpadItem.style.setProperty('--item-index-rev', totalIcons - index - 1);
-
-
-            const internalLabel = iconClone.querySelector('.dock-icon-label');
-            if (internalLabel) internalLabel.remove();
-            
-            const submenu = iconClone.querySelector('.focus-submenu');
-            if (submenu) submenu.remove();
-
+            launchpadItem.style.setProperty('--item-index-rev', icons.length - 1 - index);
             launchpadGrid.appendChild(launchpadItem);
         });
     }
     
     function toggleLaunchpad() {
-        const isVisible = launchpadOverlay.classList.contains('visible');
         clearTimeout(launchpadTimeout);
-
-        if (!isVisible) {
-            launchpadOverlay.classList.remove('hiding'); // Ensure hiding class is removed
+        if (!launchpadOverlay.classList.contains('visible')) {
+            launchpadOverlay.classList.remove('hiding');
             populateLaunchpad(); 
             launchpadOverlay.classList.add('visible');
             launchpadSearch.focus(); 
         } else {
             launchpadOverlay.classList.add('hiding');
-            // Wait for the exit animation to finish before hiding the overlay
             launchpadTimeout = setTimeout(() => {
-                launchpadOverlay.classList.remove('visible');
-                launchpadOverlay.classList.remove('hiding');
+                launchpadOverlay.classList.remove('visible', 'hiding');
                 launchpadSearch.value = ''; 
                 filterLaunchpadApps(''); 
-            }, 500); // This duration should match the longest animation
+            }, 500);
         }
     }
     
     function filterLaunchpadApps(query) {
         const searchTerm = query.toLowerCase().trim();
-        const apps = launchpadGrid.querySelectorAll('.launchpad-item');
-        
-        apps.forEach(app => {
+        launchpadGrid.querySelectorAll('.launchpad-item').forEach(app => {
             const label = app.querySelector('.launchpad-item-label').textContent.toLowerCase();
             app.style.display = label.includes(searchTerm) ? 'flex' : 'none';
         });
     }
 
-
-    // --- ENHANCED CHAT AI LOGIC ---
-    const pageNavigationMap = {
-        'motivation': 'page12.html', 'tasks': 'page16.html', 'task': 'page16.html', 'pomodoro': 'page13.html', 'deep focus': 'page9.html', 'measure': 'page10.html', 'researcho': 'page5.html', 'research': 'page5.html', 'typing test': 'page6.html', 'typing': 'page6.html', 'puzzle': 'page7.html', 'puzzles': 'page7.html', 'formulas': 'page4.html', 'formula station': 'page4.html', 'whiteboard': 'page8.html', 'white board': 'page8.html', 'booknest': 'page13.html', 'books': 'page13.html', 'mood': 'page11.html', 'moodly': 'page11.html', 'code cody': 'page17.html', 'code': 'page17.html', 'coding': 'page17.html'
-    };
-
+    // --- CHAT AI LOGIC ---
     function setupChatAI() {
         chatAiDockIcon.addEventListener('click', () => chatWindow.classList.toggle('open'));
         chatSendBtn.addEventListener('click', handleUserMessage);
-        chatInput.addEventListener('keyup', (event) => { if (event.key === 'Enter') handleUserMessage(); });
-
+        chatInput.addEventListener('keyup', e => { if (e.key === 'Enter') handleUserMessage(); });
         if(chatMessagesContainer.children.length === 0) {
-            appendAiMessage("Hello! I'm the StudyVERSE assistant. How can I help you? You can ask me to change the theme or take you to a page.");
+            appendAiMessage("Hello! I'm the StudyVERSE assistant. How can I help? You can ask me to change the theme or navigate to a page.");
         }
     }
-
     function handleUserMessage() {
         const messageText = chatInput.value.trim();
-        if (messageText === "") return;
-        appendUserMessage(messageText);
-        chatInput.value = "";
-        setTimeout(() => { processAiCommand(messageText.toLowerCase()); }, 500 + Math.random() * 400);
+        if (messageText) {
+            appendUserMessage(messageText);
+            chatInput.value = "";
+            setTimeout(() => processAiCommand(messageText.toLowerCase()), 500 + Math.random() * 400);
+        }
     }
-    function appendUserMessage(text) {
+    function appendUserMessage(text) { appendMessage(text, 'user'); }
+    function appendAiMessage(text) { appendMessage(text, 'ai'); }
+    function appendMessage(text, type) {
         const messageEl = document.createElement('div');
-        messageEl.classList.add('chat-message', 'user');
-        messageEl.textContent = text;
-        chatMessagesContainer.appendChild(messageEl);
-        chatMessagesContainer.scrollTop = chatMessagesContainer.scrollHeight;
-    }
-    function appendAiMessage(text) {
-        const messageEl = document.createElement('div');
-        messageEl.classList.add('chat-message', 'ai');
+        messageEl.classList.add('chat-message', type);
         messageEl.textContent = text;
         chatMessagesContainer.appendChild(messageEl);
         chatMessagesContainer.scrollTop = chatMessagesContainer.scrollHeight;
@@ -2013,70 +1779,45 @@
             if (setTheme(requestedTheme)) {
                 appendAiMessage(`Of course! I've changed the theme to ${themeDisplayName}.`);
             } else {
-                appendAiMessage(`I'm sorry, I couldn't find a theme called "${themeDisplayName}". Try opening the theme palette to see available options.`);
+                appendAiMessage(`I'm sorry, I couldn't find a theme called "${themeDisplayName}". Please choose one from the settings panel.`);
             }
             return;
         }
 
-        const navMatch = command.match(/(go to|take me to|open) (the )?(.+)/);
+        const navMatch = command.match(/(go to|open|take me to) (the )?(.+)/);
+        const pageNavigationMap = { 'motivation': 'page12.html', 'tasks': 'page16.html', 'pomodoro': 'page13.html', 'deep focus': 'page9.html', 'measure': 'page10.html', 'researcho': 'page5.html', 'typing test': 'page6.html', 'puzzles': 'page7.html', 'formula station': 'page4.html', 'whiteboard': 'page8.html', 'booknest': 'page13.html', 'moodly': 'page11.html', 'code cody': 'page17.html', 'cv maker': 'page18.html', 'tag generator': 'page19.html' };
         if (navMatch) {
             const pageQuery = navMatch[3].trim().replace(/ page$/, ''); 
             if (pageNavigationMap[pageQuery]) {
-                const pageName = pageQuery.charAt(0).toUpperCase() + pageQuery.slice(1);
-                appendAiMessage(`Certainly, heading to the ${pageName} page now!`);
+                appendAiMessage(`Certainly, heading to the ${pageQuery.charAt(0).toUpperCase() + pageQuery.slice(1)} page now!`);
                 window.location.href = pageNavigationMap[pageQuery];
             } else {
-                appendAiMessage(`Sorry, I don't know where the "${pageQuery}" page is. Available pages include: tasks, puzzles, researcho, code cody, and more.`);
+                appendAiMessage(`Sorry, I don't know the "${pageQuery}" page.`);
             }
             return;
         }
-        if (command.includes('hello') || command.includes('hi')) { appendAiMessage("Hi there! What can I assist you with today?"); return; }
-        if (command.includes('how are you')) { appendAiMessage("I'm just a set of instructions, but I'm operating perfectly! Ready to help you study."); return; }
-        appendAiMessage("I'm not sure how to respond to that. You can ask me to 'change theme to...' or 'go to tasks'.");
+
+        appendAiMessage("I'm not sure I understand. You can ask me to 'change theme to...' or 'go to tasks'.");
     }
     
-    /**
-     * Loads the user's saved state from localStorage.
-     */
     function loadState() {
-        const savedCaffeine = localStorage.getItem('caffeineIntake');
-        if (savedCaffeine !== null) { caffeineIntake = parseInt(savedCaffeine, 10) || 0; updateCaffeineDisplay(); }
-        
-        const savedTip = localStorage.getItem('currentTip');
-        if (savedTip) { tipElement.textContent = savedTip; }
-
+        caffeineIntake = parseInt(localStorage.getItem('caffeineIntake'), 10) || 0;
+        updateCaffeineDisplay();
+        tipElement.textContent = localStorage.getItem('currentTip') || "Welcome! Click the lightbulb for a study tip.";
         populateThemeSelector(); 
-        
         const savedTheme = localStorage.getItem('studyVerseTheme');
         setTheme(savedTheme && themes[savedTheme] ? savedTheme : 'cosmic-dark');
-        
-        const savedDockPos = localStorage.getItem('studyVerseDockPosition');
-        setDockPosition(savedDockPos || 'bottom');
-        
-        const savedDockSize = localStorage.getItem('studyVerseDockSize');
-        setDockSize(savedDockSize || 'medium');
-        
-        const savedAnimType = localStorage.getItem('studyVerseDockAnimationType');
-        setDockAnimation(savedAnimType || 'none');
-        
+        setDockPosition(localStorage.getItem('studyVerseDockPosition') || 'bottom');
+        setDockSize(localStorage.getItem('studyVerseDockSize') || 'medium');
+        setDockAnimation(localStorage.getItem('studyVerseDockAnimationType') || 'none');
         generateCalendar();
         setupChatAI();
     }
     
     // --- OPTIMIZED DOCK ANIMATION LOGIC ---
-
-    /**
-     * Master function to set the dock animation type. This is much more performant as
-     * it offloads all animation logic to CSS classes.
-     * @param {string} type - The animation type ('none', 'scale', 'bubble').
-     */
     function setDockAnimation(type) {
         dockElement.classList.remove('anim-scale', 'anim-bubble');
-        
-        if (type === 'scale' || type === 'bubble') {
-            dockElement.classList.add(`anim-${type}`);
-        }
-        
+        if (type === 'scale' || type === 'bubble') dockElement.classList.add(`anim-${type}`);
         localStorage.setItem('studyVerseDockAnimationType', type);
         dockAnimButtons.forEach(btn => btn.classList.toggle('active', btn.dataset.anim === type));
     }
@@ -2091,24 +1832,18 @@
         dockPosButtons.forEach(btn => btn.addEventListener('click', () => setDockPosition(btn.dataset.pos)));
         dockSizeButtons.forEach(btn => btn.addEventListener('click', () => setDockSize(btn.dataset.size)));
         dockAnimButtons.forEach(btn => btn.addEventListener('click', () => setDockAnimation(btn.dataset.anim)));
-
-        // Setup Theme Modal Listeners
-        themeControlIcon.addEventListener('click', openThemeModal);
-        themeModalCloseBtn.addEventListener('click', closeThemeModal);
-        themeModalOverlay.addEventListener('click', (event) => { if (event.target === themeModalOverlay) closeThemeModal(); });
-
-        // IMPROVED LAUNCHPAD LISTENERS
+        
+        // LAUNCHPAD LISTENERS
         launchpadDockIcon.addEventListener('click', toggleLaunchpad);
         launchpadCloseBtn.addEventListener('click', toggleLaunchpad);
-        launchpadOverlay.addEventListener('click', (event) => { if(event.target === launchpadOverlay) toggleLaunchpad(); });
-        launchpadSearch.addEventListener('input', (e) => filterLaunchpadApps(e.target.value));
+        launchpadOverlay.addEventListener('click', e => { if(e.target === launchpadOverlay) toggleLaunchpad(); });
+        launchpadSearch.addEventListener('input', e => filterLaunchpadApps(e.target.value));
         
-        // IMPROVEMENT: Close modals with the 'Escape' key for better accessibility and UX
-        document.addEventListener('keydown', (event) => {
-            if (event.key === 'Escape') {
+        // Close modals with the 'Escape' key
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') {
                 if (launchpadOverlay.classList.contains('visible')) toggleLaunchpad();
                 if (settingsModalOverlay.classList.contains('visible')) closeSettingsModal();
-                if (themeModalOverlay.classList.contains('visible')) closeThemeModal();
                 if (chatWindow.classList.contains('open')) chatWindow.classList.remove('open');
             }
         });
@@ -2116,7 +1851,6 @@
         // Load all user preferences and states
         loadState();
     });
-
 </script>
 </body>
-</html>```
+</html>
