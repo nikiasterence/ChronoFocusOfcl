@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <link rel="icon" href="Chronofocus.png" type="image/x-icon">
     <title>ChronoFocus</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -72,7 +72,7 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        min-height: 100%;
+        height: 100%;
         color: var(--text-primary);
         transition: background 0.5s ease, color 0.5s ease;
         background: var(--background);
@@ -98,6 +98,9 @@
         overflow: hidden;
         position: relative;
         transition: all 0.5s ease;
+        /* Force app to look like a phone app, no radius or shadows */
+        border-radius: 0;
+        box-shadow: none;
     }
 
     main.content-area {
@@ -105,8 +108,9 @@
         overflow-y: auto;
         overflow-x: hidden;
         position: relative;
-         /* Padding for content + space for the dock */
-        padding: 20px 20px calc(60px + 25px) 20px;
+        /* Padding for content + space for the dock */
+        padding: 15px 15px calc(60px + 20px) 15px; /* Adjust padding for smaller screens */
+        -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
     }
 
     .page {
@@ -129,7 +133,7 @@
     }
 
     .page-title {
-        font-size: 1.8rem;
+        font-size: 1.6rem;
         font-weight: 600;
         margin-bottom: 20px;
         margin-top: 0;
@@ -144,7 +148,7 @@
         transform: translateX(-50%);
         width: calc(100% - 40px); /* Responsive width */
         max-width: 450px;
-        height: 65px;
+        height: 60px; /* Make dock slightly smaller */
         z-index: 100;
         display: flex;
         justify-content: space-around;
@@ -156,6 +160,7 @@
         color: var(--text-secondary); cursor: pointer;
         width: 75px; height: 55px;
         transition: var(--transition);
+        -webkit-tap-highlight-color: transparent; /* Remove tap highlight on mobile */
     }
     .dock-item i { font-size: 22px; }
     .dock-item span { font-size: 10px; font-weight: 500; }
@@ -170,6 +175,7 @@
         background: var(--primary-light); color: var(--text-primary);
         font-family: 'Poppins', sans-serif; transition: var(--transition);
         -webkit-appearance: none;
+        font-size: 16px; /* Prevent zoom on iOS */
     }
     #new-task-form input:focus, #new-task-form textarea:focus {
         border-color: var(--primary);
@@ -193,21 +199,34 @@
     .task-list-container { margin-top: 20px; }
     @keyframes item-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     .task-item {
-        animation: item-in 0.4s ease forwards; display: flex; align-items: center;
-        margin-bottom: 10px; padding: 15px; background: rgba(var(--primary-rgb), 0.08);
-        border-radius: 12px; border-left: 5px solid var(--primary);
-        transition: all 0.3s ease; flex-wrap: wrap; /* Allow wrapping for actions */
+        animation: item-in 0.4s ease forwards;
+        display: flex;
+        align-items: flex-start; /* Changed for better mobile stacking */
+        margin-bottom: 10px;
+        padding: 15px;
+        background: rgba(var(--primary-rgb), 0.08);
+        border-radius: 12px;
+        border-left: 5px solid var(--primary);
+        transition: all 0.3s ease;
+        flex-direction: column; /* Stack task content and actions on very small screens */
     }
     .task-item.completed { border-color: var(--success); text-decoration: line-through; }
     .task-item.completed .task-item-content, .task-item.completed .task-item-meta { color: var(--text-secondary); }
 
-    .task-item-content { flex-grow: 1; min-width: 150px; /* prevent squishing */ }
+    .task-item-content { flex-grow: 1; min-width: 150px; width:100%; }
     .task-item strong { display: block; }
     .task-item-meta { font-size: 0.8em; color: var(--text-secondary); }
-    .task-item .actions { display: flex; align-items: center; margin-left: auto; padding-left: 10px; }
+    .task-item .actions {
+        display: flex;
+        align-items: center;
+        margin-left: 0;
+        padding-left: 0;
+        margin-top: 10px; /* Add some space between content and buttons */
+    }
     .task-item button {
         background: none; border: none; cursor: pointer; padding: 5px;
         color: var(--text-secondary); font-size: 16px; transition: color 0.2s;
+        -webkit-tap-highlight-color: transparent; /* Remove tap highlight on mobile */
     }
     .task-item button:hover { color: var(--primary); }
 
@@ -221,8 +240,9 @@
     }
     .calendar-grid div {
         padding: 5px; border-radius: 50%; position: relative;
-        min-height: 35px; display: flex; align-items: center;
-        justify-content: center; font-size: 0.8rem;
+        min-height: 30px; /* Smaller calendar cells on mobile */
+        display: flex; align-items: center;
+        justify-content: center; font-size: 0.7rem;
     }
     .calendar-grid .day-name { font-weight: 600; color: var(--text-secondary); cursor: default; }
     .calendar-grid .calendar-day { cursor: pointer; transition: all 0.3s ease; }
@@ -246,6 +266,7 @@
     .settings-option input[type="number"], .settings-option select, .settings-option input[type="color"] {
         width: 100%; padding: 10px; border-radius: 10px; border: 1px solid var(--border-color);
         background: var(--primary-light); color: var(--text-primary);
+        font-size: 16px; /* Prevent zoom on iOS */
     }
     .theme-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 10px; margin-top: 15px; }
     .theme-item {
@@ -261,16 +282,17 @@
 
     /* --- AI Assistant --- */
     .ai-assistant-btn {
-        position: fixed; bottom: 95px; right: 20px; width: 60px; height: 60px;
+        position: fixed; bottom: 85px; right: 20px; width: 50px; height: 50px;
         border-radius: 50%; background: var(--primary); color: white;
         border: none; cursor: pointer; z-index: 1001;
         box-shadow: 0 4px 12px rgba(0,0,0,0.2);
         display: flex; align-items: center; justify-content: center;
         transition: var(--transition);
+        -webkit-tap-highlight-color: transparent; /* Remove tap highlight on mobile */
     }
     .ai-assistant-panel {
-        position: fixed; bottom: 165px; right: 20px;
-        width: calc(100vw - 40px); max-width: 380px; height: 450px; max-height: 60vh;
+        position: fixed; bottom: 145px; right: 20px;
+        width: calc(100vw - 40px); max-width: 380px; height: 450px; max-height: 55vh;
         z-index: 1000; display: none; flex-direction: column;
         animation: modal-in 0.4s; transform-origin: bottom right;
     }
@@ -296,104 +318,16 @@
     .color-fill-bg { position: absolute; top: 0; left: 0; width: 100%; height: 0; z-index: -1; transition: height 1s linear; }
     .focus-content { text-align: center; z-index: 1; padding: 20px; }
     #focus-task-name { font-size: 1.5rem; margin-bottom: 20px; }
-    #focus-timer { font-size: 3rem; font-weight: 300; margin: 20px 0; letter-spacing: 2px; }
+    #focus-timer { font-size: 2.5rem; font-weight: 300; margin: 20px 0; letter-spacing: 2px; }
     #focus-status-text { text-transform: uppercase; letter-spacing: 2px; margin-bottom: 30px; }
     .focus-controls button {
         background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.3);
         padding: 12px 18px; margin: 5px; border-radius: 8px; cursor: pointer; transition: background 0.3s;
+        -webkit-tap-highlight-color: transparent; /* Remove tap highlight on mobile */
     }
     .focus-view-container.light-mode button { background: rgba(0,0,0,0.05); border: 1px solid rgba(0,0,0,0.1); color: #121212; }
     .focus-view-container.dark-mode button { color: white; }
 
-    /* --- RESPONSIVE ADJUSTMENTS FOR SMALLER DEVICES --- */
-    @media (max-width: 480px) {
-        main.content-area {
-            padding: 15px 15px calc(60px + 20px) 15px; /* Adjust padding for smaller screens */
-        }
-        .dock {
-            height: 60px; /* Make dock slightly smaller */
-        }
-        .page-title {
-            font-size: 1.6rem;
-        }
-        #new-task-form .time-inputs, #new-task-form .duration-inputs {
-            flex-direction: column; /* Ensure vertical stacking */
-        }
-        .ai-assistant-btn {
-            width: 50px;
-            height: 50px;
-            bottom: 85px; /* Adjust position to avoid overlap with dock */
-        }
-        .ai-assistant-panel {
-            bottom: 145px;
-            max-height: 55vh; /* Ensure it doesn't take up the whole screen */
-        }
-        .focus-timer {
-            font-size: 2.5rem;
-        }
-        .task-item {
-            flex-direction: column; /* Stack task content and actions on very small screens */
-            align-items: flex-start;
-        }
-        .task-item .actions {
-            margin-left: 0;
-            padding-left: 0;
-            margin-top: 10px; /* Add some space between content and buttons */
-        }
-    }
-
-
-    /* --- RESPONSIVE ADJUSTMENTS FOR TABLETS AND DESKTOPS --- */
-    @media (min-width: 768px) {
-        body { padding: 20px; }
-        .app-container {
-            max-width: 1200px; /* Increased max width for better use of space */
-            height: 95vh;
-            max-height: 850px;
-            border-radius: 24px;
-            box-shadow: 0 12px 48px 0 var(--shadow-color);
-        }
-        .page-title { font-size: 2rem; }
-        main.content-area { padding: 30px; }
-        .page { padding: 30px; }
-
-        .task-item { flex-wrap: nowrap; /* Prevent action buttons from wrapping */ }
-
-        #new-task-form .time-inputs, #new-task-form .duration-inputs {
-             flex-direction: row; /* Place time/duration inputs side-by-side */
-        }
-         .calendar-grid { gap: 10px; }
-         .calendar-grid div {
-             padding: 10px;
-             font-size: 0.9rem;
-             min-height: 50px;
-         }
-        #focus-timer { font-size: 5rem; }
-        #focus-task-name { font-size: 2rem; }
-
-        .ai-assistant-btn { right: 30px; }
-        .ai-assistant-panel { right: 30px; }
-    }
-
-    /* Further refinements for very wide screens */
-    @media (min-width: 1200px) {
-        .page {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr); /* Example: create two columns layout */
-            gap: 30px;
-            align-items: flex-start;
-        }
-        #inbox-page, #settings-page, #focus-view { display: block; /* Revert grid for simple pages */ }
-
-        /* Adjust specific pages to work with the grid */
-        #manager-page, #calendar-page {
-             grid-template-columns: 1fr 1.2fr;
-        }
-         .page-title {
-            grid-column: 1 / -1; /* Make title span both columns */
-            margin-bottom: 0;
-        }
-    }
 </style>
 </head>
 <body>
@@ -508,7 +442,7 @@
         <button class="ai-close" id="ai-close">&times;</button>
     </div>
     <div class="ai-conversation" id="ai-conversation">
-        <div class="ai-message ai-bot">How can I help you focus today? Try: "Schedule physics study for 45 minutes".</div>
+        <div class="ai-message ai-bot">How can I help you focus today? Try: "Schedule physics study for 45 minutes" or "Create a task for tomorrow".</div>
     </div>
     <div class="ai-input-area">
         <input type="text" class="ai-input" id="ai-input" placeholder="Ask me...">
@@ -867,7 +801,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const aiInput = document.getElementById('ai-input');
     const aiSendBtn = document.getElementById('ai-send');
 
-    aiAssistantBtn.addEventListener('click', () => { aiPanel.style.display = 'flex'; });
+    aiAssistantBtn.addEventListener('click', () => { 
+        aiPanel.style.display = 'flex'; 
+        aiInput.focus();
+    });
     document.getElementById('ai-close').addEventListener('click', () => { aiPanel.style.display = 'none'; });
     aiSendBtn.addEventListener('click', handleAIInput);
     aiInput.addEventListener('keydown', (e) => {
@@ -875,6 +812,18 @@ document.addEventListener('DOMContentLoaded', () => {
             handleAIInput();
         }
     });
+
+    // Close AI panel when clicking outside
+    document.addEventListener('click', (e) => {
+        if (aiPanel.style.display === 'flex' && 
+            !aiPanel.contains(e.target) && 
+            e.target !== aiAssistantBtn &&
+            !aiAssistantBtn.contains(e.target)
+        ) {
+            aiPanel.style.display = 'none';
+        }
+    });
+
 
     function addMessageToAI(message, sender) {
         const messageEl = document.createElement('div');
@@ -898,6 +847,41 @@ document.addEventListener('DOMContentLoaded', () => {
         let taskName = lowerCmd;
         let duration = 0; // in minutes
         let date = toYYYYMMDD(new Date()); // Default to today
+
+        // Extract date keywords
+        const dateKeywords = {
+            'tomorrow': () => {
+                const tomorrow = new Date();
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                return toYYYYMMDD(tomorrow);
+            },
+            'next week': () => {
+                const nextWeek = new Date();
+                nextWeek.setDate(nextWeek.getDate() + 7);
+                return toYYYYMMDD(nextWeek);
+            },
+            'next month': () => {
+                const nextMonth = new Date();
+                nextMonth.setMonth(nextMonth.getMonth() + 1);
+                return toYYYYMMDD(nextMonth);
+            },
+            'monday': getNextDayOfWeek(1),
+            'tuesday': getNextDayOfWeek(2),
+            'wednesday': getNextDayOfWeek(3),
+            'thursday': getNextDayOfWeek(4),
+            'friday': getNextDayOfWeek(5),
+            'saturday': getNextDayOfWeek(6),
+            'sunday': getNextDayOfWeek(0)
+        };
+
+        // Check for date keywords
+        for (const [keyword, dateFunc] of Object.entries(dateKeywords)) {
+            if (lowerCmd.includes(keyword)) {
+                date = typeof dateFunc === 'function' ? dateFunc() : dateFunc;
+                taskName = taskName.replace(keyword, '').trim();
+                break;
+            }
+        }
 
         // Extract duration
         const durationRegex = /(\d+)\s*(min|mins|minutes|hr|hrs|hours)/g;
@@ -930,7 +914,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         
         // Remove keywords
-        taskName = taskName.replace(/schedule|create|add|task|a|an/g, '').trim();
+        taskName = taskName.replace(/schedule|create|add|task|a|an|remind me to|reminder for/g, '').trim();
+        // Capitalize the first letter of the task name for better presentation
+        taskName = taskName.charAt(0).toUpperCase() + taskName.slice(1);
 
         if (taskName && duration > 0) {
             tasks.push({
@@ -943,12 +929,37 @@ document.addEventListener('DOMContentLoaded', () => {
                 completed: false,
             });
             saveAndRerender();
-            addMessageToAI(`Okay, I've scheduled "${taskName}" for ${duration} minutes.`, 'bot');
+            addMessageToAI(`Okay, I've scheduled "${taskName}" for ${duration} minutes on ${new Date(date + 'T00:00:00').toLocaleDateString()}.`, 'bot');
+        } else if (taskName && duration === 0) {
+            // If no duration specified, create a task without duration
+             tasks.push({
+                id: Date.now().toString(),
+                name: taskName,
+                date: date,
+                startTime: '',
+                endTime: '',
+                duration: 0,
+                completed: false,
+            });
+            saveAndRerender();
+            addMessageToAI(`I've added "${taskName}" to your tasks for ${new Date(date + 'T00:00:00').toLocaleDateString()}.`, 'bot');
         } else {
-            addMessageToAI("I'm sorry, I didn't understand that. Please try something like: 'Schedule a workout for 1 hour'.", 'bot');
+            addMessageToAI("I'm sorry, I didn't understand that. Please try something like: 'Schedule a workout for 1 hour' or 'Create a task for tomorrow'.", 'bot');
         }
     }
 
+    // Helper function to get next day of week
+    function getNextDayOfWeek(dayOfWeek) {
+        return () => {
+             const today = new Date();
+             const resultDate = new Date();
+             const currentDay = today.getDay();
+             const distance = (dayOfWeek - currentDay + 7) % 7;
+             // If distance is 0, it means it's the same day, so add 7 days to get the next week's day
+             resultDate.setDate(today.getDate() + (distance === 0 ? 7 : distance));
+             return toYYYYMMDD(resultDate);
+        };
+    }
 
     // --- INITIALIZATION ---
     function initializeApp() {
