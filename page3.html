@@ -78,6 +78,7 @@
       margin-bottom: 20px;
       border: 1px solid rgba(255, 255, 255, 0.1);
       flex-wrap: wrap; /* Allow items to wrap on smaller screens */
+      gap: 10px; /* Add gap for wrapped items */
     }
     
     .logo {
@@ -91,15 +92,14 @@
       background: linear-gradient(45deg, #ff6ec4, #7873f5);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      margin-bottom: 10px; /* Add margin for spacing when wrapped */
     }
     
     .search-bar {
       display: flex;
       flex: 1;
-      min-width: 100%; /* Take full width on mobile */
-      margin: 10px 0;
-      order: 3; /* Change order for mobile view */
+      width: 100%; /* Default to full width on mobile */
+      min-width: 200px; /* Prevent it from getting too small */
+      order: 3; /* Move to the bottom on mobile */
     }
     
     .search-bar input {
@@ -142,7 +142,6 @@
       display: flex;
       gap: 12px;
       align-items: center;
-      margin-bottom: 10px;
     }
     
     .user-action {
@@ -205,7 +204,7 @@
     }
     
     .video-info {
-      padding: 20px 0;
+      padding: 20px; /* Consistent padding */
     }
     
     .video-title {
@@ -253,8 +252,7 @@
       display: flex;
       align-items: center;
       gap: 16px;
-      margin: 20px 0;
-      padding-bottom: 20px;
+      padding: 20px 0;
       border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
     
@@ -268,6 +266,7 @@
       justify-content: center;
       font-size: 1.2rem;
       box-shadow: 0 6px 20px rgba(120, 115, 245, 0.4);
+      flex-shrink: 0;
     }
     
     .channel-details {
@@ -312,6 +311,7 @@
     /* Comments Section */
     .comments-section {
       margin-top: 28px;
+      padding: 20px;
     }
     
     .comments-header {
@@ -419,13 +419,13 @@
     
     .video-card {
       display: flex;
+      flex-direction: column; /* Mobile First: Stack items vertically */
       gap: 12px;
       margin-bottom: 16px;
       cursor: pointer;
       padding: 12px;
       border-radius: 16px;
       transition: all 0.3s ease;
-      flex-direction: column; /* Stack items vertically on mobile */
     }
     
     .video-card:hover {
@@ -434,8 +434,7 @@
     }
     
     .card-thumbnail {
-      width: 100%;
-      height: auto;
+      width: 100%; /* Full width on mobile */
       aspect-ratio: 16/9;
       border-radius: 12px;
       flex-shrink: 0;
@@ -457,7 +456,7 @@
     
     .card-info {
       flex: 1;
-      padding-top: 8px; /* Add some spacing */
+      padding-top: 8px; /* Spacing for vertical layout */
     }
     
     .card-title {
@@ -503,62 +502,78 @@
     }
     
     @keyframes float {
-      0% {
-        transform: translate(0, 0) rotate(0deg);
-      }
-      100% {
-        transform: translate(100px, 100px) rotate(360deg);
-      }
+      0% { transform: translate(0, 0) rotate(0deg); }
+      100% { transform: translate(100px, 100px) rotate(360deg); }
     }
 
-    /* Larger screen adjustments */
+    /* ---- Responsive Design Adjustments ---- */
+
+    /* For very small screens */
+    @media (max-width: 480px) {
+        body {
+            padding: 5px;
+        }
+        .header {
+            padding: 10px;
+        }
+        .video-title {
+            font-size: 1.2rem;
+        }
+        .action-btn, .back-btn {
+            font-size: 0.9rem;
+            padding: 8px 14px;
+        }
+        .video-info, .comments-section {
+            padding: 15px;
+        }
+    }
+
+    /* For Tablets and larger screens */
     @media (min-width: 768px) {
         body {
             padding: 20px;
         }
 
         .header {
-            flex-wrap: nowrap;
+            flex-wrap: nowrap; /* Prevent wrapping on larger screens */
+            justify-content: space-between;
         }
 
         .search-bar {
-            min-width: auto;
-            max-width: 600px;
+            order: 2; /* Center order */
+            width: auto;
+            flex-grow: 1;
+            max-width: 500px;
             margin: 0 20px;
-            order: 0;
         }
         
-        .logo, .user-actions {
-            margin-bottom: 0;
-        }
+        .logo { order: 1; }
+        .user-actions { order: 3; }
 
-        .related-videos {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 20px;
-        }
-        
         .video-card {
-            flex-direction: row;
+            flex-direction: row; /* Horizontal layout for video cards */
         }
 
         .card-thumbnail {
-            width: 168px;
+            width: 168px; /* Fixed width for thumbnail */
             height: 94px;
         }
 
         .card-info {
-            padding-top: 0;
+            padding-top: 0; /* No top padding needed in horizontal layout */
         }
     }
 
+    /* For Desktops */
     @media (min-width: 1200px) {
         .content {
-            grid-template-columns: 7fr 3fr;
+            /* Two-column layout for main content */
+            grid-template-columns: minmax(0, 2.3fr) minmax(0, 1fr);
         }
 
         .related-videos {
-            display: block; /* Revert to block for vertical list */
+             /* Revert to block for a vertical list in the sidebar */
+            display: block;
         }
     }
   </style>
@@ -595,7 +610,7 @@
       <div class="main-content">
         <div class="video-container liquid-glass">
           <div class="video-player" id="mainPlayer">
-            <!-- Video will be loaded here -->
+            <!-- Video will be loaded here by script -->
           </div>
           
           <div class="video-info">
