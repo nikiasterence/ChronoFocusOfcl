@@ -206,15 +206,61 @@ li.deleting { animation: fadeOutShrink 0.5s ease forwards; }
 .calendar-nav { display: flex; gap: 5px; align-items: center;}
 .calendar-nav button { padding: 0; width: 35px; height: 35px; border-radius: 50%; }
 
-/* Pomodoro Timer */
+/* --- Pomodoro Timer: ENHANCED --- */
 .pomodoro-section { text-align: center; }
+
+.pomodoro-modes { display: flex; justify-content: center; gap: 10px; margin-bottom: 15px; }
 .pomodoro-modes button { background: none; color: var(--text-secondary); box-shadow: none; padding: 8px 18px; font-weight: 500; border: 1px solid var(--border-color); }
 .pomodoro-modes button:hover { background-color: var(--primary-light); color: var(--primary); }
 .pomodoro-modes button.active { background: var(--primary); color: #fff; border-color: var(--primary); }
-.pomodoro-timer-display { font-size: 5.5rem; font-weight: 700; color: var(--primary); margin: 25px 0; letter-spacing: -2px; }
+
+.pomodoro-timer-circle {
+    position: relative;
+    width: 220px;
+    height: 220px;
+    margin: 30px auto;
+}
+
+.pomodoro-progress-ring {
+    transform: rotate(-90deg);
+}
+
+.pomodoro-progress-ring__track {
+    stroke: var(--border-color);
+}
+
+.pomodoro-progress-ring__progress {
+    stroke: var(--primary);
+    stroke-linecap: round;
+    transition: stroke-dashoffset 0.5s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.pomodoro-timer-display {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 3.8rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+    letter-spacing: -1px;
+    transition: var(--transition);
+}
+
+.pomodoro-timer-circle.running .pomodoro-progress-ring__progress {
+    animation: slowPulse 2s infinite ease-in-out;
+}
+
+@keyframes slowPulse {
+    50% { stroke: var(--text-primary); }
+}
+
+.pomodoro-controls { display: flex; justify-content: center; align-items: center; gap: 20px; }
 .pomodoro-controls button { font-size: 1.2rem; width: 64px; height: 64px; border-radius: 50%; padding: 0; box-shadow: var(--shadow-md); }
 .pomodoro-controls #pomodoro-start-pause i { font-size: 1.8rem; }
-.pomodoro-controls { display: flex; justify-content: center; align-items: center; gap: 20px; }
+/* --- End of Pomodoro Timer CSS --- */
+
 
 /* Theme Customizer */
 .theme-fab { position: fixed; bottom: 25px; right: 25px; width: 60px; height: 60px; background: var(--primary); color: white; border-radius: 50%; border: none; font-size: 1.5rem; cursor: pointer; z-index: 1000; box-shadow: var(--shadow-lg); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
@@ -281,7 +327,21 @@ li.deleting { animation: fadeOutShrink 0.5s ease forwards; }
   .calendar-day { height: 40px; font-size: 0.9rem; }
 
   /* Pomodoro Timer smaller elements */
-  .pomodoro-timer-display { font-size: 4rem; margin: 20px 0; }
+  .pomodoro-timer-circle {
+      width: 180px;
+      height: 180px;
+      margin: 20px auto;
+  }
+  .pomodoro-progress-ring {
+      width: 180px;
+      height: 180px;
+  }
+   .pomodoro-progress-ring circle {
+       r: 82;
+       cx: 90;
+       cy: 90;
+   }
+  .pomodoro-timer-display { font-size: 2.8rem; }
   .pomodoro-controls button { width: 56px; height: 56px; }
   .pomodoro-controls #pomodoro-start-pause i { font-size: 1.5rem; }
   .pomodoro-modes button { padding: 6px 14px; }
@@ -396,7 +456,15 @@ li.deleting { animation: fadeOutShrink 0.5s ease forwards; }
             <button data-mode="shortBreak">Short Break</button>
             <button data-mode="longBreak">Long Break</button>
         </div>
-        <div id="pomodoro-timer-display" class="pomodoro-timer-display">25:00</div>
+        
+        <div class="pomodoro-timer-circle">
+            <svg class="pomodoro-progress-ring" width="220" height="220">
+                <circle class="pomodoro-progress-ring__track" stroke-width="8" fill="transparent" r="102" cx="110" cy="110"/>
+                <circle class="pomodoro-progress-ring__progress" stroke-width="8" fill="transparent" r="102" cx="110" cy="110"/>
+            </svg>
+            <div id="pomodoro-timer-display" class="pomodoro-timer-display">25:00</div>
+        </div>
+        
         <div class="pomodoro-controls">
             <button id="pomodoro-start-pause" aria-label="Start or pause the timer"><i class="fa-solid fa-play"></i></button>
             <button id="pomodoro-reset" aria-label="Reset the timer"><i class="fa-solid fa-rotate-right"></i></button>
@@ -445,6 +513,8 @@ class ChronoFocusApp {
             prevMonthBtn: document.getElementById('prevMonthBtn'),
             nextMonthBtn: document.getElementById('nextMonthBtn'),
             pomodoroDisplay: document.getElementById('pomodoro-timer-display'),
+            pomodoroCircle: document.querySelector('.pomodoro-timer-circle'),
+            progressRing: document.querySelector('.pomodoro-progress-ring__progress'),
             pomodoroStartPause: document.getElementById('pomodoro-start-pause'),
             pomodoroReset: document.getElementById('pomodoro-reset'),
             pomodoroModes: document.getElementById('pomodoro-modes'),
@@ -453,6 +523,13 @@ class ChronoFocusApp {
             themeModalBody: document.getElementById('theme-modal-body'),
             toast: document.getElementById('toast'),
         };
+
+        if (this.dom.progressRing) {
+            this.radius = this.dom.progressRing.r.baseVal.value;
+            this.circumference = this.radius * 2 * Math.PI;
+            this.dom.progressRing.style.strokeDasharray = `${this.circumference} ${this.circumference}`;
+            this.dom.progressRing.style.strokeDashoffset = this.circumference;
+        }
 
         // --- APPLICATION STATE ---
         this.state = {
@@ -711,6 +788,11 @@ class ChronoFocusApp {
         const timeString = `${minutes}:${seconds}`;
         this.dom.pomodoroDisplay.textContent = timeString;
         document.title = `${timeString} - Chrono Focus`;
+        
+        const totalDuration = this.state.pomodoro.modes[this.state.pomodoro.mode];
+        const progress = (totalDuration - this.state.pomodoro.timeRemaining) / totalDuration;
+        const offset = this.circumference * (1 - progress);
+        this.dom.progressRing.style.strokeDashoffset = offset;
     }
 
     startPausePomodoro() {
@@ -718,8 +800,10 @@ class ChronoFocusApp {
         const icon = this.dom.pomodoroStartPause.querySelector('i');
         icon.className = `fa-solid ${this.state.pomodoro.isRunning ? 'fa-pause' : 'fa-play'}`;
         if (this.state.pomodoro.isRunning) {
+            this.dom.pomodoroCircle.classList.add('running');
             this.state.pomodoro.timerId = setInterval(() => this.tickPomodoro(), 1000);
         } else {
+            this.dom.pomodoroCircle.classList.remove('running');
             clearInterval(this.state.pomodoro.timerId);
         }
     }
@@ -731,17 +815,19 @@ class ChronoFocusApp {
         } else {
             clearInterval(this.state.pomodoro.timerId);
             this.state.pomodoro.isRunning = false;
+            this.dom.pomodoroCircle.classList.remove('running');
             this.finishSound.play();
             const modeName = this.state.pomodoro.mode.replace(/([A-Z])/g, ' $1').toLowerCase();
             this.showToast(`${modeName.charAt(0).toUpperCase() + modeName.slice(1)} session finished!`);
             const nextMode = this.state.pomodoro.mode === 'pomodoro' ? 'shortBreak' : 'pomodoro';
-            this.switchPomodoroMode(nextMode);
+            setTimeout(() => this.switchPomodoroMode(nextMode), 500);
         }
     }
 
     resetPomodoro = () => {
         clearInterval(this.state.pomodoro.timerId);
         this.state.pomodoro.isRunning = false;
+        this.dom.pomodoroCircle.classList.remove('running');
         this.state.pomodoro.timeRemaining = this.state.pomodoro.modes[this.state.pomodoro.mode];
         this.dom.pomodoroStartPause.querySelector('i').className = 'fa-solid fa-play';
         this.updatePomodoroDisplay();
