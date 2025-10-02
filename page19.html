@@ -3,102 +3,539 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <link rel="icon" href="Chronofocus.png" type="image/x-icon">
-    <title>AI Image Tag Generator</title>
+    <link rel="icon" href="Chronofocus.png" type="image/x-icon">
+    <title>Optichain AI Image Tag Generator</title>
 
-    <!-- 1. TensorFlow.js Core Library -->
+    <!-- TensorFlow.js Libraries -->
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
-
-    <!-- 2. MobileNet Model for Image Recognition -->
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@latest/dist/mobilenet.min.js"></script>
 
     <style>
         :root {
-            --primary: #5A67D8; --primary-light: #7F9CF5; --secondary: #2C3E50; --dark: #1A202C; --light: #F7FAFC;
-            --success: #38A169; --text: #2D3748; --text-light: #718096; --border: #E2E8F0;
-            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            --gradient: linear-gradient(135deg, var(--primary), #a37ef5);
+            --primary: #4361ee;
+            --primary-light: #4895ef;
+            --primary-dark: #3a0ca3;
+            --secondary: #f72585;
+            --accent: #4cc9f0;
+            --dark: #1a1a2e;
+            --darker: #16213e;
+            --light: #f8f9fa;
+            --gray: #6c757d;
+            --success: #4ade80;
+            --warning: #fbbf24;
+            --error: #ef4444;
+            --text: #212529;
+            --text-light: #6c757d;
+            --border: #dee2e6;
+            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            --gradient: linear-gradient(135deg, var(--primary), var(--primary-light));
+            --gradient-dark: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            --radius: 12px;
+            --transition: all 0.3s ease;
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
-        body { background-color: var(--light); color: var(--text); line-height: 1.6; font-size: 16px; }
-        .container { max-width: 1200px; margin: 0 auto; padding: 2rem 1.5rem; }
-        header { text-align: center; margin-bottom: 3rem; padding: 2.5rem 1.5rem; background: var(--gradient); color: white; border-radius: 12px; box-shadow: var(--shadow); }
-        h1 { font-size: 2.8rem; font-weight: 800; margin-bottom: 0.5rem; }
-        .subtitle { font-size: 1.25rem; opacity: 0.9; max-width: 600px; margin: 0 auto; }
-        .main-content { display: flex; flex-wrap: wrap; gap: 2.5rem; }
-        .upload-section, .results-section { background: white; padding: 2rem; border-radius: 12px; box-shadow: var(--shadow); border: 1px solid var(--border); }
-        .upload-section { flex: 1; min-width: 320px; }
-        .results-section { flex: 2; min-width: 320px; }
-        .section-title { font-size: 1.75rem; font-weight: 700; margin-bottom: 1.5rem; color: var(--dark); border-bottom: 3px solid var(--primary-light); padding-bottom: 0.75rem; }
-        .upload-area { border: 3px dashed var(--border); border-radius: 10px; padding: 2.5rem 1.5rem; text-align: center; margin-bottom: 1.5rem; cursor: pointer; transition: all 0.3s ease; }
-        .upload-area:not(.disabled):hover, .upload-area.dragover { border-color: var(--primary); background-color: #f0f2ff; }
-        .upload-area.disabled { cursor: not-allowed; background-color: #f8f8f8; }
-        .upload-icon { font-size: 3rem; color: var(--primary); margin-bottom: 1rem; }
-        .btn { background-color: var(--primary); color: white; border: none; padding: 14px 28px; border-radius: 8px; cursor: pointer; font-size: 1.1rem; font-weight: 600; transition: all 0.3s ease; display: inline-block; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .btn:hover:not(:disabled) { background-color: var(--secondary); transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.15); }
-        .btn:disabled { background-color: var(--text-light); cursor: not-allowed; opacity: 0.7; }
-        .options { margin: 2rem 0; } .option-item { margin-bottom: 1rem; } .option-label { display: flex; align-items: center; gap: 0.75rem; cursor: pointer; font-size: 1.1rem;}
-        .checkbox { width: 1.25rem; height: 1.25rem; accent-color: var(--primary); }
-        .image-preview { margin-top: 1.5rem; text-align: center; min-height: 100px;}
-        .preview-img { max-width: 100%; max-height: 300px; border-radius: 10px; box-shadow: var(--shadow); border: 1px solid var(--border); }
-        .result-item { margin-bottom: 2rem; } .result-title { font-size: 1.4rem; font-weight: 600; margin-bottom: 1rem; color: var(--dark); }
-        .hashtags { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 0.5rem; }
-        .hashtag { background-color: #eef2f7; padding: 6px 14px; border-radius: 20px; font-size: 0.95rem; color: var(--text); font-weight: 500; transition: background-color 0.2s; }
-        .hashtag:hover { background-color: #dde4ed; }
-        .caption-option { background-color: var(--light); padding: 1rem; border-radius: 8px; margin-bottom: 1rem; border-left: 5px solid var(--primary-light); }
-        .tip { background-color: #f0fff4; padding: 1rem; border-radius: 8px; margin-bottom: 1rem; border-left: 5px solid var(--success); }
-        .tip-title { font-weight: 700; margin-bottom: 0.25rem; color: var(--dark); }
-        .loading, .status-message { text-align: center; padding: 2.5rem; }
-        .spinner { border: 5px solid rgba(0, 0, 0, 0.1); border-left-color: var(--primary); border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin: 0 auto 1.5rem; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        footer { text-align: center; margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--border); color: var(--text-light); }
-        .ai-confidence { font-size: 0.8em; color: var(--text-light); }
-        .hashtag-category { margin-bottom: 1.5rem; }
-        .hashtag-category strong { font-size: 1rem; color: var(--secondary); }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--light);
+            color: var(--text);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            font-size: 16px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 3rem 1.5rem;
+            background: var(--gradient-dark);
+            color: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ffffff' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+            opacity: 0.3;
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            letter-spacing: -0.025em;
+        }
+
+        .subtitle {
+            font-size: 1.25rem;
+            opacity: 0.9;
+            max-width: 700px;
+            margin: 0 auto 1.5rem;
+        }
+
+        .header-stats {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 1.5rem;
+        }
+
+        .stat {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            backdrop-filter: blur(10px);
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2.5rem;
+        }
+
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: white;
+            padding: 2.5rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            box-shadow: var(--shadow-lg);
+        }
+
+        .section-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .section-title::before {
+            content: '';
+            display: block;
+            width: 8px;
+            height: 30px;
+            background: var(--gradient);
+            border-radius: 4px;
+        }
+
+        .upload-area {
+            border: 3px dashed var(--border);
+            border-radius: var(--radius);
+            padding: 3rem 1.5rem;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            min-height: 250px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .upload-area:not(.disabled):hover, .upload-area.dragover {
+            border-color: var(--primary);
+            background-color: rgba(67, 97, 238, 0.05);
+        }
+
+        .upload-area.disabled {
+            cursor: not-allowed;
+            background-color: #f8f9fa;
+        }
+
+        .upload-icon {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+        }
+
+        .btn {
+            background: var(--gradient);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 4px 6px rgba(67, 97, 238, 0.25);
+        }
+
+        .btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(67, 97, 238, 0.3);
+        }
+
+        .btn:disabled {
+            background: var(--gray);
+            cursor: not-allowed;
+            opacity: 0.7;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: var(--primary);
+            color: white;
+        }
+
+        .image-preview {
+            margin-top: 1.5rem;
+            text-align: center;
+            min-height: 100px;
+        }
+
+        .preview-img {
+            max-width: 100%;
+            max-height: 300px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+        }
+
+        .result-item {
+            margin-bottom: 2.5rem;
+        }
+
+        .result-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .result-title::before {
+            content: '';
+            display: block;
+            width: 6px;
+            height: 6px;
+            background: var(--primary);
+            border-radius: 50%;
+        }
+
+        .hashtags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 0.5rem;
+        }
+
+        .hashtag {
+            background-color: #eef2ff;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.95rem;
+            color: var(--primary-dark);
+            font-weight: 500;
+            transition: var(--transition);
+            cursor: pointer;
+            border: 1px solid transparent;
+        }
+
+        .hashtag:hover {
+            background-color: #e0e7ff;
+            transform: translateY(-2px);
+        }
+
+        .hashtag-copied {
+            background-color: var(--success);
+            color: white;
+        }
+
+        .caption-option {
+            background-color: var(--light);
+            padding: 1.25rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border-left: 5px solid var(--primary-light);
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .caption-option:hover {
+            background-color: #eef2ff;
+            transform: translateX(5px);
+        }
+
+        .tip {
+            background-color: #f0f9ff;
+            padding: 1.25rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            border-left: 5px solid var(--accent);
+        }
+
+        .tip-title {
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .loading, .status-message {
+            text-align: center;
+            padding: 3rem;
+        }
+
+        .spinner {
+            border: 5px solid rgba(0, 0, 0, 0.1);
+            border-left-color: var(--primary);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1.5rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .ai-confidence {
+            font-size: 0.8em;
+            color: var(--text-light);
+            background: #f1f5f9;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-left: 5px;
+        }
+
+        .hashtag-category {
+            margin-bottom: 1.5rem;
+        }
+
+        .hashtag-category strong {
+            font-size: 1rem;
+            color: var(--secondary);
+            display: block;
+            margin-bottom: 0.75rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .image-controls {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .image-controls .btn {
+            flex: 1;
+            min-width: 120px;
+            justify-content: center;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border);
+            color: var(--text-light);
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            text-align: center;
+            transition: var(--transition);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        .feature-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+        }
+
+        .progress-bar {
+            height: 6px;
+            background: #e9ecef;
+            border-radius: 3px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+
+        .progress {
+            height: 100%;
+            background: var(--gradient);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
         @media (max-width: 768px) {
-            .container { padding: 1.5rem 1rem; } h1 { font-size: 2.2rem; } .subtitle { font-size: 1.1rem; } .main-content { flex-direction: column; }
-            .upload-section, .results-section { padding: 1.5rem; } .section-title { font-size: 1.5rem; } .btn { width: 100%; padding: 16px; }
+            .container { padding: 1.5rem 1rem; }
+            h1 { font-size: 2.2rem; }
+            .subtitle { font-size: 1.1rem; }
+            .card { padding: 1.5rem; }
+            .section-title { font-size: 1.5rem; }
+            .btn { width: 100%; padding: 16px; }
+            .header-stats { flex-direction: column; gap: 1rem; }
+            .stat { width: 100%; text-align: center; }
+        }
+
+        .copy-notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--success);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        .copy-notification.show {
+            transform: translateY(0);
+            opacity: 1;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>Optichain Image Tag Generator</h1>
-            <p class="subtitle">Get relevant tags and captions based on your image content.</p>
+            <h1>Optichain AI Image Tag Generator</h1>
+            <p class="subtitle">Upload any image and get AI-powered tags, hashtags, and captions to enhance your content.</p>
+            <div class="header-stats">
+                <div class="stat">✓ 1000+ Categories</div>
+                <div class="stat">✓ Instant Analysis</div>
+                <div class="stat">✓ Optimized Hashtags</div>
+            </div>
         </header>
 
         <div class="main-content">
-            <div class="upload-section">
-                <h2 class="section-title">1. Upload Your Image</h2>
+            <div class="card">
+                <h2 class="section-title">Upload & Analyze</h2>
+                
+                <div class="tip">
+                    <div class="tip-title">💡 Pro Tip</div>
+                    <p>For best results, use clear, high-quality images with distinct subjects. The AI works best with photos containing recognizable objects, scenes, or people.</p>
+                </div>
+                
                 <div class="upload-area disabled" id="uploadArea">
-                    <div class="upload-icon">🖼️</div>
+                    <div class="upload-icon">📁</div>
                     <p class="upload-text" id="uploadText"><strong>Loading AI model...</strong></p>
                     <input type="file" id="fileInput" accept="image/*" style="display: none;" disabled>
                 </div>
-                 <div class="image-preview" id="imagePreview"></div>
-                 <button class="btn" id="generateBtn" disabled>Analyze Image</button>
+                
+                <div class="image-preview" id="imagePreview"></div>
+                
+                <div class="image-controls">
+                    <button class="btn" id="generateBtn" disabled>
+                        <span>🔍 Analyze Image</span>
+                    </button>
+                    <button class="btn btn-secondary" id="resetBtn" disabled>
+                        <span>🔄 Reset</span>
+                    </button>
+                </div>
+                
+                <div class="progress-bar">
+                    <div class="progress" id="progressBar"></div>
+                </div>
             </div>
 
-            <div class="results-section">
-                <h2 class="section-title">2. Generated Content</h2>
+            <div class="card">
+                <h2 class="section-title">Generated Content</h2>
+                
                 <div class="loading" id="loadingIndicator" style="display: none;">
                     <div class="spinner"></div>
                     <p>🤖 AI is analyzing your image...</p>
+                    <p class="text-light" id="progressText">Initializing model</p>
                 </div>
+                
                 <div id="resultsContent">
                     <div class="status-message" id="initialMessage">
-                        <p>Upload an image to get started.</p>
+                        <div class="upload-icon">📸</div>
+                        <p>Upload an image to get AI-powered tags and captions.</p>
                     </div>
+                    
                     <div id="resultsData" style="display:none;">
-                         <div class="result-item">
-                            <h3 class="result-title">AI Identified Keywords</h3>
+                        <div class="result-item">
+                            <h3 class="result-title">AI Analysis Results</h3>
                             <p id="imageDescription"></p>
                         </div>
+                        
                         <div class="result-item">
                             <h3 class="result-title">Suggested Hashtags</h3>
                             <div id="hashtagsContainer"></div>
                         </div>
+                        
                         <div class="result-item">
                             <h3 class="result-title">Caption Ideas</h3>
                             <div id="captionsContainer"></div>
@@ -108,9 +545,36 @@
             </div>
         </div>
 
+        <div class="feature-grid">
+            <div class="feature-card">
+                <div class="feature-icon">🔍</div>
+                <div class="feature-title">Advanced Recognition</div>
+                <p>Identifies objects, scenes, and concepts with high accuracy</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🏷️</div>
+                <div class="feature-title">Smart Tagging</div>
+                <p>Generates relevant tags and categories for your content</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📱</div>
+                <div class="feature-title">Social Media Ready</div>
+                <p>Optimized hashtags and captions for all platforms</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">⚡</div>
+                <div class="feature-title">Lightning Fast</div>
+                <p>Get results in seconds with our optimized AI model</p>
+            </div>
+        </div>
+
         <footer>
-            <p>AI analysis powered by Optichain 14MB</p>
+            <p>AI analysis powered by Optichain 14MB • TensorFlow.js & MobileNet</p>
         </footer>
+    </div>
+
+    <div class="copy-notification" id="copyNotification">
+        <span>✅ Copied to clipboard!</span>
     </div>
 
 <script>
@@ -121,24 +585,37 @@ document.addEventListener('DOMContentLoaded', () => {
     const fileInput = document.getElementById('fileInput');
     const imagePreview = document.getElementById('imagePreview');
     const generateBtn = document.getElementById('generateBtn');
+    const resetBtn = document.getElementById('resetBtn');
     const loadingIndicator = document.getElementById('loadingIndicator');
     const initialMessage = document.getElementById('initialMessage');
     const resultsData = document.getElementById('resultsData');
     const imageDescription = document.getElementById('imageDescription');
     const hashtagsContainer = document.getElementById('hashtagsContainer');
     const captionsContainer = document.getElementById('captionsContainer');
+    const progressBar = document.getElementById('progressBar');
+    const progressText = document.getElementById('progressText');
+    const copyNotification = document.getElementById('copyNotification');
 
     let aiModel = null;
     let uploadedFile = null;
+    let uploadedImage = null;
 
     // --- AI Model Loading ---
     async function loadModel() {
         try {
+            updateProgress(10, "Loading AI model...");
             aiModel = await mobilenet.load();
             console.log("AI Model loaded successfully.");
-            uploadArea.classList.remove('disabled');
-            fileInput.disabled = false;
-            uploadText.innerHTML = '<strong>Drag & drop</strong> or <strong>click to browse</strong>';
+            updateProgress(100, "Model ready!");
+            
+            setTimeout(() => {
+                uploadArea.classList.remove('disabled');
+                fileInput.disabled = false;
+                uploadText.innerHTML = '<strong>Drag & drop your image here</strong><br>or <strong>click to browse</strong><br><small>Supports JPG, PNG, WebP (Max 10MB)</small>';
+                progressBar.style.width = '0%';
+                progressText.textContent = '';
+            }, 500);
+            
         } catch (error) {
             console.error("Error loading model:", error);
             uploadText.textContent = 'Failed to load AI model. Please refresh.';
@@ -147,12 +624,33 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     loadModel();
 
+    // --- Progress Update Function ---
+    function updateProgress(percent, text) {
+        progressBar.style.width = `${percent}%`;
+        if (text) progressText.textContent = text;
+    }
+
     // --- File Upload Logic ---
-    uploadArea.addEventListener('click', () => { if (!fileInput.disabled) fileInput.click(); });
+    uploadArea.addEventListener('click', () => { 
+        if (!fileInput.disabled) fileInput.click(); 
+    });
+    
     fileInput.addEventListener('change', (e) => handleFiles(e.target.files));
-    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eName => uploadArea.addEventListener(eName, preventDefaults, false));
-    ['dragenter', 'dragover'].forEach(eName => uploadArea.addEventListener(eName, () => { if (!fileInput.disabled) uploadArea.classList.add('dragover'); }, false));
-    ['dragleave', 'drop'].forEach(eName => uploadArea.addEventListener(eName, () => uploadArea.classList.remove('dragover'), false));
+    
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eName => {
+        uploadArea.addEventListener(eName, preventDefaults, false);
+    });
+    
+    ['dragenter', 'dragover'].forEach(eName => {
+        uploadArea.addEventListener(eName, () => { 
+            if (!fileInput.disabled) uploadArea.classList.add('dragover'); 
+        }, false);
+    });
+    
+    ['dragleave', 'drop'].forEach(eName => {
+        uploadArea.addEventListener(eName, () => uploadArea.classList.remove('dragover'), false);
+    });
+    
     uploadArea.addEventListener('drop', (e) => handleFiles(e.dataTransfer.files), false);
 
     function preventDefaults(e) {
@@ -162,11 +660,46 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function handleFiles(files) {
         if (fileInput.disabled || !files || files.length === 0) return;
-        uploadedFile = files[0];
+        
+        const file = files[0];
+        if (!file.type.match('image.*')) {
+            alert('Please select an image file (JPG, PNG, WebP, etc.)');
+            return;
+        }
+        
+        if (file.size > 10 * 1024 * 1024) {
+            alert('Please select an image smaller than 10MB');
+            return;
+        }
+        
+        uploadedFile = file;
         const imageURL = URL.createObjectURL(uploadedFile);
-        imagePreview.innerHTML = `<img src="${imageURL}" class="preview-img" id="uploadedImage" alt="Uploaded image">`;
-        generateBtn.disabled = false;
+        
+        // Create image element to get dimensions
+        const img = new Image();
+        img.onload = function() {
+            imagePreview.innerHTML = `
+                <img src="${imageURL}" class="preview-img" id="uploadedImage" alt="Uploaded image">
+                <p class="text-light" style="margin-top: 0.5rem;">${img.width} × ${img.height} pixels • ${(uploadedFile.size / 1024 / 1024).toFixed(2)} MB</p>
+            `;
+            uploadedImage = img;
+            generateBtn.disabled = false;
+            resetBtn.disabled = false;
+        };
+        img.src = imageURL;
     }
+
+    // --- Reset Button ---
+    resetBtn.addEventListener('click', () => {
+        fileInput.value = '';
+        imagePreview.innerHTML = '';
+        resultsData.style.display = 'none';
+        initialMessage.style.display = 'block';
+        generateBtn.disabled = true;
+        resetBtn.disabled = true;
+        uploadedFile = null;
+        uploadedImage = null;
+    });
 
     // --- Button Click & AI Analysis ---
     generateBtn.addEventListener('click', async () => {
@@ -179,18 +712,22 @@ document.addEventListener('DOMContentLoaded', () => {
         initialMessage.style.display = 'none';
         resultsData.style.display = 'none';
         loadingIndicator.style.display = 'block';
+        generateBtn.disabled = true;
 
         try {
+            updateProgress(30, "Analyzing image content...");
             const predictions = await aiModel.classify(imageElement);
+            updateProgress(70, "Generating tags and captions...");
+            
             const keywords = predictions
-                .filter(p => p.probability > 0.1)
+                .filter(p => p.probability > 0.05) // Lower threshold to get more keywords
                 .map(p => ({
                     name: p.className.split(',')[0].toLowerCase(),
                     confidence: Math.round(p.probability * 100)
                 }));
 
             if (keywords.length === 0) {
-                throw new Error("AI could not identify objects with high confidence.");
+                throw new Error("AI could not identify objects with sufficient confidence.");
             }
 
             console.log('AI Keywords:', keywords);
@@ -198,54 +735,165 @@ document.addEventListener('DOMContentLoaded', () => {
 
         } catch (error) {
             console.error("Error during image analysis:", error);
-            alert("Could not analyze the image. It might be in an unsupported format or too complex. Please try a different one.");
+            alert("Could not analyze the image. It might be in an unsupported format, too complex, or contain content the AI cannot recognize. Please try a different image.");
             loadingIndicator.style.display = 'none';
             initialMessage.style.display = 'block';
+            generateBtn.disabled = false;
         }
     });
 
     // --- Content Generation & Display ---
     function generateContent(keywords) {
         const mainKeyword = keywords[0].name;
-        imageDescription.innerHTML = keywords.map(k => `<strong>${k.name}</strong> <span class="ai-confidence">(${k.confidence}% confidence)</span>`).join(', ');
+        
+        // Create a more descriptive analysis
+        const confidenceLevel = keywords[0].confidence > 70 ? "high" : 
+                               keywords[0].confidence > 40 ? "moderate" : "low";
+        
+        imageDescription.innerHTML = `
+            The AI detected <strong>${keywords.length} elements</strong> in your image with <strong>${confidenceLevel} confidence</strong>.
+            The primary subject appears to be <strong>${mainKeyword}</strong>.
+            <div style="margin-top: 10px;">
+                ${keywords.slice(0, 8).map(k => 
+                    `<span style="display: inline-block; background: #f1f5f9; padding: 4px 8px; border-radius: 4px; margin: 2px; font-size: 0.9rem;">
+                        ${k.name} <span class="ai-confidence">${k.confidence}%</span>
+                    </span>`
+                ).join('')}
+            </div>
+        `;
 
         const keywordNames = keywords.map(k => k.name);
         const hashtags = generateHashtagLibrary(keywordNames);
-        const captions = [
-            `Embracing the beauty of this ${mainKeyword.toLowerCase()}.`,
-            `All about the details with this ${mainKeyword.toLowerCase()}.`,
-            `Creating memories with a ${keywordNames.slice(0, 2).join(' and a ').toLowerCase()}.`,
-            `Just enjoying the view. #bliss`,
-            `Here's a little slice of my day.`
-        ];
+        
+        // Generate more varied captions based on content
+        const captions = generateCaptions(mainKeyword, keywordNames);
 
         displayResults(hashtags, captions);
+        updateProgress(100, "Analysis complete!");
+        
+        setTimeout(() => {
+            loadingIndicator.style.display = 'none';
+            resultsData.style.display = 'block';
+            generateBtn.disabled = false;
+            progressBar.style.width = '0%';
+            progressText.textContent = '';
+        }, 500);
+    }
+
+    function generateCaptions(mainKeyword, allKeywords) {
+        const baseCaptions = [
+            `Capturing the essence of ${mainKeyword}.`,
+            `Finding beauty in the details of this ${mainKeyword}.`,
+            `Moments with ${mainKeyword} are always special.`,
+            `Appreciating the simple things - like this ${mainKeyword}.`,
+            `Today's highlight: ${mainKeyword}.`
+        ];
+        
+        const creativeCaptions = [
+            `Lost in the world of ${mainKeyword}.`,
+            `The ${mainKeyword} speaks volumes without saying a word.`,
+            `Sometimes the best moments are with ${mainKeyword}.`,
+            `This ${mainKeyword} tells a story all its own.`,
+            `Finding inspiration in ${mainKeyword}.`
+        ];
+        
+        const socialCaptions = [
+            `What do you think of this ${mainKeyword}?`,
+            `Can you guess where this ${mainKeyword} is?`,
+            `Tag someone who would love this ${mainKeyword}!`,
+            `Double tap if you love ${mainKeyword} as much as I do!`,
+            `This ${mainKeyword} made my day better.`
+        ];
+        
+        // Combine and select 5 random captions
+        const allCaptions = [...baseCaptions, ...creativeCaptions, ...socialCaptions];
+        const selectedCaptions = [];
+        
+        while (selectedCaptions.length < 5 && allCaptions.length > 0) {
+            const randomIndex = Math.floor(Math.random() * allCaptions.length);
+            selectedCaptions.push(allCaptions.splice(randomIndex, 1)[0]);
+        }
+        
+        return selectedCaptions;
     }
 
     function displayResults(hashtags, captions) {
         let hashtagsHTML = '';
+        
         if(hashtags.keywordSpecific.length > 0){
-             hashtagsHTML += `<div class="hashtag-category"><strong>Keyword-Specific:</strong><div class="hashtags">` +
-                hashtags.keywordSpecific.map(tag => `<span class="hashtag">${tag}</span>`).join('') +
+            hashtagsHTML += `<div class="hashtag-category"><strong>Keyword-Specific Hashtags</strong><div class="hashtags">` +
+                hashtags.keywordSpecific.map(tag => `<span class="hashtag" data-text="${tag}">${tag}</span>`).join('') +
                 '</div></div>';
         }
+        
         if(hashtags.categorySpecific.length > 0){
-             hashtagsHTML += `<div class="hashtag-category"><strong>Relevant Categories:</strong><div class="hashtags">` +
-                hashtags.categorySpecific.map(tag => `<span class="hashtag">${tag}</span>`).join('') +
+            hashtagsHTML += `<div class="hashtag-category"><strong>Category Hashtags</strong><div class="hashtags">` +
+                hashtags.categorySpecific.map(tag => `<span class="hashtag" data-text="${tag}">${tag}</span>`).join('') +
                 '</div></div>';
         }
-         if(hashtags.popular.length > 0){
-             hashtagsHTML += `<div class="hashtag-category"><strong>Popular & Engaging:</strong><div class="hashtags">` +
-                hashtags.popular.map(tag => `<span class="hashtag">${tag}</span>`).join('') +
+        
+        if(hashtags.popular.length > 0){
+            hashtagsHTML += `<div class="hashtag-category"><strong>Popular Hashtags</strong><div class="hashtags">` +
+                hashtags.popular.map(tag => `<span class="hashtag" data-text="${tag}">${tag}</span>`).join('') +
                 '</div></div>';
         }
+        
         hashtagsContainer.innerHTML = hashtagsHTML;
+        
+        // Add click events to hashtags for copying
+        document.querySelectorAll('.hashtag').forEach(tag => {
+            tag.addEventListener('click', function() {
+                const textToCopy = this.getAttribute('data-text');
+                copyToClipboard(textToCopy);
+                
+                // Visual feedback
+                this.classList.add('hashtag-copied');
+                setTimeout(() => {
+                    this.classList.remove('hashtag-copied');
+                }, 1000);
+            });
+        });
 
-        captionsContainer.innerHTML = captions.map(cap => `<div class="caption-option">${cap}</div>`).join('');
-        loadingIndicator.style.display = 'none';
-        resultsData.style.display = 'block';
+        captionsContainer.innerHTML = captions.map(cap => 
+            `<div class="caption-option" data-text="${cap}">${cap}</div>`
+        ).join('');
+        
+        // Add click events to captions for copying
+        document.querySelectorAll('.caption-option').forEach(caption => {
+            caption.addEventListener('click', function() {
+                const textToCopy = this.getAttribute('data-text');
+                copyToClipboard(textToCopy);
+            });
+        });
     }
 
+    // Copy to clipboard function
+    function copyToClipboard(text) {
+        navigator.clipboard.writeText(text).then(() => {
+            // Show notification
+            copyNotification.classList.add('show');
+            setTimeout(() => {
+                copyNotification.classList.remove('show');
+            }, 2000);
+        }).catch(err => {
+            console.error('Failed to copy: ', err);
+            // Fallback for older browsers
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+            
+            // Show notification
+            copyNotification.classList.add('show');
+            setTimeout(() => {
+                copyNotification.classList.remove('show');
+            }, 2000);
+        });
+    }
+
+    // Hashtag library and generation logic
     const hashtagLibrary = {
         general: ['#instagood', '#photooftheday', '#picoftheday', '#instadaily', '#love', '#beautiful', '#happy', '#cute', '#followme', '#art', '#style', '#life', '#amazing', '#photography', '#explorepage'],
         nature: ['#nature', '#naturephotography', '#landscape', '#travel', '#beautiful', '#sky', '#sunset', '#naturelovers', '#mountains', '#explore', '#hiking', '#adventure', '#wanderlust', '#outdoor', '#earth'],
@@ -255,18 +903,24 @@ document.addEventListener('DOMContentLoaded', () => {
         fitness: ['#fitness', '#gym', '#workout', '#fitnessmotivation', '#fit', '#motivation', '#bodybuilding', '#training', '#health', '#lifestyle', '#fitfam', '#gymlife', '#muscle', '#exercise', '#strong'],
         art: ['#art', '#artist', '#artwork', '#drawing', '#painting', '#instaart', '#design', '#creative', '#sketch', '#artoftheday', '#illustration', '#digitalart', '#artistsoninstagram', '#contemporaryart'],
         business: ['#business', '#entrepreneur', '#motivation', '#success', '#marketing', '#money', '#startup', '#inspiration', '#lifestyle', '#smallbusiness', '#digitalmarketing', '#entrepreneurship', '#businessowner'],
-        pets: ['#pets', '#dog', '#cat', '#dogsofinstagram', '#petstagram', '#catsofinstagram', ' #cute', '#love', '#instapet', '#puppy', '#kitty', '#animal', '#doglover', '#catlover'],
-        beauty: ['#beauty', '#makeup', '#skincare', '#love', '#makeupartist', '#fashion', '#beautiful', '#mua', '#skincareroutine', '#cosmetics', '#instabeauty', '#selfcare', '#naturalbeauty']
+        pets: ['#pets', '#dog', '#cat', '#dogsofinstagram', '#petstagram', '#catsofinstagram', '#cute', '#love', '#instapet', '#puppy', '#kitty', '#animal', '#doglover', '#catlover'],
+        beauty: ['#beauty', '#makeup', '#skincare', '#love', '#makeupartist', '#fashion', '#beautiful', '#mua', '#skincareroutine', '#cosmetics', '#instabeauty', '#selfcare', '#naturalbeauty'],
+        technology: ['#technology', '#tech', '#innovation', '#gadgets', '#electronics', '#future', '#digital', '#smart', '#ai', '#robot', '#coding', '#programming', '#software', '#developer'],
+        sports: ['#sports', '#fitness', '#athlete', '#training', '#game', '#competition', '#winning', '#champion', '#team', '#victory', '#sportlife', '#active', '#exercise'],
+        architecture: ['#architecture', '#design', '#building', '#architect', '#urban', '#city', '#structure', '#modern', '#contemporary', '#construction', '#housedesign', '#interiordesign']
     };
 
     const keywordMap = {
-        'cat': ['pets'], 'dog': ['pets'], 'animal': ['pets', 'nature'],
-        'tree': ['nature'], 'mountain': ['nature', 'travel'], 'flower': ['nature'], 'forest': ['nature', 'travel'], 'beach': ['nature', 'travel'], 'sunset': ['nature', 'travel'],
-        'food': ['food'], 'plate': ['food'], 'fruit': ['food'],
+        'cat': ['pets'], 'dog': ['pets'], 'animal': ['pets', 'nature'], 'bird': ['pets', 'nature'],
+        'tree': ['nature'], 'mountain': ['nature', 'travel'], 'flower': ['nature'], 'forest': ['nature', 'travel'], 
+        'beach': ['nature', 'travel'], 'sunset': ['nature', 'travel'], 'water': ['nature'], 'sky': ['nature'],
+        'food': ['food'], 'plate': ['food'], 'fruit': ['food'], 'vegetable': ['food'], 'meal': ['food'], 'restaurant': ['food'],
         'person': ['fashion', 'beauty'], 'woman': ['fashion', 'beauty'], 'man': ['fashion', 'beauty'], 'clothing': ['fashion'],
-        'building': ['travel', 'art'], 'city': ['travel'],
-        'car': ['travel', 'style'],
-        'art': ['art'], 'design': ['art', 'business']
+        'building': ['travel', 'architecture'], 'city': ['travel', 'architecture'], 'house': ['architecture'],
+        'car': ['travel', 'technology'], 'vehicle': ['travel', 'technology'],
+        'art': ['art'], 'design': ['art', 'business'], 'painting': ['art'], 'drawing': ['art'],
+        'computer': ['technology'], 'phone': ['technology'], 'laptop': ['technology'], 'gadget': ['technology'],
+        'sports': ['sports'], 'ball': ['sports'], 'game': ['sports'], 'athlete': ['sports']
     };
 
     function shuffleArray(array) {
@@ -283,16 +937,18 @@ document.addEventListener('DOMContentLoaded', () => {
         const cleanKeywords = keywords.map(k => k.replace(/\s+/g, '').toLowerCase());
 
         cleanKeywords.forEach(key => {
+            // Add direct keyword hashtags
             keywordSpecific.add(`#${key}`);
             keywordSpecific.add(`#${key}photography`);
             keywordSpecific.add(`#${key}love`);
+            keywordSpecific.add(`#${key}lover`);
 
             // Find matching categories for the keyword
             for(const mapKey in keywordMap){
                 if(key.includes(mapKey)){
                     keywordMap[mapKey].forEach(category => {
                         const tags = hashtagLibrary[category] || [];
-                         // Add a random selection of tags from the category
+                        // Add a random selection of tags from the category
                         shuffleArray(tags).slice(0, 5).forEach(tag => categorySpecific.add(tag));
                     });
                 }
@@ -300,11 +956,11 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         // Add a selection of general popular tags
-        const popular = new Set(shuffleArray([...hashtagLibrary.general]).slice(0, 10));
+        const popular = new Set(shuffleArray([...hashtagLibrary.general]).slice(0, 12));
 
         return {
-            keywordSpecific: Array.from(keywordSpecific),
-            categorySpecific: Array.from(categorySpecific),
+            keywordSpecific: Array.from(keywordSpecific).slice(0, 15),
+            categorySpecific: Array.from(categorySpecific).slice(0, 15),
             popular: Array.from(popular)
         };
     }
@@ -312,4 +968,5 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 </body>
 </html>
+
 
