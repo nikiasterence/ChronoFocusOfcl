@@ -23,7 +23,7 @@
             --border-color: rgba(231, 224, 217, 0.7);
             --success: #66BB6A;
             --danger: #EF5350;
-            --border-radius: 18px;
+            --border-radius: 22px; /* Increased for a softer look */
             --blur-effect: blur(20px);
             --shadow-color: rgba(93, 64, 55, 0.15);
             --transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
@@ -98,7 +98,6 @@
         overflow: hidden;
         position: relative;
         transition: all 0.5s ease;
-        /* Force app to look like a phone app, no radius or shadows */
         border-radius: 0;
         box-shadow: none;
     }
@@ -108,67 +107,61 @@
         overflow-y: auto;
         overflow-x: hidden;
         position: relative;
-        /* Padding for content + space for the dock */
-        padding: 15px 15px calc(60px + 20px) 15px; /* Adjust padding for smaller screens */
-        -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+        padding: 15px 15px calc(65px + 20px) 15px;
+        -webkit-overflow-scrolling: touch;
     }
 
     .page {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        padding: 20px;
-        overflow-y: auto;
-        opacity: 0;
+        position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+        padding: 20px; overflow-y: auto; opacity: 0;
         transform: translateY(20px);
         transition: opacity 0.4s ease, transform 0.4s ease;
         pointer-events: none;
     }
-    .page.active {
-        opacity: 1;
-        transform: translateY(0);
-        pointer-events: auto;
-    }
+    .page.active { opacity: 1; transform: translateY(0); pointer-events: auto; }
+    .page-title { font-size: 1.6rem; font-weight: 600; margin-bottom: 20px; margin-top: 0; color: var(--text-primary); }
 
-    .page-title {
-        font-size: 1.6rem;
-        font-weight: 600;
-        margin-bottom: 20px;
-        margin-top: 0;
-        color: var(--text-primary);
-    }
-
-    /* --- Dock Navigation --- */
+    /* --- NEW: Dock Navigation "Dynamic Island" --- */
     .dock {
         position: absolute;
         bottom: 15px;
         left: 50%;
         transform: translateX(-50%);
-        width: calc(100% - 40px); /* Responsive width */
-        max-width: 450px;
-        height: 60px; /* Make dock slightly smaller */
+        width: calc(100% - 40px);
+        max-width: 380px;
+        height: 65px; /* Slightly taller for better proportions */
         z-index: 100;
         display: flex;
         justify-content: space-around;
         align-items: center;
+        border-radius: 32.5px; /* Pill shape */
+        padding: 0 10px; /* Add some horizontal padding */
     }
     .dock-item {
         display: flex; flex-direction: column; align-items: center;
         justify-content: center; gap: 4px; border: none; background: none;
         color: var(--text-secondary); cursor: pointer;
-        width: 75px; height: 55px;
+        width: 75px; height: 60px; /* Adjust height */
         transition: var(--transition);
-        -webkit-tap-highlight-color: transparent; /* Remove tap highlight on mobile */
+        border-radius: 20px; /* Rounded highlight on active/hover */
+        -webkit-tap-highlight-color: transparent;
     }
     .dock-item i { font-size: 22px; }
-    .dock-item span { font-size: 10px; font-weight: 500; }
-    .dock-item.active { color: var(--primary); transform: translateY(-5px); }
+    .dock-item span { font-size: 10px; font-weight: 500; opacity: 0; transition: opacity 0.3s ease; }
+    .dock-item.active {
+        color: var(--primary);
+        background: rgba(var(--primary-rgb), 0.1);
+    }
+    .dock-item.active span { opacity: 1; }
     .dock-item:not(.active):hover { color: var(--text-primary); }
 
     /* --- TASK MANAGER PAGE --- */
     #new-task-form h3 { margin:0 0 15px; }
+    /* NEW: Input row for icon and name */
+    .task-input-row { display: flex; gap: 10px; align-items: center; margin-bottom: 10px; }
+    #task-icon { flex: 0 0 50px; text-align: center; font-size: 20px; padding: 12px 0; }
+    #task-name { flex-grow: 1; }
+
     #new-task-form input, #new-task-form textarea, #new-task-form button {
         width: 100%; padding: 12px; margin-bottom: 10px; border-radius: 12px;
         border: 1px solid var(--border-color); box-sizing: border-box;
@@ -182,51 +175,42 @@
         box-shadow: 0 0 0 2px rgba(var(--primary-rgb), 0.2);
         outline: none;
     }
-    #new-task-form .time-inputs, .duration-inputs {
-        display: flex;
-        flex-direction: column; /* Mobile default: stack inputs */
-        gap: 10px;
-    }
-    #new-task-form button[type="submit"] {
-        background-color: var(--primary); color: white;
-        cursor: pointer; font-weight: 500;
-        margin-top: 10px;
-    }
+    #new-task-form .time-inputs, .duration-inputs { display: flex; flex-direction: column; gap: 10px; }
+    #new-task-form button[type="submit"] { background-color: var(--primary); color: white; cursor: pointer; font-weight: 500; margin-top: 10px; }
     #new-task-form button[type="submit"]:hover { filter: brightness(1.1); }
     .or-divider { text-align: center; margin: 15px 0; color: var(--text-secondary); }
 
-    /* --- Task List & Items --- (Shared by Inbox & Manager) --- */
+    /* --- NEW: Aesthetic Task List & Items --- */
     .task-list-container { margin-top: 20px; }
     @keyframes item-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     .task-item {
         animation: item-in 0.4s ease forwards;
         display: flex;
-        align-items: flex-start; /* Changed for better mobile stacking */
-        margin-bottom: 10px;
+        align-items: center; /* Vertically center align content */
+        margin-bottom: 12px;
         padding: 15px;
-        background: rgba(var(--primary-rgb), 0.08);
-        border-radius: 12px;
-        border-left: 5px solid var(--primary);
+        background: var(--surface); /* Use surface color for better depth */
+        border-radius: 16px; /* Softer, rounder edges */
+        border: 1px solid var(--border-color);
+        box-shadow: 0 4px 16px rgba(var(--primary-rgb), 0.05); /* Add subtle shadow */
         transition: all 0.3s ease;
-        flex-direction: column; /* Stack task content and actions on very small screens */
     }
-    .task-item.completed { border-color: var(--success); text-decoration: line-through; }
-    .task-item.completed .task-item-content, .task-item.completed .task-item-meta { color: var(--text-secondary); }
+    .task-item.completed {
+        background: none;
+        box-shadow: none;
+        opacity: 0.7;
+    }
+    .task-item.completed .task-item-content { text-decoration: line-through; color: var(--text-secondary); }
 
-    .task-item-content { flex-grow: 1; min-width: 150px; width:100%; }
+    .task-item .task-icon { font-size: 24px; margin-right: 15px; flex-shrink: 0; }
+    .task-item-content { flex-grow: 1; }
     .task-item strong { display: block; }
     .task-item-meta { font-size: 0.8em; color: var(--text-secondary); }
-    .task-item .actions {
-        display: flex;
-        align-items: center;
-        margin-left: 0;
-        padding-left: 0;
-        margin-top: 10px; /* Add some space between content and buttons */
-    }
+    .task-item .actions { display: flex; align-items: center; margin-left: auto; padding-left: 10px; }
     .task-item button {
         background: none; border: none; cursor: pointer; padding: 5px;
         color: var(--text-secondary); font-size: 16px; transition: color 0.2s;
-        -webkit-tap-highlight-color: transparent; /* Remove tap highlight on mobile */
+        -webkit-tap-highlight-color: transparent;
     }
     .task-item button:hover { color: var(--primary); }
 
@@ -234,14 +218,10 @@
     #calendar-view-page header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
     #month-year { font-size: 1.3rem; margin: 0; }
     .calendar-nav button { background: none; border: none; font-size: 24px; cursor: pointer; color: var(--text-primary); }
-    .calendar-grid {
-        display: grid; grid-template-columns: repeat(7, 1fr);
-        gap: 5px; text-align: center;
-    }
+    .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; text-align: center; }
     .calendar-grid div {
         padding: 5px; border-radius: 50%; position: relative;
-        min-height: 30px; /* Smaller calendar cells on mobile */
-        display: flex; align-items: center;
+        min-height: 30px; display: flex; align-items: center;
         justify-content: center; font-size: 0.7rem;
     }
     .calendar-grid .day-name { font-weight: 600; color: var(--text-secondary); cursor: default; }
@@ -266,7 +246,7 @@
     .settings-option input[type="number"], .settings-option select, .settings-option input[type="color"] {
         width: 100%; padding: 10px; border-radius: 10px; border: 1px solid var(--border-color);
         background: var(--primary-light); color: var(--text-primary);
-        font-size: 16px; /* Prevent zoom on iOS */
+        font-size: 16px;
     }
     .theme-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 10px; margin-top: 15px; }
     .theme-item {
@@ -288,7 +268,7 @@
         box-shadow: 0 4px 12px rgba(0,0,0,0.2);
         display: flex; align-items: center; justify-content: center;
         transition: var(--transition);
-        -webkit-tap-highlight-color: transparent; /* Remove tap highlight on mobile */
+        -webkit-tap-highlight-color: transparent;
     }
     .ai-assistant-panel {
         position: fixed; bottom: 145px; right: 20px;
@@ -306,7 +286,7 @@
     .ai-send { background: var(--primary); color: white; border-radius: 50%; width: 40px; height: 40px; margin-left: 10px; }
     @keyframes modal-in { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
 
-    /* --- Focus View --- */
+    /* --- NEW: Focus View --- */
     .focus-view-container {
         position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: none;
         flex-direction: column; justify-content: center; align-items: center;
@@ -317,13 +297,15 @@
     .focus-view-container.dark-mode { background: #121212; color: #FFFFFF; }
     .color-fill-bg { position: absolute; top: 0; left: 0; width: 100%; height: 0; z-index: -1; transition: height 1s linear; }
     .focus-content { text-align: center; z-index: 1; padding: 20px; }
+    /* NEW: Icon in focus view */
+    #focus-task-icon { font-size: 2.5rem; margin-bottom: 10px; }
     #focus-task-name { font-size: 1.5rem; margin-bottom: 20px; }
     #focus-timer { font-size: 2.5rem; font-weight: 300; margin: 20px 0; letter-spacing: 2px; }
     #focus-status-text { text-transform: uppercase; letter-spacing: 2px; margin-bottom: 30px; }
     .focus-controls button {
         background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.3);
         padding: 12px 18px; margin: 5px; border-radius: 8px; cursor: pointer; transition: background 0.3s;
-        -webkit-tap-highlight-color: transparent; /* Remove tap highlight on mobile */
+        -webkit-tap-highlight-color: transparent;
     }
     .focus-view-container.light-mode button { background: rgba(0,0,0,0.05); border: 1px solid rgba(0,0,0,0.1); color: #121212; }
     .focus-view-container.dark-mode button { color: white; }
@@ -349,7 +331,11 @@
             <div class="card glass-effect" style="padding: 15px;">
                  <form id="new-task-form">
                     <h3>New Task</h3>
-                     <input type="text" id="task-name" placeholder="What is your focus?" required>
+                     <!-- NEW: Task Input Row with Icon -->
+                     <div class="task-input-row">
+                         <input type="text" id="task-icon" placeholder="🗓️" maxlength="2">
+                         <input type="text" id="task-name" placeholder="What is your focus?" required>
+                     </div>
                      <input type="date" id="task-date" required>
                       <div class="time-inputs">
                         <input type="time" id="task-start-time" title="Start Time">
@@ -391,7 +377,6 @@
         <!-- PAGE: SETTINGS -->
         <div id="settings-page" class="page">
             <h1 class="page-title">Settings</h1>
-
             <div class="settings-group">
                 <h4>Appearance</h4>
                 <div class="settings-option">
@@ -403,14 +388,12 @@
                     <input type="color" id="focus-fill-color" value="#8D6E63">
                 </div>
             </div>
-
             <div class="settings-group">
                 <h4>Pomodoro</h4>
                 <div class="settings-option"><label>Pomodoro Duration (min)</label><input type="number" id="pomodoro-duration" value="25"></div>
                 <div class="settings-option"><label>Short Break (min)</label><input type="number" id="break-duration" value="5"></div>
                 <div class="settings-option"><label>Long Break (min)</label><input type="number" id="long-break-duration" value="15"></div>
             </div>
-
             <div class="settings-group">
                 <h4>General</h4>
                 <div class="settings-option">
@@ -421,7 +404,6 @@
                     </select>
                 </div>
             </div>
-
         </div>
 
     </main>
@@ -450,10 +432,11 @@
     </div>
 </div>
 
-<!-- FOCUS VIEW MODAL -->
+<!-- NEW: FOCUS VIEW MODAL with Icon -->
 <div class="focus-view-container" id="focus-view">
     <div class="color-fill-bg" id="color-fill-bg"></div>
     <div class="focus-content">
+        <div id="focus-task-icon"></div>
         <h2 id="focus-task-name"></h2>
         <div id="focus-timer">00:00:00</div>
         <p id="focus-status-text">Remaining</p>
@@ -482,15 +465,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const dockItems = document.querySelectorAll('.dock-item');
     const aiAssistantBtn = document.getElementById('ai-assistant-btn');
 
-    // Calendar elements
     const monthYearEl = document.getElementById('month-year');
     const calendarGrid = document.querySelector('.calendar-grid');
     const prevMonthBtn = document.getElementById('prev-month');
     const nextMonthBtn = document.getElementById('next-month');
     const calendarTaskListTitle = document.getElementById('calendar-task-list-title');
 
-    // Task Form elements
     const taskForm = document.getElementById('new-task-form');
+    // NEW: Icon input selector
+    const taskIconInput = document.getElementById('task-icon');
     const taskNameInput = document.getElementById('task-name');
     const taskDateInput = document.getElementById('task-date');
     const taskStartTimeInput = document.getElementById('task-start-time');
@@ -498,14 +481,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const taskHoursInput = document.getElementById('task-hours');
     const taskMinutesInput = document.getElementById('task-minutes');
 
-    // Task List Containers
     const inboxTaskList = document.getElementById('inbox-task-list');
     const managerTaskList = document.getElementById('manager-task-list');
     const calendarTaskList = document.getElementById('calendar-task-list');
 
-    // Focus View elements
     const focusView = document.getElementById('focus-view');
     const colorFillBg = document.getElementById('color-fill-bg');
+    // NEW: Focus task icon selector
+    const focusTaskIconEl = document.getElementById('focus-task-icon');
     const focusTaskNameEl = document.getElementById('focus-task-name');
     const focusTimerEl = document.getElementById('focus-timer');
     const focusStatusTextEl = document.getElementById('focus-status-text');
@@ -513,11 +496,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const completeBtn = document.getElementById('complete-btn');
     const exitFocusBtn = document.getElementById('exit-focus-btn');
 
-    // Settings elements
     const themeGrid = document.getElementById('theme-grid');
     const focusFillColorInput = document.getElementById('focus-fill-color');
-
-    // Sound elements
     const completeSound = document.getElementById('complete-sound');
 
     // Utility Functions
@@ -539,7 +519,6 @@ document.addEventListener('DOMContentLoaded', () => {
     ];
 
     // --- CORE LOGIC ---
-
     function saveAndRerender() {
         localStorage.setItem('focusTimerTasks', JSON.stringify(tasks));
         renderAllTaskLists();
@@ -550,18 +529,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const storedTasks = localStorage.getItem('focusTimerTasks');
         tasks = storedTasks ? JSON.parse(storedTasks) : [];
     }
+    
+    // REMOVED getIconForTask function as it's no longer needed.
 
-    function getIconForTask(taskName) {
-        const name = taskName.toLowerCase();
-        if (name.includes('study') || name.includes('exam')) return 'fas fa-brain';
-        if (name.includes('work') || name.includes('project')) return 'fas fa-briefcase';
-        if (name.includes('read') || name.includes('book')) return 'fas fa-book';
-        if (name.includes('gym') || name.includes('exercise')) return 'fas fa-dumbbell';
-        return 'fas fa-star';
-    }
-
-    // --- RENDERING ---
-
+    // --- RENDERING (MODIFIED) ---
     function renderTaskItem(task) {
         const taskItem = document.createElement('div');
         taskItem.className = `task-item ${task.completed ? 'completed' : ''}`;
@@ -570,8 +541,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const durationInfo = task.duration ? `${task.duration} min` : '';
         const meta = [timeInfo, durationInfo].filter(Boolean).join(' • ');
 
+        // NEW: Uses task.icon for the icon display
         taskItem.innerHTML = `
-            <i class="${getIconForTask(task.name)} task-icon" style="margin-right: 15px; color: var(--primary);"></i>
+            <div class="task-icon">${task.icon || '📌'}</div>
             <div class="task-item-content">
                 <strong>${task.name}</strong>
                 <p class="task-item-meta">${meta}</p>
@@ -585,18 +557,15 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function renderAllTaskLists() {
-        // Inbox: All tasks, sorted by date
         inboxTaskList.innerHTML = '';
         tasks.sort((a,b) => new Date(a.date) - new Date(b.date)).forEach(task => inboxTaskList.appendChild(renderTaskItem(task)));
         if (tasks.length === 0) inboxTaskList.innerHTML = '<p>Your inbox is empty. Add a task in the Manager tab!</p>';
 
-        // Manager: Tasks for today
         managerTaskList.innerHTML = '';
         const todayStr = toYYYYMMDD(new Date());
         tasks.filter(t => t.date === todayStr).forEach(task => managerTaskList.appendChild(renderTaskItem(task)));
         if (managerTaskList.innerHTML === '') managerTaskList.innerHTML = '<p>No tasks for today.</p>';
 
-        // Calendar: Tasks for selected day
         renderTasksForCalendarDate(selectedCalendarDate);
     }
 
@@ -650,21 +619,17 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-
     // --- Navigation ---
     function switchPage(pageId) {
-        // AI button only on manager page
         aiAssistantBtn.style.display = (pageId === 'manager-page') ? 'flex' : 'none';
-
         pages.forEach(p => p.classList.remove('active'));
         document.getElementById(pageId).classList.add('active');
-
         dockItems.forEach(item => {
             item.classList.toggle('active', item.dataset.page === pageId);
         });
     }
 
-    // --- Task Handling ---
+    // --- Task Handling (MODIFIED) ---
     taskForm.addEventListener('submit', (e) => {
         e.preventDefault();
         let duration = (parseInt(taskHoursInput.value) || 0) * 60 + (parseInt(taskMinutesInput.value) || 0);
@@ -673,12 +638,23 @@ document.addEventListener('DOMContentLoaded', () => {
             const end = new Date(`1970-01-01T${taskEndTimeInput.value}`);
             duration = Math.round((end - start) / 60000);
         }
-        if (duration <= 0 || !taskNameInput.value.trim()) return;
+        if (duration <= 0 && (!taskStartTimeInput.value || !taskEndTimeInput.value)) {
+            // Allow creating tasks with 0 duration if no times are set
+        } else if (duration < 0) {
+             return; // Prevent tasks with negative duration
+        }
+        if(!taskNameInput.value.trim()) return;
 
+        // NEW: Added 'icon' to the task object
         tasks.push({
-            id: Date.now().toString(), name: taskNameInput.value.trim(), date: taskDateInput.value,
-            startTime: taskStartTimeInput.value, endTime: taskEndTimeInput.value,
-            duration: duration, completed: false,
+            id: Date.now().toString(),
+            name: taskNameInput.value.trim(),
+            date: taskDateInput.value,
+            icon: taskIconInput.value || '📌', // Default icon
+            startTime: taskStartTimeInput.value,
+            endTime: taskEndTimeInput.value,
+            duration: duration,
+            completed: false,
         });
         taskForm.reset();
         taskDateInput.value = toYYYYMMDD(new Date());
@@ -699,16 +675,21 @@ document.addEventListener('DOMContentLoaded', () => {
             if(task) task.completed = !task.completed;
         } else if (button.classList.contains('start-focus')) {
             const task = tasks.find(t => t.id === taskId);
-            if(task) startFocusSession(task);
+            if(task && task.duration > 0) startFocusSession(task);
+            else if (task) alert("Cannot start focus session for tasks with no duration.");
         }
         saveAndRerender();
     });
 
-    // --- FOCUS TIMER ---
+    // --- FOCUS TIMER (MODIFIED) ---
     function startFocusSession(task) {
         currentTaskID = task.id;
         timeRemaining = totalDuration = task.duration * 60;
+        
+        // NEW: Set the icon and name on the focus view
+        focusTaskIconEl.textContent = task.icon || '📌';
         focusTaskNameEl.textContent = task.name;
+        
         focusTimerEl.textContent = formatTime(timeRemaining);
         isPaused = false;
         pauseResumeBtn.textContent = 'Pause';
@@ -795,35 +776,25 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem('focusFillColor', e.target.value);
     });
 
-    // --- AI ASSISTANT --- (IMPROVED)
+    // --- AI ASSISTANT ---
     const aiPanel = document.getElementById('ai-assistant-panel');
     const aiConversation = document.getElementById('ai-conversation');
     const aiInput = document.getElementById('ai-input');
     const aiSendBtn = document.getElementById('ai-send');
 
-    aiAssistantBtn.addEventListener('click', () => { 
-        aiPanel.style.display = 'flex'; 
+    aiAssistantBtn.addEventListener('click', () => {
+        aiPanel.style.display = 'flex';
         aiInput.focus();
     });
     document.getElementById('ai-close').addEventListener('click', () => { aiPanel.style.display = 'none'; });
     aiSendBtn.addEventListener('click', handleAIInput);
-    aiInput.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') {
-            handleAIInput();
-        }
-    });
+    aiInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') handleAIInput(); });
 
-    // Close AI panel when clicking outside
     document.addEventListener('click', (e) => {
-        if (aiPanel.style.display === 'flex' && 
-            !aiPanel.contains(e.target) && 
-            e.target !== aiAssistantBtn &&
-            !aiAssistantBtn.contains(e.target)
-        ) {
+        if (aiPanel.style.display === 'flex' && !aiPanel.contains(e.target) && e.target !== aiAssistantBtn && !aiAssistantBtn.contains(e.target)) {
             aiPanel.style.display = 'none';
         }
     });
-
 
     function addMessageToAI(message, sender) {
         const messageEl = document.createElement('div');
@@ -842,121 +813,54 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function processAICommand(command) {
-        // More advanced parsing
         const lowerCmd = command.toLowerCase();
         let taskName = lowerCmd;
-        let duration = 0; // in minutes
-        let date = toYYYYMMDD(new Date()); // Default to today
+        let duration = 0;
+        let date = toYYYYMMDD(new Date());
 
-        // Extract date keywords
         const dateKeywords = {
-            'tomorrow': () => {
-                const tomorrow = new Date();
-                tomorrow.setDate(tomorrow.getDate() + 1);
-                return toYYYYMMDD(tomorrow);
-            },
-            'next week': () => {
-                const nextWeek = new Date();
-                nextWeek.setDate(nextWeek.getDate() + 7);
-                return toYYYYMMDD(nextWeek);
-            },
-            'next month': () => {
-                const nextMonth = new Date();
-                nextMonth.setMonth(nextMonth.getMonth() + 1);
-                return toYYYYMMDD(nextMonth);
-            },
-            'monday': getNextDayOfWeek(1),
-            'tuesday': getNextDayOfWeek(2),
-            'wednesday': getNextDayOfWeek(3),
-            'thursday': getNextDayOfWeek(4),
-            'friday': getNextDayOfWeek(5),
-            'saturday': getNextDayOfWeek(6),
-            'sunday': getNextDayOfWeek(0)
+            'tomorrow': () => { const d = new Date(); d.setDate(d.getDate() + 1); return toYYYYMMDD(d); },
+            'next week': () => { const d = new Date(); d.setDate(d.getDate() + 7); return toYYYYMMDD(d); },
+            'next month': () => { const d = new Date(); d.setMonth(d.getMonth() + 1); return toYYYYMMDD(d); },
+            'monday': getNextDayOfWeek(1), 'tuesday': getNextDayOfWeek(2),
+            'wednesday': getNextDayOfWeek(3), 'thursday': getNextDayOfWeek(4),
+            'friday': getNextDayOfWeek(5), 'saturday': getNextDayOfWeek(6), 'sunday': getNextDayOfWeek(0)
         };
-
-        // Check for date keywords
-        for (const [keyword, dateFunc] of Object.entries(dateKeywords)) {
-            if (lowerCmd.includes(keyword)) {
-                date = typeof dateFunc === 'function' ? dateFunc() : dateFunc;
-                taskName = taskName.replace(keyword, '').trim();
-                break;
-            }
+        for (const [kw, fn] of Object.entries(dateKeywords)) {
+            if (lowerCmd.includes(kw)) { date = fn(); taskName = taskName.replace(kw, '').trim(); break; }
         }
 
-        // Extract duration
         const durationRegex = /(\d+)\s*(min|mins|minutes|hr|hrs|hours)/g;
         let match;
         while ((match = durationRegex.exec(lowerCmd)) !== null) {
-            const value = parseInt(match[1]);
-            const unit = match[2];
-            if (unit.startsWith('h')) {
-                duration += value * 60;
-            } else {
-                duration += value;
-            }
+            const val = parseInt(match[1]);
+            duration += match[2].startsWith('h') ? val * 60 : val;
             taskName = taskName.replace(match[0], '').trim();
         }
-        
-        // Simple "for" duration, e.g., "for 45 minutes"
-        if (duration === 0) {
-            const forRegex = /for\s+(\d+)\s*(min|mins|minutes|hr|hrs|hours)/;
-            const forMatch = lowerCmd.match(forRegex);
-            if (forMatch) {
-                const value = parseInt(forMatch[1]);
-                const unit = forMatch[2];
-                if (unit.startsWith('h')) {
-                    duration += value * 60;
-                } else {
-                    duration += value;
-                }
-                taskName = taskName.replace(forMatch[0], '').trim();
-            }
-        }
-        
-        // Remove keywords
-        taskName = taskName.replace(/schedule|create|add|task|a|an|remind me to|reminder for/g, '').trim();
-        // Capitalize the first letter of the task name for better presentation
+
+        taskName = taskName.replace(/schedule|create|add|task|a|an|remind me to|for|reminder for/g, '').trim();
         taskName = taskName.charAt(0).toUpperCase() + taskName.slice(1);
 
-        if (taskName && duration > 0) {
+        if (taskName) {
+            // NEW: Added 'icon' to AI-created tasks
             tasks.push({
-                id: Date.now().toString(),
-                name: taskName,
-                date: date,
-                startTime: '',
-                endTime: '',
-                duration: duration,
-                completed: false,
+                id: Date.now().toString(), name: taskName, date: date,
+                icon: '🤖', startTime: '', endTime: '',
+                duration: duration, completed: false,
             });
             saveAndRerender();
-            addMessageToAI(`Okay, I've scheduled "${taskName}" for ${duration} minutes on ${new Date(date + 'T00:00:00').toLocaleDateString()}.`, 'bot');
-        } else if (taskName && duration === 0) {
-            // If no duration specified, create a task without duration
-             tasks.push({
-                id: Date.now().toString(),
-                name: taskName,
-                date: date,
-                startTime: '',
-                endTime: '',
-                duration: 0,
-                completed: false,
-            });
-            saveAndRerender();
-            addMessageToAI(`I've added "${taskName}" to your tasks for ${new Date(date + 'T00:00:00').toLocaleDateString()}.`, 'bot');
+            const durationText = duration > 0 ? ` for ${duration} minutes` : '';
+            addMessageToAI(`Okay, I've scheduled "${taskName}"${durationText} on ${new Date(date + 'T00:00:00').toLocaleDateString()}.`, 'bot');
         } else {
-            addMessageToAI("I'm sorry, I didn't understand that. Please try something like: 'Schedule a workout for 1 hour' or 'Create a task for tomorrow'.", 'bot');
+            addMessageToAI("I'm sorry, I didn't understand that. Please try 'Schedule workout for 1 hour tomorrow'.", 'bot');
         }
     }
 
-    // Helper function to get next day of week
     function getNextDayOfWeek(dayOfWeek) {
         return () => {
-             const today = new Date();
-             const resultDate = new Date();
-             const currentDay = today.getDay();
-             const distance = (dayOfWeek - currentDay + 7) % 7;
-             // If distance is 0, it means it's the same day, so add 7 days to get the next week's day
-             resultDate.setDate(today.getDate() + (distance === 0 ? 7 : distance));
+             const today = new Date(); const resultDate = new Date();
+             const dist = (dayOfWeek - today.getDay() + 7) % 7;
+             resultDate.setDate(today.getDate() + (dist === 0 ? 7 : dist));
              return toYYYYMMDD(resultDate);
         };
     }
@@ -964,18 +868,13 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- INITIALIZATION ---
     function initializeApp() {
         loadTasks();
-
-        // Load Settings
         const savedTheme = localStorage.getItem('focusTimerTheme') || 'default';
         populateThemeDashboard();
         applyTheme(savedTheme);
         focusFillColorInput.value = localStorage.getItem('focusFillColor') || '#8D6E63';
-
         taskDateInput.value = toYYYYMMDD(new Date());
-
         renderAllTaskLists();
         renderCalendar();
-
         switchPage('manager-page');
     }
 
