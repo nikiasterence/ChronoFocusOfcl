@@ -3,593 +3,1613 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-     <link rel="icon" href="Chronofocus.png" type="image/x-icon">
-    <title>Liquid Glass Memory Match</title>
+    <title>🧠 Brain Battle - Addictive Puzzle Game</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
     <style>
+        :root {
+            --primary-color: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary-color: #f59e0b;
+            --success-color: #10b981;
+            --danger-color: #ef4444;
+            --bg-dark: #0f172a;
+            --bg-darker: #020617;
+            --text-light: #f8fafc;
+            --text-gray: #94a3b8;
+            --card-bg: #1e293b;
+            --border-color: #334155;
+            --neon-glow: 0 0 20px rgba(99, 102, 241, 0.5);
+            --pulse-animation: pulse 2s infinite;
+        }
+
         * {
-            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            box-sizing: border-box;
         }
-        
+
         body {
-            background: linear-gradient(135deg, #0a1929, #0d2339);
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--bg-darker) 0%, var(--bg-dark) 100%);
+            color: var(--text-light);
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px;
-            color: #e0f7ff;
-            position: relative;
             overflow-x: hidden;
-        }
-        
-        /* Liquid glass bubbles effect */
-        body::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: 
-                radial-gradient(circle at 20% 30%, rgba(93, 188, 252, 0.15) 0%, transparent 20%),
-                radial-gradient(circle at 80% 70%, rgba(158, 236, 249, 0.1) 0%, transparent 20%),
-                radial-gradient(circle at 40% 80%, rgba(110, 142, 251, 0.1) 0%, transparent 20%);
-            pointer-events: none;
-            z-index: -1;
-        }
-        
-        .container {
-            max-width: 800px;
-            width: 100%;
-            background: rgba(255, 255, 255, 0.08);
-            border-radius: 20px;
-            padding: 25px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
             position: relative;
-            overflow: hidden;
         }
-        
-        /* Glass reflection effect */
-        .container::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(
-                to bottom right,
-                rgba(255, 255, 255, 0) 0%,
-                rgba(255, 255, 255, 0) 40%,
-                rgba(255, 255, 255, 0.05) 45%,
-                rgba(255, 255, 255, 0.2) 50%,
-                rgba(255, 255, 255, 0.05) 55%,
-                rgba(255, 255, 255, 0) 60%,
-                rgba(255, 255, 255, 0) 100%
-            );
-            transform: rotate(30deg);
-            pointer-events: none;
-            z-index: 1;
-        }
-        
-        header {
-            text-align: center;
-            margin-bottom: 25px;
-            position: relative;
-            z-index: 2;
-        }
-        
-        h1 {
-            background: linear-gradient(90deg, #7db9f0, #5dcef8);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            margin-bottom: 10px;
-            font-size: 2.5rem;
-            text-shadow: 0 2px 10px rgba(93, 206, 248, 0.3);
-        }
-        
-        .game-info {
-            display: flex;
-            justify-content: space-around;
-            margin-bottom: 25px;
-            background: rgba(255, 255, 255, 0.1);
-            padding: 15px;
-            border-radius: 15px;
-            font-size: 1.2rem;
-            backdrop-filter: blur(5px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            position: relative;
-            z-index: 2;
-        }
-        
-        .info-box {
-            text-align: center;
-        }
-        
-        .info-label {
-            color: #a0d2ff;
-            font-size: 0.9rem;
-            margin-bottom: 5px;
-        }
-        
-        .info-value {
-            font-weight: bold;
-            color: #5dcef8;
-            text-shadow: 0 0 8px rgba(93, 206, 248, 0.5);
-        }
-        
-        .game-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 12px;
-            margin-bottom: 25px;
-            position: relative;
-            z-index: 2;
-        }
-        
-        .card {
-            aspect-ratio: 1;
-            background: rgba(255, 255, 255, 0.12);
-            border-radius: 12px;
-            cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 2rem;
-            color: transparent;
-            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
-            transform-style: preserve-3d;
-            position: relative;
-            overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-        }
-        
-        /* Liquid effect inside cards */
-        .card::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(
-                to bottom right,
-                rgba(255, 255, 255, 0) 0%,
-                rgba(255, 255, 255, 0) 40%,
-                rgba(255, 255, 255, 0.1) 45%,
-                rgba(255, 255, 255, 0.15) 50%,
-                rgba(255, 255, 255, 0.1) 55%,
-                rgba(255, 255, 255, 0) 60%,
-                rgba(255, 255, 255, 0) 100%
-            );
-            transform: rotate(25deg);
-            transition: all 0.5s ease;
-            opacity: 0;
-        }
-        
-        .card:hover::before {
-            opacity: 1;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            transform: rotate(15deg);
-        }
-        
-        .card.flipped {
-            background: rgba(255, 255, 255, 0.2);
-            color: #fff;
-            transform: rotateY(180deg) scale(1.05);
-            box-shadow: 0 0 15px rgba(110, 142, 251, 0.5);
-            border: 1px solid rgba(110, 142, 251, 0.3);
-        }
-        
-        .card.matched {
-            background: rgba(64, 224, 208, 0.2);
-            color: white;
-            transform: rotateY(180deg) scale(1);
-            cursor: default;
-            border: 1px solid rgba(64, 224, 208, 0.3);
-            box-shadow: 0 0 15px rgba(64, 224, 208, 0.4);
-        }
-        
-        .controls {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            position: relative;
-            z-index: 2;
-        }
-        
-        button {
-            padding: 12px 25px;
-            border: none;
-            border-radius: 50px;
-            background: linear-gradient(90deg, #5dcef8, #7db9f0);
-            color: #0a1929;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 10px rgba(93, 206, 248, 0.3);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        button::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(
-                90deg,
-                transparent,
-                rgba(255, 255, 255, 0.4),
-                transparent
-            );
-            transition: all 0.5s ease;
-        }
-        
-        button:hover::before {
-            left: 100%;
-        }
-        
-        button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 15px rgba(93, 206, 248, 0.5);
-        }
-        
-        #restart-btn {
-            background: linear-gradient(90deg, #ff7eb3, #ff758c);
-            box-shadow: 0 4px 10px rgba(255, 117, 140, 0.3);
-        }
-        
-        #restart-btn:hover {
-            box-shadow: 0 6px 15px rgba(255, 117, 140, 0.5);
-        }
-        
-        .instructions {
-            margin-top: 25px;
-            background: rgba(255, 255, 255, 0.1);
-            padding: 20px;
-            border-radius: 15px;
-            backdrop-filter: blur(5px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            position: relative;
-            z-index: 2;
-        }
-        
-        .instructions h2 {
-            background: linear-gradient(90deg, #7db9f0, #5dcef8);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            margin-bottom: 15px;
-            font-size: 1.5rem;
-        }
-        
-        .instructions ul {
-            padding-left: 20px;
-        }
-        
-        .instructions li {
-            margin-bottom: 8px;
-            color: #c3e3ff;
-        }
-        
-        .win-message {
+
+        /* Animated Background */
+        .bg-animation {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(10, 25, 41, 0.95);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .floating-shape {
+            position: absolute;
+            border-radius: 50%;
+            background: linear-gradient(45deg, rgba(99, 102, 241, 0.1), rgba(245, 158, 11, 0.1));
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .floating-shape:nth-child(1) { width: 80px; height: 80px; top: 20%; left: 10%; animation-delay: 0s; }
+        .floating-shape:nth-child(2) { width: 120px; height: 120px; top: 60%; right: 15%; animation-delay: 2s; }
+        .floating-shape:nth-child(3) { width: 60px; height: 60px; bottom: 20%; left: 20%; animation-delay: 4s; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.3; }
+            50% { transform: translateY(-20px) rotate(180deg); opacity: 0.6; }
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            padding: 20px;
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .logo {
+            font-family: 'Orbitron', monospace;
+            font-size: clamp(24px, 6vw, 36px);
+            font-weight: 900;
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+            text-shadow: var(--neon-glow);
+        }
+
+        .stats-bar {
             display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-gray);
+        }
+
+        .brain-score {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--secondary-color);
+            text-shadow: 0 0 10px rgba(245, 158, 11, 0.3);
+        }
+
+        /* Game Container */
+        .game-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: calc(100vh - 140px);
+        }
+
+        /* Menu Screen */
+        .menu-screen {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .menu-title {
+            font-size: 28px;
+            margin-bottom: 30px;
+            color: var(--text-light);
+        }
+
+        .difficulty-selector {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin-bottom: 30px;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .difficulty-btn {
+            padding: 20px;
+            border: 2px solid var(--border-color);
+            border-radius: 15px;
+            background: var(--card-bg);
+            color: var(--text-light);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .difficulty-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--neon-glow);
+        }
+
+        .difficulty-btn.selected {
+            border-color: var(--primary-color);
+            background: linear-gradient(45deg, rgba(99, 102, 241, 0.2), rgba(99, 102, 241, 0.1));
+            box-shadow: var(--neon-glow);
+        }
+
+        .difficulty-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+            font-size: 12px;
+            color: var(--text-gray);
+        }
+
+        .start-btn {
+            background: linear-gradient(45deg, var(--primary-color), var(--primary-dark));
+            border: none;
+            padding: 18px 40px;
+            border-radius: 50px;
+            color: var(--text-light);
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: var(--neon-glow);
+        }
+
+        .start-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(99, 102, 241, 0.7);
+        }
+
+        .start-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Game Screen */
+        .game-screen {
+            display: none;
+        }
+
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: var(--card-bg);
+            border-radius: 15px;
+            border: 1px solid var(--border-color);
+        }
+
+        .timer-display {
+            font-family: 'Orbitron', monospace;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--secondary-color);
+            text-shadow: 0 0 10px rgba(245, 158, 11, 0.5);
+        }
+
+        .timer-display.danger {
+            color: var(--danger-color);
+            animation: var(--pulse-animation);
+        }
+
+        .round-info {
+            text-align: center;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .vs-display {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+        }
+
+        .bot-status {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: var(--danger-color);
+        }
+
+        .bot-thinking {
+            animation: var(--pulse-animation);
+        }
+
+        /* Puzzle Area */
+        .puzzle-area {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 20px;
+            border: 2px solid var(--border-color);
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .puzzle-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+        }
+
+        .puzzle-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
-            flex-direction: column;
-            color: white;
-            font-size: 2rem;
-            display: none;
-            z-index: 10;
-            backdrop-filter: blur(5px);
+            gap: 20px;
         }
-        
-        .win-message.show {
+
+        /* Sequence Memory Puzzle */
+        .sequence-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            max-width: 250px;
+            margin: 0 auto;
+        }
+
+        .sequence-btn {
+            width: 70px;
+            height: 70px;
+            border: 2px solid var(--border-color);
+            border-radius: 15px;
+            background: var(--bg-dark);
+            cursor: pointer;
+            transition: all 0.3s ease;
             display: flex;
-            animation: fadeIn 0.5s ease;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
         }
-        
-        .win-message h2 {
-            background: linear-gradient(90deg, #7db9f0, #5dcef8);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
+
+        .sequence-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .sequence-btn.active {
+            background: var(--primary-color);
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.5);
+            transform: scale(1.1);
+        }
+
+        .sequence-btn.correct {
+            background: var(--success-color);
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.5);
+        }
+
+        .sequence-btn.wrong {
+            background: var(--danger-color);
+            box-shadow: 0 0 20px rgba(239, 68, 68, 0.5);
+        }
+
+        /* Pattern Puzzle */
+        .pattern-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            max-width: 300px;
+            margin: 0 auto;
+        }
+
+        .pattern-cell {
+            width: 60px;
+            height: 60px;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .pattern-cell.filled {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .pattern-cell.missing {
+            background: var(--bg-darker);
+            border-style: dashed;
+            animation: var(--pulse-animation);
+        }
+
+        /* Math Puzzle */
+        .math-problem {
+            font-family: 'Orbitron', monospace;
+            font-size: 32px;
+            font-weight: 700;
             margin-bottom: 20px;
-            font-size: 3rem;
+            color: var(--text-light);
         }
-        
-        .win-message p {
-            font-size: 1.5rem;
-            margin-bottom: 30px;
+
+        .answer-input {
+            width: 150px;
+            padding: 15px;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            background: var(--bg-dark);
+            color: var(--text-light);
+            font-size: 20px;
             text-align: center;
-            color: #c3e3ff;
+            font-family: 'Orbitron', monospace;
         }
-        
-        .win-message button {
-            font-size: 1.2rem;
-            padding: 15px 40px;
+
+        .answer-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: var(--neon-glow);
         }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+
+        /* Word Puzzle */
+        .word-scramble {
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: 8px;
+            margin-bottom: 20px;
+            color: var(--secondary-color);
         }
-        
-        @media (max-width: 500px) {
-            .game-grid {
-                grid-template-columns: repeat(3, 1fr);
+
+        .word-input {
+            width: 200px;
+            padding: 15px;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            background: var(--bg-dark);
+            color: var(--text-light);
+            font-size: 18px;
+            text-align: center;
+        }
+
+        .word-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: var(--neon-glow);
+        }
+
+        /* Control Buttons */
+        .game-controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .control-btn {
+            padding: 12px 24px;
+            border: 2px solid var(--border-color);
+            border-radius: 25px;
+            background: var(--card-bg);
+            color: var(--text-light);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .control-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--neon-glow);
+        }
+
+        .submit-btn {
+            background: linear-gradient(45deg, var(--success-color), #059669);
+            border-color: var(--success-color);
+        }
+
+        .skip-btn {
+            background: linear-gradient(45deg, var(--danger-color), #dc2626);
+            border-color: var(--danger-color);
+        }
+
+        /* Results Screen */
+        .results-screen {
+            display: none;
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .results-header {
+            margin-bottom: 30px;
+        }
+
+        .match-result {
+            font-size: 36px;
+            font-weight: 900;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+
+        .match-result.win {
+            color: var(--success-color);
+            text-shadow: 0 0 20px rgba(16, 185, 129, 0.5);
+        }
+
+        .match-result.lose {
+            color: var(--danger-color);
+            text-shadow: 0 0 20px rgba(239, 68, 68, 0.5);
+        }
+
+        .score-display {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--secondary-color);
+            margin-bottom: 20px;
+        }
+
+        .score-breakdown {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            border: 1px solid var(--border-color);
+        }
+
+        .score-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .score-item:last-child {
+            margin-bottom: 0;
+            padding-top: 10px;
+            border-top: 1px solid var(--border-color);
+            font-weight: 700;
+            color: var(--secondary-color);
+        }
+
+        .streak-display {
+            background: linear-gradient(45deg, rgba(16, 185, 129, 0.2), rgba(16, 185, 129, 0.1));
+            border: 1px solid var(--success-color);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .streak-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--success-color);
+            margin-bottom: 10px;
+        }
+
+        .streak-number {
+            font-size: 32px;
+            font-weight: 900;
+            color: var(--success-color);
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            padding: 15px 25px;
+            border: 2px solid var(--border-color);
+            border-radius: 25px;
+            background: var(--card-bg);
+            color: var(--text-light);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .play-again-btn {
+            background: linear-gradient(45deg, var(--primary-color), var(--primary-dark));
+            border-color: var(--primary-color);
+            box-shadow: var(--neon-glow);
+        }
+
+        /* Animations */
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .slide-in {
+            animation: slideIn 0.5s ease-out;
+        }
+
+        .bounce {
+            animation: bounce 0.3s ease-out;
+        }
+
+        /* Mobile Optimizations */
+        @media (max-width: 480px) {
+            .header {
+                padding: 15px;
             }
             
-            h1 {
-                font-size: 2rem;
+            .game-container {
+                padding: 15px;
             }
             
-            .win-message h2 {
-                font-size: 2rem;
+            .puzzle-area {
+                padding: 20px;
+                min-height: 250px;
             }
             
-            .win-message p {
-                font-size: 1.2rem;
+            .sequence-btn, .pattern-cell {
+                width: 55px;
+                height: 55px;
+                font-size: 16px;
+            }
+            
+            .math-problem {
+                font-size: 24px;
+            }
+            
+            .word-scramble {
+                font-size: 20px;
+                letter-spacing: 4px;
+            }
+            
+            .stats-bar {
+                justify-content: center;
+                gap: 10px;
+            }
+            
+            .stat-item {
+                font-size: 12px;
+            }
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--primary-color);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Particle Effects */
+        .particle {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: particle-float 2s ease-out forwards;
+        }
+
+        @keyframes particle-float {
+            0% {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) scale(0);
+                opacity: 0;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>Liquid Glass Memory Match</h1>
-            <p>Find all matching pairs in this fluid puzzle experience!</p>
-        </header>
-        
-        <div class="game-info">
-            <div class="info-box">
-                <div class="info-label">Time</div>
-                <div class="info-value" id="timer">0s</div>
-            </div>
-            <div class="info-box">
-                <div class="info-label">Moves</div>
-                <div class="info-value" id="moves">0</div>
-            </div>
-            <div class="info-box">
-                <div class="info-label">Pairs Found</div>
-                <div class="info-value" id="pairs">0/8</div>
-            </div>
-        </div>
-        
-        <div class="game-grid" id="game-board">
-            <!-- Cards will be generated by JavaScript -->
-        </div>
-        
-        <div class="controls">
-            <button id="start-btn">Start Game</button>
-            <button id="restart-btn">Restart</button>
-        </div>
-        
-        <div class="instructions">
-            <h2>How to Play</h2>
-            <ul>
-                <li>Click on any card to flip it and reveal its symbol</li>
-                <li>Find and match pairs of cards with the same symbol</li>
-                <li>Try to complete the game with as few moves and as quickly as possible</li>
-                <li>Press Restart to shuffle the cards and play again</li>
-            </ul>
-        </div>
+    <div class="bg-animation">
+        <div class="floating-shape"></div>
+        <div class="floating-shape"></div>
+        <div class="floating-shape"></div>
     </div>
-    
-    <div class="win-message" id="win-message">
-        <h2>Congratulations!</h2>
-        <p>You found all pairs in <span id="win-time"></span> with <span id="win-moves"></span> moves!</p>
-        <button id="play-again">Play Again</button>
+
+    <header class="header">
+        <h1 class="logo">🧠 BRAIN BATTLE</h1>
+        <div class="stats-bar">
+            <div class="stat-item">
+                <i class="fas fa-trophy"></i>
+                <span>Brain Score: <span class="brain-score" id="totalScore">1247</span></span>
+            </div>
+            <div class="stat-item">
+                <i class="fas fa-fire"></i>
+                <span>Streak: <span id="currentStreak">3</span></span>
+            </div>
+            <div class="stat-item">
+                <i class="fas fa-chart-line"></i>
+                <span>Win Rate: <span id="winRate">67%</span></span>
+            </div>
+        </div>
+    </header>
+
+    <div class="game-container">
+        <!-- Menu Screen -->
+        <div class="menu-screen" id="menuScreen">
+            <h2 class="menu-title">Choose Your Challenge</h2>
+            <div class="difficulty-selector">
+                <div class="difficulty-btn" data-difficulty="easy">
+                    <div>🟢 EASY</div>
+                    <div class="difficulty-info">
+                        <span>Simple puzzles</span>
+                        <span>Clumsy bot</span>
+                        <span>60s timer</span>
+                    </div>
+                </div>
+                <div class="difficulty-btn selected" data-difficulty="medium">
+                    <div>🟡 MEDIUM</div>
+                    <div class="difficulty-info">
+                        <span>Balanced puzzles</span>
+                        <span>Smart bot</span>
+                        <span>45s timer</span>
+                    </div>
+                </div>
+                <div class="difficulty-btn" data-difficulty="hard">
+                    <div>🔴 HARD</div>
+                    <div class="difficulty-info">
+                        <span>Complex puzzles</span>
+                        <span>Expert bot</span>
+                        <span>30s timer</span>
+                    </div>
+                </div>
+            </div>
+            <button class="start-btn" id="startGameBtn">
+                <i class="fas fa-play"></i> START BATTLE
+            </button>
+        </div>
+
+        <!-- Game Screen -->
+        <div class="game-screen" id="gameScreen">
+            <div class="game-header">
+                <div class="timer-display" id="timerDisplay">30.0s</div>
+                <div class="round-info">
+                    <div>Round <span id="currentRound">1</span>/5</div>
+                    <div class="vs-display">
+                        <span>You</span>
+                        <i class="fas fa-sword"></i>
+                        <div class="bot-status">
+                            <i class="fas fa-robot"></i>
+                            <span id="botName">SmartBot</span>
+                            <div class="loading" id="botThinking" style="display: none;"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="stat-item">
+                    <i class="fas fa-star"></i>
+                    <span id="roundScore">0</span>
+                </div>
+            </div>
+
+            <div class="puzzle-area" id="puzzleArea">
+                <!-- Puzzle content will be dynamically generated -->
+            </div>
+
+            <div class="game-controls" id="gameControls">
+                <button class="control-btn submit-btn" id="submitBtn">
+                    <i class="fas fa-check"></i> Submit
+                </button>
+                <button class="control-btn skip-btn" id="skipBtn">
+                    <i class="fas fa-forward"></i> Skip (-10 pts)
+                </button>
+            </div>
+        </div>
+
+        <!-- Results Screen -->
+        <div class="results-screen" id="resultsScreen">
+            <div class="results-header">
+                <div class="match-result" id="matchResult">VICTORY!</div>
+                <div class="score-display">
+                    Final Brain Score: <span id="finalScore">847</span>
+                </div>
+            </div>
+
+            <div class="score-breakdown">
+                <div class="score-item">
+                    <span>Base Score:</span>
+                    <span id="baseScore">500</span>
+                </div>
+                <div class="score-item">
+                    <span>Time Bonus:</span>
+                    <span id="timeBonus">+120</span>
+                </div>
+                <div class="score-item">
+                    <span>Accuracy Bonus:</span>
+                    <span id="accuracyBonus">+200</span>
+                </div>
+                <div class="score-item">
+                    <span>Difficulty Multiplier:</span>
+                    <span id="difficultyMultiplier">×1.5</span>
+                </div>
+                <div class="score-item">
+                    <span>Total Brain Score:</span>
+                    <span id="totalScoreBreakdown">847</span>
+                </div>
+            </div>
+
+            <div class="streak-display" id="streakDisplay">
+                <div class="streak-title">🔥 WIN STREAK</div>
+                <div class="streak-number" id="streakNumber">4</div>
+                <div>Keep it going! Next: +25% bonus</div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="action-btn play-again-btn" id="playAgainBtn">
+                    <i class="fas fa-redo"></i> Play Again
+                </button>
+                <button class="action-btn" id="menuBtn">
+                    <i class="fas fa-home"></i> Main Menu
+                </button>
+                <button class="action-btn" id="shareBtn">
+                    <i class="fas fa-share"></i> Share Score
+                </button>
+            </div>
+        </div>
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // Game elements
-            const gameBoard = document.getElementById('game-board');
-            const timerElement = document.getElementById('timer');
-            const movesElement = document.getElementById('moves');
-            const pairsElement = document.getElementById('pairs');
-            const startButton = document.getElementById('start-btn');
-            const restartButton = document.getElementById('restart-btn');
-            const winMessage = document.getElementById('win-message');
-            const winTime = document.getElementById('win-time');
-            const winMoves = document.getElementById('win-moves');
-            const playAgainButton = document.getElementById('play-again');
-            
-            // Game state
-            let cards = [];
-            let hasFlippedCard = false;
-            let lockBoard = false;
-            let firstCard, secondCard;
-            let moves = 0;
-            let matchedPairs = 0;
-            let totalPairs = 8;
-            let timer = 0;
-            let timerInterval = null;
-            let gameStarted = false;
-            
-            // Card symbols (using emoji for simplicity)
-            const cardSymbols = ['🍎', '🍌', '🍇', '🍊', '🍓', '🍉', '🍒', '🥝'];
-            
-            // Initialize game
-            initializeGame();
-            
-            // Set up event listeners
-            startButton.addEventListener('click', startGame);
-            restartButton.addEventListener('click', restartGame);
-            playAgainButton.addEventListener('click', restartGame);
-            
-            function initializeGame() {
-                // Create pairs of cards
-                cards = [...cardSymbols, ...cardSymbols];
+        // Game State Management
+        class BrainBattleGame {
+            constructor() {
+                this.difficulty = 'medium';
+                this.currentRound = 0;
+                this.maxRounds = 5;
+                this.score = 0;
+                this.timeLeft = 0;
+                this.timer = null;
+                this.currentPuzzle = null;
+                this.playerAnswers = [];
+                this.botAnswers = [];
+                this.startTime = 0;
+                this.gameStats = this.loadStats();
+                this.streak = this.gameStats.streak || 0;
                 
-                // Shuffle cards
-                shuffleCards();
-                
-                // Generate card elements
-                generateCards();
+                // Difficulty settings
+                this.difficultySettings = {
+                    easy: {
+                        timeLimit: 60,
+                        botWinRate: 0.4,
+                        scoreMultiplier: 1.0,
+                        botName: "EasyBot",
+                        botMistakeRate: 0.3
+                    },
+                    medium: {
+                        timeLimit: 45,
+                        botWinRate: 0.6,
+                        scoreMultiplier: 1.5,
+                        botName: "SmartBot",
+                        botMistakeRate: 0.15
+                    },
+                    hard: {
+                        timeLimit: 30,
+                        botWinRate: 0.75,
+                        scoreMultiplier: 2.0,
+                        botName: "ExpertBot",
+                        botMistakeRate: 0.05
+                    }
+                };
+
+                this.puzzleTypes = ['sequence', 'pattern', 'math', 'word'];
+                this.init();
             }
-            
-            function startGame() {
-                if (!gameStarted) {
-                    gameStarted = true;
-                    startButton.textContent = "Pause";
-                    startTimer();
-                } else {
-                    gameStarted = false;
-                    startButton.textContent = "Resume";
-                    clearInterval(timerInterval);
-                }
+
+            init() {
+                this.setupEventListeners();
+                this.updateStatsDisplay();
+                this.createParticleSystem();
             }
-            
-            function startTimer() {
-                clearInterval(timerInterval);
-                timerInterval = setInterval(() => {
-                    timer++;
-                    timerElement.textContent = `${timer}s`;
-                }, 1000);
-            }
-            
-            function shuffleCards() {
-                // Fisher-Yates shuffle algorithm
-                for (let i = cards.length - 1; i > 0; i--) {
-                    const j = Math.floor(Math.random() * (i + 1));
-                    [cards[i], cards[j]] = [cards[j], cards[i]];
-                }
-            }
-            
-            function generateCards() {
-                gameBoard.innerHTML = '';
-                
-                cards.forEach((symbol, index) => {
-                    const card = document.createElement('div');
-                    card.classList.add('card');
-                    card.dataset.symbol = symbol;
-                    card.dataset.index = index;
-                    card.textContent = symbol;
-                    
-                    card.addEventListener('click', flipCard);
-                    
-                    gameBoard.appendChild(card);
+
+            setupEventListeners() {
+                // Difficulty selection
+                document.querySelectorAll('.difficulty-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        document.querySelectorAll('.difficulty-btn').forEach(b => b.classList.remove('selected'));
+                        btn.classList.add('selected');
+                        this.difficulty = btn.dataset.difficulty;
+                    });
+                });
+
+                // Game controls
+                document.getElementById('startGameBtn').addEventListener('click', () => this.startGame());
+                document.getElementById('submitBtn').addEventListener('click', () => this.submitAnswer());
+                document.getElementById('skipBtn').addEventListener('click', () => this.skipPuzzle());
+                document.getElementById('playAgainBtn').addEventListener('click', () => this.playAgain());
+                document.getElementById('menuBtn').addEventListener('click', () => this.showMenu());
+                document.getElementById('shareBtn').addEventListener('click', () => this.shareScore());
+
+                // Keyboard shortcuts
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' && document.getElementById('gameScreen').style.display !== 'none') {
+                        this.submitAnswer();
+                    }
+                    if (e.key === 'Escape') {
+                        this.showMenu();
+                    }
                 });
             }
-            
-            function flipCard() {
-                if (lockBoard) return;
-                if (this === firstCard) return;
-                if (this.classList.contains('matched')) return;
+
+            loadStats() {
+                const stats = localStorage.getItem('brainBattleStats');
+                return stats ? JSON.parse(stats) : {
+                    totalScore: 1247,
+                    gamesPlayed: 0,
+                    gamesWon: 0,
+                    streak: 0,
+                    bestScore: 0
+                };
+            }
+
+            saveStats() {
+                localStorage.setItem('brainBattleStats', JSON.stringify(this.gameStats));
+            }
+
+            updateStatsDisplay() {
+                document.getElementById('totalScore').textContent = this.gameStats.totalScore;
+                document.getElementById('currentStreak').textContent = this.gameStats.streak;
+                const winRate = this.gameStats.gamesPlayed > 0 
+                    ? Math.round((this.gameStats.gamesWon / this.gameStats.gamesPlayed) * 100)
+                    : 0;
+                document.getElementById('winRate').textContent = `${winRate}%`;
+            }
+
+            startGame() {
+                this.currentRound = 0;
+                this.score = 0;
+                this.playerAnswers = [];
+                this.botAnswers = [];
                 
-                if (!gameStarted) {
-                    startGame();
-                }
+                document.getElementById('menuScreen').style.display = 'none';
+                document.getElementById('gameScreen').style.display = 'block';
+                document.getElementById('resultsScreen').style.display = 'none';
                 
-                this.classList.add('flipped');
+                document.getElementById('botName').textContent = this.difficultySettings[this.difficulty].botName;
                 
-                if (!hasFlippedCard) {
-                    // First card flipped
-                    hasFlippedCard = true;
-                    firstCard = this;
+                this.nextRound();
+            }
+
+            nextRound() {
+                if (this.currentRound >= this.maxRounds) {
+                    this.endGame();
                     return;
                 }
+
+                this.currentRound++;
+                document.getElementById('currentRound').textContent = this.currentRound;
+                document.getElementById('roundScore').textContent = '0';
                 
-                // Second card flipped
-                secondCard = this;
-                moves++;
-                movesElement.textContent = moves;
-                
-                checkForMatch();
+                this.generatePuzzle();
+                this.startTimer();
+                this.simulateBotThinking();
             }
-            
-            function checkForMatch() {
-                const isMatch = firstCard.dataset.symbol === secondCard.dataset.symbol;
+
+            generatePuzzle() {
+                const puzzleType = this.puzzleTypes[Math.floor(Math.random() * this.puzzleTypes.length)];
+                const puzzleArea = document.getElementById('puzzleArea');
                 
-                if (isMatch) {
-                    disableCards();
-                    matchedPairs++;
-                    pairsElement.textContent = `${matchedPairs}/${totalPairs}`;
-                    
-                    if (matchedPairs === totalPairs) {
-                        endGame();
-                    }
-                } else {
-                    unflipCards();
+                switch (puzzleType) {
+                    case 'sequence':
+                        this.currentPuzzle = this.generateSequencePuzzle();
+                        break;
+                    case 'pattern':
+                        this.currentPuzzle = this.generatePatternPuzzle();
+                        break;
+                    case 'math':
+                        this.currentPuzzle = this.generateMathPuzzle();
+                        break;
+                    case 'word':
+                        this.currentPuzzle = this.generateWordPuzzle();
+                        break;
                 }
-            }
-            
-            function disableCards() {
-                firstCard.classList.add('matched');
-                secondCard.classList.add('matched');
+
+                puzzleArea.innerHTML = this.currentPuzzle.html;
+                puzzleArea.classList.add('slide-in');
                 
-                resetBoard();
+                // Setup puzzle-specific event listeners
+                if (this.currentPuzzle.setupListeners) {
+                    this.currentPuzzle.setupListeners();
+                }
+
+                this.startTime = Date.now();
             }
-            
-            function unflipCards() {
-                lockBoard = true;
+
+            generateSequencePuzzle() {
+                const sequence = [];
+                const length = this.difficulty === 'easy' ? 4 : this.difficulty === 'medium' ? 6 : 8;
+                
+                for (let i = 0; i < length; i++) {
+                    sequence.push(Math.floor(Math.random() * 9));
+                }
+
+                const playerSequence = [];
+                let currentStep = 0;
+                let showingSequence = true;
+
+                const html = `
+                    <div class="puzzle-title">🧠 Memory Sequence</div>
+                    <div class="puzzle-content">
+                        <p>Watch the sequence, then repeat it!</p>
+                        <div class="sequence-grid">
+                            ${Array.from({length: 9}, (_, i) => 
+                                `<div class="sequence-btn" data-num="${i}">${i}</div>`
+                            ).join('')}
+                        </div>
+                    </div>
+                `;
+
+                return {
+                    type: 'sequence',
+                    sequence,
+                    playerSequence,
+                    currentStep,
+                    showingSequence,
+                    html,
+                    setupListeners: () => {
+                        const buttons = document.querySelectorAll('.sequence-btn');
+                        
+                        // Show sequence first
+                        this.showSequence(sequence, 0);
+                        
+                        buttons.forEach(btn => {
+                            btn.addEventListener('click', () => {
+                                if (showingSequence) return;
+                                
+                                const num = parseInt(btn.dataset.num);
+                                playerSequence.push(num);
+                                btn.classList.add('active');
+                                
+                                setTimeout(() => btn.classList.remove('active'), 200);
+                                
+                                if (playerSequence.length === sequence.length) {
+                                    this.checkSequenceAnswer(sequence, playerSequence);
+                                }
+                            });
+                        });
+                    },
+                    getAnswer: () => playerSequence.slice(),
+                    checkAnswer: (answer) => {
+                        return JSON.stringify(answer) === JSON.stringify(sequence);
+                    }
+                };
+            }
+
+            showSequence(sequence, index) {
+                if (index >= sequence.length) {
+                    this.currentPuzzle.showingSequence = false;
+                    return;
+                }
+
+                const btn = document.querySelector(`[data-num="${sequence[index]}"]`);
+                btn.classList.add('active');
                 
                 setTimeout(() => {
-                    firstCard.classList.remove('flipped');
-                    secondCard.classList.remove('flipped');
-                    
-                    resetBoard();
+                    btn.classList.remove('active');
+                    setTimeout(() => this.showSequence(sequence, index + 1), 300);
+                }, 600);
+            }
+
+            checkSequenceAnswer(sequence, playerSequence) {
+                const buttons = document.querySelectorAll('.sequence-btn');
+                
+                for (let i = 0; i < playerSequence.length; i++) {
+                    const btn = document.querySelector(`[data-num="${playerSequence[i]}"]`);
+                    if (playerSequence[i] === sequence[i]) {
+                        btn.classList.add('correct');
+                    } else {
+                        btn.classList.add('wrong');
+                    }
+                }
+                
+                setTimeout(() => {
+                    if (JSON.stringify(playerSequence) === JSON.stringify(sequence)) {
+                        this.handleCorrectAnswer();
+                    } else {
+                        this.handleWrongAnswer();
+                    }
                 }, 1000);
             }
-            
-            function resetBoard() {
-                [hasFlippedCard, lockBoard] = [false, false];
-                [firstCard, secondCard] = [null, null];
-            }
-            
-            function endGame() {
-                clearInterval(timerInterval);
+
+            generatePatternPuzzle() {
+                const patterns = [
+                    [1,0,1,0,1,0,1,0,1,0,1,'?',1,0,1,0], // Alternating
+                    [1,1,0,1,1,0,1,1,0,'?',1,0,1,1,0,1], // Double pattern
+                    [1,2,3,1,2,3,1,2,3,'?',2,3,1,2,3,1], // Triple sequence
+                ];
                 
-                winTime.textContent = `${timer} seconds`;
-                winMoves.textContent = moves;
+                const selectedPattern = patterns[Math.floor(Math.random() * patterns.length)];
+                const missingIndex = selectedPattern.indexOf('?');
+                const correctAnswer = this.calculatePatternAnswer(selectedPattern, missingIndex);
+
+                let userAnswer = null;
+
+                const html = `
+                    <div class="puzzle-title">🔢 Complete the Pattern</div>
+                    <div class="puzzle-content">
+                        <p>Find the missing number in the sequence!</p>
+                        <div class="pattern-grid">
+                            ${selectedPattern.map((cell, i) => {
+                                if (cell === '?') {
+                                    return `<div class="pattern-cell missing" data-index="${i}">?</div>`;
+                                } else {
+                                    return `<div class="pattern-cell filled">${cell}</div>`;
+                                }
+                            }).join('')}
+                        </div>
+                        <input type="number" class="answer-input" id="patternAnswer" placeholder="?" min="0" max="9">
+                    </div>
+                `;
+
+                return {
+                    type: 'pattern',
+                    correctAnswer,
+                    html,
+                    getAnswer: () => {
+                        const input = document.getElementById('patternAnswer');
+                        return parseInt(input.value) || null;
+                    },
+                    checkAnswer: (answer) => answer === correctAnswer
+                };
+            }
+
+            calculatePatternAnswer(pattern, missingIndex) {
+                // Simple pattern recognition logic
+                if (missingIndex === 0) return 1;
+                
+                // Check for alternating pattern
+                const prev = pattern[missingIndex - 1];
+                const prevPrev = missingIndex >= 2 ? pattern[missingIndex - 2] : null;
+                
+                if (prevPrev !== null && prevPrev === prev) {
+                    return prev;
+                } else if (prev === 1) {
+                    return 0;
+                } else if (prev === 0) {
+                    return 1;
+                } else {
+                    return (prev % 3) + 1;
+                }
+            }
+
+            generateMathPuzzle() {
+                const operations = ['+', '-', '*'];
+                const op = operations[Math.floor(Math.random() * operations.length)];
+                
+                let a, b, answer;
+                
+                switch (this.difficulty) {
+                    case 'easy':
+                        a = Math.floor(Math.random() * 20) + 1;
+                        b = Math.floor(Math.random() * 20) + 1;
+                        break;
+                    case 'medium':
+                        a = Math.floor(Math.random() * 50) + 10;
+                        b = Math.floor(Math.random() * 20) + 5;
+                        break;
+                    case 'hard':
+                        a = Math.floor(Math.random() * 100) + 20;
+                        b = Math.floor(Math.random() * 30) + 10;
+                        break;
+                }
+
+                switch (op) {
+                    case '+':
+                        answer = a + b;
+                        break;
+                    case '-':
+                        answer = Math.abs(a - b);
+                        if (a < b) [a, b] = [b, a];
+                        break;
+                    case '*':
+                        if (this.difficulty === 'easy') {
+                            a = Math.floor(Math.random() * 10) + 1;
+                            b = Math.floor(Math.random() * 10) + 1;
+                        }
+                        answer = a * b;
+                        break;
+                }
+
+                const html = `
+                    <div class="puzzle-title">🧮 Quick Math</div>
+                    <div class="puzzle-content">
+                        <div class="math-problem">${a} ${op} ${b} = ?</div>
+                        <input type="number" class="answer-input" id="mathAnswer" placeholder="Answer">
+                    </div>
+                `;
+
+                return {
+                    type: 'math',
+                    answer,
+                    html,
+                    getAnswer: () => {
+                        const input = document.getElementById('mathAnswer');
+                        return parseInt(input.value) || null;
+                    },
+                    checkAnswer: (userAnswer) => userAnswer === answer
+                };
+            }
+
+            generateWordPuzzle() {
+                const words = {
+                    easy: ['CAT', 'DOG', 'SUN', 'MOON', 'STAR', 'TREE', 'BOOK', 'CAKE'],
+                    medium: ['PUZZLE', 'BRAIN', 'MAGIC', 'OCEAN', 'MOUNTAIN', 'THUNDER', 'CRYSTAL'],
+                    hard: ['ALGORITHM', 'PHILOSOPHY', 'METAMORPHOSIS', 'EXTRAORDINARY', 'INCOMPREHENSIBLE']
+                };
+
+                const wordList = words[this.difficulty];
+                const originalWord = wordList[Math.floor(Math.random() * wordList.length)];
+                const scrambledWord = this.scrambleWord(originalWord);
+
+                const html = `
+                    <div class="puzzle-title">📝 Word Unscramble</div>
+                    <div class="puzzle-content">
+                        <p>Unscramble this word:</p>
+                        <div class="word-scramble">${scrambledWord}</div>
+                        <input type="text" class="word-input" id="wordAnswer" placeholder="Unscrambled word">
+                    </div>
+                `;
+
+                return {
+                    type: 'word',
+                    originalWord,
+                    html,
+                    getAnswer: () => {
+                        const input = document.getElementById('wordAnswer');
+                        return input.value.toUpperCase().trim();
+                    },
+                    checkAnswer: (answer) => answer === originalWord
+                };
+            }
+
+            scrambleWord(word) {
+                const letters = word.split('');
+                for (let i = letters.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [letters[i], letters[j]] = [letters[j], letters[i]];
+                }
+                return letters.join(' ');
+            }
+
+            startTimer() {
+                this.timeLeft = this.difficultySettings[this.difficulty].timeLimit;
+                this.updateTimerDisplay();
+                
+                this.timer = setInterval(() => {
+                    this.timeLeft -= 0.1;
+                    this.updateTimerDisplay();
+                    
+                    if (this.timeLeft <= 0) {
+                        this.handleTimeout();
+                    }
+                }, 100);
+            }
+
+            updateTimerDisplay() {
+                const timerDisplay = document.getElementById('timerDisplay');
+                timerDisplay.textContent = `${this.timeLeft.toFixed(1)}s`;
+                
+                if (this.timeLeft <= 10) {
+                    timerDisplay.classList.add('danger');
+                } else {
+                    timerDisplay.classList.remove('danger');
+                }
+            }
+
+            simulateBotThinking() {
+                const botThinking = document.getElementById('botThinking');
+                const settings = this.difficultySettings[this.difficulty];
+                
+                botThinking.style.display = 'inline-block';
+                
+                // Bot "solves" puzzle with some delay and possible mistakes
+                const thinkingTime = Math.random() * 3000 + 1000; // 1-4 seconds
                 
                 setTimeout(() => {
-                    winMessage.classList.add('show');
-                }, 500);
+                    botThinking.style.display = 'none';
+                    
+                    // Determine if bot makes a mistake
+                    const makesMistake = Math.random() < settings.botMistakeRate;
+                    const botAnswerTime = thinkingTime / 1000;
+                    
+                    this.botAnswers.push({
+                        round: this.currentRound,
+                        correct: !makesMistake,
+                        time: botAnswerTime
+                    });
+                }, thinkingTime);
             }
-            
-            function restartGame() {
-                clearInterval(timerInterval);
+
+            submitAnswer() {
+                if (!this.currentPuzzle) return;
                 
-                // Reset game state
-                timer = 0;
-                moves = 0;
-                matchedPairs = 0;
-                gameStarted = false;
+                clearInterval(this.timer);
                 
-                timerElement.textContent = '0s';
-                movesElement.textContent = '0';
-                pairsElement.textContent = '0/8';
+                const answer = this.currentPuzzle.getAnswer();
+                const isCorrect = this.currentPuzzle.checkAnswer(answer);
+                const timeTaken = (Date.now() - this.startTime) / 1000;
                 
-                startButton.textContent = 'Start Game';
+                this.playerAnswers.push({
+                    round: this.currentRound,
+                    correct: isCorrect,
+                    time: timeTaken
+                });
+
+                if (isCorrect) {
+                    this.handleCorrectAnswer();
+                } else {
+                    this.handleWrongAnswer();
+                }
+            }
+
+            handleCorrectAnswer() {
+                const timeTaken = (Date.now() - this.startTime) / 1000;
+                const timeLimit = this.difficultySettings[this.difficulty].timeLimit;
+                const timeBonus = Math.max(0, Math.floor((timeLimit - timeTaken) * 10));
+                const roundScore = 100 + timeBonus;
                 
-                // Reinitialize game
-                initializeGame();
+                this.score += roundScore;
+                document.getElementById('roundScore').textContent = roundScore;
                 
-                // Hide win message
-                winMessage.classList.remove('show');
+                this.showFeedback('Correct! +' + roundScore, 'success');
+                this.createSuccessParticles();
+                
+                setTimeout(() => this.nextRound(), 2000);
+            }
+
+            handleWrongAnswer() {
+                this.showFeedback('Incorrect! Try harder next time.', 'error');
+                setTimeout(() => this.nextRound(), 2000);
+            }
+
+            handleTimeout() {
+                clearInterval(this.timer);
+                this.showFeedback('Time\'s up!', 'error');
+                setTimeout(() => this.nextRound(), 2000);
+            }
+
+            skipPuzzle() {
+                this.score = Math.max(0, this.score - 10);
+                this.showFeedback('Skipped! -10 points', 'warning');
+                setTimeout(() => this.nextRound(), 1000);
+            }
+
+            showFeedback(message, type) {
+                const puzzleArea = document.getElementById('puzzleArea');
+                const feedback = document.createElement('div');
+                feedback.className = `feedback ${type}`;
+                feedback.style.cssText = `
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    font-size: 24px;
+                    font-weight: bold;
+                    padding: 20px;
+                    border-radius: 10px;
+                    z-index: 1000;
+                    animation: slideIn 0.5s ease-out;
+                `;
+                
+                switch (type) {
+                    case 'success':
+                        feedback.style.backgroundColor = 'rgba(16, 185, 129, 0.9)';
+                        feedback.style.color = 'white';
+                        break;
+                    case 'error':
+                        feedback.style.backgroundColor = 'rgba(239, 68, 68, 0.9)';
+                        feedback.style.color = 'white';
+                        break;
+                    case 'warning':
+                        feedback.style.backgroundColor = 'rgba(245, 158, 11, 0.9)';
+                        feedback.style.color = 'white';
+                        break;
+                }
+                
+                feedback.textContent = message;
+                puzzleArea.appendChild(feedback);
+                
+                setTimeout(() => feedback.remove(), 1500);
+            }
+
+            endGame() {
+                clearInterval(this.timer);
+                
+                // Calculate final scores
+                const playerScore = this.calculatePlayerScore();
+                const botScore = this.calculateBotScore();
+                const playerWins = playerScore > botScore;
+                
+                // Update game statistics
+                this.gameStats.gamesPlayed++;
+                if (playerWins) {
+                    this.gameStats.gamesWon++;
+                    this.gameStats.streak++;
+                } else {
+                    this.gameStats.streak = 0;
+                }
+                
+                const finalScore = Math.floor(playerScore);
+                this.gameStats.totalScore += Math.floor(finalScore * 0.1); // Add 10% to total score
+                this.gameStats.bestScore = Math.max(this.gameStats.bestScore, finalScore);
+                
+                this.saveStats();
+                this.updateStatsDisplay();
+                
+                // Show results
+                this.showResults(playerWins, finalScore, playerScore, botScore);
+            }
+
+            calculatePlayerScore() {
+                let baseScore = 0;
+                let correctAnswers = 0;
+                let totalTime = 0;
+                
+                this.playerAnswers.forEach(answer => {
+                    if (answer.correct) {
+                        baseScore += 100;
+                        correctAnswers++;
+                    }
+                    totalTime += answer.time;
+                });
+                
+                // Time bonus
+                const avgTime = totalTime / this.playerAnswers.length;
+                const timeLimit = this.difficultySettings[this.difficulty].timeLimit;
+                const timeBonus = Math.max(0, (timeLimit - avgTime) * 10);
+                
+                // Accuracy bonus
+                const accuracy = correctAnswers / this.maxRounds;
+                const accuracyBonus = accuracy * 200;
+                
+                // Difficulty multiplier
+                const multiplier = this.difficultySettings[this.difficulty].scoreMultiplier;
+                
+                // Streak bonus
+                const streakBonus = this.gameStats.streak * 25;
+                
+                return (baseScore + timeBonus + accuracyBonus + streakBonus) * multiplier;
+            }
+
+            calculateBotScore() {
+                const settings = this.difficultySettings[this.difficulty];
+                const targetWinRate = settings.botWinRate;
+                
+                // Simulate bot performance based on difficulty
+                let botCorrect = 0;
+                let botTotalTime = 0;
+                
+                this.botAnswers.forEach(answer => {
+                    if (answer.correct) botCorrect++;
+                    botTotalTime += answer.time;
+                });
+                
+                const botAccuracy = botCorrect / this.maxRounds;
+                const avgBotTime = botTotalTime / this.botAnswers.length;
+                
+                const botBaseScore = botCorrect * 100;
+                const botTimeBonus = Math.max(0, (settings.timeLimit - avgBotTime) * 10);
+                const botAccuracyBonus = botAccuracy * 200;
+                
+                return (botBaseScore + botTimeBonus + botAccuracyBonus) * settings.scoreMultiplier;
+            }
+
+            showResults(playerWins, finalScore, playerScore, botScore) {
+                document.getElementById('gameScreen').style.display = 'none';
+                document.getElementById('resultsScreen').style.display = 'block';
+                
+                // Match result
+                const matchResult = document.getElementById('matchResult');
+                matchResult.textContent = playerWins ? 'VICTORY!' : 'DEFEAT!';
+                matchResult.className = `match-result ${playerWins ? 'win' : 'lose'}`;
+                
+                // Scores
+                document.getElementById('finalScore').textContent = finalScore;
+                
+                // Score breakdown
+                const correctAnswers = this.playerAnswers.filter(a => a.correct).length;
+                const baseScore = correctAnswers * 100;
+                const totalTime = this.playerAnswers.reduce((sum, a) => sum + a.time, 0);
+                const avgTime = totalTime / this.playerAnswers.length;
+                const timeLimit = this.difficultySettings[this.difficulty].timeLimit;
+                const timeBonus = Math.max(0, Math.floor((timeLimit - avgTime) * 10));
+                const accuracy = correctAnswers / this.maxRounds;
+                const accuracyBonus = Math.floor(accuracy * 200);
+                const multiplier = this.difficultySettings[this.difficulty].scoreMultiplier;
+                
+                document.getElementById('baseScore').textContent = baseScore;
+                document.getElementById('timeBonus').textContent = `+${timeBonus}`;
+                document.getElementById('accuracyBonus').textContent = `+${accuracyBonus}`;
+                document.getElementById('difficultyMultiplier').textContent = `×${multiplier}`;
+                document.getElementById('totalScoreBreakdown').textContent = finalScore;
+                
+                // Streak display
+                document.getElementById('streakNumber').textContent = this.gameStats.streak;
+                
+                if (playerWins) {
+                    this.createVictoryParticles();
+                }
+            }
+
+            playAgain() {
+                this.startGame();
+            }
+
+            showMenu() {
+                document.getElementById('menuScreen').style.display = 'block';
+                document.getElementById('gameScreen').style.display = 'none';
+                document.getElementById('resultsScreen').style.display = 'none';
+                clearInterval(this.timer);
+            }
+
+            shareScore() {
+                const score = document.getElementById('finalScore').textContent;
+                const text = `🧠 I just scored ${score} points in Brain Battle! Can you beat my score? 🏆`;
+                
+                if (navigator.share) {
+                    navigator.share({
+                        title: 'Brain Battle Score',
+                        text: text,
+                        url: window.location.href
+                    });
+                } else {
+                    // Fallback: copy to clipboard
+                    navigator.clipboard.writeText(text).then(() => {
+                        this.showFeedback('Score copied to clipboard!', 'success');
+                    });
+                }
+            }
+
+            createParticleSystem() {
+                // Particle system for celebrations
+            }
+
+            createSuccessParticles() {
+                const colors = ['#10b981', '#f59e0b', '#6366f1'];
+                for (let i = 0; i < 10; i++) {
+                    this.createParticle(colors[Math.floor(Math.random() * colors.length)]);
+                }
+            }
+
+            createVictoryParticles() {
+                const colors = ['#10b981', '#f59e0b', '#6366f1', '#ef4444'];
+                for (let i = 0; i < 30; i++) {
+                    setTimeout(() => {
+                        this.createParticle(colors[Math.floor(Math.random() * colors.length)]);
+                    }, i * 100);
+                }
+            }
+
+            createParticle(color) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.backgroundColor = color;
+                particle.style.left = Math.random() * window.innerWidth + 'px';
+                particle.style.top = Math.random() * window.innerHeight + 'px';
+                
+                document.body.appendChild(particle);
+                
+                setTimeout(() => particle.remove(), 2000);
+            }
+        }
+
+        // Initialize game when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            new BrainBattleGame();
+        });
+
+        // Add some interactive sound effects (using Web Audio API)
+        class SoundManager {
+            constructor() {
+                this.audioContext = null;
+                this.sounds = {};
+                this.init();
+            }
+
+            init() {
+                try {
+                    this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                } catch (e) {
+                    console.log('Web Audio API not supported');
+                }
+            }
+
+            playTone(frequency, duration, type = 'sine') {
+                if (!this.audioContext) return;
+
+                const oscillator = this.audioContext.createOscillator();
+                const gainNode = this.audioContext.createGain();
+
+                oscillator.connect(gainNode);
+                gainNode.connect(this.audioContext.destination);
+
+                oscillator.frequency.setValueAtTime(frequency, this.audioContext.currentTime);
+                oscillator.type = type;
+
+                gainNode.gain.setValueAtTime(0.1, this.audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + duration);
+
+                oscillator.start(this.audioContext.currentTime);
+                oscillator.stop(this.audioContext.currentTime + duration);
+            }
+
+            playSuccess() {
+                this.playTone(523.25, 0.2); // C5
+                setTimeout(() => this.playTone(659.25, 0.2), 100); // E5
+                setTimeout(() => this.playTone(783.99, 0.3), 200); // G5
+            }
+
+            playError() {
+                this.playTone(196, 0.5, 'sawtooth'); // G3
+            }
+
+            playClick() {
+                this.playTone(800, 0.1, 'square');
+            }
+        }
+
+        const soundManager = new SoundManager();
+
+        // Add sound effects to buttons
+        document.addEventListener('click', (e) => {
+            if (e.target.matches('button, .difficulty-btn, .sequence-btn, .pattern-cell')) {
+                soundManager.playClick();
             }
         });
     </script>
