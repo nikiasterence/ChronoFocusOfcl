@@ -116,6 +116,7 @@
             pointer-events: none;
         }
         .page.active { 
+            will-change: transform, opacity;
             opacity: 1; transform: translateY(0); 
             pointer-events: auto; 
         }
@@ -159,6 +160,7 @@
             border: 1px solid var(--border-color); box-sizing: border-box; 
             background: var(--primary-light); color: var(--text-primary); 
             font-family: 'Poppins', sans-serif; transition: var(--transition);
+            -webkit-appearance: none;
         }
         #new-task-form input:focus, #new-task-form textarea:focus { 
             border-color: var(--primary); 
@@ -360,6 +362,50 @@
         }
         .focus-view-container.dark-mode button { color: white; }
 
+
+        /* Mobile-specific adjustments */
+        @media (max-width: 767px) {
+            .page-title {
+                font-size: 1.6rem;
+            }
+
+            main.content-area {
+                 padding: 15px 15px calc(80px + 10px) 15px; /* Space for dock */
+            }
+
+            .task-item {
+                padding: 12px;
+                flex-wrap: wrap;
+            }
+
+            .task-item-content {
+                flex-basis: 100%;
+                margin-bottom: 10px;
+            }
+            
+            #focus-timer {
+                font-size: 3rem;
+            }
+
+            .calendar-grid div {
+                 padding: 5px;
+                 min-height: 35px;
+                 font-size: 0.75rem;
+            }
+             .dock {
+                height: 60px;
+             }
+            .dock-item i {
+                font-size: 20px;
+            }
+
+            .dock-item span {
+                font-size: 9px;
+            }
+
+        }
+
+
     </style>
 </head>
 <body>
@@ -404,7 +450,7 @@
             <!-- PAGE: CALENDAR -->
             <div id="calendar-page" class="page">
                 <h1 class="page-title">Calendar</h1>
-                <div id="calendar-view" class="glass-effect">
+                <div id="calendar-view" class="glass-effect" style="padding:15px;">
                     <header>
                         <h2 id="month-year" style="font-size: 1.2rem; margin:0;">September 2025</h2>
                         <div class="calendar-nav">
