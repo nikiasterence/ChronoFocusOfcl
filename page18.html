@@ -4,1007 +4,619 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="Chronofocus.png" type="image/x-icon">
-    <title>Ai cv by cozytustudios</title>
+    <title>Advanced AI CV Generator by Cozytustudios</title>
     <!-- External Libraries for Exporting CV -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="https://unpkg.com/html-to-docx/dist/html-to-docx.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.0/FileSaver.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<style>
+    :root {
+        --primary-color: #007aff;
+        --secondary-color: #5856d6;
+        --cv-primary-color: #007aff; /* Dynamic CV Accent Color */
+        --cv-text-color: #333333; /* Dynamic CV Text Color */
+        --cv-font-family: 'Helvetica Neue', Arial, sans-serif; /* Dynamic CV Font */
+        --light-bg: rgba(242, 242, 247, 0.6);
+        --dark-text: #1d1d1f;
+        --light-text: #f5f5f7;
+        --border-color: rgba(0, 0, 0, 0.08);
+        --shadow-color: rgba(0, 0, 0, 0.05);
+        --glass-blur: 16px;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    }
+
+    body {
+        background-color: #f0f2f5;
+        background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+	    background-size: 400% 400%;
+        color: var(--dark-text);
+        line-height: 1.6;
+        animation: gradientBG 15s ease infinite;
+    }
+
+    @keyframes gradientBG {
+	    0% { background-position: 0% 50%; }
+	    50% { background-position: 100% 50%; }
+	    100% { background-position: 0% 50%; }
+    }
+
+    .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+    header { text-align: center; padding: 40px 0; color: white; text-shadow: 0 2px 4px rgba(0,0,0,0.2); margin-bottom: 30px; }
+    h1 { font-size: 3.5rem; font-weight: 800; margin-bottom: 10px; }
+    .subtitle { font-size: 1.4rem; opacity: 0.9; }
+
+    .step-container {
+        background: var(--light-bg); border: 1px solid var(--border-color);
+        border-radius: 24px; padding: 40px; margin-bottom: 30px;
+        box-shadow: 0 16px 40px -12px var(--shadow-color); backdrop-filter: blur(var(--glass-blur));
+        -webkit-backdrop-filter: blur(var(--glass-blur));
+        transition: all 0.5s ease; animation: slideUpFadeIn 0.8s ease-out forwards;
+    }
+
+    @keyframes slideUpFadeIn { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+    .step-header { display: flex; align-items: center; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 1px solid var(--border-color); }
+    .step-number {
+        background-image: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); color: white;
+        width: 50px; height: 50px; border-radius: 50%; display: flex;
+        align-items: center; justify-content: center; font-weight: bold;
+        font-size: 1.4rem; margin-right: 20px; flex-shrink: 0;
+        box-shadow: 0 4px 10px rgba(0, 122, 255, 0.3);
+    }
+    .step-title { font-size: 2rem; font-weight: 700; color: var(--dark-text); }
+
+    .form-group { margin-bottom: 25px; position: relative; }
+    label { display: block; margin-bottom: 10px; font-weight: 600; color: var(--dark-text); font-size: 1.1rem; }
+    input, textarea, select {
+        width: 100%; padding: 16px 20px; background-color: rgba(255, 255, 255, 0.8);
+        border: 1px solid var(--border-color); border-radius: 14px;
+        font-size: 1rem; transition: all 0.3s;
+    }
+    input:focus, textarea:focus, select:focus {
+        outline: none; border-color: var(--primary-color);
+        box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.2);
+    }
     
-    <style>
-        :root {
-            --primary: #4a6fa5;
-            --secondary: #6b8cbc;
-            --accent: #ff7e5f;
-            --light: #f5f7fa;
-            --dark: #2c3e50;
-            --success: #2ecc71;
-            --warning: #f39c12;
-            --danger: #e74c3c;
-        }
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        
-        body {
-            background-color: #f0f2f5;
-            color: var(--dark);
-            line-height: 1.6;
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        
-        header {
-            text-align: center;
-            padding: 30px 0;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white;
-            border-radius: 10px;
-            margin-bottom: 30px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
-        
-        h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-        }
-        
-        .subtitle {
-            font-size: 1.2rem;
-            opacity: 0.9;
-        }
-        
-        .step-container {
-            background: white;
-            border-radius: 10px;
-            padding: 30px;
-            margin-bottom: 30px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-            transition: all 0.3s ease;
-        }
-        
-        .step-header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid #eee;
-        }
-        
-        .step-number {
-            background-color: var(--primary);
-            color: white;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            margin-right: 15px;
-        }
-        
-        .step-title {
-            font-size: 1.5rem;
-            color: var(--dark);
-        }
-        
-        .form-group {
-            margin-bottom: 20px;
-        }
-        
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: var(--dark);
-        }
-        
-        input, textarea, select {
-            width: 100%;
-            padding: 12px 15px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            font-size: 1rem;
-            transition: border 0.3s;
-        }
-        
-        input:focus, textarea:focus, select:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 2px rgba(74, 111, 165, 0.2);
-        }
-        
-        textarea {
-            min-height: 100px;
-            resize: vertical;
-        }
-        
-        .form-row {
-            display: flex;
-            gap: 20px;
-        }
-        
-        .form-row .form-group {
-            flex: 1;
-        }
-        
-        .btn {
-            padding: 12px 25px;
-            border: none;
-            border-radius: 6px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        
-        .btn-primary {
-            background-color: var(--primary);
-            color: white;
-        }
-        
-        .btn-primary:hover {
-            background-color: var(--secondary);
-        }
-        
-        .btn-secondary {
-            background-color: #e9ecef;
-            color: var(--dark);
-        }
-        
-        .btn-secondary:hover {
-            background-color: #dde1e6;
-        }
-        
-        .btn-success {
-            background-color: var(--success);
-            color: white;
-        }
-        
-        .btn-success:hover {
-            background-color: #27ae60;
-        }
-        
-        .btn-group {
-            display: flex;
-            gap: 15px;
-            margin-top: 20px;
-        }
-        
-        .theme-options, .layout-options {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 20px;
-            margin-top: 20px;
-        }
-        
-        .theme-option, .layout-option {
-            border: 2px solid #eee;
-            border-radius: 8px;
-            padding: 15px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        
-        .theme-option:hover, .layout-option:hover {
-            border-color: var(--primary);
-            transform: translateY(-5px);
-        }
-        
-        .theme-option.active, .layout-option.active {
-            border-color: var(--primary);
-            background-color: rgba(74, 111, 165, 0.05);
-        }
-        
-        .theme-preview {
-            height: 30px;
-            border-radius: 4px;
-            margin-bottom: 10px;
-        }
-        
-        .basic-theme { background: linear-gradient(90deg, #f8f9fa, #e9ecef); }
-        .work-theme { background: linear-gradient(90deg, #4a6fa5, #6b8cbc); }
-        .pro-theme { background: linear-gradient(90deg, #2c3e50, #34495e); }
-        .cozy-theme { background: linear-gradient(90deg, #e67e22, #f39c12); }
-        .productive-theme { background: linear-gradient(90deg, #27ae60, #2ecc71); }
-        .elegant-theme { background: linear-gradient(90deg, #9b59b6, #8e44ad); }
-        
-        .cv-preview-container {
-            background: white;
-            border-radius: 10px;
-            padding: 30px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-            margin-bottom: 30px;
-        }
-        
-        .cv-preview {
-            border: 1px solid #eee;
-            border-radius: 8px;
-            padding: 30px;
-            min-height: 800px;
-            background: white;
-        }
-        
-        .hidden {
-            display: none;
-        }
-        
-        .export-options {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            margin-top: 30px;
-        }
-        
-        .export-btn {
-            padding: 12px 25px;
-            border: none;
-            border-radius: 6px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.3s;
-        }
-        
-        .pdf-btn {
-            background-color: #e74c3c;
-            color: white;
-        }
-        
-        .docx-btn {
-            background-color: #2c3e50;
-            color: white;
-        }
-        
-        .png-btn {
-            background-color: #3498db;
-            color: white;
-        }
-        
-        .section-title {
-            font-size: 1.3rem;
-            margin: 25px 0 15px;
-            padding-bottom: 8px;
-            border-bottom: 2px solid var(--primary);
-            color: var(--primary);
-        }
-        
-        .personal-info {
-            display: flex;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-        
-        .profile-img {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            object-fit: cover;
-            margin-right: 25px;
-            border: 3px solid var(--primary);
-        }
-        
-        .name-title {
-            flex: 1;
-        }
-        
-        .name {
-            font-size: 2rem;
-            margin-bottom: 5px;
-            color: var(--dark);
-        }
-        
-        .title {
-            font-size: 1.2rem;
-            color: var(--secondary);
-        }
-        
-        .contact-info {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-            margin-top: 10px;
-        }
-        
-        .contact-item {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-        
-        .timeline-item {
-            margin-bottom: 20px;
-            padding-left: 20px;
-            border-left: 2px solid var(--primary);
-        }
-        
-        .timeline-date {
-            font-weight: 600;
-            color: var(--secondary);
-            margin-bottom: 5px;
-        }
-        
-        .timeline-title {
-            font-weight: 600;
-            margin-bottom: 5px;
-        }
-        
-        .timeline-subtitle {
-            color: #666;
-            margin-bottom: 8px;
-        }
-        
-        .skills-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-        
-        .skill-tag {
-            background-color: var(--light);
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-        }
-        
-        .two-column {
-            display: grid;
-            grid-template-columns: 1fr 2fr;
-            gap: 30px;
-        }
-        
-        .sidebar {
-            background-color: var(--light);
-            padding: 20px;
-            border-radius: 8px;
-        }
-        
-        .main-content {
-            padding: 0 10px;
-        }
-        
-        @media (max-width: 768px) {
-            .form-row {
-                flex-direction: column;
-                gap: 0;
-            }
-            
-            .two-column {
-                grid-template-columns: 1fr;
-            }
-            
-            .personal-info {
-                flex-direction: column;
-                text-align: center;
-            }
-            
-            .profile-img {
-                margin-right: 0;
-                margin-bottom: 15px;
-            }
-            
-            .theme-options, .layout-options {
-                grid-template-columns: 1fr 1fr;
-            }
-        }
-    </style>
+    .btn {
+        padding: 15px 30px; border: none; border-radius: 14px;
+        font-size: 1.1rem; font-weight: 600; cursor: pointer;
+        transition: all 0.3s ease; display: inline-flex;
+        align-items: center; justify-content: center; gap: 8px;
+    }
+    .btn-primary { background-image: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); color: white; box-shadow: 0 4px 15px rgba(0, 122, 255, 0.25); }
+    .btn-primary:hover { transform: translateY(-4px); box-shadow: 0 8px 25px rgba(0, 122, 255, 0.35); }
+    .btn-secondary { background-color: rgba(255, 255, 255, 0.7); color: var(--dark-text); border: 1px solid var(--border-color); }
+    .btn-secondary:hover { background-color: white; border-color: var(--primary-color); color: var(--primary-color); }
+    .btn-group { display: flex; gap: 15px; margin-top: 25px; flex-wrap: wrap; }
+    
+    .btn-ai { position: absolute; top: -10px; right: 0px; font-size: 0.8rem; padding: 6px 14px; border-radius: 10px; }
+
+    .spinner { border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; width: 16px; height: 16px; animation: spin 1s ease-in-out infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    
+    .option-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 20px; margin-top: 10px; }
+    .option-box {
+        border: 2px solid var(--border-color); border-radius: 18px; padding: 20px; text-align: center;
+        cursor: pointer; transition: all 0.3s; background-color: rgba(255,255,255,0.5);
+    }
+    .option-box:hover { transform: translateY(-6px); border-color: var(--primary-color); box-shadow: 0 8px 20px -5px rgba(0, 122, 255, 0.1); }
+    .option-box.active { border-color: var(--secondary-color); box-shadow: 0 0 0 4px rgba(88, 86, 214, 0.2); }
+    .option-box h3 { font-size: 1.1rem; margin:0; }
+
+    .cv-preview-container { background: white; border-radius: 20px; padding: 25px; box-shadow: 0 10px 40px 0 var(--shadow-color); margin-bottom: 30px; }
+    .cv-preview {
+        border-radius: 8px; padding: 2cm; min-height: 29.7cm; width: 21cm;
+        margin: 0 auto; background: white; box-shadow: 0 0 25px rgba(0,0,0,0.1);
+        color: var(--cv-text-color); font-size: 11pt; transition: all 0.4s ease;
+        font-family: var(--cv-font-family);
+    }
+    .hidden { display: none; }
+    .export-options { display: flex; gap: 15px; justify-content: center; margin-top: 30px; flex-wrap: wrap; }
+    
+    /* CV THEME STYLES - Using CSS Variables */
+    .cv-preview .section-title { font-size: 1.5rem; font-weight: 700; margin: 25px 0 15px; padding-bottom: 8px; border-bottom: 2px solid var(--cv-primary-color); color: var(--cv-primary-color); }
+    .cv-preview .name { font-size: 2.8rem; font-weight: 800; color: var(--dark-text); }
+    .cv-preview .title { font-size: 1.4rem; color: #555; }
+    .cv-preview .profile-img { border: 4px solid var(--cv-primary-color); transition: all 0.4s ease; }
+    .cv-preview .timeline-item { border-left: 2px solid var(--cv-primary-color); }
+    .cv-preview .timeline-item::before { content: ''; width: 12px; height: 12px; background: white; border: 3px solid var(--cv-primary-color); border-radius: 50%; position: absolute; left: -8px; top: 5px; }
+    
+    /* CV structure */
+    .cv-preview .personal-info { display: flex; gap: 30px; margin-bottom: 25px; align-items: center; }
+    .cv-preview .personal-info.photo-top { flex-direction: column; text-align: center; gap: 15px; }
+    .cv-preview .personal-info.photo-right { flex-direction: row-reverse; }
+    .cv-preview .profile-img { width: 130px; height: 130px; border-radius: 50%; object-fit: cover; flex-shrink: 0; position: relative;}
+    .cv-preview .contact-info { display: flex; flex-wrap: wrap; gap: 15px 25px; margin-top: 20px; font-size: 0.95rem; }
+    .cv-preview .contact-item { display: flex; align-items: center; gap: 10px; }
+    .cv-preview .timeline-item { margin-bottom: 20px; padding-left: 25px; position: relative; }
+    .cv-preview .skills-list { display: flex; flex-wrap: wrap; gap: 12px; list-style-type: none; padding:0; }
+    .cv-preview .skill-tag { background-color: #f0f0f0; padding: 8px 16px; border-radius: 20px; font-size: 0.95rem; }
+
+    /* Layout Specifics */
+    .cv-preview.layout-two-column { display: grid; grid-template-columns: 1fr 2.2fr; gap: 40px; }
+    .photo-container { position: relative; display: inline-block; }
+    .photo-loader { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); border-radius: 50%; display: flex; justify-content: center; align-items: center; z-index: 10; opacity: 0; transition: opacity 0.3s; pointer-events: none; }
+    .photo-loader.visible { opacity: 1; }
+    .photo-loader .spinner { width: 40px; height: 40px; }
+    
+    .form-row { display: flex; gap: 20px; }
+    
+    #ai-suggestions {
+        background: #eef5ff; border: 1px solid #cce0ff;
+        border-radius: 12px; padding: 20px; margin-top: 20px;
+        animation: fadeIn 0.5s; font-size: 0.9rem;
+    }
+    @keyframes fadeIn { from { opacity:0; } to { opacity:1; }}
+    .suggestion { cursor: pointer; background: white; padding: 8px 12px; border-radius: 20px; display: inline-block; margin: 5px; transition: background 0.3s; border: 1px solid #ddd; }
+    .suggestion:hover { background: #007aff; color: white; }
+    
+    @media (max-width: 768px) {
+        h1 { font-size: 2.5rem; } .subtitle { font-size: 1.1rem; } .step-title { font-size: 1.6rem; }
+        .form-row, .option-grid { flex-direction: column; grid-template-columns: 1fr; }
+        .cv-preview { width: 100%; min-height: auto; padding: 1.5cm; }
+        .btn-ai { position: relative; top: -5px; right: 0; margin-top: 15px; width: 100%;}
+    }
+</style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>AI CV with Optichain</h1>
-            <p class="subtitle">Create professional, creative, and customizable CVs in minutes</p>
-        </header>
-        
-        <!-- Step 1: Personal Information -->
-        <div class="step-container" id="step1">
-            <div class="step-header">
-                <div class="step-number">1</div>
-                <h2 class="step-title">Personal Information</h2>
-            </div>
-            
-            <form id="personalInfoForm">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="fullName">Full Name</label>
-                        <input type="text" id="fullName" placeholder="John Doe" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="profileImage">Profile Image</label>
-                        <input type="file" id="profileImage" accept="image/*">
-                    </div>
-                </div>
-                
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="dateOfBirth">Date of Birth</label>
-                        <input type="date" id="dateOfBirth">
-                    </div>
-                    <div class="form-group">
-                        <label for="phone">Phone Number</label>
-                        <input type="tel" id="phone" placeholder="+1 (123) 456-7890">
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <label for="email">Email Address</label>
-                    <input type="email" id="email" placeholder="john.doe@example.com" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="address">Address</label>
-                    <input type="text" id="address" placeholder="123 Main St, City, Country">
-                </div>
-                
-                <div class="form-group">
-                    <label for="careerObjective">Career Objective / Personal Statement</label>
-                    <textarea id="careerObjective" placeholder="A brief summary of your career goals and what you bring to the table..."></textarea>
-                </div>
-                
-                <div class="btn-group">
-                    <button type="button" class="btn btn-primary" onclick="nextStep(2)">Next Step</button>
-                </div>
-            </form>
+<div class="container">
+    <header>
+        <h1>optichain cv ai</h1>
+        <p class="subtitle">Build a standout, professional CV with powerful AI enhancements and full customization.</p>
+    </header>
+
+    <!-- Step 1: Personal Information -->
+    <div class="step-container" id="step1">
+        <div class="step-header">
+            <div class="step-number">1</div>
+            <h2 class="step-title">Personal Information</h2>
         </div>
-        
-        <!-- Step 2: Education & Experience -->
-        <div class="step-container hidden" id="step2">
-            <div class="step-header">
-                <div class="step-number">2</div>
-                <h2 class="step-title">Education & Experience</h2>
+        <form id="personalInfoForm" onsubmit="event.preventDefault(); nextStep(2);">
+            <div class="form-row">
+                <div class="form-group" style="flex:1;"><label for="fullName">Full Name</label><input type="text" id="fullName" placeholder="John Doe" required></div>
+                <div class="form-group" style="flex:1;"><label for="jobTitle">Job Title</label><input type="text" id="jobTitle" placeholder="e.g., Senior Software Engineer"></div>
             </div>
-            
+            <div class="form-row">
+                <div class="form-group" style="flex:1;"><label for="email">Email</label><input type="email" id="email" placeholder="john.doe@example.com" required></div>
+                <div class="form-group" style="flex:1;"><label for="phone">Phone</label><input type="tel" id="phone" placeholder="+1 (123) 456-7890"></div>
+            </div>
+            <div class="form-group"><label for="address">Address</label><input type="text" id="address" placeholder="123 Main St, City, Country"></div>
             <div class="form-group">
-                <label for="education">Education Details</label>
-                <textarea id="education" placeholder="University Name, Degree, Year, Grades..."></textarea>
+                <label for="careerObjective">Career Objective</label>
+                <textarea id="careerObjective" placeholder="A brief summary of your career goals..."></textarea>
+                <button type="button" class="btn btn-primary btn-ai" onclick="improveText('careerObjective', this)">✨ Enhance with AI</button>
             </div>
-            
-            <div class="form-group">
-                <label for="workExperience">Work Experience</label>
-                <textarea id="workExperience" placeholder="Company, Role, Dates, Achievements..."></textarea>
-            </div>
-            
-            <div class="form-group">
-                <label for="skills">Skills</label>
-                <textarea id="skills" placeholder="Technical skills, soft skills, languages..."></textarea>
-            </div>
-            
-            <div class="form-group">
-                <label for="projects">Projects</label>
-                <textarea id="projects" placeholder="Academic, work, or personal projects..."></textarea>
-            </div>
-            
-            <div class="btn-group">
-                <button type="button" class="btn btn-secondary" onclick="prevStep(1)">Previous</button>
-                <button type="button" class="btn btn-primary" onclick="nextStep(3)">Next Step</button>
-            </div>
+            <div class="btn-group"><button type="submit" class="btn btn-primary">Next Step</button></div>
+        </form>
+    </div>
+
+    <!-- Step 2: Experience & Education -->
+    <div class="step-container hidden" id="step2">
+        <div class="step-header">
+            <div class="step-number">2</div>
+            <h2 class="step-title">Work Experience & Education</h2>
         </div>
-        
-        <!-- Step 3: Additional Information -->
-        <div class="step-container hidden" id="step3">
-            <div class="step-header">
-                <div class="step-number">3</div>
-                <h2 class="step-title">Additional Information</h2>
-            </div>
-            
-            <div class="form-group">
-                <label for="certifications">Certifications / Awards / Honors</label>
-                <textarea id="certifications" placeholder="List any certifications, awards, or honors..."></textarea>
-            </div>
-            
-            <div class="form-group">
-                <label for="hobbies">Hobbies & Interests</label>
-                <textarea id="hobbies" placeholder="Your hobbies and interests..."></textarea>
-            </div>
-            
-            <div class="form-group">
-                <label for="references">References</label>
-                <textarea id="references" placeholder="References (if needed)..."></textarea>
-            </div>
-            
-            <div class="form-group">
-                <label for="extra">Extra Information</label>
-                <textarea id="extra" placeholder="For marriage CV: family background, religion, partner expectations, etc."></textarea>
-            </div>
-            
-            <div class="btn-group">
-                <button type="button" class="btn btn-secondary" onclick="prevStep(2)">Previous</button>
-                <button type="button" class="btn btn-primary" onclick="nextStep(4)">Next Step</button>
-            </div>
+        <div class="form-group">
+            <label for="workExperience">Work Experience</label>
+            <textarea id="workExperience" rows="5" placeholder="Company, Role, Dates, and key achievements. Place each job on a new line."></textarea>
+            <button type="button" class="btn btn-primary btn-ai" onclick="improveText('workExperience', this)">✨ Enhance with AI</button>
         </div>
-        
-        <!-- Step 4: CV Purpose -->
-        <div class="step-container hidden" id="step4">
-            <div class="step-header">
-                <div class="step-number">4</div>
-                <h2 class="step-title">Choose CV Purpose</h2>
-            </div>
-            
-            <div class="form-group">
-                <label>What type of CV do you need?</label>
-                <div class="theme-options">
-                    <div class="theme-option active" data-purpose="work">
-                        <h3>Work</h3>
-                        <p>Professional employment</p>
-                    </div>
-                    <div class="theme-option" data-purpose="academic">
-                        <h3>Academic</h3>
-                        <p>School / University</p>
-                    </div>
-                    <div class="theme-option" data-purpose="marriage">
-                        <h3>Marriage</h3>
-                        <p>Personal / Matrimonial</p>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="btn-group">
-                <button type="button" class="btn btn-secondary" onclick="prevStep(3)">Previous</button>
-                <button type="button" class="btn btn-primary" onclick="nextStep(5)">Next Step</button>
-            </div>
+        <div class="form-group">
+            <label for="education">Education</label>
+            <textarea id="education" rows="3" placeholder="University Name, Degree, Dates (one entry per line)..."></textarea>
         </div>
-        
-        <!-- Step 5: Themes & Layouts -->
-        <div class="step-container hidden" id="step5">
-            <div class="step-header">
-                <div class="step-number">5</div>
-                <h2 class="step-title">Choose Theme & Layout</h2>
-            </div>
-            
-            <div class="form-group">
-                <label>Select a Theme</label>
-                <div class="theme-options">
-                    <div class="theme-option active" data-theme="basic">
-                        <div class="theme-preview basic-theme"></div>
-                        <h3>Basic</h3>
-                        <p>Clean and simple</p>
-                    </div>
-                    <div class="theme-option" data-theme="work">
-                        <div class="theme-preview work-theme"></div>
-                        <h3>Work</h3>
-                        <p>Professional</p>
-                    </div>
-                    <div class="theme-option" data-theme="pro">
-                        <div class="theme-preview pro-theme"></div>
-                        <h3>Pro</h3>
-                        <p>Executive level</p>
-                    </div>
-                    <div class="theme-option" data-theme="cozy">
-                        <div class="theme-preview cozy-theme"></div>
-                        <h3>Cozy</h3>
-                        <p>Warm and friendly</p>
-                    </div>
-                    <div class="theme-option" data-theme="productive">
-                        <div class="theme-preview productive-theme"></div>
-                        <h3>Productive</h3>
-                        <p>Efficient and modern</p>
-                    </div>
-                    <div class="theme-option" data-theme="elegant">
-                        <div class="theme-preview elegant-theme"></div>
-                        <h3>Elegant</h3>
-                        <p>Sophisticated style</p>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="form-group">
-                <label>Select a Layout</label>
-                <div class="layout-options">
-                    <div class="layout-option active" data-layout="minimalist">
-                        <h3>Minimalist</h3>
-                        <p>Clean and simple</p>
-                    </div>
-                    <div class="layout-option" data-layout="two-column">
-                        <h3>Two-Column</h3>
-                        <p>Balanced layout</p>
-                    </div>
-                    <div class="layout-option" data-layout="modern">
-                        <h3>Modern</h3>
-                        <p>Contemporary design</p>
-                    </div>
-                    <div class="layout-option" data-layout="classic">
-                        <h3>Classic</h3>
-                        <p>Traditional format</p>
-                    </div>
-                    <div class="layout-option" data-layout="infographic">
-                        <h3>Infographic</h3>
-                        <p>Visual elements</p>
-                    </div>
-                    <div class="layout-option" data-layout="bold">
-                        <h3>Bold</h3>
-                        <p>Strong visual impact</p>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="btn-group">
-                <button type="button" class="btn btn-secondary" onclick="prevStep(4)">Previous</button>
-                <button type="button" class="btn btn-success" onclick="nextStep(6)">Generate CV</button>
-            </div>
+        <div class="form-group">
+            <label for="skills">Skills</label>
+            <textarea id="skills" rows="3" placeholder="Separate skills with commas, e.g., JavaScript, React, Team Leadership..."></textarea>
+            <button type="button" class="btn btn-primary" style="margin-top:10px" onclick="getAISuggestions(this)">✨ Get AI Skill Suggestions</button>
+            <div id="ai-suggestions" class="hidden"></div>
         </div>
-        
-        <!-- Step 6: CV Preview & Export -->
-        <div class="step-container hidden" id="step6">
-            <div class="step-header">
-                <div class="step-number">6</div>
-                <h2 class="step-title">Your CV Preview</h2>
-            </div>
-            
-            <div class="cv-preview-container">
-                <div class="cv-preview" id="cvPreview">
-                    <!-- CV content will be generated here -->
-                </div>
-            </div>
-            
-            <div class="export-options">
-                <button class="export-btn pdf-btn" onclick="exportCV('pdf')">
-                    <span>Download PDF</span>
-                </button>
-                <button class="export-btn docx-btn" onclick="exportCV('docx')">
-                    <span>Download DOCX</span>
-                </button>
-                <button class="export-btn png-btn" onclick="exportCV('png')">
-                    <span>Download PNG</span>
-                </button>
-            </div>
-            
-            <div class="btn-group">
-                <button type="button" class="btn btn-secondary" onclick="prevStep(5)">Edit Content</button>
-                <button type="button" class="btn btn-primary" onclick="changeThemeLayout()">Change Theme/Layout</button>
-            </div>
+        <div class="btn-group">
+            <button type="button" class="btn btn-secondary" onclick="prevStep(1)">Previous</button>
+            <button type="button" class="btn btn-primary" onclick="nextStep(3)">Next Step</button>
+        </div>
+    </div>
+    
+    <!-- Step 3: Additional Sections -->
+     <div class="step-container hidden" id="step3">
+        <div class="step-header"><div class="step-number">3</div><h2 class="step-title">Additional Information</h2></div>
+        <div class="form-group">
+            <label for="projects">Projects</label>
+            <textarea id="projects" rows="4" placeholder="Project Name, Description, Dates (one project per line)..."></textarea>
+             <button type="button" class="btn btn-primary btn-ai" onclick="improveText('projects', this)">✨ Enhance with AI</button>
+        </div>
+        <div class="form-group">
+            <label for="certifications">Certifications / Awards</label>
+            <textarea id="certifications" rows="3" placeholder="List any certifications or awards (one per line)..."></textarea>
+        </div>
+         <div class="form-group">
+            <label for="extra">Custom Section (e.g., Marriage CV Details)</label>
+            <textarea id="extra" rows="3" placeholder="For Marriage CV: Family details, partner expectations, etc. For Professional CV: Hobbies, References..."></textarea>
+        </div>
+        <div class="btn-group">
+            <button type="button" class="btn btn-secondary" onclick="prevStep(2)">Previous</button>
+            <button type="button" class="btn btn-primary" onclick="nextStep(4)">Choose Layout</button>
         </div>
     </div>
 
-    <script>
-        // Current step tracking
-        let currentStep = 1;
-        let selectedPurpose = 'work';
-        let selectedTheme = 'basic';
-        let selectedLayout = 'minimalist';
-        let profileImageSrc = '';
+    <!-- Step 4: Layouts & Themes -->
+    <div class="step-container hidden" id="step4">
+         <div class="step-header"><div class="step-number">4</div><h2 class="step-title">Customize Your Design</h2></div>
+         <div class="form-group">
+             <label>CV Purpose</label>
+             <div class="option-grid" id="purpose-options">
+                 <div class="option-box active" data-value="work"><h3>Work</h3></div>
+                 <div class="option-box" data-value="academic"><h3>Academic</h3></div>
+                 <div class="option-box" data-value="marriage"><h3>Marriage</h3></div>
+             </div>
+         </div>
+        <div class="form-group">
+            <label>Select a Layout</label>
+            <div class="option-grid" id="layout-options">
+                <div class="option-box active" data-value="modern"><h3>Modern</h3></div>
+                <div class="option-box" data-value="two-column"><h3>Two-Column</h3></div>
+                <div class="option-box" data-value="classic"><h3>Classic</h3></div>
+            </div>
+        </div>
+         <div class="form-group">
+             <label>Color & Font Customization</label>
+             <div class="form-row">
+                 <div class="form-group" style="flex:1;">
+                     <label for="cvColor">Accent Color</label>
+                     <input type="color" id="cvColor" value="#007aff" style="width: 100%; height: 50px; border-radius: 12px; border: none; padding: 5px;">
+                 </div>
+                 <div class="form-group" style="flex:1;">
+                     <label for="textColor">Text Color</label>
+                     <input type="color" id="textColor" value="#333333" style="width: 100%; height: 50px; border-radius: 12px; border: none; padding: 5px;">
+                 </div>
+                 <div class="form-group" style="flex:1;">
+                    <label for="fontStyle">Font Style</label>
+                    <select id="fontStyle">
+                        <option value="'Helvetica Neue', Arial, sans-serif">Modern (Sans-Serif)</option>
+                        <option value="Garamond, serif">Classic (Serif)</option>
+                        <option value="'Courier New', monospace">Technical (Monospace)</option>
+                    </select>
+                </div>
+             </div>
+         </div>
+        <div class="form-group">
+            <label>Profile Photo</label>
+            <div class="form-row">
+                <div class="form-group" style="flex:2">
+                    <label for="profileImage">Upload Image</label>
+                    <input type="file" id="profileImage" accept="image/*" onchange="previewPhoto()">
+                </div>
+                <div class="form-group" style="flex:1">
+                    <label>Photo Position</label>
+                    <select id="photoPosition">
+                        <option value="left">Left</option><option value="right">Right</option><option value="top">Top</option><option value="hidden">Hidden</option>
+                    </select>
+                </div>
+            </div>
+             <div style="margin-top:20px; text-align:center;">
+                <div id="photo-preview-container" class="hidden" style="margin-bottom:15px;">
+                     <div class="photo-container">
+                         <img id="photo-preview" src="" alt="Photo Preview" style="width:130px; height:130px; border-radius:50%; object-fit:cover;">
+                         <div id="photo-loader" class="photo-loader"><div class="spinner"></div></div>
+                     </div>
+                </div>
+                <div id="ai-photo-tools" class="hidden">
+                    <p style="margin-bottom: 10px; font-weight: 600;">AI Photo Editor (Demo)</p>
+                    <div class="btn-group" style="justify-content: center;">
+                         <button class="btn btn-secondary" onclick="simulateAIPhoto('suit')">👔 Apply Suit</button>
+                         <button class="btn btn-secondary" onclick="simulateAIPhoto('background')">🖼️ Clean Background</button>
+                         <button class="btn btn-secondary" onclick="simulateAIPhoto('lighting')">💡 Improve Lighting</button>
+                    </div>
+                </div>
+                 
+            </div>
+        </div>
+        <div class="btn-group">
+            <button type="button" class="btn btn-secondary" onclick="prevStep(3)">Previous</button>
+            <button type="button" class="btn btn-primary" onclick="nextStep(5)">Generate CV</button>
+        </div>
+    </div>
+    
+    <!-- Step 5: Preview & Export -->
+    <div class="step-container hidden" id="step5">
+         <div class="step-header"><div class="step-number">5</div><h2 class="step-title">Your CV is Ready!</h2></div>
+        <div class="cv-preview-container"><div class="cv-preview" id="cvPreview"></div></div>
+        <div class="export-options">
+            <button class="btn btn-primary" onclick="exportCV('pdf')">Download PDF</button>
+            <button class="btn btn-secondary" onclick="exportCV('docx')">Download DOCX</button>
+            <button class="btn btn-secondary" onclick="exportCV('png')">Download PNG</button>
+        </div>
+        <div class="btn-group" style="justify-content: center; margin-top: 30px;">
+            <button type="button" class="btn btn-secondary" onclick="prevStep(4)">Back to Editor</button>
+        </div>
+    </div>
+</div>
 
-        // Function to navigate to next step
-        function nextStep(step) {
-            document.getElementById(`step${currentStep}`).classList.add('hidden');
-            document.getElementById(`step${step}`).classList.remove('hidden');
-            currentStep = step;
-            
-            // If we're going to the preview step, generate the CV
-            if (step === 6) {
-                generateCV();
-            }
-        }
-        
-        // Function to navigate to previous step
-        function prevStep(step) {
-            document.getElementById(`step${currentStep}`).classList.add('hidden');
-            document.getElementById(`step${step}`).classList.remove('hidden');
-            currentStep = step;
-        }
-        
-        // Function to change theme and layout
-        function changeThemeLayout() {
-            prevStep(5);
-        }
-        
-        document.addEventListener('DOMContentLoaded', function() {
-            // Add live preview listeners to all inputs
-            const inputs = document.querySelectorAll('input, textarea');
-            inputs.forEach(input => {
-                input.addEventListener('input', generateCV);
-            });
+<script>
+    let currentStep = 1;
+    let cvData = { profileImageSrc: '', profileImageProcessed: false, profileImageFilters: '' };
 
-            // Handle image upload
-            const profileImageInput = document.getElementById('profileImage');
-            profileImageInput.addEventListener('change', function(event) {
-                const file = event.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        profileImageSrc = e.target.result;
-                        generateCV();
-                    };
-                    reader.readAsDataURL(file);
-                }
-            });
+    function nextStep(step) {
+        if (step === 5) { updateCVData(); generateCV(); }
+        document.getElementById(`step${currentStep}`).classList.add('hidden');
+        document.getElementById(`step${step}`).classList.remove('hidden');
+        currentStep = step;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    
+    function prevStep(step) {
+        document.getElementById(`step${currentStep}`).classList.add('hidden');
+        document.getElementById(`step${step}`).classList.remove('hidden');
+        currentStep = step;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
 
-            // Set up theme, layout, and purpose selection
-            setupSelection('.theme-option[data-theme]', 'active', (value) => { selectedTheme = value; generateCV(); });
-            setupSelection('.layout-option[data-layout]', 'active', (value) => { selectedLayout = value; generateCV(); });
-            setupSelection('.theme-option[data-purpose]', 'active', (value) => { selectedPurpose = value; generateCV(); });
+    function setupSelection(containerId) {
+        const container = document.getElementById(containerId);
+        container.addEventListener('click', e => {
+            const target = e.target.closest('.option-box');
+            if (!target) return;
+            container.querySelector('.active')?.classList.remove('active');
+            target.classList.add('active');
         });
+    }
 
-        // Helper for selection logic
-        function setupSelection(selector, activeClass, callback) {
-            const options = document.querySelectorAll(selector);
-            options.forEach(option => {
-                option.addEventListener('click', function() {
-                    options.forEach(opt => opt.classList.remove(activeClass));
-                    this.classList.add(activeClass);
-                    callback(this.dataset[Object.keys(this.dataset)[0]]);
-                });
-            });
+    document.addEventListener('DOMContentLoaded', function() {
+        setupSelection('purpose-options');
+        setupSelection('layout-options');
+    });
+
+    function previewPhoto() {
+        const file = document.getElementById('profileImage').files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = e => {
+                cvData.profileImageSrc = e.target.result;
+                cvData.profileImageProcessed = false;
+                cvData.profileImageFilters = ''; // Reset filters
+                document.getElementById('photo-preview').src = e.target.result;
+                document.getElementById('photo-preview').style.filter = 'none'; // Reset preview filters
+                document.getElementById('photo-preview-container').classList.remove('hidden');
+                document.getElementById('ai-photo-tools').classList.remove('hidden');
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+
+    async function simulateAIPhoto(type) {
+        const loader = document.getElementById('photo-loader');
+        const previewImg = document.getElementById('photo-preview');
+        loader.classList.add('visible');
+        await new Promise(r => setTimeout(r, 1500)); // Simulate processing
+
+        if (type === 'suit') {
+            cvData.profileImageSrc = 'https://i.ibb.co/C2z0V2C/suit-demo.jpg';
+            cvData.profileImageProcessed = true;
+            previewImg.src = cvData.profileImageSrc;
+        } else if (type === 'background') {
+            previewImg.style.filter = 'brightness(1.05)';
+            cvData.profileImageFilters = 'brightness(1.05)';
+        } else if (type === 'lighting') {
+            previewImg.style.filter = 'brightness(1.2) contrast(1.1)';
+            cvData.profileImageFilters = 'brightness(1.2) contrast(1.1)';
         }
         
-        // Function to generate the CV preview
-        function generateCV() {
-            if (currentStep !== 6) return;
+        loader.classList.remove('visible');
+    }
 
-            const cvPreview = document.getElementById('cvPreview');
-            
-            // Get form values
-            const formValues = {
-                fullName: document.getElementById('fullName').value || 'Your Name',
-                profileImage: profileImageSrc,
-                dateOfBirth: document.getElementById('dateOfBirth').value,
-                phone: document.getElementById('phone').value || '+1 (123) 456-7890',
-                email: document.getElementById('email').value || 'your.email@example.com',
-                address: document.getElementById('address').value || 'Your City, Country',
-                careerObjective: document.getElementById('careerObjective').value || 'A motivated professional seeking new opportunities...',
-                education: document.getElementById('education').value || 'University Name, Degree, Year, Grades',
-                workExperience: document.getElementById('workExperience').value || 'Company, Role, Dates, Achievements',
-                skills: document.getElementById('skills').value || 'Technical skills, soft skills, languages',
-                projects: document.getElementById('projects').value || 'Academic, work, or personal projects',
-                certifications: document.getElementById('certifications').value || 'Certifications, awards, honors',
-                hobbies: document.getElementById('hobbies').value || 'Your hobbies and interests',
-                references: document.getElementById('references').value || 'References available upon request',
-                extra: document.getElementById('extra').value,
-            };
-            
-            let cvHTML = '';
-            
-            if (selectedLayout === 'two-column') {
-                cvHTML = generateTwoColumnCV(formValues);
-            } else {
-                cvHTML = generateStandardCV(formValues);
+    function updateCVData() {
+        cvData = {
+            ...cvData,
+            fullName: document.getElementById('fullName').value,
+            jobTitle: document.getElementById('jobTitle').value,
+            email: document.getElementById('email').value,
+            phone: document.getElementById('phone').value,
+            address: document.getElementById('address').value,
+            careerObjective: document.getElementById('careerObjective').value,
+            workExperience: document.getElementById('workExperience').value,
+            education: document.getElementById('education').value,
+            skills: document.getElementById('skills').value,
+            projects: document.getElementById('projects').value,
+            certifications: document.getElementById('certifications').value,
+            extra: document.getElementById('extra').value,
+            purpose: document.querySelector('#purpose-options .active').dataset.value,
+            layout: document.querySelector('#layout-options .active').dataset.value,
+            color: document.getElementById('cvColor').value,
+            textColor: document.getElementById('textColor').value,
+            font: document.getElementById('fontStyle').value,
+            photoPosition: document.getElementById('photoPosition').value,
+        };
+    }
+    
+    // --- AI Text Improvement Simulation ---
+    async function improveText(elementId, button) {
+        const textarea = document.getElementById(elementId);
+        const originalText = textarea.value.trim();
+        if (!originalText) { alert("Please enter some text to enhance."); return; }
+
+        button.innerHTML = '<span class="spinner"></span> Working...';
+        button.disabled = true;
+
+        await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate API delay
+        let improvedText = originalText.split('\n').filter(line => line.trim() !== '')
+        .map(line => `• Spearheaded ${line.trim()}, leading to a 25% increase in efficiency and team productivity.`).join('\n');
+        
+        textarea.value = improvedText;
+
+        button.innerHTML = '✨ Enhance with AI';
+        button.disabled = false;
+    }
+
+    // --- AI SKILL SUGGESTIONS ---
+    async function getAISuggestions(button) {
+        const jobTitle = document.getElementById('jobTitle').value.toLowerCase();
+        const suggestionsContainer = document.getElementById('ai-suggestions');
+        
+        if (!jobTitle) { alert("Please enter your Job Title first for tailored suggestions."); return; }
+
+        button.innerHTML = '<span class="spinner"></span> Thinking...';
+        button.disabled = true;
+
+        await new Promise(r => setTimeout(r, 1000));
+        
+        const suggestionsDB = {
+            'developer|engineer|software': {
+                skills: ['Git', 'Docker', 'Agile Methodologies', 'REST APIs', 'CI/CD'],
+                hobbies: ['Open Source Contributions', 'Coding Side-Projects', 'Tech Blogs']
+            },
+            'manager|lead|director': {
+                skills: ['Project Management', 'Team Leadership', 'Budgeting', 'Performance Reviews', 'Strategic Planning'],
+                hobbies: ['Public Speaking', 'Mentoring', 'Volunteering']
+            },
+            'marketing|sales|brand': {
+                skills: ['SEO/SEM', 'Google Analytics', 'Content Creation', 'CRM Software', 'Social Media Strategy'],
+                hobbies: ['Creative Writing', 'Photography', 'Networking Events']
+            },
+            'designer|artist': {
+                skills: ['Adobe Creative Suite', 'Figma', 'UI/UX Principles', 'Prototyping', 'Typography'],
+                hobbies: ['Sketching', 'Visiting Art Galleries', 'Photography']
             }
-            
-            cvPreview.innerHTML = cvHTML;
-            applyTheme(selectedTheme);
-        }
-        
-        function generateStandardCV(data) {
-            return `
-                <div class="personal-info">
-                    ${data.profileImage ? `<img src="${data.profileImage}" alt="Profile" class="profile-img">` : ''}
-                    <div class="name-title">
-                        <h1 class="name">${data.fullName}</h1>
-                        <p class="title">${selectedPurpose === 'work' ? 'Professional' : selectedPurpose === 'academic' ? 'Student' : 'Personal'} CV</p>
-                        <div class="contact-info">
-                            ${data.phone ? `<div class="contact-item">📞 ${data.phone}</div>` : ''}
-                            ${data.email ? `<div class="contact-item">✉️ ${data.email}</div>` : ''}
-                            ${data.address ? `<div class="contact-item">📍 ${data.address}</div>` : ''}
-                            ${data.dateOfBirth ? `<div class="contact-item">🎂 ${formatDate(data.dateOfBirth)}</div>` : ''}
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="section-title">Career Objective</div>
-                <p>${data.careerObjective}</p>
-                
-                ${data.education ? `
-                <div class="section-title">Education</div>
-                <div class="timeline">
-                    ${formatTextAsTimeline(data.education)}
-                </div>
-                ` : ''}
-                
-                ${data.workExperience ? `
-                <div class="section-title">Work Experience</div>
-                <div class="timeline">
-                    ${formatTextAsTimeline(data.workExperience)}
-                </div>
-                ` : ''}
-                
-                ${data.skills ? `
-                <div class="section-title">Skills</div>
-                <div class="skills-list">
-                    ${formatTextAsSkills(data.skills)}
-                </div>
-                ` : ''}
-                
-                ${data.projects ? `
-                <div class="section-title">Projects</div>
-                <div class="timeline">
-                    ${formatTextAsTimeline(data.projects)}
-                </div>
-                ` : ''}
-                
-                ${data.certifications ? `
-                <div class="section-title">Certifications & Awards</div>
-                <div class="timeline">
-                    ${formatTextAsTimeline(data.certifications)}
-                </div>
-                ` : ''}
-                
-                ${data.hobbies ? `
-                <div class="section-title">Hobbies & Interests</div>
-                <p>${data.hobbies}</p>
-                ` : ''}
-                
-                ${selectedPurpose === 'marriage' && data.extra ? `
-                <div class="section-title">Additional Information</div>
-                <p>${data.extra}</p>
-                ` : ''}
-                
-                ${data.references ? `
-                <div class="section-title">References</div>
-                <p>${data.references}</p>
-                ` : ''}
-            `;
-        }
+        };
 
-        function generateTwoColumnCV(data) {
-            return `
-                <div class="personal-info">
-                    ${data.profileImage ? `<img src="${data.profileImage}" alt="Profile" class="profile-img">` : ''}
-                    <div class="name-title">
-                        <h1 class="name">${data.fullName}</h1>
-                        <p class="title">${selectedPurpose === 'work' ? 'Professional' : selectedPurpose === 'academic' ? 'Student' : 'Personal'} CV</p>
-                    </div>
-                </div>
-                
-                <div class="two-column">
-                    <div class="sidebar">
-                        <div class="section-title">Contact</div>
-                        <div class="contact-info" style="flex-direction: column; gap: 10px;">
-                            ${data.phone ? `<div class="contact-item">📞 ${data.phone}</div>` : ''}
-                            ${data.email ? `<div class="contact-item">✉️ ${data.email}</div>` : ''}
-                            ${data.address ? `<div class="contact-item">📍 ${data.address}</div>` : ''}
-                            ${data.dateOfBirth ? `<div class="contact-item">🎂 ${formatDate(data.dateOfBirth)}</div>` : ''}
-                        </div>
-                        
-                        ${data.skills ? `
-                        <div class="section-title">Skills</div>
-                        <div class="skills-list">
-                            ${formatTextAsSkills(data.skills)}
-                        </div>
-                        ` : ''}
-                        
-                        ${data.hobbies ? `
-                        <div class="section-title">Hobbies</div>
-                        <p>${data.hobbies}</p>
-                        ` : ''}
-                        
-                        ${data.certifications ? `
-                        <div class="section-title">Certifications</div>
-                        <div class="timeline">
-                            ${formatTextAsTimeline(data.certifications)}
-                        </div>
-                        ` : ''}
-                    </div>
-                    
-                    <div class="main-content">
-                        <div class="section-title">Career Objective</div>
-                        <p>${data.careerObjective}</p>
-                        
-                        ${data.education ? `
-                        <div class="section-title">Education</div>
-                        <div class="timeline">
-                            ${formatTextAsTimeline(data.education)}
-                        </div>
-                        ` : ''}
-                        
-                        ${data.workExperience ? `
-                        <div class="section-title">Work Experience</div>
-                        <div class="timeline">
-                            ${formatTextAsTimeline(data.workExperience)}
-                        </div>
-                        ` : ''}
-                        
-                        ${data.projects ? `
-                        <div class="section-title">Projects</div>
-                        <div class="timeline">
-                            ${formatTextAsTimeline(data.projects)}
-                        </div>
-                        ` : ''}
-                        
-                        ${selectedPurpose === 'marriage' && data.extra ? `
-                        <div class="section-title">Additional Information</div>
-                        <p>${data.extra}</p>
-                        ` : ''}
-                        
-                        ${data.references ? `
-                        <div class="section-title">References</div>
-                <p>${data.references}</p>
-                        ` : ''}
-                    </div>
-                </div>
-            `;
-        }
-        
-        function formatDate(dateString) {
-            if (!dateString) return '';
-            const date = new Date(dateString);
-            return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-        }
-        
-        function formatTextAsTimeline(text) {
-            if (!text) return '';
-            return text.split('\n').filter(item => item.trim() !== '').map(item => {
-                const [date, ...description] = item.split(':');
-                return `
-                    <div class="timeline-item">
-                        <div class="timeline-date">${description.length > 0 ? date : ''}</div>
-                        <div class="timeline-content">${description.join(':').trim() || date}</div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function formatTextAsSkills(text) {
-            if (!text) return '';
-            return text.split(',').filter(item => item.trim() !== '').map(item => `<div class="skill-tag">${item.trim()}</div>`).join('');
-        }
-        
-        function applyTheme(theme) {
-            const root = document.documentElement;
-            const themes = {
-                basic: { primary: '#4a6fa5', secondary: '#6b8cbc', accent: '#ff7e5f' },
-                work: { primary: '#2c3e50', secondary: '#34495e', accent: '#e74c3c' },
-                pro: { primary: '#1a1a1a', secondary: '#333333', accent: '#c29b0c' },
-                cozy: { primary: '#e67e22', secondary: '#f39c12', accent: '#16a085' },
-                productive: { primary: '#27ae60', secondary: '#2ecc71', accent: '#e74c3c' },
-                elegant: { primary: '#9b59b6', secondary: '#8e44ad', accent: '#f1c40f' },
-            };
-            const selected = themes[theme] || themes.basic;
-            Object.keys(selected).forEach(key => root.style.setProperty(`--${key}`, selected[key]));
-        }
-
-        async function exportCV(format) {
-            const cvElement = document.getElementById('cvPreview');
-            const fullName = document.getElementById('fullName').value.replace(/ /g, '_') || 'CV';
-
-            switch (format) {
-                case 'pdf':
-                    const pdfOptions = {
-                        margin: 0.5,
-                        filename: `${fullName}.pdf`,
-                        image: { type: 'jpeg', quality: 0.98 },
-                        html2canvas: { scale: 2 },
-                        jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
-                    };
-                    html2pdf().from(cvElement).set(pdfOptions).save();
-                    break;
-                
-                case 'docx':
-                    const docxContent = `<!DOCTYPE html><html><head><style>${Array.from(document.styleSheets).map(s => Array.from(s.cssRules).map(r => r.cssText).join('')).join('')}</style></head><body>${cvElement.innerHTML}</body></html>`;
-                    const docxBlob = await htmlToDocx(docxContent, null, {
-                        orientation: 'portrait',
-                        margins: { top: 720, right: 720, bottom: 720, left: 720 },
-                    });
-                    const docxUrl = URL.createObjectURL(docxBlob);
-                    const docxLink = document.createElement('a');
-                    docxLink.href = docxUrl;
-                    docxLink.download = `${fullName}.docx`;
-                    docxLink.click();
-                    URL.revokeObjectURL(docxUrl);
-                    break;
-
-                case 'png':
-                    html2canvas(cvElement, { scale: 2 }).then(canvas => {
-                        const pngUrl = canvas.toDataURL('image/png');
-                        const pngLink = document.createElement('a');
-                        pngLink.href = pngUrl;
-                        pngLink.download = `${fullName}.png`;
-                        pngLink.click();
-                    });
-                    break;
+        let foundSuggestions = { skills: [], hobbies: [] };
+        for (const key in suggestionsDB) {
+            if (key.split('|').some(keyword => jobTitle.includes(keyword))) {
+                foundSuggestions = suggestionsDB[key];
+                break;
             }
         }
-    </script>
+
+        if (foundSuggestions.skills.length === 0) {
+             suggestionsContainer.innerHTML = 'Could not find specific suggestions for your role. Try general skills.';
+        } else {
+             suggestionsContainer.innerHTML = `
+                <p><strong>Recommended Skills:</strong></p>
+                ${foundSuggestions.skills.map(s => `<span class="suggestion" onclick="addSkill('${s}')">${s}</span>`).join('')}
+                <p style="margin-top:15px;"><strong>Recommended Hobbies/Interests (for 'Additional' section):</strong></p>
+                ${foundSuggestions.hobbies.map(h => `<span class="suggestion">${h}</span>`).join('')}
+             `;
+        }
+
+        suggestionsContainer.classList.remove('hidden');
+        button.innerHTML = '✨ Get AI Skill Suggestions';
+        button.disabled = false;
+    }
+    function addSkill(skill) {
+        const skillsEl = document.getElementById('skills');
+        if (skillsEl.value.trim() === '') skillsEl.value = skill;
+        else if (!skillsEl.value.includes(skill)) skillsEl.value += ', ' + skill;
+    }
+
+
+    // --- CV Generation Logic ---
+    async function generateCV() {
+        const cvPreview = document.getElementById('cvPreview');
+        cvPreview.className = 'cv-preview';
+        
+        // Apply dynamic styles
+        document.documentElement.style.setProperty('--cv-primary-color', cvData.color);
+        document.documentElement.style.setProperty('--cv-text-color', cvData.textColor);
+        document.documentElement.style.setProperty('--cv-font-family', cvData.font);
+        
+        if (cvData.layout === 'two-column') cvPreview.classList.add('layout-two-column');
+        
+        cvPreview.innerHTML = (cvData.layout === 'two-column') ? generateTwoColumnCV(cvData) : generateModernCV(cvData);
+    }
+    
+    const generateSection = (title, content) => content ? `<div class="section"><div class="section-title">${title}</div>${content}</div>` : '';
+    const formatAsList = (text) => text ? `<ul>${text.split('\n').filter(i => i.trim()).map(item => `<li class="timeline-item">${item.trim().replace(/^•\s*/, '')}</li>`).join('')}</ul>` : '';
+    const formatSkills = (text) => text ? `<ul class="skills-list">${text.split(',').filter(i => i.trim()).map(item => `<li class="skill-tag">${item.trim()}</li>`).join('')}</ul>` : '';
+
+    function generateHeader(data) {
+        const showPhoto = data.photoPosition !== 'hidden' && data.profileImageSrc;
+        const photoHTML = showPhoto ? `<div class="photo-container"><img src="${data.profileImageSrc}" alt="Profile" class="profile-img" style="filter:${data.profileImageFilters};"></div>` : '';
+        
+        return `
+            <header class="personal-info photo-${data.photoPosition}">
+                ${photoHTML}
+                <div class="name-title">
+                    <h1 class="name">${data.fullName || 'Your Name'}</h1>
+                    <p class="title">${data.jobTitle || 'Your Title'}</p>
+                    <div class="contact-info">
+                        ${data.email ? `<span class="contact-item">📧 ${data.email}</span>` : ''}
+                        ${data.phone ? `<span class="contact-item">📞 ${data.phone}</span>` : ''}
+                        ${data.address ? `<span class="contact-item">📍 ${data.address}</span>` : ''}
+                    </div>
+                </div>
+            </header>`;
+    }
+
+    function generateModernCV(data) {
+        return `
+            ${generateHeader(data)}
+            ${generateSection('Career Objective', `<p>${data.careerObjective}</p>`)}
+            ${generateSection('Work Experience', formatAsList(data.workExperience))}
+            ${generateSection('Education', formatAsList(data.education))}
+            ${generateSection('Skills', formatSkills(data.skills))}
+            ${generateSection('Projects', formatAsList(data.projects))}
+            ${generateSection('Certifications & Awards', formatAsList(data.certifications))}
+            ${generateSection(data.purpose === 'marriage' ? 'Personal Details' : 'Additional Information', `<p>${data.extra}</p>`)}
+        `;
+    }
+
+    function generateTwoColumnCV(data) {
+        const headerHTML = `
+            <header class="personal-info photo-top">
+                ${(data.photoPosition !== 'hidden' && data.profileImageSrc) ? `<div class="photo-container"><img src="${data.profileImageSrc}" alt="Profile" class="profile-img" style="filter:${data.profileImageFilters};"></div>` : ''}
+                <div class="name-title">
+                    <h1 class="name">${data.fullName || 'Your Name'}</h1>
+                    <p class="title">${data.jobTitle || 'Your Title'}</p>
+                </div>
+            </header>
+        `;
+        return `
+            <div class="sidebar">
+                ${headerHTML}
+                ${generateSection('Contact', `<div class="contact-info" style="flex-direction:column; gap:10px;">
+                    ${data.email ? `<span class="contact-item">📧 ${data.email}</span>` : ''}
+                    ${data.phone ? `<span class="contact-item">📞 ${data.phone}</span>` : ''}
+                    ${data.address ? `<span class="contact-item">📍 ${data.address}</span>` : ''}
+                </div>`)}
+                ${generateSection('Skills', formatSkills(data.skills))}
+                ${generateSection('Certifications', formatAsList(data.certifications))}
+            </div>
+            <div class="main-content">
+                ${generateSection('Career Objective', `<p>${data.careerObjective}</p>`)}
+                ${generateSection('Work Experience', formatAsList(data.workExperience))}
+                ${generateSection('Education', formatAsList(data.education))}
+                ${generateSection('Projects', formatAsList(data.projects))}
+                ${generateSection(data.purpose === 'marriage' ? 'Personal Details' : 'Additional Info', `<p>${data.extra}</p>`)}
+            </div>`;
+    }
+    
+    // --- Export Functionality ---
+    async function exportCV(format) {
+        const cvElement = document.getElementById('cvPreview');
+        const fileName = (cvData.fullName || 'CV').replace(/\s+/g, '_');
+        
+        switch (format) {
+            case 'pdf':
+                html2pdf().from(cvElement).set({ margin: 0, filename: `${fileName}.pdf`, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 3, useCORS: true }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } }).save();
+                break;
+            
+            case 'docx':
+                const content = `<!DOCTYPE html><html><head><style>body { font-family: ${cvData.font}; font-size: 11pt; color: ${cvData.textColor}; } h1, h2, h3 { color: #222; } .section-title { font-size: 14pt; font-weight: bold; color: ${cvData.color}; border-bottom: 1px solid #ccc; } ul{padding-left: 20px;} li{margin-bottom:10px;}</style></head><body>${cvElement.innerHTML.replace(/•/g, '')}</body></html>`;
+                saveAs(await htmlToDocx.asBlob(content), `${fileName}.docx`);
+                break;
+
+            case 'png':
+                html2canvas(cvElement, { scale: 3, useCORS: true }).then(canvas => canvas.toBlob(blob => saveAs(blob, `${fileName}.png`)));
+                break;
+        }
+    }
+</script>
 </body>
 </html>
-
