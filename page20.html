@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pomodoro Kitty</title>
+    <style>
+        :root {
+            --primary-color: #ff9a8b;
+            --secondary-color: #ff6b95;
+            --background-color: #f8f4e5;
+            --text-color: #333;
+            --cat-color: #ff9a8b;
+            --cat-accent: #ff6b95;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial Rounded MT Bold', 'Arial', sans-serif;
+        }
+
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            transition: background-color 0.5s ease;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+        }
+
+        .timer-container {
+            background-color: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .timer-display {
+            font-size: 5rem;
+            font-weight: bold;
+            margin: 20px 0;
+            color: var(--secondary-color);
+        }
+
+        .timer-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 12px 25px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button.secondary {
+            background-color: #e0e0e0;
+            color: #666;
+        }
+
+        .cat-container {
+            position: relative;
+            width: 220px;
+            height: 220px;
+            margin: 0 auto 30px;
+        }
+
+        .cat {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-origin: center;
+        }
+
+        .cat-head {
+            width: 140px;
+            height: 120px;
+            background-color: var(--cat-color);
+            border-radius: 50% 50% 45% 45%;
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .cat-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+        }
+
+        .cat-ear {
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-left: 20px solid transparent;
+            border-right: 20px solid transparent;
+            border-bottom: 35px solid var(--cat-color);
+            top: -15px;
+            z-index: 1;
+        }
+
+        .cat-ear::before {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-left: 12px solid transparent;
+            border-right: 12px solid transparent;
+            border-bottom: 20px solid var(--cat-accent);
+            top: 8px;
+            left: -12px;
+        }
+
+        .cat-ear.left {
+            left: 15px;
+            transform: rotate(-15deg);
+        }
+
+        .cat-ear.right {
+            right: 15px;
+            transform: rotate(15deg);
+        }
+
+        .cat-eye {
+            position: absolute;
+            width: 24px;
+            height: 30px;
+            background-color: #333;
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            top: 35px;
+            overflow: hidden;
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.3);
+        }
+
+        .cat-eye.left {
+            left: 30px;
+        }
+
+        .cat-eye.right {
+            right: 30px;
+        }
+
+        .cat-pupil {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background-color: white;
+            border-radius: 50%;
+            top: 8px;
+            left: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .cat-eye-sparkle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background-color: white;
+            border-radius: 50%;
+            top: 5px;
+            left: 10px;
+            opacity: 0.8;
+        }
+
+        .cat-nose {
+            position: absolute;
+            width: 16px;
+            height: 10px;
+            background-color: var(--cat-accent);
+            border-radius: 40% 40% 50% 50%;
+            top: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .cat-mouth {
+            position: absolute;
+            width: 24px;
+            height: 12px;
+            border-bottom: 3px solid #333;
+            border-radius: 0 0 50% 50%;
+            top: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .cat-whiskers {
+            position: absolute;
+            width: 100%;
+            height: 20px;
+            top: 65px;
+            left: 0;
+        }
+
+        .cat-whisker {
+            position: absolute;
+            width: 30px;
+            height: 1px;
+            background-color: #333;
+            top: 0;
+        }
+
+        .cat-whisker.left-1 {
+            left: 5px;
+            transform: rotate(-15deg);
+        }
+
+        .cat-whisker.left-2 {
+            left: 5px;
+            transform: rotate(0deg);
+            top: 5px;
+        }
+
+        .cat-whisker.left-3 {
+            left: 5px;
+            transform: rotate(15deg);
+            top: 10px;
+        }
+
+        .cat-whisker.right-1 {
+            right: 5px;
+            transform: rotate(15deg);
+        }
+
+        .cat-whisker.right-2 {
+            right: 5px;
+            transform: rotate(0deg);
+            top: 5px;
+        }
+
+        .cat-whisker.right-3 {
+            right: 5px;
+            transform: rotate(-15deg);
+            top: 10px;
+        }
+
+        .cat-body {
+            width: 140px;
+            height: 110px;
+            background-color: var(--cat-color);
+            border-radius: 50% 50% 40% 40%;
+            position: absolute;
+            top: 110px;
+            left: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .cat-paw {
+            position: absolute;
+            width: 30px;
+            height: 25px;
+            background-color: var(--cat-color);
+            border-radius: 50% 50% 40% 40%;
+            bottom: 10px;
+            z-index: 2;
+        }
+
+        .cat-paw.left {
+            left: 40px;
+        }
+
+        .cat-paw.right {
+            right: 40px;
+        }
+
+        .cat-paw::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 10px;
+            background-color: var(--cat-accent);
+            border-radius: 50%;
+            bottom: 0;
+            left: 0;
+        }
+
+        .cat-tail {
+            position: absolute;
+            width: 100px;
+            height: 20px;
+            background-color: var(--cat-color);
+            border-radius: 10px;
+            bottom: 40px;
+            right: 10px;
+            transform: rotate(-30deg);
+            transform-origin: left center;
+            animation: tailWag 3s infinite alternate;
+            z-index: 0;
+        }
+
+        .cat-tail::before {
+            content: '';
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            background-color: var(--cat-accent);
+            border-radius: 50%;
+            top: 2px;
+            right: 5px;
+        }
+
+        @keyframes tailWag {
+            0%, 100% { transform: rotate(-30deg); }
+            50% { transform: rotate(-20deg); }
+        }
+
+        .settings-panel {
+            background-color: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .settings-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .settings-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            background-color: #f0f0f0;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .tab.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .settings-content {
+            display: none;
+        }
+
+        .settings-content.active {
+            display: block;
+        }
+
+        .color-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 15px;
+        }
+
+        .color-option {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .color-option.active {
+            border-color: #333;
+            transform: scale(1.1);
+        }
+
+        .pomodoro-settings {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .setting-item {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        label {
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid #ddd;
+        }
+
+        .session-info {
+            margin-top: 20px;
+            font-size: 1.2rem;
+            color: var(--secondary-color);
+        }
+
+        /* Animation for cat when timer is running */
+        @keyframes catWorking {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        .working .cat {
+            animation: catWorking 2s infinite;
+        }
+
+        /* Cat blink animation */
+        @keyframes blink {
+            0%, 100% { height: 30px; }
+            50% { height: 5px; }
+        }
+
+        .blink .cat-eye {
+            animation: blink 0.3s ease;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .timer-display {
+                font-size: 4rem;
+            }
+            
+            .timer-controls {
+                flex-wrap: wrap;
+            }
+            
+            .cat-container {
+                width: 180px;
+                height: 180px;
+            }
+            
+            .pomodoro-settings {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .timer-display {
+                font-size: 3rem;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .settings-panel {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Pomodoro Kitty</h1>
+        
+        <div class="timer-container">
+            <div class="cat-container">
+                <div class="cat">
+                    <div class="cat-head">
+                        <div class="cat-face">
+                            <div class="cat-ear left"></div>
+                            <div class="cat-ear right"></div>
+                            <div class="cat-eye left">
+                                <div class="cat-pupil"></div>
+                                <div class="cat-eye-sparkle"></div>
+                            </div>
+                            <div class="cat-eye right">
+                                <div class="cat-pupil"></div>
+                                <div class="cat-eye-sparkle"></div>
+                            </div>
+                            <div class="cat-nose"></div>
+                            <div class="cat-mouth"></div>
+                            <div class="cat-whiskers">
+                                <div class="cat-whisker left-1"></div>
+                                <div class="cat-whisker left-2"></div>
+                                <div class="cat-whisker left-3"></div>
+                                <div class="cat-whisker right-1"></div>
+                                <div class="cat-whisker right-2"></div>
+                                <div class="cat-whisker right-3"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="cat-body"></div>
+                    <div class="cat-paw left"></div>
+                    <div class="cat-paw right"></div>
+                    <div class="cat-tail"></div>
+                </div>
+            </div>
+            
+            <div class="timer-display">25:00</div>
+            
+            <div class="timer-controls">
+                <button id="startBtn">Start</button>
+                <button id="pauseBtn" class="secondary">Pause</button>
+                <button id="resetBtn" class="secondary">Reset</button>
+                <button id="skipBtn" class="secondary">Skip</button>
+            </div>
+            
+            <div class="session-info">
+                Session: <span id="sessionCount">1</span> of 4
+            </div>
+        </div>
+        
+        <div class="settings-panel">
+            <div class="settings-header">
+                <h2>Customize Your Kitty</h2>
+            </div>
+            
+            <div class="settings-tabs">
+                <div class="tab active" data-tab="theme">Theme</div>
+                <div class="tab" data-tab="cat">Kitty</div>
+                <div class="tab" data-tab="pomodoro">Pomodoro</div>
+            </div>
+            
+            <div class="settings-content active" id="theme-settings">
+                <h3>Background Theme</h3>
+                <div class="color-options">
+                    <div class="color-option active" style="background-color: #f8f4e5;" data-color="#f8f4e5"></div>
+                    <div class="color-option" style="background-color: #e8f4f8;" data-color="#e8f4f8"></div>
+                    <div class="color-option" style="background-color: #f0e8f8;" data-color="#f0e8f8"></div>
+                    <div class="color-option" style="background-color: #f8f0e8;" data-color="#f8f0e8"></div>
+                    <div class="color-option" style="background-color: #e8f8f0;" data-color="#e8f8f0"></div>
+                </div>
+            </div>
+            
+            <div class="settings-content" id="cat-settings">
+                <h3>Kitty Color</h3>
+                <div class="color-options">
+                    <div class="color-option active" style="background-color: #ff9a8b;" data-color="#ff9a8b"></div>
+                    <div class="color-option" style="background-color: #a8d8ea;" data-color="#a8d8ea"></div>
+                    <div class="color-option" style="background-color: #ffd3b6;" data-color="#ffd3b6"></div>
+                    <div class="color-option" style="background-color: #a0ded6;" data-color="#a0ded6"></div>
+                    <div class="color-option" style="background-color: #d4a5a5;" data-color="#d4a5a5"></div>
+                </div>
+            </div>
+            
+            <div class="settings-content" id="pomodoro-settings">
+                <h3>Pomodoro Settings</h3>
+                <div class="pomodoro-settings">
+                    <div class="setting-item">
+                        <label for="workDuration">Work Duration (minutes)</label>
+                        <input type="number" id="workDuration" min="1" max="60" value="25">
+                    </div>
+                    <div class="setting-item">
+                        <label for="breakDuration">Break Duration (minutes)</label>
+                        <input type="number" id="breakDuration" min="1" max="30" value="5">
+                    </div>
+                    <div class="setting-item">
+                        <label for="longBreakDuration">Long Break Duration (minutes)</label>
+                        <input type="number" id="longBreakDuration" min="1" max="60" value="15">
+                    </div>
+                    <div class="setting-item">
+                        <label for="sessionsBeforeLongBreak">Sessions Before Long Break</label>
+                        <input type="number" id="sessionsBeforeLongBreak" min="1" max="10" value="4">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const timerDisplay = document.querySelector('.timer-display');
+        const startBtn = document.getElementById('startBtn');
+        const pauseBtn = document.getElementById('pauseBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const skipBtn = document.getElementById('skipBtn');
+        const sessionCount = document.getElementById('sessionCount');
+        const tabs = document.querySelectorAll('.tab');
+        const settingsContents = document.querySelectorAll('.settings-content');
+        const themeColorOptions = document.querySelectorAll('#theme-settings .color-option');
+        const catColorOptions = document.querySelectorAll('#cat-settings .color-option');
+        const workDurationInput = document.getElementById('workDuration');
+        const breakDurationInput = document.getElementById('breakDuration');
+        const longBreakDurationInput = document.getElementById('longBreakDuration');
+        const sessionsBeforeLongBreakInput = document.getElementById('sessionsBeforeLongBreak');
+        const catContainer = document.querySelector('.cat-container');
+        const timerContainer = document.querySelector('.timer-container');
+        const catEyes = document.querySelectorAll('.cat-eye');
+
+        // Timer variables
+        let timer;
+        let isRunning = false;
+        let isWorkSession = true;
+        let timeLeft = 25 * 60; // 25 minutes in seconds
+        let currentSession = 1;
+        let totalSessions = 4;
+
+        // Update timer display
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        // Start timer
+        function startTimer() {
+            if (!isRunning) {
+                isRunning = true;
+                timer = setInterval(() => {
+                    timeLeft--;
+                    updateTimerDisplay();
+                    
+                    if (timeLeft <= 0) {
+                        clearInterval(timer);
+                        isRunning = false;
+                        sessionComplete();
+                    }
+                }, 1000);
+                
+                // Add working animation to cat
+                catContainer.classList.add('working');
+            }
+        }
+
+        // Pause timer
+        function pauseTimer() {
+            if (isRunning) {
+                clearInterval(timer);
+                isRunning = false;
+                
+                // Remove working animation from cat
+                catContainer.classList.remove('working');
+            }
+        }
+
+        // Reset timer
+        function resetTimer() {
+            clearInterval(timer);
+            isRunning = false;
+            isWorkSession = true;
+            timeLeft = parseInt(workDurationInput.value) * 60;
+            currentSession = 1;
+            updateTimerDisplay();
+            sessionCount.textContent = currentSession;
+            
+            // Remove working animation from cat
+            catContainer.classList.remove('working');
+        }
+
+        // Skip current session
+        function skipSession() {
+            clearInterval(timer);
+            isRunning = false;
+            sessionComplete();
+        }
+
+        // Handle session completion
+        function sessionComplete() {
+            if (isWorkSession) {
+                // Work session completed
+                if (currentSession < totalSessions) {
+                    // Start break
+                    isWorkSession = false;
+                    timeLeft = parseInt(breakDurationInput.value) * 60;
+                    currentSession++;
+                    sessionCount.textContent = currentSession;
+                    
+                    // Change cat animation to resting
+                    catContainer.classList.remove('working');
+                    
+                    alert('Work session complete! Time for a break.');
+                } else {
+                    // Start long break
+                    isWorkSession = false;
+                    timeLeft = parseInt(longBreakDurationInput.value) * 60;
+                    currentSession = 1;
+                    sessionCount.textContent = currentSession;
+                    
+                    // Change cat animation to resting
+                    catContainer.classList.remove('working');
+                    
+                    alert('Great job! All sessions complete. Time for a long break.');
+                }
+            } else {
+                // Break completed
+                isWorkSession = true;
+                timeLeft = parseInt(workDurationInput.value) * 60;
+                
+                // Change cat animation to working
+                catContainer.classList.add('working');
+                
+                alert('Break over! Time to get back to work.');
+            }
+            
+            updateTimerDisplay();
+            
+            if (isRunning) {
+                startTimer();
+            }
+        }
+
+        // Tab switching
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                // Remove active class from all tabs and contents
+                tabs.forEach(t => t.classList.remove('active'));
+                settingsContents.forEach(content => content.classList.remove('active'));
+                
+                // Add active class to clicked tab and corresponding content
+                tab.classList.add('active');
+                const tabId = tab.getAttribute('data-tab');
+                document.getElementById(`${tabId}-settings`).classList.add('active');
+            });
+        });
+
+        // Theme color selection
+        themeColorOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                themeColorOptions.forEach(opt => opt.classList.remove('active'));
+                option.classList.add('active');
+                
+                const color = option.getAttribute('data-color');
+                document.documentElement.style.setProperty('--background-color', color);
+            });
+        });
+
+        // Cat color selection
+        catColorOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                catColorOptions.forEach(opt => opt.classList.remove('active'));
+                option.classList.add('active');
+                
+                const color = option.getAttribute('data-color');
+                document.documentElement.style.setProperty('--cat-color', color);
+            });
+        });
+
+        // Update timer when settings change
+        workDurationInput.addEventListener('change', () => {
+            if (!isRunning && isWorkSession) {
+                timeLeft = parseInt(workDurationInput.value) * 60;
+                updateTimerDisplay();
+            }
+        });
+
+        breakDurationInput.addEventListener('change', () => {
+            if (!isRunning && !isWorkSession && currentSession < totalSessions) {
+                timeLeft = parseInt(breakDurationInput.value) * 60;
+                updateTimerDisplay();
+            }
+        });
+
+        longBreakDurationInput.addEventListener('change', () => {
+            if (!isRunning && !isWorkSession && currentSession === totalSessions) {
+                timeLeft = parseInt(longBreakDurationInput.value) * 60;
+                updateTimerDisplay();
+            }
+        });
+
+        sessionsBeforeLongBreakInput.addEventListener('change', () => {
+            totalSessions = parseInt(sessionsBeforeLongBreakInput.value);
+            if (currentSession > totalSessions) {
+                currentSession = totalSessions;
+                sessionCount.textContent = currentSession;
+            }
+        });
+
+        // Event listeners for buttons
+        startBtn.addEventListener('click', startTimer);
+        pauseBtn.addEventListener('click', pauseTimer);
+        resetBtn.addEventListener('click', resetTimer);
+        skipBtn.addEventListener('click', skipSession);
+
+        // Cat blink animation
+        function blinkCat() {
+            catEyes.forEach(eye => {
+                eye.classList.add('blink');
+                setTimeout(() => {
+                    eye.classList.remove('blink');
+                }, 300);
+            });
+            
+            // Random blink interval between 2-5 seconds
+            setTimeout(blinkCat, 2000 + Math.random() * 3000);
+        }
+
+        // Initialize timer display and start blinking
+        updateTimerDisplay();
+        blinkCat();
+    </script>
+</body>
+</html>
