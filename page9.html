@@ -65,6 +65,7 @@
 
         /* --- Global Styles & Resets --- */
         * { box-sizing: border-box; }
+        html, body { height: 100%; } /* Ensure body takes full height */
         body {
             font-family: 'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             margin: 0; padding: 0; display: flex;
@@ -88,6 +89,14 @@
             transition: all 0.5s ease; /* Smooth transition for resizing */
         }
         
+        main.content-area {
+            flex-grow: 1; 
+            padding: 15px 15px calc(80px + 10px) 15px; /* Mobile-first padding */
+            overflow-y: auto; 
+            overflow-x: hidden; 
+            position: relative;
+        }
+        
         /* Responsive adjustments for larger screens (tablets, desktops) */
         @media (min-width: 768px) {
             .app-container {
@@ -98,16 +107,11 @@
                 box-shadow: 0 12px 48px 0 var(--shadow-color);
                 margin: 20px;
             }
+             main.content-area {
+                padding: 20px 20px calc(80px + 10px) 20px; /* Space for dock */
+            }
         }
         
-        main.content-area {
-            flex-grow: 1; 
-            padding: 20px 20px calc(80px + 10px) 20px; /* Space for dock */
-            overflow-y: auto; 
-            overflow-x: hidden; 
-            position: relative;
-        }
-
         .page {
             position: absolute; top: 0; left: 0; right: 0; bottom: 0;
             padding: 20px; overflow-y: auto;
@@ -122,7 +126,8 @@
         }
 
         .page-title {
-            font-size: 1.8rem; font-weight: 600;
+            font-size: 1.6rem; /* Mobile-first font size */
+            font-weight: 600;
             margin-bottom: 20px; margin-top: 10px; 
             color: var(--text-primary);
         }
@@ -133,7 +138,7 @@
             transform: translateX(-50%); 
             width: calc(100% - 30px);
             max-width: 400px; 
-            height: 65px; 
+            height: 60px;  /* Mobile-first height */
             z-index: 100;
             display: flex; 
             justify-content: space-around; 
@@ -147,8 +152,8 @@
             width: 70px; height: 50px; 
             transition: var(--transition);
         }
-        .dock-item i { font-size: 22px; }
-        .dock-item span { font-size: 10px; font-weight: 500; }
+        .dock-item i { font-size: 20px; } /* Mobile-first icon size */
+        .dock-item span { font-size: 9px; font-weight: 500; } /* Mobile-first text size */
         .dock-item.active { color: var(--primary); transform: translateY(-5px); }
         .dock-item:not(.active):hover { color: var(--text-primary); }
 
@@ -168,15 +173,17 @@
             outline: none;
         }
         #new-task-form .time-inputs, .duration-inputs { 
-            display: flex; gap: 10px; 
+            display: flex; flex-direction: column; /* Stack inputs on mobile by default */
+            gap: 10px; 
         }
         #new-task-form button[type="submit"] { 
             background-color: var(--primary); color: white; 
             cursor: pointer; font-weight: 500; 
+            margin-top: 10px;
         }
         #new-task-form button[type="submit"]:hover { filter: brightness(1.1); }
         .or-divider { 
-            text-align: center; margin: 10px 0; color: var(--text-secondary); 
+            text-align: center; margin: 15px 0; color: var(--text-secondary); 
         }
 
         /* --- Task List & Items --- (Shared by Inbox & Manager) --- */
@@ -187,10 +194,11 @@
         }
         .task-item { 
             animation: item-in 0.4s ease forwards;
-            display: flex; align-items: center; margin-bottom: 10px; padding: 15px;
+            display: flex; align-items: center; margin-bottom: 10px; padding: 12px; /* Mobile-first padding */
             background: rgba(var(--primary-rgb), 0.08); border-radius: 12px;
             border-left: 5px solid var(--primary); 
             transition: all 0.3s ease;
+            flex-wrap: wrap; /* Allow wrapping for mobile */
         }
         .task-item.completed { 
             border-color: var(--success); text-decoration: line-through; 
@@ -199,11 +207,14 @@
         .task-item.completed .task-item-meta { 
             color: var(--text-secondary); 
         }
-        .task-item-content { flex-grow: 1; }
+        .task-item-content { 
+            flex-grow: 1; 
+            flex-basis: calc(100% - 120px); /* Adjust basis to allow actions on same line on wider screens */
+        }
         .task-item strong { display: block; }
         .task-item-meta { font-size: 0.8em; color: var(--text-secondary); }
         .task-item .actions { 
-            display: flex; align-items: center; margin-left: 10px; 
+            display: flex; align-items: center; margin-left: auto; /* Push actions to the right */
         }
         .task-item button { 
             background: none; border: none; cursor: pointer; padding: 5px; 
@@ -223,12 +234,12 @@
         }
         .calendar-grid { 
             display: grid; grid-template-columns: repeat(7, 1fr); 
-            gap: 8px; text-align: center; 
+            gap: 5px; text-align: center;  /* Reduced gap for mobile */
         }
         .calendar-grid div { 
-            padding: 8px; border-radius: 50%; position: relative; min-height: 40px; 
+            padding: 5px; border-radius: 50%; position: relative; min-height: 35px; /* Mobile-first sizing */
             display: flex; align-items: center; justify-content: center; 
-            font-size: 0.8rem; 
+            font-size: 0.75rem; /* Mobile-first font size */
         }
         .calendar-grid .day-name { 
             font-weight: 600; color: var(--text-secondary); cursor: default; 
@@ -294,7 +305,8 @@
         }
         .ai-assistant-panel {
             position: fixed; bottom: 160px; right: 20px; 
-            width: 90%; max-width: 350px; height: 450px;
+            width: calc(100vw - 40px); /* Adjust for phone screens */
+            max-width: 350px; height: 450px;
             z-index: 1000; display: none; flex-direction: column; 
             animation: modal-in 0.4s; transform-origin: bottom right;
         }
@@ -343,7 +355,8 @@
         .focus-content { text-align: center; z-index: 1; padding: 20px; }
         #focus-task-name { font-size: 1.5rem; margin-bottom: 20px; }
         #focus-timer { 
-            font-size: 4rem; font-weight: 300; 
+            font-size: 3rem; /* Mobile-first font size */
+            font-weight: 300; 
             margin: 20px 0; letter-spacing: 2px; 
         }
         #focus-status-text { 
@@ -363,49 +376,51 @@
         .focus-view-container.dark-mode button { color: white; }
 
 
-        /* Mobile-specific adjustments */
-        @media (max-width: 767px) {
+        /* --- DESKTOP AND TABLET OVERRIDES --- */
+        @media (min-width: 768px) {
             .page-title {
-                font-size: 1.6rem;
+                font-size: 1.8rem;
             }
-
-            main.content-area {
-                 padding: 15px 15px calc(80px + 10px) 15px; /* Space for dock */
+             .dock {
+                height: 65px;
+             }
+            .dock-item i {
+                font-size: 22px;
+            }
+            .dock-item span {
+                font-size: 10px;
             }
 
             .task-item {
-                padding: 12px;
-                flex-wrap: wrap;
+                padding: 15px;
+                flex-wrap: nowrap; /* Prevent wrapping on desktop */
             }
 
             .task-item-content {
-                flex-basis: 100%;
-                margin-bottom: 10px;
+                flex-basis: auto; /* Reset basis */
+                margin-bottom: 0;
+            }
+
+            #new-task-form .time-inputs, #new-task-form .duration-inputs {
+                 flex-direction: row; /* Inputs side-by-side on desktop */
+            }
+
+            .calendar-grid {
+                 gap: 8px;
+            }
+            .calendar-grid div {
+                 padding: 8px;
+                 min-height: 40px;
+                 font-size: 0.8rem;
             }
             
             #focus-timer {
-                font-size: 3rem;
+                font-size: 4rem;
             }
-
-            .calendar-grid div {
-                 padding: 5px;
-                 min-height: 35px;
-                 font-size: 0.75rem;
+             .ai-assistant-panel {
+                width: 350px; /* Fixed width on desktop */
             }
-             .dock {
-                height: 60px;
-             }
-            .dock-item i {
-                font-size: 20px;
-            }
-
-            .dock-item span {
-                font-size: 9px;
-            }
-
         }
-
-
     </style>
 </head>
 <body>
