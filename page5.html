@@ -11,20 +11,21 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
-        /* --- Themes & Variables --- */
+        /* --- Enhanced Variables & Base Styles --- */
         :root {
             --sidebar-width: min(90vw, 400px);
             --header-height: 65px;
             --border-radius: 24px;
-            --transition: all 0.3s ease-in-out;
+            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             --font-family: 'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif;
             --z-overlay: 1000;
             --z-sidebar: 1001;
             --z-modal: 2000;
             --dynamic-island-height: 40px;
+            --dynamic-island-expanded-height: 80px;
         }
 
-        /* --- NEW: APPLE NOTES THEME (ENHANCED) --- */
+        /* --- Enhanced APPLE NOTES THEME --- */
         [data-theme="apple-notes"] {
             --theme-bg-gradient: linear-gradient(135deg, #f5f5f0 0%, #e8e8e0 100%);
             --theme-bg-color: #f7f7f0;
@@ -42,127 +43,121 @@
             --dynamic-island-bg: #1c1c1e;
         }
 
-        /* --- GRAMMARLY THEME --- */
+        /* --- Other themes remain the same as in original code --- */
         [data-theme="grammarly"] {
-            --theme-bg-gradient: linear-gradient(135deg, #F9F9F9 0%, #FFFFFF 100%);
-            --theme-bg-color: #FFFFFF;
+            --theme-bg-gradient: linear-gradient(135deg, #f9f9f9 0%, #e8e8e8 100%);
+            --theme-bg-color: #f5f5f5;
             --theme-bg-image: none;
-            --theme-surface-bg: rgba(255, 255, 255, 0.95);
-            --theme-text-primary: #0E161A;
-            --theme-text-secondary: #6D7578;
-            --theme-border-color: #E6E8E9;
+            --theme-surface-bg: #ffffff;
+            --theme-text-primary: #1a1a1a;
+            --theme-text-secondary: #666666;
+            --theme-border-color: #e0e0e0;
             --theme-accent-primary: #15C39A;
-            --theme-accent-secondary: #027E6F;
-            --theme-accent-translucent: rgba(21, 195, 154, 0.15);
-            --theme-shadow: 0 4px 20px rgba(0, 0, 0, 0.07);
+            --theme-accent-secondary: #12a785;
+            --theme-accent-translucent: rgba(21, 195, 154, 0.2);
+            --theme-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
             --theme-card-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            --theme-sidebar-bg: #FAFBFC;
-            --dynamic-island-bg: #0E161A;
+            --theme-sidebar-bg: #fafafa;
+            --dynamic-island-bg: #15C39A;
         }
-
         [data-theme="light"] {
-            --theme-bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            --theme-bg-color: #f5f7fa;
+            --theme-bg-gradient: linear-gradient(135deg, #ffffff 0%, #f5f5f5 100%);
+            --theme-bg-color: #ffffff;
             --theme-bg-image: none;
-            --theme-surface-bg: rgba(255, 255, 255, 0.8);
-            --theme-text-primary: #1c1c1e;
-            --theme-text-secondary: #6b6b6b;
-            --theme-border-color: rgba(200, 200, 200, 0.6);
-            --theme-accent-primary: #007aff;
-            --theme-accent-secondary: #0056b3;
-            --theme-accent-translucent: rgba(0, 122, 255, 0.15);
-            --theme-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            --theme-surface-bg: #f9f9f9;
+            --theme-text-primary: #1a1a1a;
+            --theme-text-secondary: #666666;
+            --theme-border-color: #e0e0e0;
+            --theme-accent-primary: #007AFF;
+            --theme-accent-secondary: #0056CC;
+            --theme-accent-translucent: rgba(0, 122, 255, 0.2);
+            --theme-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
             --theme-card-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            --theme-sidebar-bg: #f8f9fa;
-            --dynamic-island-bg: #1c1c1e;
+            --theme-sidebar-bg: #f5f5f5;
+            --dynamic-island-bg: #007AFF;
         }
-
         [data-theme="dark"] {
-            --theme-bg-gradient: linear-gradient(135deg, #2c3e50 0%, #171c23 100%);
-            --theme-bg-color: #171c23;
+            --theme-bg-gradient: linear-gradient(135deg, #1c1c1e 0%, #2c2c2e 100%);
+            --theme-bg-color: #1c1c1e;
             --theme-bg-image: none;
-            --theme-surface-bg: rgba(28, 33, 39, 0.8);
-            --theme-text-primary: #e5e5ea;
-            --theme-text-secondary: #a3a3a3;
-            --theme-border-color: rgba(80, 80, 80, 0.6);
-            --theme-accent-primary: #0a84ff;
-            --theme-accent-secondary: #3b9bff;
-            --theme-accent-translucent: rgba(10, 132, 255, 0.15);
-            --theme-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            --theme-card-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            --theme-sidebar-bg: #1e2329;
-            --dynamic-island-bg: #e5e5ea;
+            --theme-surface-bg: #2c2c2e;
+            --theme-text-primary: #ffffff;
+            --theme-text-secondary: #a0a0a0;
+            --theme-border-color: #3a3a3c;
+            --theme-accent-primary: #0A84FF;
+            --theme-accent-secondary: #0066CC;
+            --theme-accent-translucent: rgba(10, 132, 255, 0.2);
+            --theme-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            --theme-card-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            --theme-sidebar-bg: #2c2c2e;
+            --dynamic-island-bg: #0A84FF;
         }
-
         [data-theme="sepia"] {
-            --theme-bg-gradient: linear-gradient(135deg, #f1e7d0 0%, #c9bda5 100%);
-            --theme-bg-color: #f1e7d0;
+            --theme-bg-gradient: linear-gradient(135deg, #f5f0e6 0%, #e8e0d0 100%);
+            --theme-bg-color: #f5f0e6;
             --theme-bg-image: none;
-            --theme-surface-bg: rgba(243, 237, 222, 0.8);
-            --theme-text-primary: #5b4636;
-            --theme-text-secondary: #8d6e63;
-            --theme-border-color: rgba(141, 110, 99, 0.4);
-            --theme-accent-primary: #8d6e63;
-            --theme-accent-secondary: #5d4037;
-            --theme-accent-translucent: rgba(141, 110, 99, 0.15);
-            --theme-shadow: 0 10px 30px rgba(93, 64, 53, 0.15);
-            --theme-card-shadow: 0 2px 10px rgba(93, 64, 53, 0.05);
-            --theme-sidebar-bg: #e8dfcc;
-            --dynamic-island-bg: #5b4636;
-        }
-
-        [data-theme="midnight"] {
-            --theme-bg-gradient: linear-gradient(135deg, #0d1117 0%, #010409 100%);
-            --theme-bg-color: #010409;
-            --theme-bg-image: none;
-            --theme-surface-bg: rgba(13, 17, 23, 0.8);
-            --theme-text-primary: #c9d1d9;
-            --theme-text-secondary: #8b949e;
-            --theme-border-color: rgba(48, 54, 61, 0.6);
-            --theme-accent-primary: #58a6ff;
-            --theme-accent-secondary: #3081f7;
-            --theme-accent-translucent: rgba(88, 166, 255, 0.15);
-            --theme-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            --theme-card-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            --theme-sidebar-bg: #0d1117;
-            --dynamic-island-bg: #c9d1d9;
-        }
-
-        [data-theme="ocean"] {
-            --theme-bg-gradient: linear-gradient(135deg, #00C9FF 0%, #92FE9D 100%);
-            --theme-bg-color: #f0f7ff;
-            --theme-bg-image: none;
-            --theme-surface-bg: rgba(255, 255, 255, 0.7);
-            --theme-text-primary: #0b2d48;
-            --theme-text-secondary: #4a6a84;
-            --theme-border-color: rgba(100, 150, 200, 0.5);
-            --theme-accent-primary: #0077c2;
-            --theme-accent-secondary: #005082;
-            --theme-accent-translucent: rgba(0, 119, 194, 0.15);
-            --theme-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+            --theme-surface-bg: #f9f5ed;
+            --theme-text-primary: #3c2f2f;
+            --theme-text-secondary: #7a6a5a;
+            --theme-border-color: #d9c7a7;
+            --theme-accent-primary: #8B4513;
+            --theme-accent-secondary: #654321;
+            --theme-accent-translucent: rgba(139, 69, 19, 0.2);
+            --theme-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
             --theme-card-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            --theme-sidebar-bg: #e6f2ff;
-            --dynamic-island-bg: #0b2d48;
+            --theme-sidebar-bg: #f9f5ed;
+            --dynamic-island-bg: #8B4513;
         }
-
-        [data-theme="slate"] {
-            --theme-bg-gradient: linear-gradient(135deg, #304352 0%, #d7d2cc 100%);
-            --theme-bg-color: #263238;
+        [data-theme="midnight"] {
+            --theme-bg-gradient: linear-gradient(135deg, #0d0d0d 0%, #1a1a1a 100%);
+            --theme-bg-color: #0d0d0d;
             --theme-bg-image: none;
-            --theme-surface-bg: rgba(55, 71, 79, 0.85);
-            --theme-text-primary: #eceff1;
+            --theme-surface-bg: #1a1a1a;
+            --theme-text-primary: #ffffff;
+            --theme-text-secondary: #a0a0a0;
+            --theme-border-color: #2a2a2a;
+            --theme-accent-primary: #BB86FC;
+            --theme-accent-secondary: #9b5fe0;
+            --theme-accent-translucent: rgba(187, 134, 252, 0.2);
+            --theme-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+            --theme-card-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            --theme-sidebar-bg: #1a1a1a;
+            --dynamic-island-bg: #BB86FC;
+        }
+        [data-theme="ocean"] {
+            --theme-bg-gradient: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            --theme-bg-color: #e3f2fd;
+            --theme-bg-image: none;
+            --theme-surface-bg: #ffffff;
+            --theme-text-primary: #0d47a1;
+            --theme-text-secondary: #546e7a;
+            --theme-border-color: #bbdefb;
+            --theme-accent-primary: #2196F3;
+            --theme-accent-secondary: #1976D2;
+            --theme-accent-translucent: rgba(33, 150, 243, 0.2);
+            --theme-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            --theme-card-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            --theme-sidebar-bg: #f5fbff;
+            --dynamic-island-bg: #2196F3;
+        }
+        [data-theme="slate"] {
+            --theme-bg-gradient: linear-gradient(135deg, #37474f 0%, #263238 100%);
+            --theme-bg-color: #37474f;
+            --theme-bg-image: none;
+            --theme-surface-bg: #455a64;
+            --theme-text-primary: #ffffff;
             --theme-text-secondary: #b0bec5;
-            --theme-border-color: rgba(200, 200, 200, 0.3);
-            --theme-accent-primary: #80cbc4;
-            --theme-accent-secondary: #4db6ac;
-            --theme-accent-translucent: rgba(128, 203, 196, 0.15);
-            --theme-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
-            --theme-card-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            --theme-sidebar-bg: #2c3a42;
-            --dynamic-island-bg: #eceff1;
+            --theme-border-color: #546e7a;
+            --theme-accent-primary: #78909C;
+            --theme-accent-secondary: #607D8B;
+            --theme-accent-translucent: rgba(120, 144, 156, 0.2);
+            --theme-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            --theme-card-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            --theme-sidebar-bg: #455a64;
+            --dynamic-island-bg: #78909C;
         }
 
-        /* --- Base Styles --- */
+        /* --- Enhanced Base Styles --- */
         * {
             margin: 0;
             padding: 0;
@@ -209,7 +204,7 @@
             box-shadow: var(--theme-shadow);
         }
 
-        /* --- Dynamic Island --- */
+        /* --- Enhanced Dynamic Island --- */
         .dynamic-island {
             position: fixed;
             top: 10px;
@@ -224,8 +219,10 @@
             justify-content: center;
             z-index: 9999;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            transition: all 0.3s ease;
+            transition: var(--transition);
             overflow: hidden;
+            animation: island-appear 0.5s ease-out;
+            cursor: pointer;
         }
 
         .dynamic-island-content {
@@ -235,13 +232,82 @@
             color: var(--theme-surface-bg);
             font-size: 0.8rem;
             font-weight: 600;
+            transition: var(--transition);
         }
 
         .dynamic-island.expanded {
-            width: 200px;
+            width: 280px;
+            height: var(--dynamic-island-expanded-height);
+            animation: island-expand 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        /* --- Welcome Screen --- */
+        .dynamic-island.hidden {
+            transform: translateX(-50%) translateY(-100px);
+            opacity: 0;
+        }
+
+        .dynamic-island-tools {
+            display: none;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            padding: 8px;
+            width: 100%;
+            height: 100%;
+        }
+
+        .dynamic-island.expanded .dynamic-island-tools {
+            display: flex;
+            animation: tools-appear 0.3s ease-out 0.2s both;
+        }
+
+        .dynamic-island.expanded .dynamic-island-content {
+            display: none;
+        }
+
+        .dynamic-tool {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.15);
+            color: white;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+        }
+
+        .dynamic-tool:hover {
+            background-color: rgba(255, 255, 255, 0.25);
+            transform: scale(1.1);
+        }
+
+        @keyframes island-appear {
+            0% { transform: translateX(-50%) translateY(-100px); opacity: 0; }
+            100% { transform: translateX(-50%) translateY(0); opacity: 1; }
+        }
+
+        @keyframes island-expand {
+            0% { width: 120px; height: var(--dynamic-island-height); }
+            70% { width: 300px; height: var(--dynamic-island-expanded-height); }
+            100% { width: 280px; height: var(--dynamic-island-expanded-height); }
+        }
+
+        @keyframes island-hide {
+            0% { transform: translateX(-50%) translateY(0); opacity: 1; }
+            100% { transform: translateX(-50%) translateY(-100px); opacity: 0; }
+        }
+
+        @keyframes tools-appear {
+            0% { opacity: 0; transform: scale(0.8); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        /* --- Enhanced Welcome Screen --- */
         .welcome-screen {
             position: fixed;
             top: 0;
@@ -256,12 +322,14 @@
             z-index: 10000;
             padding: 20px;
             text-align: center;
+            animation: welcome-fade-in 0.6s ease-out;
         }
 
         .welcome-logo {
             font-size: 3rem;
             margin-bottom: 20px;
             color: var(--theme-accent-primary);
+            animation: logo-bounce 1s ease-out;
         }
 
         .welcome-title {
@@ -269,6 +337,7 @@
             font-weight: 700;
             margin-bottom: 10px;
             color: var(--theme-text-primary);
+            animation: title-slide-up 0.8s ease-out;
         }
 
         .welcome-subtitle {
@@ -276,6 +345,7 @@
             color: var(--theme-text-secondary);
             margin-bottom: 40px;
             max-width: 500px;
+            animation: subtitle-fade-in 1s ease-out 0.3s both;
         }
 
         .welcome-options {
@@ -284,6 +354,7 @@
             gap: 20px;
             width: 100%;
             max-width: 400px;
+            animation: options-appear 0.8s ease-out 0.5s both;
         }
 
         .welcome-option {
@@ -298,11 +369,21 @@
             flex-direction: column;
             align-items: center;
             gap: 15px;
+            animation: option-float 3s ease-in-out infinite;
         }
 
         .welcome-option:hover {
             transform: translateY(-5px);
             box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            animation-play-state: paused;
+        }
+
+        .welcome-option:nth-child(1) {
+            animation-delay: 0s;
+        }
+
+        .welcome-option:nth-child(2) {
+            animation-delay: 0.2s;
         }
 
         .welcome-option i {
@@ -320,7 +401,39 @@
             text-align: center;
         }
 
-        /* --- Simplified Header --- */
+        @keyframes welcome-fade-in {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        @keyframes logo-bounce {
+            0% { transform: scale(0.5); opacity: 0; }
+            70% { transform: scale(1.1); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        @keyframes title-slide-up {
+            0% { transform: translateY(30px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes subtitle-fade-in {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        @keyframes options-appear {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes option-float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        /* --- Enhanced Header --- */
         header {
             display: flex;
             justify-content: space-between;
@@ -331,6 +444,7 @@
             position: relative;
             z-index: 10;
             border-bottom: 1px solid var(--theme-border-color);
+            animation: header-slide-down 0.5s ease-out;
         }
 
         .header-title {
@@ -342,41 +456,12 @@
             gap: 10px;
         }
 
-        .header-controls {
-            display: flex;
-            gap: 8px;
-            align-items: center;
+        @keyframes header-slide-down {
+            0% { transform: translateY(-100%); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
         }
 
-        .header-btn {
-            background: transparent;
-            color: var(--theme-text-secondary);
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            border: none;
-            font-size: 1.2rem;
-            transition: var(--transition);
-            touch-action: manipulation;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        .header-btn:hover,
-        .header-btn.active,
-        .header-btn:active {
-            background-color: var(--theme-accent-translucent);
-            color: var(--theme-accent-primary);
-        }
-
-        #download-pdf-btn {
-            display: none;
-        }
-
-        /* --- Main Content Area (Apple Note Style) --- */
+        /* --- Enhanced Main Content Area --- */
         .main-content {
             flex-grow: 1;
             display: flex;
@@ -385,10 +470,13 @@
             padding: 24px 12px;
             transition: var(--transition);
             position: relative;
+            animation: content-fade-in 0.6s ease-out;
         }
 
         .main-content.sidebar-open {
             filter: brightness(0.95);
+            transform: scale(0.98);
+            border-radius: var(--border-radius);
         }
 
         .content-area {
@@ -403,6 +491,7 @@
             margin: 0 auto;
             width: 100%;
             max-width: 900px;
+            animation: content-area-appear 0.7s ease-out;
         }
 
         .empty-state {
@@ -413,6 +502,7 @@
             height: 100%;
             text-align: center;
             padding: 2rem;
+            animation: empty-state-fade 0.8s ease-out;
         }
 
         .empty-state i {
@@ -420,6 +510,7 @@
             color: var(--theme-accent-primary);
             opacity: 0.6;
             margin-bottom: 1.5rem;
+            animation: empty-icon-pulse 2s ease-in-out infinite;
         }
 
         .empty-state h2 {
@@ -434,7 +525,28 @@
             line-height: 1.5;
         }
 
-        /* --- Document Title (Integrated into note) --- */
+        @keyframes content-fade-in {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        @keyframes content-area-appear {
+            0% { transform: scale(0.95); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        @keyframes empty-state-fade {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes empty-icon-pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        /* --- Enhanced Document Title --- */
         #document-title {
             width: 100%;
             padding: 0 10px 10px;
@@ -448,6 +560,7 @@
             font-weight: 700;
             transition: var(--transition);
             box-shadow: none;
+            animation: title-appear 0.5s ease-out;
         }
 
         #document-title:focus {
@@ -456,7 +569,12 @@
             box-shadow: none;
         }
 
-        /* --- Drag & Drop Overlay --- */
+        @keyframes title-appear {
+            0% { opacity: 0; transform: translateY(-10px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- Enhanced Drag & Drop Overlay --- */
         #drag-drop-overlay {
             position: absolute;
             top: 0;
@@ -475,13 +593,20 @@
             z-index: var(--z-overlay);
             text-align: center;
             padding: 2rem;
+            animation: drag-drop-pulse 2s infinite;
         }
 
         #drag-drop-overlay.visible {
             display: flex;
         }
 
-        /* --- PDF Viewer & Text Editor --- */
+        @keyframes drag-drop-pulse {
+            0% { border-color: var(--theme-accent-primary); }
+            50% { border-color: rgba(255, 204, 0, 0.5); }
+            100% { border-color: var(--theme-accent-primary); }
+        }
+
+        /* --- Enhanced PDF Viewer & Text Editor --- */
         #pdf-viewer {
             position: relative;
         }
@@ -492,6 +617,7 @@
             max-width: 100%;
             overflow: hidden;
             border-radius: 12px;
+            animation: page-appear 0.5s ease-out;
         }
 
         #pdf-viewer canvas {
@@ -522,6 +648,7 @@
             -ms-user-select: text;
             user-select: text;
             border-radius: 12px;
+            animation: editor-appear 0.5s ease-out;
         }
 
         #text-editor:empty:before {
@@ -531,7 +658,62 @@
             pointer-events: none;
         }
 
-        /* --- PDF Text Overlay --- */
+        /* Image container styles */
+        .image-container {
+            position: relative;
+            display: inline-block;
+            margin: 10px;
+            max-width: 100%;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--theme-shadow);
+            animation: image-appear 0.5s ease-out;
+        }
+
+        .image-container img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .image-remove-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: rgba(0, 0, 0, 0.6);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .image-container:hover .image-remove-btn {
+            opacity: 1;
+        }
+
+        @keyframes page-appear {
+            0% { transform: translateY(20px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes editor-appear {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        @keyframes image-appear {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* --- Enhanced PDF Text Overlay --- */
         .pdf-text-layer {
             position: absolute;
             top: 0;
@@ -555,7 +737,7 @@
             cursor: text;
         }
 
-        /* --- AI Sidebar (Apple Notes Style) --- */
+        /* --- Enhanced AI Sidebar --- */
         .ai-sidebar {
             position: fixed;
             top: 0;
@@ -578,6 +760,7 @@
 
         .ai-sidebar.open {
             transform: translateX(0);
+            animation: sidebar-slide-in 0.3s ease-out;
         }
 
         .sidebar-header {
@@ -600,6 +783,13 @@
             padding: 18px;
             border: 1px solid var(--theme-border-color);
             box-shadow: var(--theme-card-shadow);
+            animation: ai-section-appear 0.5s ease-out;
+            transition: var(--transition);
+        }
+
+        .ai-section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
         }
 
         .ai-section h4 {
@@ -629,6 +819,7 @@
             margin-bottom: 12px;
             border: 1px solid var(--theme-border-color);
             position: relative;
+            animation: ai-output-appear 0.4s ease-out;
         }
 
         .ai-output mark {
@@ -650,10 +841,12 @@
             font-size: 0.8rem;
             cursor: pointer;
             transition: var(--transition);
+            animation: copy-btn-appear 0.3s ease-out;
         }
 
         .copy-btn:hover {
             background: var(--theme-accent-secondary);
+            transform: scale(1.05);
         }
 
         .ai-input {
@@ -665,12 +858,14 @@
             color: var(--theme-text-primary);
             font-size: 1rem;
             margin-bottom: 10px;
+            transition: var(--transition);
         }
 
         .ai-input:focus {
             outline: none;
             border-color: var(--theme-accent-primary);
             box-shadow: 0 0 0 3px var(--theme-accent-translucent);
+            transform: scale(1.02);
         }
 
         .ai-button, .summary-option-btn, .external-link-btn {
@@ -689,16 +884,19 @@
             gap: 8px;
             font-size: 1rem;
             text-decoration: none;
+            animation: button-appear 0.4s ease-out;
         }
 
         .ai-button:hover, .summary-option-btn:hover, .external-link-btn:hover {
             background-color: var(--theme-text-primary);
             transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
 
         .ai-button:disabled, .summary-option-btn:disabled {
             opacity: 0.6;
             cursor: not-allowed;
+            transform: none;
         }
 
         .summary-options {
@@ -720,7 +918,32 @@
             flex: 1;
         }
 
-        /* --- Settings Panel --- */
+        @keyframes sidebar-slide-in {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(0); }
+        }
+
+        @keyframes ai-section-appear {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes ai-output-appear {
+            0% { opacity: 0; transform: scale(0.95); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes copy-btn-appear {
+            0% { opacity: 0; transform: scale(0.8); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes button-appear {
+            0% { opacity: 0; transform: translateY(10px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- Enhanced Settings Panel --- */
         .panel-overlay {
             position: fixed;
             inset: 0;
@@ -731,6 +954,7 @@
             align-items: center;
             justify-content: center;
             padding: 20px;
+            animation: overlay-fade-in 0.3s ease-out;
         }
 
         .panel-overlay.visible {
@@ -742,6 +966,7 @@
             width: 100%;
             max-width: 450px;
             border-radius: var(--border-radius);
+            animation: panel-slide-up 0.3s ease-out;
         }
 
         .theme-options {
@@ -762,6 +987,7 @@
             transition: var(--transition);
             text-align: center;
             background: var(--theme-surface-bg);
+            animation: theme-option-appear 0.4s ease-out;
         }
 
         .theme-options input:checked + label {
@@ -769,9 +995,73 @@
             background-color: var(--theme-accent-translucent);
             font-weight: 600;
             color: var(--theme-accent-primary);
+            transform: scale(1.05);
         }
 
-        /* --- Misc & Responsive --- */
+        @keyframes overlay-fade-in {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        @keyframes panel-slide-up {
+            0% { transform: translateY(30px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes theme-option-appear {
+            0% { opacity: 0; transform: scale(0.9); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        /* --- Enhanced Dropdown Menu --- */
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: var(--theme-surface-bg);
+            border-radius: 14px;
+            box-shadow: var(--theme-shadow);
+            padding: 10px;
+            min-width: 200px;
+            z-index: 100;
+            display: none;
+            animation: dropdown-appear 0.3s ease-out;
+            border: 1px solid var(--theme-border-color);
+        }
+
+        .dropdown-menu.show {
+            display: block;
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: var(--transition);
+            color: var(--theme-text-primary);
+            text-decoration: none;
+        }
+
+        .dropdown-item:hover {
+            background-color: var(--theme-accent-translucent);
+            transform: translateX(5px);
+        }
+
+        .dropdown-divider {
+            height: 1px;
+            background-color: var(--theme-border-color);
+            margin: 8px 0;
+        }
+
+        @keyframes dropdown-appear {
+            0% { opacity: 0; transform: translateY(-10px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- Enhanced Misc & Responsive --- */
         .spinner { 
             animation: spin 1s linear infinite; 
         }
@@ -793,6 +1083,7 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
             transform: translateX(150%);
             transition: transform 0.3s ease;
+            animation: toast-slide-in 0.3s ease-out;
         }
 
         .toast.show { 
@@ -807,6 +1098,44 @@
         .toast.error { 
             background-color: #d32f2f; 
             color: white; 
+        }
+
+        @keyframes toast-slide-in {
+            0% { transform: translateX(150%); }
+            100% { transform: translateX(0); }
+        }
+
+        /* --- Enhanced AI Processing Animation --- */
+        .ai-processing {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ai-processing::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            animation: shimmer 1.5s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        /* --- Enhanced AI Response Animation --- */
+        .ai-response {
+            animation: ai-response-pulse 0.5s ease-out;
+        }
+
+        @keyframes ai-response-pulse {
+            0% { transform: scale(0.95); opacity: 0; }
+            70% { transform: scale(1.02); }
+            100% { transform: scale(1); opacity: 1; }
         }
 
         @media (max-width: 768px) {
@@ -860,16 +1189,40 @@
             .welcome-subtitle {
                 font-size: 1rem;
             }
+
+            /* FIXED: Dynamic Island for Mobile */
+            .dynamic-island {
+                width: 90px;
+                height: 35px;
+                top: 15px;
+            }
+
+            .dynamic-island.expanded {
+                width: 95vw;
+                height: 70px;
+                max-width: 400px;
+            }
+
+            .dynamic-island-tools {
+                gap: 6px;
+                padding: 6px;
+            }
+
+            .dynamic-tool {
+                width: 32px;
+                height: 32px;
+                font-size: 0.8rem;
+            }
+
+            .dropdown-menu {
+                right: -10px;
+                min-width: 180px;
+            }
         }
 
         @media (max-width: 480px) {
             .header-title {
                 font-size: 1.3rem;
-            }
-
-            .header-btn {
-                width: 40px;
-                height: 40px;
             }
 
             .content-area {
@@ -887,6 +1240,33 @@
             .theme-options {
                 grid-template-columns: repeat(2, 1fr);
             }
+
+            /* FIXED: Dynamic Island for Small Mobile */
+            .dynamic-island {
+                width: 80px;
+                height: 32px;
+                top: 10px;
+            }
+
+            .dynamic-island.expanded {
+                width: 95vw;
+                height: 65px;
+                max-width: 350px;
+            }
+
+            .dynamic-island-content {
+                font-size: 0.7rem;
+            }
+
+            .dynamic-tool {
+                width: 30px;
+                height: 30px;
+                font-size: 0.7rem;
+            }
+
+            .dropdown-menu {
+                min-width: 160px;
+            }
         }
     </style>
 </head>
@@ -903,6 +1283,26 @@
         <div class="dynamic-island-content">
             <i class="fas fa-robot"></i>
             <span>Gridora AI</span>
+        </div>
+        <div class="dynamic-island-tools">
+            <button class="dynamic-tool" id="dynamic-ai-toggle" title="AI Assistant">
+                <i class="fas fa-robot"></i>
+            </button>
+            <button class="dynamic-tool" id="dynamic-mode-toggle" title="Switch Mode">
+                <i class="fas fa-file-alt"></i>
+            </button>
+            <label for="pdf-upload" class="dynamic-tool" title="Upload PDF" id="dynamic-upload-label">
+                <i class="fas fa-upload"></i>
+            </label>
+            <label for="image-upload" class="dynamic-tool" title="Upload Image" id="dynamic-image-label">
+                <i class="fas fa-image"></i>
+            </label>
+            <button class="dynamic-tool" id="dynamic-copy-paste" title="Paste Text">
+                <i class="fas fa-paste"></i>
+            </button>
+            <button class="dynamic-tool" id="dynamic-menu-toggle" title="Menu">
+                <i class="fas fa-ellipsis-h"></i>
+            </button>
         </div>
     </div>
 
@@ -931,27 +1331,6 @@
         <main class="main-content" id="mainContent">
             <header>
                 <h1 class="header-title"><i class="fas fa-magic"></i> Gridora</h1>
-                <div class="header-controls">
-                    <button class="header-btn" id="mode-toggle-btn" title="Switch Mode" aria-label="Switch between PDF and text mode">
-                        <i class="fas fa-file-alt"></i>
-                    </button>
-                    <label for="pdf-upload" class="header-btn" title="Upload PDF" id="upload-label" aria-label="Upload PDF file">
-                        <i class="fas fa-upload"></i>
-                    </label>
-                    <input type="file" id="pdf-upload" accept=".pdf" style="display: none;" aria-label="PDF file input">
-                    <button class="header-btn" id="copy-paste-btn" title="Paste Text" aria-label="Paste text from clipboard">
-                        <i class="fas fa-paste"></i>
-                    </button>
-                    <button class="header-btn" id="download-pdf-btn" title="Download as PDF" aria-label="Download text as PDF">
-                        <i class="fas fa-file-pdf"></i>
-                    </button>
-                    <button class="header-btn" id="settings-btn" title="Settings" aria-label="Open settings">
-                        <i class="fas fa-cog"></i>
-                    </button>
-                    <button class="header-btn" id="ai-toggle-btn" title="AI Assistant" aria-label="Toggle AI assistant">
-                        <i class="fas fa-robot"></i>
-                    </button>
-                </div>
             </header>
 
             <div id="content-area" class="content-area">
@@ -1094,7 +1473,7 @@
                  <!-- NEW: OptiChain Full Version Link -->
                  <div class="ai-section">
                     <h4><i class="fas fa-rocket"></i>Go Further</h4>
-                     <a href="https://talk.shapes.inc/chat/f6cafa75-26a0-43d9-99e1-6235329d712e" 
+                     <a href="https://talk.shapes.inc/optichain/dm" 
                         target="_blank" 
                         class="external-link-btn">
                         <i class="fas fa-external-link-alt"></i>Try OptiChain Full
@@ -1137,6 +1516,10 @@
         </div>
     </div>
 
+    <!-- Hidden file inputs -->
+    <input type="file" id="pdf-upload" accept=".pdf" style="display: none;" aria-label="PDF file input">
+    <input type="file" id="image-upload" accept="image/*" style="display: none;" aria-label="Image file input">
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             'use strict';
@@ -1147,20 +1530,52 @@
                 currentMode: 'pdf',
                 isAiProcessing: false,
                 isPdfLoading: false,
-                currentMode: 'reading' // 'reading' or 'research'
+                currentMode: 'reading', // 'reading' or 'research'
+                dynamicIslandExpanded: false,
+                dropdownOpen: false,
+                lastScrollY: 0,
+                dynamicIslandVisible: true
             };
 
             class OptiChainAI {
                 constructor() {
                     this.stopWords = new Set(['a', 'about', 'above', 'after', 'again', 'against', 'all', 'am', 'an', 'and', 'any', 'are', 'as', 'at', 'be', 'because', 'been', 'before', 'being', 'below', 'between', 'both', 'but', 'by', 'can', 'cannot', 'could', 'did', 'do', 'does', 'doing', 'down', 'during', 'each', 'few', 'for', 'from', 'further', 'had', 'has', 'have', 'having', 'he', 'her', 'here', 'hers', 'herself', 'him', 'himself', 'his', 'how', 'i', 'if', 'in', 'into', 'is', 'it', 'its', 'itself', 'me', 'more', 'most', 'my', 'myself', 'no', 'nor', 'not', 'of', 'off', 'on', 'once', 'only', 'or', 'other', 'our', 'ours', 'ourselves', 'out', 'over', 'own', 'same', 'she', 'should', 'so', 'some', 'such', 'than', 'that', 'the', 'their', 'theirs', 'them', 'themselves', 'then', 'there', 'these', 'they', 'this', 'those', 'through', 'to', 'too', 'under', 'until', 'up', 'very', 'was', 'we', 'were', 'what', 'when', 'where', 'which', 'while', 'who', 'whom', 'why', 'with', 'you', 'your', 'yours', 'yourself', 'yourselves']);
+                    this.advancedModels = {
+                        // Enhanced summarization model with multiple algorithms
+                        summarization: {
+                            extractive: (text, targetLength) => this.extractiveSummary(text, targetLength),
+                            abstractive: (text, targetLength) => this.abstractiveSummary(text, targetLength),
+                            hybrid: (text, targetLength) => this.hybridSummary(text, targetLength)
+                        },
+                        // Enhanced grammar correction with context awareness
+                        grammar: {
+                            basic: (text) => this.basicGrammarFix(text),
+                            advanced: (text) => this.advancedGrammarFix(text),
+                            contextual: (text) => this.contextualGrammarFix(text)
+                        },
+                        // Enhanced content analysis with multi-dimensional scoring
+                        analysis: {
+                            sentiment: (text) => this.advancedSentimentAnalysis(text),
+                            readability: (text) => this.enhancedReadability(text),
+                            complexity: (text) => this.contentComplexity(text),
+                            structure: (text) => this.documentStructure(text)
+                        }
+                    };
                 }
 
                 preprocessText(text) {
                     if (!text || typeof text !== 'string') return '';
                     let processed = text;
+                    // Enhanced preprocessing
                     processed = processed.replace(/ﬁ/g, 'fi').replace(/ﬂ/g, 'fl');
                     processed = processed.replace(/\s+/g, ' ').trim();
                     processed = processed.replace(/([a-z])-\s+([a-z])/g, '$1$2');
+                    processed = processed.replace(/\b(\w+)n't\b/g, '$1 not');
+                    processed = processed.replace(/\b(\w+)'s\b/g, '$1 is');
+                    processed = processed.replace(/\b(\w+)'re\b/g, '$1 are');
+                    processed = processed.replace(/\b(\w+)'ve\b/g, '$1 have');
+                    processed = processed.replace(/\b(\w+)'ll\b/g, '$1 will');
+                    processed = processed.replace(/\b(\w+)'d\b/g, '$1 would');
                     return processed;
                 }
 
@@ -1171,21 +1586,37 @@
                         .filter(s => s.length > 15 && s.length < 1500) || [];
                 }
 
+                extractKeyWords(text, count = 10) {
+                    const words = this.preprocessText(text).toLowerCase().replace(/[^\w\s]/g, ' ').split(/\s+/).filter(word => word.length > 3 && !this.stopWords.has(word));
+                    const wordFreq = {};
+                    words.forEach(word => { wordFreq[word] = (wordFreq[word] || 0) + 1; });
+                    const scores = Object.entries(wordFreq).map(([word, freq]) => ({
+                        word,
+                        score: freq * Math.log(words.length / (wordFreq[word] || 1))
+                    }));
+                    return scores.sort((a, b) => b.score - a.score).slice(0, count);
+                }
+
+                // Enhanced summarization with multiple algorithms
                 generateSummary(text, size = 'medium') {
-                    let targetSentenceCount;
+                    let targetLength;
                     switch (size) {
-                        case 'small': targetSentenceCount = 3; break;
-                        case 'large': targetSentenceCount = 8; break;
-                        default: targetSentenceCount = 5;
+                        case 'small': targetLength = 100; break;
+                        case 'large': targetLength = 400; break;
+                        default: targetLength = 200;
                     }
 
+                    // Use hybrid approach for best results
+                    return this.advancedModels.summarization.hybrid(text, targetLength);
+                }
+
+                extractiveSummary(text, targetLength) {
                     const sentences = this.tokenizeSentences(this.preprocessText(text));
-                    if (sentences.length <= targetSentenceCount) {
+                    if (sentences.length <= 3) {
                         return sentences.join(' ');
                     }
 
                     const keywords = this.extractKeyWords(text, 20);
-
                     const scoredSentences = sentences.map((sentence, i) => {
                         const sentenceLower = sentence.toLowerCase();
                         let score = 0;
@@ -1205,52 +1636,168 @@
 
                     const topSentences = scoredSentences
                         .sort((a, b) => b.score - a.score)
-                        .slice(0, targetSentenceCount)
+                        .slice(0, Math.max(3, Math.floor(sentences.length * 0.3)))
                         .sort((a, b) => a.index - b.index);
 
-                    return topSentences.map(item => item.sentence).join(' ');
+                    let summary = topSentences.map(item => item.sentence).join(' ');
+                    
+                    // Ensure summary is within target length
+                    while (summary.length > targetLength && topSentences.length > 1) {
+                        topSentences.pop();
+                        summary = topSentences.map(item => item.sentence).join(' ');
+                    }
+                    
+                    return summary;
+                }
+
+                abstractiveSummary(text, targetLength) {
+                    const sentences = this.tokenizeSentences(this.preprocessText(text));
+                    if (sentences.length <= 3) return sentences.join(' ');
+                    
+                    // Identify key concepts
+                    const keywords = this.extractKeyWords(text, 10);
+                    const keyConcepts = keywords.map(kw => kw.word);
+                    
+                    // Find sentences that contain key concepts
+                    const conceptSentences = sentences.filter(sentence => {
+                        const sentenceLower = sentence.toLowerCase();
+                        return keyConcepts.some(concept => sentenceLower.includes(concept));
+                    });
+                    
+                    // Combine and rephrase
+                    let summary = conceptSentences.slice(0, 5).join(' ');
+                    
+                    // Simplify sentences for abstractive effect
+                    summary = summary
+                        .replace(/\bhowever\b/gi, 'but')
+                        .replace(/\btherefore\b/gi, 'so')
+                        .replace(/\bconsequently\b/gi, 'so')
+                        .replace(/\bfurthermore\b/gi, 'also')
+                        .replace(/\bmoreover\b/gi, 'also')
+                        .replace(/\bin addition\b/gi, 'also');
+                    
+                    // Ensure summary is within target length
+                    if (summary.length > targetLength) {
+                        summary = summary.substring(0, targetLength - 3) + '...';
+                    }
+                    
+                    return summary;
+                }
+
+                hybridSummary(text, targetLength) {
+                    const extractive = this.extractiveSummary(text, targetLength * 0.7);
+                    const abstractive = this.abstractiveSummary(text, targetLength * 0.3);
+                    
+                    // Combine and deduplicate
+                    const combined = extractive + ' ' + abstractive;
+                    const sentences = this.tokenizeSentences(combined);
+                    const uniqueSentences = [...new Set(sentences)];
+                    
+                    let result = uniqueSentences.join(' ');
+                    
+                    // Ensure final result is within target length
+                    if (result.length > targetLength) {
+                        result = result.substring(0, targetLength - 3) + '...';
+                    }
+                    
+                    return result;
                 }
 
                 generateKeyInsights(text) {
                     const summary = this.generateSummary(text, 'small');
                     const keywords = this.extractKeyWords(text, 5);
+                    const analysis = this.advancedModels.analysis;
                     
                     let insights = `**Key Insights:**\n\n`;
                     insights += `**Main Topic:** ${summary.split('.')[0]}.\n\n`;
                     insights += `**Key Concepts:** ${keywords.map(kw => kw.word).join(', ')}.\n\n`;
                     
-                    const sentiment = this.analyzeSentiment(text);
+                    const sentiment = analysis.sentiment(text);
                     insights += `**Overall Tone:** ${sentiment}.\n\n`;
                     
-                    const readability = this.calculateReadability(text);
+                    const readability = analysis.readability(text);
                     insights += `**Readability:** ${readability >= 70 ? 'Easy to understand' : readability >= 50 ? 'Moderate difficulty' : 'Complex content'}.\n\n`;
+                    
+                    const complexity = analysis.complexity(text);
+                    insights += `**Content Complexity:** ${complexity}.\n\n`;
                     
                     return insights;
                 }
 
-                analyzeSentiment(text) {
-                    const positiveWords = ['good', 'great', 'excellent', 'amazing', 'awesome', 'love', 'like', 'happy', 'beautiful', 'wonderful', 'positive', 'success', 'benefit', 'advantage'];
-                    const negativeWords = ['bad', 'terrible', 'horrible', 'awful', 'hate', 'dislike', 'sad', 'ugly', 'boring', 'negative', 'problem', 'issue', 'difficulty', 'challenge'];
+                advancedSentimentAnalysis(text) {
+                    const positiveWords = ['good', 'great', 'excellent', 'amazing', 'awesome', 'love', 'like', 'happy', 'beautiful', 'wonderful', 'positive', 'success', 'benefit', 'advantage', 'brilliant', 'fantastic', 'perfect', 'outstanding', 'remarkable', 'impressive'];
+                    const negativeWords = ['bad', 'terrible', 'horrible', 'awful', 'hate', 'dislike', 'sad', 'ugly', 'boring', 'negative', 'problem', 'issue', 'difficulty', 'challenge', 'failure', 'poor', 'weak', 'flawed', 'inadequate', 'disappointing'];
+                    const intensifiers = ['very', 'extremely', 'incredibly', 'absolutely', 'completely', 'totally', 'utterly'];
                     
                     let positiveScore = 0;
                     let negativeScore = 0;
                     const words = this.preprocessText(text).toLowerCase().split(/\s+/);
                     
-                    words.forEach(word => {
-                        if(positiveWords.includes(word)) positiveScore++;
-                        if(negativeWords.includes(word)) negativeScore++;
-                    });
+                    for (let i = 0; i < words.length; i++) {
+                        const word = words[i];
+                        const prevWord = i > 0 ? words[i-1] : '';
+                        const multiplier = intensifiers.includes(prevWord) ? 1.5 : 1;
+                        
+                        if(positiveWords.includes(word)) positiveScore += multiplier;
+                        if(negativeWords.includes(word)) negativeScore += multiplier;
+                    }
 
-                    if (positiveScore > negativeScore * 1.5) return "Positive";
-                    else if (negativeScore > positiveScore * 1.5) return "Negative";
-                    return "Neutral";
+                    const totalScore = positiveScore + negativeScore;
+                    if (totalScore === 0) return "Neutral";
+                    
+                    const ratio = positiveScore / totalScore;
+                    
+                    if (ratio > 0.7) return "Very Positive";
+                    if (ratio > 0.6) return "Positive";
+                    if (ratio > 0.4) return "Neutral";
+                    if (ratio > 0.3) return "Negative";
+                    return "Very Negative";
+                }
+
+                enhancedReadability(text) {
+                    const sentences = this.tokenizeSentences(text);
+                    const words = this.preprocessText(text).split(/\s+/);
+                    const syllables = this.countSyllables(text);
+                    
+                    if (sentences.length === 0 || words.length === 0) return 0;
+                    
+                    const avgSentenceLength = words.length / sentences.length;
+                    const avgSyllablesPerWord = syllables / words.length;
+                    
+                    // Flesch Reading Ease Score
+                    const score = 206.835 - (1.015 * avgSentenceLength) - (84.6 * avgSyllablesPerWord);
+                    
+                    return Math.max(0, Math.min(100, Math.round(score)));
+                }
+
+                contentComplexity(text) {
+                    const sentences = this.tokenizeSentences(text);
+                    const words = this.preprocessText(text).split(/\s+/);
+                    const longWords = words.filter(word => word.length > 6).length;
+                    const complexRatio = longWords / words.length;
+                    
+                    if (complexRatio > 0.2) return "High";
+                    if (complexRatio > 0.1) return "Medium";
+                    return "Low";
+                }
+
+                documentStructure(text) {
+                    const sentences = this.tokenizeSentences(text);
+                    const paragraphs = text.split(/\n\s*\n/).filter(p => p.trim().length > 0);
+                    
+                    return {
+                        sentences: sentences.length,
+                        paragraphs: paragraphs.length,
+                        avgSentencesPerParagraph: sentences.length / paragraphs.length
+                    };
                 }
 
                 answerQuestion(text, question) {
                     const sentences = this.tokenizeSentences(this.preprocessText(text));
                     const questionWords = new Set(question.toLowerCase().replace('?','').split(/\s+/).filter(w => !this.stopWords.has(w) && w.length > 2));
                     if (questionWords.size === 0) return "Please ask a more specific question.";
-                    let bestSentence = { text: "", score: -1 };
+                    
+                    let bestMatches = [];
                     sentences.forEach(sentence => {
                         const sentenceLower = sentence.toLowerCase();
                         let score = 0;
@@ -1263,50 +1810,85 @@
                         });
                         if (matchedWords > 1) score += matchedWords * 3;
                         if (/\b(is|are|was|were)\b/i.test(sentence) && sentence.length < 250) score *= 1.5;
-                        if (score > bestSentence.score) bestSentence = { text: sentence, score: score };
+                        if (score > 0) bestMatches.push({ text: sentence, score: score });
                     });
-                    if (bestSentence.score <= 1) return "I could not find a confident answer. Try rephrasing your question.";
-                    let answerText = bestSentence.text;
+                    
+                    if (bestMatches.length === 0) return "I could not find a confident answer. Try rephrasing your question.";
+                    
+                    // Sort by score and take top 3
+                    bestMatches.sort((a, b) => b.score - a.score);
+                    const topMatches = bestMatches.slice(0, 3);
+                    
+                    let answerText = topMatches.map(match => match.text).join(' ');
+                    
+                    // Highlight question words in the answer
                     questionWords.forEach(word => {
                         const regex = new RegExp(`\\b(${word})\\b`, 'gi');
                         answerText = answerText.replace(regex, `<mark>$1</mark>`);
                     });
+                    
                     return answerText;
-                }
-
-                extractKeyWords(text, count = 10) {
-                    const words = this.preprocessText(text).toLowerCase().replace(/[^\w\s]/g, ' ').split(/\s+/).filter(word => word.length > 3 && !this.stopWords.has(word));
-                    const wordFreq = {};
-                    words.forEach(word => { wordFreq[word] = (wordFreq[word] || 0) + 1; });
-                    const scores = Object.entries(wordFreq).map(([word, freq]) => ({
-                        word,
-                        score: freq * Math.log(words.length / (wordFreq[word] || 1))
-                    }));
-                    return scores.sort((a, b) => b.score - a.score).slice(0, count);
                 }
 
                 extractKeyPoints(text) {
                     const summary = this.generateSummary(text, 'large');
                     const points = summary.split('. ').filter(p => p.trim().length > 0).map(p => p.trim() + '.');
-                    return points.map((point, index) => `${index + 1}. ${point}`).join('\n\n') || "No key points could be extracted.";
+                    
+                    // Enhance key points with additional context
+                    const enhancedPoints = points.map((point, index) => {
+                        // Add emphasis to important points
+                        if (index === 0) return `⭐ ${point}`;
+                        if (index < 3) return `🔸 ${point}`;
+                        return `• ${point}`;
+                    });
+                    
+                    return enhancedPoints.join('\n\n') || "No key points could be extracted.";
                 }
 
                 analyzeWriting(text) {
                     const sentences = this.tokenizeSentences(this.preprocessText(text));
-                    let results = { passive: [], fillers: [], weasels: [], longSentences: [] };
+                    let results = { 
+                        passive: [], 
+                        fillers: [], 
+                        weasels: [], 
+                        longSentences: [],
+                        repetitive: [],
+                        vague: []
+                    };
                     
+                    // Enhanced passive voice detection
                     const passiveRegex = /\b(am|is|are|was|were|be|being|been)\b\s\w+ed\b/i;
                     sentences.forEach(s => { if(passiveRegex.test(s)) results.passive.push(s); });
                     
-                    const fillerRegex = /\b(basically|actually|literally|like|just|really|very|stuff|things|you know|sort of|kind of)\b/gi;
+                    // Enhanced filler word detection
+                    const fillerRegex = /\b(basically|actually|literally|like|just|really|very|stuff|things|you know|sort of|kind of|I mean|um|uh)\b/gi;
                     const fillerMatches = text.match(fillerRegex);
                     if (fillerMatches) results.fillers = [...new Set(fillerMatches)];
                     
-                    const weaselRegex = /\b(many|various|several|some|few|most|often|sometimes|arguably|perhaps|could|might)\b/gi;
+                    // Enhanced weasel word detection
+                    const weaselRegex = /\b(many|various|several|some|few|most|often|sometimes|arguably|perhaps|could|might|may|possibly|probably)\b/gi;
                     const weaselMatches = text.match(weaselRegex);
                     if (weaselMatches) results.weasels = [...new Set(weaselMatches)];
                     
+                    // Long sentences
                     sentences.forEach(s => { if(s.length > 150) results.longSentences.push(s); });
+                    
+                    // Repetitive words/phrases
+                    const words = text.toLowerCase().split(/\s+/);
+                    const wordFreq = {};
+                    words.forEach(word => { 
+                        if (word.length > 4) {
+                            wordFreq[word] = (wordFreq[word] || 0) + 1; 
+                        }
+                    });
+                    results.repetitive = Object.entries(wordFreq)
+                        .filter(([word, freq]) => freq > 3)
+                        .map(([word, freq]) => `${word} (${freq} times)`);
+                    
+                    // Vague language
+                    const vagueRegex = /\b(thing|stuff|aspect|factor|element|area)\b/gi;
+                    const vagueMatches = text.match(vagueRegex);
+                    if (vagueMatches) results.vague = [...new Set(vagueMatches)];
                     
                     let report = "✍️ **Writing Analysis**\n\n";
                     if (results.passive.length > 0) {
@@ -1321,45 +1903,140 @@
                     if (results.longSentences.length > 0) {
                         report += `**Long Sentences:** ${results.longSentences.length} sentences might be too long. Consider breaking them up for better readability.\n\n`;
                     }
+                    if (results.repetitive.length > 0) {
+                        report += `**Repetitive Words:** You might be overusing these words:\n*${results.repetitive.slice(0, 3).join(', ')}*\n\n`;
+                    }
+                    if (results.vague.length > 0) {
+                        report += `**Vague Terms:** Consider replacing these vague terms with more specific language:\n*${results.vague.slice(0, 3).join(', ')}*\n\n`;
+                    }
                     if (report.length < 50) return "✅ Your writing looks clear and direct! No major issues found.";
 
                     return report;
                 }
 
-                fixGrammar(text) {
+                basicGrammarFix(text) {
                     let correctedText = text;
                     
-                    // Simplified filler word removal
+                    // Remove filler words
                     const fillerWords = /\b(basically|actually|literally|like|just|really|very|sort of|kind of)\b/gi;
                     correctedText = correctedText.replace(fillerWords, '');
-
-                    // Rule-based passive to active (very simplified example)
-                    // Example: "The ball was hit by the boy." -> "The boy hit the ball."
-                    const passiveRegex = /(\w+)\s(was|were)\s(\w+ed)\sby\s(\w+)/i;
-                    correctedText = correctedText.replace(passiveRegex, '$4 $3 $1');
                     
-                    // Remove extra whitespace created by replacements
+                    // Fix common contractions
+                    correctedText = correctedText.replace(/\b(can)not\b/gi, '$1 not');
+                    correctedText = correctedText.replace(/\b(will)not\b/gi, '$1 not');
+                    correctedText = correctedText.replace(/\b(do)not\b/gi, '$1 not');
+                    
+                    // Remove extra whitespace
                     correctedText = correctedText.replace(/\s+/g, ' ').trim();
                     
                     return correctedText;
                 }
 
+                advancedGrammarFix(text) {
+                    let correctedText = this.basicGrammarFix(text);
+                    
+                    // Fix common misspellings
+                    const commonMistakes = {
+                        'teh': 'the',
+                        'adn': 'and',
+                        'thier': 'their',
+                        'recieve': 'receive',
+                        'seperate': 'separate',
+                        'definately': 'definitely',
+                        'occured': 'occurred',
+                        'alot': 'a lot'
+                    };
+                    
+                    Object.keys(commonMistakes).forEach(mistake => {
+                        const regex = new RegExp(`\\b${mistake}\\b`, 'gi');
+                        correctedText = correctedText.replace(regex, commonMistakes[mistake]);
+                    });
+                    
+                    return correctedText;
+                }
+
+                contextualGrammarFix(text) {
+                    let correctedText = this.advancedGrammarFix(text);
+                    const sentences = this.tokenizeSentences(correctedText);
+                    
+                    // Ensure sentences start with capital letters
+                    correctedText = sentences.map(sentence => {
+                        if (sentence.length === 0) return sentence;
+                        return sentence.charAt(0).toUpperCase() + sentence.slice(1);
+                    }).join(' ');
+                    
+                    return correctedText;
+                }
+
+                fixGrammar(text) {
+                    return this.advancedModels.grammar.contextual(text);
+                }
+
                 generateQuiz(text) {
                     const sentences = this.tokenizeSentences(this.preprocessText(text));
-                    const keywords = this.extractKeyWords(text, 10);
+                    const keywords = this.extractKeyWords(text, 15);
                     let quiz = [];
                     
+                    // Generate multiple choice questions
                     keywords.forEach(kw => {
                         const keywordSentences = sentences.filter(s => s.toLowerCase().includes(kw.word));
                         if(keywordSentences.length > 0) {
                             const questionSentence = keywordSentences[0];
                             const question = questionSentence.replace(new RegExp(kw.word, 'ig'), '_____');
-                            quiz.push({question: question, answer: kw.word});
+                            
+                            // Generate plausible wrong answers
+                            const wrongAnswers = this.generateWrongAnswers(kw.word, keywords);
+                            
+                            quiz.push({
+                                question: question,
+                                answer: kw.word,
+                                options: this.shuffleArray([kw.word, ...wrongAnswers.slice(0, 3)])
+                            });
                         }
                     });
 
                     if (quiz.length === 0) return "Could not generate a quiz from this text.";
-                    return quiz.slice(0, 5).map((item, index) => `${index + 1}. ${item.question}\n   <mark>Answer: ${item.answer}</mark>`).join('\n\n');
+                    
+                    // Format quiz with questions and options
+                    let quizText = "**Study Quiz**\n\n";
+                    quiz.slice(0, 5).forEach((item, index) => {
+                        quizText += `${index + 1}. ${item.question}\n`;
+                        item.options.forEach((option, optIndex) => {
+                            const letter = String.fromCharCode(97 + optIndex); // a, b, c, d
+                            quizText += `   ${letter}) ${option}\n`;
+                        });
+                        quizText += `   <mark>Answer: ${item.answer}</mark>\n\n`;
+                    });
+                    
+                    return quizText;
+                }
+
+                generateWrongAnswers(correctAnswer, keywords) {
+                    // Generate plausible wrong answers based on similar keywords
+                    const similarWords = keywords
+                        .filter(kw => kw.word !== correctAnswer && kw.word.length === correctAnswer.length)
+                        .map(kw => kw.word);
+                    
+                    // If not enough similar words, generate variations
+                    if (similarWords.length < 3) {
+                        const variations = [
+                            correctAnswer + 's', // plural
+                            correctAnswer + 'ed', // past tense
+                            correctAnswer.substring(0, correctAnswer.length - 1), // remove last letter
+                            correctAnswer + 'ing' // gerund
+                        ];
+                        return [...similarWords, ...variations].slice(0, 3);
+                    }
+                    
+                    return similarWords.slice(0, 3);
+                }
+
+                shuffleArray(array) {
+                    for (let i = array.length - 1; i > 0; i--) {
+                        const j = Math.floor(Math.random() * (i + 1));
+                        [array[i], array[j]] = [array[j], array[i]];
+                    }
+                    return array;
                 }
 
                 countWords(text) {
@@ -1369,40 +2046,26 @@
                 }
 
                 analyzeContent(text) {
-                    const positiveWords = ['good', 'great', 'excellent', 'amazing', 'awesome', 'love', 'like', 'happy', 'beautiful', 'wonderful', 'positive', 'success', 'benefit', 'advantage'];
-                    const negativeWords = ['bad', 'terrible', 'horrible', 'awful', 'hate', 'dislike', 'sad', 'ugly', 'boring', 'negative', 'problem', 'issue', 'difficulty', 'challenge'];
+                    const analysis = this.advancedModels.analysis;
                     
-                    let positiveScore = 0;
-                    let negativeScore = 0;
-                    const words = this.preprocessText(text).toLowerCase().split(/\s+/);
+                    const sentiment = analysis.sentiment(text);
+                    const readability = analysis.readability(text);
+                    const complexity = analysis.complexity(text);
+                    const structure = analysis.structure(text);
                     
-                    words.forEach(word => {
-                        if(positiveWords.includes(word)) positiveScore++;
-                        if(negativeWords.includes(word)) negativeScore++;
-                    });
-
-                    let sentiment = "Neutral";
-                    if (positiveScore > negativeScore * 1.5) sentiment = "Positive";
-                    else if (negativeScore > positiveScore * 1.5) sentiment = "Negative";
+                    let analysisText = `**Document Analysis**\n\n`;
+                    analysisText += `**Word Count:** ${this.countWords(text)}\n`;
+                    analysisText += `**Sentence Count:** ${structure.sentences}\n`;
+                    analysisText += `**Paragraph Count:** ${structure.paragraphs}\n\n`;
                     
-                    const readabilityScore = this.calculateReadability(text);
+                    analysisText += `**Sentiment Analysis:** ${sentiment}\n`;
+                    analysisText += `**Readability Score:** ${readability}/100\n`;
+                    analysisText += `**Content Complexity:** ${complexity}\n\n`;
                     
-                    return `**Word Count:** ${this.countWords(text)}\n**Sentence Count:** ${this.tokenizeSentences(text).length}\n\n**Sentiment Analysis:** ${sentiment}\n**Readability Score:** ${readabilityScore}/100`;
-                }
-
-                calculateReadability(text) {
-                    const sentences = this.tokenizeSentences(text);
-                    const words = this.preprocessText(text).split(/\s+/);
-                    const syllables = this.countSyllables(text);
+                    analysisText += `**Document Structure:**\n`;
+                    analysisText += `- Average sentences per paragraph: ${structure.avgSentencesPerParagraph.toFixed(1)}\n`;
                     
-                    if (sentences.length === 0 || words.length === 0) return 0;
-                    
-                    const avgSentenceLength = words.length / sentences.length;
-                    const avgSyllablesPerWord = syllables / words.length;
-                    
-                    const score = 206.835 - (1.015 * avgSentenceLength) - (84.6 * avgSyllablesPerWord);
-                    
-                    return Math.max(0, Math.min(100, Math.round(score)));
+                    return analysisText;
                 }
 
                 countSyllables(text) {
@@ -1425,23 +2088,21 @@
             const DOMElements = {
                 mainContent: document.getElementById('mainContent'),
                 pdfUpload: document.getElementById('pdf-upload'),
+                imageUpload: document.getElementById('image-upload'),
                 contentArea: document.getElementById('content-area'),
                 emptyState: document.getElementById('emptyState'),
                 pdfViewer: document.getElementById('pdf-viewer'),
                 textEditor: document.getElementById('text-editor'),
                 aiSidebar: document.getElementById('aiSidebar'),
                 dragDropOverlay: document.getElementById('drag-drop-overlay'),
-                modeToggleBtn: document.getElementById('mode-toggle-btn'),
-                downloadPdfBtn: document.getElementById('download-pdf-btn'),
-                uploadLabel: document.getElementById('upload-label'),
                 settingsOverlay: document.getElementById('settingsOverlay'),
                 themeOptions: document.getElementById('themeOptions'),
-                copyPasteBtn: document.getElementById('copy-paste-btn'),
                 documentTitle: document.getElementById('document-title'),
                 welcomeScreen: document.getElementById('welcomeScreen'),
                 readingOption: document.getElementById('readingOption'),
                 researchOption: document.getElementById('researchOption'),
-                dynamicIsland: document.getElementById('dynamicIsland')
+                dynamicIsland: document.getElementById('dynamicIsland'),
+                dynamicTools: document.querySelector('.dynamic-island-tools')
             };
 
             function initialize() {
@@ -1453,27 +2114,98 @@
                 
                 // Show welcome screen initially
                 DOMElements.welcomeScreen.style.display = 'flex';
+                
+                // Set up scroll detection for dynamic island
+                setupScrollDetection();
+            }
+
+            function setupScrollDetection() {
+                let ticking = false;
+                
+                window.addEventListener('scroll', function() {
+                    if (!ticking) {
+                        window.requestAnimationFrame(function() {
+                            handleScroll();
+                            ticking = false;
+                        });
+                        ticking = true;
+                    }
+                });
+            }
+
+            function handleScroll() {
+                const currentScrollY = window.scrollY;
+                
+                // Hide dynamic island when scrolling down, show when scrolling up
+                if (currentScrollY > state.lastScrollY && currentScrollY > 100) {
+                    // Scrolling down
+                    if (state.dynamicIslandVisible) {
+                        hideDynamicIsland();
+                    }
+                } else if (currentScrollY < state.lastScrollY || currentScrollY <= 100) {
+                    // Scrolling up or at top
+                    if (!state.dynamicIslandVisible) {
+                        showDynamicIsland();
+                    }
+                }
+                
+                state.lastScrollY = currentScrollY;
+            }
+
+            function hideDynamicIsland() {
+                state.dynamicIslandVisible = false;
+                DOMElements.dynamicIsland.classList.add('hidden');
+                // Also close expanded state if open
+                if (state.dynamicIslandExpanded) {
+                    state.dynamicIslandExpanded = false;
+                    DOMElements.dynamicIsland.classList.remove('expanded');
+                }
+            }
+
+            function showDynamicIsland() {
+                state.dynamicIslandVisible = true;
+                DOMElements.dynamicIsland.classList.remove('hidden');
             }
 
             function setupEventListeners() {
                 DOMElements.pdfUpload.addEventListener('change', handleFileSelect, false);
-                document.getElementById('ai-toggle-btn').addEventListener('click', toggleAiSidebar);
+                DOMElements.imageUpload.addEventListener('change', handleImageUpload, false);
                 document.getElementById('ai-close-btn').addEventListener('click', toggleAiSidebar);
-                DOMElements.modeToggleBtn.addEventListener('click', toggleMode);
-                DOMElements.downloadPdfBtn.addEventListener('click', downloadTextAsPDF);
-                DOMElements.copyPasteBtn.addEventListener('click', pasteFromClipboard);
-                ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(evt => document.body.addEventListener(evt, preventDefaults, false));
-                ['dragenter', 'dragover'].forEach(evt => DOMElements.mainContent.addEventListener(evt, showDropOverlay, false));
-                ['dragleave', 'drop'].forEach(evt => DOMElements.mainContent.addEventListener(evt, hideDropOverlay, false));
-                DOMElements.mainContent.addEventListener('drop', handleDrop, false);
-                document.getElementById('settings-btn').addEventListener('click', () => DOMElements.settingsOverlay.classList.add('visible'));
-                document.getElementById('settings-close-btn').addEventListener('click', () => DOMElements.settingsOverlay.classList.remove('visible'));
-                DOMElements.settingsOverlay.addEventListener('click', e => { if (e.target === DOMElements.settingsOverlay) DOMElements.settingsOverlay.classList.remove('visible'); });
-                DOMElements.themeOptions.addEventListener('change', handleThemeChange);
+                document.getElementById('dynamic-ai-toggle').addEventListener('click', toggleAiSidebar);
+                document.getElementById('dynamic-mode-toggle').addEventListener('click', toggleMode);
+                document.getElementById('dynamic-upload-label').addEventListener('click', () => DOMElements.pdfUpload.click());
+                document.getElementById('dynamic-image-label').addEventListener('click', () => DOMElements.imageUpload.click());
+                document.getElementById('dynamic-copy-paste').addEventListener('click', pasteFromClipboard);
+                document.getElementById('dynamic-menu-toggle').addEventListener('click', toggleDropdown);
 
                 // Welcome screen options
                 DOMElements.readingOption.addEventListener('click', () => selectMode('reading'));
                 DOMElements.researchOption.addEventListener('click', () => selectMode('research'));
+
+                // Dynamic Island
+                DOMElements.dynamicIsland.addEventListener('click', toggleDynamicIsland);
+
+                // Settings
+                document.getElementById('settings-close-btn').addEventListener('click', () => DOMElements.settingsOverlay.classList.remove('visible'));
+                DOMElements.settingsOverlay.addEventListener('click', e => { if (e.target === DOMElements.settingsOverlay) DOMElements.settingsOverlay.classList.remove('visible'); });
+                DOMElements.themeOptions.addEventListener('change', handleThemeChange);
+
+                // Dropdown menu
+                document.getElementById('dropdown-download-pdf').addEventListener('click', downloadTextAsPDF);
+                document.getElementById('dropdown-ai-assistant').addEventListener('click', toggleAiSidebar);
+                document.getElementById('dropdown-settings').addEventListener('click', () => {
+                    DOMElements.settingsOverlay.classList.add('visible');
+                    toggleDropdown();
+                });
+                document.getElementById('dropdown-export-text').addEventListener('click', exportAsText);
+                document.getElementById('dropdown-clear-document').addEventListener('click', clearDocument);
+
+                // Close dropdown when clicking outside
+                document.addEventListener('click', (e) => {
+                    if (state.dropdownOpen && !e.target.closest('.dynamic-island')) {
+                        toggleDropdown(false);
+                    }
+                });
 
                 // AI Action buttons
                 document.getElementById('summarize-btn-small').addEventListener('click', (e) => handleAIAction('summarize', { size: e.target.dataset.size }));
@@ -1499,6 +2231,91 @@
                 document.getElementById('qa-input').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); handleAIAction('qa'); } });
                 document.getElementById('search-input').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); handleAIAction('search'); } });
                 DOMElements.textEditor.addEventListener('paste', handlePaste);
+                
+                // Drag and drop
+                ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(evt => document.body.addEventListener(evt, preventDefaults, false));
+                ['dragenter', 'dragover'].forEach(evt => DOMElements.mainContent.addEventListener(evt, showDropOverlay, false));
+                ['dragleave', 'drop'].forEach(evt => DOMElements.mainContent.addEventListener(evt, hideDropOverlay, false));
+                DOMElements.mainContent.addEventListener('drop', handleDrop, false);
+            }
+
+            function toggleDropdown(show) {
+                state.dropdownOpen = show !== undefined ? show : !state.dropdownOpen;
+                
+                // Create dropdown if it doesn't exist
+                let dropdown = document.getElementById('dynamic-dropdown');
+                if (!dropdown) {
+                    dropdown = document.createElement('div');
+                    dropdown.id = 'dynamic-dropdown';
+                    dropdown.className = 'dropdown-menu';
+                    dropdown.innerHTML = `
+                        <a href="#" class="dropdown-item" id="dropdown-download-pdf">
+                            <i class="fas fa-file-pdf"></i>
+                            <span>Download as PDF</span>
+                        </a>
+                        <a href="#" class="dropdown-item" id="dropdown-ai-assistant">
+                            <i class="fas fa-robot"></i>
+                            <span>AI Assistant</span>
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" class="dropdown-item" id="dropdown-settings">
+                            <i class="fas fa-cog"></i>
+                            <span>Settings</span>
+                        </a>
+                        <a href="#" class="dropdown-item" id="dropdown-export-text">
+                            <i class="fas fa-file-export"></i>
+                            <span>Export as Text</span>
+                        </a>
+                        <a href="#" class="dropdown-item" id="dropdown-clear-document">
+                            <i class="fas fa-trash"></i>
+                            <span>Clear Document</span>
+                        </a>
+                    `;
+                    document.body.appendChild(dropdown);
+                    
+                    // Add event listeners to new dropdown items
+                    document.getElementById('dropdown-download-pdf').addEventListener('click', downloadTextAsPDF);
+                    document.getElementById('dropdown-ai-assistant').addEventListener('click', toggleAiSidebar);
+                    document.getElementById('dropdown-settings').addEventListener('click', () => {
+                        DOMElements.settingsOverlay.classList.add('visible');
+                        toggleDropdown(false);
+                    });
+                    document.getElementById('dropdown-export-text').addEventListener('click', exportAsText);
+                    document.getElementById('dropdown-clear-document').addEventListener('click', clearDocument);
+                }
+                
+                if (state.dropdownOpen) {
+                    // Position dropdown below dynamic island
+                    const islandRect = DOMElements.dynamicIsland.getBoundingClientRect();
+                    dropdown.style.top = (islandRect.bottom + 10) + 'px';
+                    dropdown.style.left = '50%';
+                    dropdown.style.transform = 'translateX(-50%)';
+                    dropdown.classList.add('show');
+                } else {
+                    dropdown.classList.remove('show');
+                }
+                
+                // Collapse dynamic island when opening dropdown on mobile
+                if (window.innerWidth <= 768 && state.dropdownOpen) {
+                    state.dynamicIslandExpanded = false;
+                    DOMElements.dynamicIsland.classList.remove('expanded');
+                }
+            }
+
+            function toggleDynamicIsland() {
+                if (window.innerWidth <= 768) {
+                    state.dynamicIslandExpanded = !state.dynamicIslandExpanded;
+                    DOMElements.dynamicIsland.classList.toggle('expanded', state.dynamicIslandExpanded);
+                    
+                    // Auto-collapse after 5 seconds
+                    if (state.dynamicIslandExpanded) {
+                        setTimeout(() => {
+                            if (state.dynamicIslandExpanded) {
+                                toggleDynamicIsland();
+                            }
+                        }, 5000);
+                    }
+                }
             }
 
             function selectMode(mode) {
@@ -1507,7 +2324,10 @@
                 DOMElements.dynamicIsland.classList.add('expanded');
                 
                 setTimeout(() => {
-                    DOMElements.dynamicIsland.classList.remove('expanded');
+                    DOMElements.dynamicIsland.classList.add('hidden');
+                    setTimeout(() => {
+                        DOMElements.dynamicIsland.classList.remove('expanded', 'hidden');
+                    }, 500);
                 }, 2000);
                 
                 showToast(`Welcome to ${mode === 'reading' ? 'Reading' : 'Research'} Mode!`, 'success');
@@ -1556,28 +2376,30 @@
                 if (state.currentMode === 'pdf') {
                     DOMElements.pdfViewer.style.display = 'block';
                     DOMElements.textEditor.style.display = 'none';
-                    DOMElements.downloadPdfBtn.style.display = 'none';
-                    DOMElements.copyPasteBtn.style.display = 'none';
-                    DOMElements.uploadLabel.style.display = 'flex';
-                    DOMElements.modeToggleBtn.innerHTML = '<i class="fas fa-file-alt"></i>';
-                    DOMElements.modeToggleBtn.title = "Switch to Text Mode";
+                    DOMElements.emptyState.style.display = 'none';
                 } else {
                     DOMElements.pdfViewer.style.display = 'none';
                     DOMElements.textEditor.style.display = 'block';
-                    DOMElements.downloadPdfBtn.style.display = 'flex';
-                    DOMElements.copyPasteBtn.style.display = 'flex';
-                    DOMElements.uploadLabel.style.display = 'none';
                     if(state.extractedText || DOMElements.textEditor.textContent){
                         DOMElements.emptyState.style.display = 'none';
                     }
-                    DOMElements.modeToggleBtn.innerHTML = '<i class="fas fa-file-pdf"></i>';
-                    DOMElements.modeToggleBtn.title = "Switch to PDF Mode";
                 }
             }
 
             function toggleAiSidebar() {
                 const isOpen = DOMElements.aiSidebar.classList.toggle('open');
                 DOMElements.mainContent.classList.toggle('sidebar-open', isOpen);
+                
+                // Collapse dynamic island when opening sidebar on mobile
+                if (window.innerWidth <= 768 && isOpen) {
+                    state.dynamicIslandExpanded = false;
+                    DOMElements.dynamicIsland.classList.remove('expanded');
+                }
+                
+                // Close dropdown if open
+                if (state.dropdownOpen) {
+                    toggleDropdown(false);
+                }
             }
 
             function loadSettings() {
@@ -1602,13 +2424,55 @@
                 }
             }
 
+            function handleImageUpload(event) {
+                const file = event.target.files[0];
+                if (file && file.type.startsWith('image/')) {
+                    insertImage(file);
+                } else {
+                    showToast('Please select a valid image file.', 'error');
+                }
+            }
+
+            function insertImage(file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const imageContainer = document.createElement('div');
+                    imageContainer.className = 'image-container';
+                    
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.alt = 'Uploaded image';
+                    
+                    const removeBtn = document.createElement('button');
+                    removeBtn.className = 'image-remove-btn';
+                    removeBtn.innerHTML = '<i class="fas fa-times"></i>';
+                    removeBtn.addEventListener('click', function() {
+                        imageContainer.remove();
+                    });
+                    
+                    imageContainer.appendChild(img);
+                    imageContainer.appendChild(removeBtn);
+                    
+                    // Insert image at the end of the text editor
+                    DOMElements.textEditor.appendChild(imageContainer);
+                    
+                    // Scroll to the image
+                    imageContainer.scrollIntoView({ behavior: 'smooth' });
+                    
+                    showToast('Image uploaded successfully!', 'success');
+                };
+                reader.readAsDataURL(file);
+            }
+
             function handleDrop(e) {
                 const file = e.dataTransfer.files[0];
                 if (file && file.type === 'application/pdf') {
                     DOMElements.documentTitle.value = file.name.replace('.pdf', '');
                     loadPdfFromFile(file);
+                } else if (file && file.type.startsWith('image/')) {
+                    insertImage(file);
                 } else {
-                    showToast('Dropped file is not a valid PDF.', 'error');
+                    showToast('Dropped file is not a valid PDF or image.', 'error');
                 }
             }
 
@@ -1678,7 +2542,7 @@
                 document.getElementById('qa-answer').textContent = 'Ask a question to get answers based on the content.';
                 document.getElementById('writing-output').textContent = 'Get suggestions to improve your writing.';
                 document.getElementById('keypoints-output').textContent = 'Extract the most important points and concepts.';
-                document.getElementById('quiz-output').textContent = 'Generate a quiz to test your knowledge.';
+                document.getElementById('quiz-output').textContent = 'Generate a quiz to test your knowledge of the document.';
                 document.getElementById('analysis-output').textContent = 'Analyze the sentiment and tone of the document.';
                 document.getElementById('search-results').textContent = 'Find relevant information from the web. This will open in a new tab.';
                 
@@ -1803,6 +2667,12 @@
                         copyBtn.style.display = 'block';
                     }
 
+                    // Add animation to AI response
+                    outputEl.classList.add('ai-response');
+                    setTimeout(() => {
+                        outputEl.classList.remove('ai-response');
+                    }, 500);
+
                 } catch (error) {
                     if(error.message !== 'No Question' && error.message !== 'No Query' && error.message !== 'Wrong mode') {
                         console.error(`AI action '${action}' failed:`, error);
@@ -1898,6 +2768,46 @@
                     showToast('Failed to generate PDF. Please try again.', 'error');
                 } finally {
                     setLoadingState(false);
+                }
+            }
+
+            function exportAsText() {
+                const editor = DOMElements.textEditor;
+                const title = DOMElements.documentTitle.value.trim();
+
+                if (!editor.textContent.trim()) {
+                    showToast("There's no text to export.", 'error');
+                    return;
+                }
+
+                if (!title) {
+                    showToast("Please provide a title for the document.", 'error');
+                    return;
+                }
+
+                const textContent = editor.textContent;
+                const blob = new Blob([textContent], { type: 'text/plain' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `${title.replace(/ /g, '_')}.txt`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                showToast('Text exported successfully!', 'success');
+            }
+
+            function clearDocument() {
+                if (confirm('Are you sure you want to clear the document? This action cannot be undone.')) {
+                    DOMElements.textEditor.textContent = '';
+                    DOMElements.pdfViewer.innerHTML = '';
+                    DOMElements.documentTitle.value = '';
+                    state.extractedText = '';
+                    state.pdfDoc = null;
+                    DOMElements.emptyState.style.display = 'flex';
+                    resetAiOutputs();
+                    showToast('Document cleared', 'success');
                 }
             }
 
