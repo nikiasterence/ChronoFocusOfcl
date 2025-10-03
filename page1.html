@@ -194,7 +194,7 @@ select { background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xml
 .task-input-form { display: grid; gap: 18px; margin-bottom: 30px; grid-template-columns: 1fr; }
 .task-main-input { display: grid; grid-template-columns: 1fr auto; gap: 18px; }
 .task-options { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
-.task-filters { display: flex; gap: 12px; }
+.task-filters { display: flex; gap: 12px; flex-wrap: wrap; } /* Added flex-wrap */
 .task-filters button { background: none; color: var(--text-secondary); box-shadow: none; padding: 10px 18px; font-weight: 500; border: 1px solid var(--border-color); }
 .task-filters button:hover { background-color: var(--primary-light); color: var(--primary); }
 .task-filters button.active { background: var(--primary); color: #fff; border-color: var(--primary); }
@@ -212,7 +212,7 @@ li.completed { opacity: 0.6; background: transparent; }
 li.priority-important { background: var(--primary-light); font-weight: 500; border-left-color: var(--warning)!important;}
 .important-star { color: var(--warning); margin-right: 8px; }
 li.deleting { animation: fadeOutShrink 0.5s ease forwards; }
-.task-content { display: flex; align-items: center; gap: 15px; flex-grow: 1; }
+.task-content { display: flex; align-items: center; gap: 15px; flex-grow: 1; word-break: break-word; } /* Added word-break */
 .task-icon { width: 44px; height: 44px; border-radius: 16px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 1.3rem; background-color: var(--primary-light); color: var(--primary); }
 .task-actions { display: flex; gap: 10px; margin-left: auto; }
 .task-actions button { background: none; box-shadow: none; color: var(--secondary); width: 40px; height: 40px; padding: 0; font-size: 1.1rem; border-radius: 14px; }
@@ -222,7 +222,7 @@ li.deleting { animation: fadeOutShrink 0.5s ease forwards; }
 
 /* Calendar */
 .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 12px; }
-.calendar-day-name { font-weight: 600; color: var(--text-secondary); padding: 12px 0; text-align: center; }
+.calendar-day-name { font-weight: 600; color: var(--text-secondary); padding: 12px 0; text-align: center; font-size: 0.9em; }
 .calendar-day { height: 50px; border-radius: 18px; cursor: pointer; transition: var(--transition); border: 2px solid transparent; position: relative; display: flex; justify-content: center; align-items: center; font-weight: 500; }
 .calendar-day.other-month { opacity: 0.4; pointer-events: none; }
 .calendar-day:not(.other-month):hover { background-color: var(--primary-light); transform: scale(1.05); }
@@ -231,11 +231,12 @@ li.deleting { animation: fadeOutShrink 0.5s ease forwards; }
 .calendar-day.has-task::after { content: ''; position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%); width: 7px; height: 7px; border-radius: 50%; background-color: var(--primary); }
 .calendar-day.selected.has-task::after { background-color: #fff; }
 .calendar-nav { display: flex; gap: 5px; align-items: center;}
+#monthYear { margin: 0 10px; } /* Added margin for spacing */
 .calendar-nav button { padding: 0; width: 38px; height: 38px; border-radius: 50%; }
 
 /* --- Pomodoro Timer: ENHANCED --- */
 .pomodoro-section { text-align: center; }
-.pomodoro-modes { display: flex; justify-content: center; gap: 12px; margin-bottom: 20px; }
+.pomodoro-modes { display: flex; justify-content: center; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
 .pomodoro-modes button { background: none; color: var(--text-secondary); box-shadow: none; padding: 10px 20px; font-weight: 500; border: 1px solid var(--border-color); }
 .pomodoro-modes button:hover { background-color: var(--primary-light); color: var(--primary); }
 .pomodoro-modes button.active { background: var(--primary); color: #fff; border-color: var(--primary); }
@@ -305,22 +306,27 @@ li.deleting { animation: fadeOutShrink 0.5s ease forwards; }
   .task-main-input { grid-template-columns: 1fr; }
   .task-options { grid-template-columns: 1fr; }
   button, input, select { font-size: 0.95rem; }
-  #taskList li { padding: 15px; gap: 12px; border-radius: 16px; }
+  #taskList li { padding: 15px; gap: 12px; border-radius: 16px; flex-direction: column; align-items: stretch; } /* Make task list items stack */
+  .task-content { flex-direction: row; }
+  .task-actions { margin-left: 0; justify-content: flex-end; } /* Align buttons to the right */
+
   .task-icon { width: 38px; height: 38px; font-size: 1.1rem; border-radius: 12px;}
   .task-actions button { width: 36px; height: 36px; font-size: 0.9rem; }
  
   /* Calendar Compact Layout */
   .calendar-grid { gap: 5px; }
+  .calendar-day-name { font-size: 0.8em; padding: 8px 0; }
   .calendar-day { height: 42px; font-size: 0.9rem; border-radius: 14px;}
+  .calendar-day.has-task::after { width: 5px; height: 5px; bottom: 5px;}
 
   /* Pomodoro Timer smaller elements */
   .pomodoro-timer-circle { width: 200px; height: 200px; margin: 25px auto; }
   .pomodoro-progress-ring { width: 200px; height: 200px; }
-   .pomodoro-progress-ring circle { r: 92; cx: 100; cy: 100; }
+  .pomodoro-progress-ring circle { r: 92; cx: 100; cy: 100; }
   .pomodoro-timer-display { font-size: 3.2rem; }
   .pomodoro-controls button { width: 60px; height: 60px; }
   .pomodoro-controls #pomodoro-start-pause i { font-size: 1.6rem; }
-  .pomodoro-modes button { padding: 8px 16px; }
+  .pomodoro-modes button { padding: 8px 16px; font-size: 0.9em; }
 
   /* Floating button adjustment */
   .theme-fab { bottom: 20px; right: 20px; width: 60px; height: 60px; }
@@ -330,6 +336,29 @@ li.deleting { animation: fadeOutShrink 0.5s ease forwards; }
   .theme-palette { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 12px; }
   .theme-card-swatch { height: 55px; }
 }
+
+
+@media (max-width: 480px) {
+  body { padding: 15px; }
+  .app-header h1 { font-size: 2.2rem; }
+  .app-header p { font-size: 1rem; }
+
+  .task-filters { gap: 8px; justify-content: center; }
+  .task-filters button { padding: 8px 12px; font-size: 0.9rem; }
+  .section-header h2 { font-size: 1.3rem; gap: 10px; }
+
+  .calendar-grid { gap: 3px; }
+  .calendar-day { height: 38px; font-size: 0.8rem; border-radius: 10px; border-width: 1px; }
+
+  .pomodoro-timer-circle { width: 180px; height: 180px; }
+  .pomodoro-progress-ring { width: 180px; height: 180px; }
+  .pomodoro-progress-ring circle { r: 82; cx: 90; cy: 90; }
+  .pomodoro-timer-display { font-size: 2.8rem; }
+  
+  #taskInput, #addTaskBtn, .task-options select { padding-top: 12px; padding-bottom: 12px; }
+
+}
+
 
 </style>
 </head>
@@ -359,7 +388,7 @@ li.deleting { animation: fadeOutShrink 0.5s ease forwards; }
             </div>
         </a>
         <!-- NEW FEATURE: Added the Optichain AI Tools button as requested -->
-        <a href="page20.html" class="dock-button">
+        <a href="page22.html" class="dock-button">
             <i class="fa-solid fa-wand-magic-sparkles"></i>
             <div>
                 <h2>Optichain AI Tools</h2>
@@ -458,7 +487,7 @@ li.deleting { animation: fadeOutShrink 0.5s ease forwards; }
    
     <footer class="app-footer">
         <p>Your journey to focus begins now.</p>
-        <span>Zenith 1.0</span>
+        <span>Zenith 1.0 Beta 7</span>
     </footer>
 
 </div>
