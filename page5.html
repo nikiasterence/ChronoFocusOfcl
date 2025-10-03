@@ -6,667 +6,889 @@
     <link rel="icon" href="Chronofocus.png" type="image/x-icon">
     <title>Gridora - AI Document Assistant</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
     <!-- PDF & Download Libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        /* --- Themes & Variables --- */
+        :root {
+            --sidebar-width: min(90vw, 400px);
+            --header-height: 65px;
+            --border-radius: 24px;
+            --transition: all 0.3s ease-in-out;
+            --font-family: 'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif;
+            --z-overlay: 1000;
+            --z-sidebar: 1001;
+            --z-modal: 2000;
+            --dynamic-island-height: 40px;
+        }
 
-<style>
-    /* --- Themes & Variables --- */
-    :root {
-        --sidebar-width: min(90vw, 400px);
-        --header-height: 65px;
-        --border-radius: 16px;
-        --transition: all 0.3s ease-in-out;
-        --font-family: 'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif;
-        --z-overlay: 1000;
-        --z-sidebar: 1001;
-        --z-modal: 2000;
-    }
-    
-    /* --- NEW: APPLE NOTES THEME (ENHANCED) --- */
-    [data-theme="apple-notes"] {
-        --theme-bg-gradient: linear-gradient(135deg, #f5f5f0 0%, #e8e8e0 100%);
-        --theme-bg-color: #f7f7f0;
-        /* Subtle texture for the background */
-        --theme-bg-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="4" height="4" viewBox="0 0 4 4"><path fill="%239C92AC" fill-opacity="0.06" d="M1 3h1v1H1V3zm2-2h1v1H3V1z"></path></svg>');
-        --theme-surface-bg: #ffffff;
-        --theme-text-primary: #1c1c1e;
-        --theme-text-secondary: #6b6b6b;
-        --theme-border-color: #e5e5e0;
-        --theme-accent-primary: #FFCC00; /* Apple's Golden Yellow */
-        --theme-accent-secondary: #e6b800;
-        --theme-accent-translucent: rgba(255, 204, 0, 0.2);
-        --theme-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
-        --theme-card-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-        --theme-sidebar-bg: #fdfdfa;
-    }
+        /* --- NEW: APPLE NOTES THEME (ENHANCED) --- */
+        [data-theme="apple-notes"] {
+            --theme-bg-gradient: linear-gradient(135deg, #f5f5f0 0%, #e8e8e0 100%);
+            --theme-bg-color: #f7f7f0;
+            --theme-bg-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="4" height="4" viewBox="0 0 4 4"><path fill="%239C92AC" fill-opacity="0.06" d="M1 3h1v1H1V3zm2-2h1v1H3V1z"></path></svg>');
+            --theme-surface-bg: #ffffff;
+            --theme-text-primary: #1c1c1e;
+            --theme-text-secondary: #6b6b6b;
+            --theme-border-color: #e5e5e0;
+            --theme-accent-primary: #FFCC00;
+            --theme-accent-secondary: #e6b800;
+            --theme-accent-translucent: rgba(255, 204, 0, 0.2);
+            --theme-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            --theme-card-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            --theme-sidebar-bg: #fdfdfa;
+            --dynamic-island-bg: #1c1c1e;
+        }
 
-    /* --- GRAMMARLY THEME --- */
-    [data-theme="grammarly"] {
-        --theme-bg-gradient: linear-gradient(135deg, #F9F9F9 0%, #FFFFFF 100%);
-        --theme-bg-color: #FFFFFF;
-        --theme-bg-image: none;
-        --theme-surface-bg: rgba(255, 255, 255, 0.95);
-        --theme-text-primary: #0E161A;
-        --theme-text-secondary: #6D7578;
-        --theme-border-color: #E6E8E9;
-        --theme-accent-primary: #15C39A; /* Grammarly Green */
-        --theme-accent-secondary: #027E6F;
-        --theme-accent-translucent: rgba(21, 195, 154, 0.15);
-        --theme-shadow: 0 4px 20px rgba(0, 0, 0, 0.07);
-        --theme-card-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-        --theme-sidebar-bg: #FAFBFC;
-    }
+        /* --- GRAMMARLY THEME --- */
+        [data-theme="grammarly"] {
+            --theme-bg-gradient: linear-gradient(135deg, #F9F9F9 0%, #FFFFFF 100%);
+            --theme-bg-color: #FFFFFF;
+            --theme-bg-image: none;
+            --theme-surface-bg: rgba(255, 255, 255, 0.95);
+            --theme-text-primary: #0E161A;
+            --theme-text-secondary: #6D7578;
+            --theme-border-color: #E6E8E9;
+            --theme-accent-primary: #15C39A;
+            --theme-accent-secondary: #027E6F;
+            --theme-accent-translucent: rgba(21, 195, 154, 0.15);
+            --theme-shadow: 0 4px 20px rgba(0, 0, 0, 0.07);
+            --theme-card-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            --theme-sidebar-bg: #FAFBFC;
+            --dynamic-island-bg: #0E161A;
+        }
 
-    [data-theme="light"] {
-        --theme-bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-        --theme-bg-color: #f5f7fa;
-        --theme-bg-image: none;
-        --theme-surface-bg: rgba(255, 255, 255, 0.8);
-        --theme-text-primary: #1c1c1e;
-        --theme-text-secondary: #6b6b6b;
-        --theme-border-color: rgba(200, 200, 200, 0.6);
-        --theme-accent-primary: #007aff;
-        --theme-accent-secondary: #0056b3;
-        --theme-accent-translucent: rgba(0, 122, 255, 0.15);
-        --theme-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        --theme-card-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-        --theme-sidebar-bg: #f8f9fa;
-    }
-    [data-theme="dark"] {
-        --theme-bg-gradient: linear-gradient(135deg, #2c3e50 0%, #171c23 100%);
-        --theme-bg-color: #171c23;
-        --theme-bg-image: none;
-        --theme-surface-bg: rgba(28, 33, 39, 0.8);
-        --theme-text-primary: #e5e5ea;
-        --theme-text-secondary: #a3a3a3;
-        --theme-border-color: rgba(80, 80, 80, 0.6);
-        --theme-accent-primary: #0a84ff;
-        --theme-accent-secondary: #3b9bff;
-        --theme-accent-translucent: rgba(10, 132, 255, 0.15);
-        --theme-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-        --theme-card-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        --theme-sidebar-bg: #1e2329;
-    }
-    [data-theme="sepia"] {
-        --theme-bg-gradient: linear-gradient(135deg, #f1e7d0 0%, #c9bda5 100%);
-        --theme-bg-color: #f1e7d0;
-        --theme-bg-image: none;
-        --theme-surface-bg: rgba(243, 237, 222, 0.8);
-        --theme-text-primary: #5b4636;
-        --theme-text-secondary: #8d6e63;
-        --theme-border-color: rgba(141, 110, 99, 0.4);
-        --theme-accent-primary: #8d6e63;
-        --theme-accent-secondary: #5d4037;
-        --theme-accent-translucent: rgba(141, 110, 99, 0.15);
-        --theme-shadow: 0 10px 30px rgba(93, 64, 53, 0.15);
-        --theme-card-shadow: 0 2px 10px rgba(93, 64, 53, 0.05);
-        --theme-sidebar-bg: #e8dfcc;
-    }
-    [data-theme="midnight"] {
-        --theme-bg-gradient: linear-gradient(135deg, #0d1117 0%, #010409 100%);
-        --theme-bg-color: #010409;
-        --theme-bg-image: none;
-        --theme-surface-bg: rgba(13, 17, 23, 0.8);
-        --theme-text-primary: #c9d1d9;
-        --theme-text-secondary: #8b949e;
-        --theme-border-color: rgba(48, 54, 61, 0.6);
-        --theme-accent-primary: #58a6ff;
-        --theme-accent-secondary: #3081f7;
-        --theme-accent-translucent: rgba(88, 166, 255, 0.15);
-        --theme-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-        --theme-card-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        --theme-sidebar-bg: #0d1117;
-    }
+        [data-theme="light"] {
+            --theme-bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            --theme-bg-color: #f5f7fa;
+            --theme-bg-image: none;
+            --theme-surface-bg: rgba(255, 255, 255, 0.8);
+            --theme-text-primary: #1c1c1e;
+            --theme-text-secondary: #6b6b6b;
+            --theme-border-color: rgba(200, 200, 200, 0.6);
+            --theme-accent-primary: #007aff;
+            --theme-accent-secondary: #0056b3;
+            --theme-accent-translucent: rgba(0, 122, 255, 0.15);
+            --theme-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            --theme-card-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            --theme-sidebar-bg: #f8f9fa;
+            --dynamic-island-bg: #1c1c1e;
+        }
 
-    [data-theme="ocean"] {
-        --theme-bg-gradient: linear-gradient(135deg, #00C9FF 0%, #92FE9D 100%);
-        --theme-bg-color: #f0f7ff;
-        --theme-bg-image: none;
-        --theme-surface-bg: rgba(255, 255, 255, 0.7);
-        --theme-text-primary: #0b2d48;
-        --theme-text-secondary: #4a6a84;
-        --theme-border-color: rgba(100, 150, 200, 0.5);
-        --theme-accent-primary: #0077c2;
-        --theme-accent-secondary: #005082;
-        --theme-accent-translucent: rgba(0, 119, 194, 0.15);
-        --theme-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
-        --theme-card-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-        --theme-sidebar-bg: #e6f2ff;
-    }
+        [data-theme="dark"] {
+            --theme-bg-gradient: linear-gradient(135deg, #2c3e50 0%, #171c23 100%);
+            --theme-bg-color: #171c23;
+            --theme-bg-image: none;
+            --theme-surface-bg: rgba(28, 33, 39, 0.8);
+            --theme-text-primary: #e5e5ea;
+            --theme-text-secondary: #a3a3a3;
+            --theme-border-color: rgba(80, 80, 80, 0.6);
+            --theme-accent-primary: #0a84ff;
+            --theme-accent-secondary: #3b9bff;
+            --theme-accent-translucent: rgba(10, 132, 255, 0.15);
+            --theme-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            --theme-card-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            --theme-sidebar-bg: #1e2329;
+            --dynamic-island-bg: #e5e5ea;
+        }
 
-    [data-theme="slate"] {
-        --theme-bg-gradient: linear-gradient(135deg, #304352 0%, #d7d2cc 100%);
-        --theme-bg-color: #263238;
-        --theme-bg-image: none;
-        --theme-surface-bg: rgba(55, 71, 79, 0.85);
-        --theme-text-primary: #eceff1;
-        --theme-text-secondary: #b0bec5;
-        --theme-border-color: rgba(200, 200, 200, 0.3);
-        --theme-accent-primary: #80cbc4;
-        --theme-accent-secondary: #4db6ac;
-        --theme-accent-translucent: rgba(128, 203, 196, 0.15);
-        --theme-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
-        --theme-card-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        --theme-sidebar-bg: #2c3a42;
-    }
+        [data-theme="sepia"] {
+            --theme-bg-gradient: linear-gradient(135deg, #f1e7d0 0%, #c9bda5 100%);
+            --theme-bg-color: #f1e7d0;
+            --theme-bg-image: none;
+            --theme-surface-bg: rgba(243, 237, 222, 0.8);
+            --theme-text-primary: #5b4636;
+            --theme-text-secondary: #8d6e63;
+            --theme-border-color: rgba(141, 110, 99, 0.4);
+            --theme-accent-primary: #8d6e63;
+            --theme-accent-secondary: #5d4037;
+            --theme-accent-translucent: rgba(141, 110, 99, 0.15);
+            --theme-shadow: 0 10px 30px rgba(93, 64, 53, 0.15);
+            --theme-card-shadow: 0 2px 10px rgba(93, 64, 53, 0.05);
+            --theme-sidebar-bg: #e8dfcc;
+            --dynamic-island-bg: #5b4636;
+        }
 
-    /* --- Base Styles --- */
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        font-family: var(--font-family);
-        -webkit-touch-callout: text;
-        -webkit-user-select: text;
-        -khtml-user-select: text;
-        -moz-user-select: text;
-        -ms-user-select: text;
-        user-select: text;
-    }
+        [data-theme="midnight"] {
+            --theme-bg-gradient: linear-gradient(135deg, #0d1117 0%, #010409 100%);
+            --theme-bg-color: #010409;
+            --theme-bg-image: none;
+            --theme-surface-bg: rgba(13, 17, 23, 0.8);
+            --theme-text-primary: #c9d1d9;
+            --theme-text-secondary: #8b949e;
+            --theme-border-color: rgba(48, 54, 61, 0.6);
+            --theme-accent-primary: #58a6ff;
+            --theme-accent-secondary: #3081f7;
+            --theme-accent-translucent: rgba(88, 166, 255, 0.15);
+            --theme-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            --theme-card-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            --theme-sidebar-bg: #0d1117;
+            --dynamic-island-bg: #c9d1d9;
+        }
 
-    html {
-        -webkit-tap-highlight-color: transparent;
-    }
+        [data-theme="ocean"] {
+            --theme-bg-gradient: linear-gradient(135deg, #00C9FF 0%, #92FE9D 100%);
+            --theme-bg-color: #f0f7ff;
+            --theme-bg-image: none;
+            --theme-surface-bg: rgba(255, 255, 255, 0.7);
+            --theme-text-primary: #0b2d48;
+            --theme-text-secondary: #4a6a84;
+            --theme-border-color: rgba(100, 150, 200, 0.5);
+            --theme-accent-primary: #0077c2;
+            --theme-accent-secondary: #005082;
+            --theme-accent-translucent: rgba(0, 119, 194, 0.15);
+            --theme-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+            --theme-card-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            --theme-sidebar-bg: #e6f2ff;
+            --dynamic-island-bg: #0b2d48;
+        }
 
-    body {
-        background-color: var(--theme-bg-color);
-        background-image: var(--theme-bg-image), var(--theme-bg-gradient);
-        color: var(--theme-text-primary);
-        display: flex;
-        flex-direction: column;
-        min-height: 100vh;
-        overflow-x: hidden;
-        -webkit-text-size-adjust: 100%;
-        text-size-adjust: 100%;
-        touch-action: manipulation;
-    }
+        [data-theme="slate"] {
+            --theme-bg-gradient: linear-gradient(135deg, #304352 0%, #d7d2cc 100%);
+            --theme-bg-color: #263238;
+            --theme-bg-image: none;
+            --theme-surface-bg: rgba(55, 71, 79, 0.85);
+            --theme-text-primary: #eceff1;
+            --theme-text-secondary: #b0bec5;
+            --theme-border-color: rgba(200, 200, 200, 0.3);
+            --theme-accent-primary: #80cbc4;
+            --theme-accent-secondary: #4db6ac;
+            --theme-accent-translucent: rgba(128, 203, 196, 0.15);
+            --theme-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+            --theme-card-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            --theme-sidebar-bg: #2c3a42;
+            --dynamic-island-bg: #eceff1;
+        }
 
-    .app-container {
-        display: flex;
-        flex: 1;
-        overflow: hidden;
-        position: relative;
-    }
-    
-    .glass {
-        background: var(--theme-surface-bg);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        border-radius: var(--border-radius);
-        border: 1px solid var(--theme-border-color);
-        box-shadow: var(--theme-shadow);
-    }
-    
-    /* --- Simplified Header --- */
-    header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 0 24px;
-        height: var(--header-height);
-        flex-shrink: 0;
-        position: relative;
-        z-index: 10;
-        border-bottom: 1px solid var(--theme-border-color);
-    }
+        /* --- Base Styles --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: var(--font-family);
+            -webkit-touch-callout: text;
+            -webkit-user-select: text;
+            -khtml-user-select: text;
+            -moz-user-select: text;
+            -ms-user-select: text;
+            user-select: text;
+        }
 
-    .header-title {
-        font-weight: 700;
-        font-size: 1.6rem;
-        color: var(--theme-text-primary);
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
+        html {
+            -webkit-tap-highlight-color: transparent;
+        }
 
-    .header-controls {
-        display: flex;
-        gap: 8px;
-        align-items: center;
-    }
+        body {
+            background-color: var(--theme-bg-color);
+            background-image: var(--theme-bg-image), var(--theme-bg-gradient);
+            color: var(--theme-text-primary);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            overflow-x: hidden;
+            -webkit-text-size-adjust: 100%;
+            text-size-adjust: 100%;
+            touch-action: manipulation;
+        }
 
-    .header-btn {
-        background: transparent;
-        color: var(--theme-text-secondary);
-        width: 44px;
-        height: 44px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        border: none;
-        font-size: 1.2rem;
-        transition: var(--transition);
-        touch-action: manipulation;
-        -webkit-tap-highlight-color: transparent;
-    }
+        .app-container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+            position: relative;
+        }
 
-    .header-btn:hover,
-    .header-btn.active,
-    .header-btn:active {
-        background-color: var(--theme-accent-translucent);
-        color: var(--theme-accent-primary);
-    }
+        .glass {
+            background: var(--theme-surface-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: var(--border-radius);
+            border: 1px solid var(--theme-border-color);
+            box-shadow: var(--theme-shadow);
+        }
 
-    #download-pdf-btn {
-        display: none;
-    }
+        /* --- Dynamic Island --- */
+        .dynamic-island {
+            position: fixed;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: var(--dynamic-island-height);
+            background-color: var(--dynamic-island-bg);
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
 
-    /* --- Main Content Area (Apple Note Style) --- */
-    .main-content {
-        flex-grow: 1;
-        display: flex;
-        flex-direction: column;
-        overflow: hidden;
-        padding: 24px 12px;
-        transition: var(--transition);
-        position: relative;
-    }
+        .dynamic-island-content {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--theme-surface-bg);
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
 
-    .main-content.sidebar-open {
-        filter: brightness(0.95);
-    }
+        .dynamic-island.expanded {
+            width: 200px;
+        }
 
-    .content-area {
-        flex-grow: 1;
-        overflow-y: auto;
-        padding: clamp(2rem, 5vw, 4rem);
-        border-radius: var(--border-radius);
-        position: relative;
-        -webkit-overflow-scrolling: touch;
-        background: var(--theme-surface-bg);
-        box-shadow: var(--theme-shadow);
-        margin: 0 auto;
-        width: 100%;
-        max-width: 900px; /* Limit width for note-like appearance */
-    }
+        /* --- Welcome Screen --- */
+        .welcome-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--theme-bg-gradient);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            padding: 20px;
+            text-align: center;
+        }
 
-    .empty-state {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        height: 100%;
-        text-align: center;
-        padding: 2rem;
-    }
+        .welcome-logo {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: var(--theme-accent-primary);
+        }
 
-    .empty-state i {
-        font-size: clamp(3rem, 8vw, 5rem);
-        color: var(--theme-accent-primary);
-        opacity: 0.6;
-        margin-bottom: 1.5rem;
-    }
+        .welcome-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--theme-text-primary);
+        }
 
-    .empty-state h2 {
-        font-size: clamp(1.2rem, 4vw, 1.8rem);
-        margin-bottom: 1rem;
-    }
+        .welcome-subtitle {
+            font-size: 1.2rem;
+            color: var(--theme-text-secondary);
+            margin-bottom: 40px;
+            max-width: 500px;
+        }
 
-    .empty-state p {
-        font-size: clamp(0.9rem, 3vw, 1rem);
-        color: var(--theme-text-secondary);
-        max-width: 300px;
-        line-height: 1.5;
-    }
+        .welcome-options {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            width: 100%;
+            max-width: 400px;
+        }
 
-    /* --- Document Title (Integrated into note) --- */
-    #document-title {
-        width: 100%;
-        padding: 0 10px 10px;
-        margin-bottom: 2rem;
-        border-radius: 0;
-        border: none;
-        border-bottom: 1px solid var(--theme-border-color);
-        background-color: transparent;
-        color: var(--theme-text-primary);
-        font-size: 2.2rem;
-        font-weight: 700;
-        transition: var(--transition);
-        box-shadow: none;
-    }
+        .welcome-option {
+            padding: 20px;
+            background: var(--theme-surface-bg);
+            border-radius: var(--border-radius);
+            border: 1px solid var(--theme-border-color);
+            box-shadow: var(--theme-shadow);
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
 
-    #document-title:focus {
-        outline: none;
-        border-color: var(--theme-accent-primary);
-        box-shadow: none;
-    }
+        .welcome-option:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
 
-    /* --- Drag & Drop Overlay --- */
-    #drag-drop-overlay {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0,0,0,0.7);
-        border: 3px dashed var(--theme-accent-primary);
-        border-radius: var(--border-radius);
-        display: none;
-        align-items: center;
-        justify-content: center;
-        font-size: clamp(1.2rem, 4vw, 1.5rem);
-        font-weight: 600;
-        color: white;
-        z-index: var(--z-overlay);
-        text-align: center;
-        padding: 2rem;
-    }
+        .welcome-option i {
+            font-size: 2.5rem;
+            color: var(--theme-accent-primary);
+        }
 
-    #drag-drop-overlay.visible {
-        display: flex;
-    }
+        .welcome-option h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
 
-    /* --- PDF Viewer & Text Editor --- */
-    #pdf-viewer {
-        position: relative;
-    }
+        .welcome-option p {
+            color: var(--theme-text-secondary);
+            text-align: center;
+        }
 
-    #pdf-viewer .page-container {
-        margin: 0 auto 20px auto;
-        box-shadow: var(--theme-shadow);
-        max-width: 100%;
-        overflow: hidden;
-    }
+        /* --- Simplified Header --- */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 24px;
+            height: var(--header-height);
+            flex-shrink: 0;
+            position: relative;
+            z-index: 10;
+            border-bottom: 1px solid var(--theme-border-color);
+        }
 
-    #pdf-viewer canvas {
-        display: block;
-        width: 100%;
-        height: auto;
-        max-width: 100%;
-    }
+        .header-title {
+            font-weight: 700;
+            font-size: 1.6rem;
+            color: var(--theme-text-primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
 
-    #text-editor {
-        display: none;
-        min-height: 70vh;
-        width: 100%;
-        padding: 1rem;
-        font-size: 1.1rem;
-        line-height: 1.8;
-        letter-spacing: 0.2px;
-        color: var(--theme-text-primary);
-        border: none;
-        outline: none;
-        background: transparent;
-        white-space: pre-wrap;
-        word-wrap: break-word;
-        overflow-wrap: break-word;
-        -webkit-user-select: text;
-        -moz-user-select: text;
-        -ms-user-select: text;
-        user-select: text;
-    }
+        .header-controls {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
 
-    #text-editor:empty:before {
-        content: attr(data-placeholder);
-        color: var(--theme-text-secondary);
-        opacity: 0.7;
-        pointer-events: none;
-    }
+        .header-btn {
+            background: transparent;
+            color: var(--theme-text-secondary);
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: none;
+            font-size: 1.2rem;
+            transition: var(--transition);
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+        }
 
-    /* --- PDF Text Overlay --- */
-    .pdf-text-layer {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        overflow: hidden;
-        opacity: 0.2;
-        line-height: 1;
-    }
+        .header-btn:hover,
+        .header-btn.active,
+        .header-btn:active {
+            background-color: var(--theme-accent-translucent);
+            color: var(--theme-accent-primary);
+        }
 
-    .pdf-text-layer::selection {
-        background: var(--theme-accent-translucent);
-    }
+        #download-pdf-btn {
+            display: none;
+        }
 
-    .pdf-text-layer span {
-        color: transparent;
-        position: absolute;
-        white-space: pre;
-        cursor: text;
-    }
-
-    /* --- AI Sidebar (Apple Notes Style) --- */
-    .ai-sidebar {
-        position: fixed;
-        top: 0;
-        right: 0;
-        width: var(--sidebar-width);
-        height: 100vh;
-        transform: translateX(100%);
-        transition: transform var(--transition);
-        z-index: var(--z-sidebar);
-        display: flex;
-        flex-direction: column;
-        padding: 20px;
-        box-shadow: -10px 0 40px rgba(0, 0, 0, 0.1);
-        overflow-y: auto;
-        -webkit-overflow-scrolling: touch;
-        background: var(--theme-sidebar-bg);
-        border-left: 1px solid var(--theme-border-color);
-    }
-    
-    .ai-sidebar.open {
-        transform: translateX(0);
-    }
-    
-    .sidebar-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding-bottom: 15px;
-        margin-bottom: 20px;
-        border-bottom: 1px solid var(--theme-border-color);
-    }
-    
-    .sidebar-content { flex-grow: 1; }
-    
-    .ai-section {
-        margin-bottom: 25px;
-        background: var(--theme-surface-bg);
-        border-radius: 12px;
-        padding: 18px;
-        border: 1px solid var(--theme-border-color);
-    }
-    
-    .ai-section h4 {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        font-size: 1.1rem;
-        font-weight: 600;
-        margin-bottom: 15px;
-        color: var(--theme-text-primary);
-    }
-    
-    .ai-section i {
-        color: var(--theme-accent-primary);
-    }
-
-    .ai-output {
-        background: var(--theme-bg-color);
-        padding: 15px;
-        border-radius: 10px;
-        min-height: 80px;
-        font-size: 0.95rem;
-        line-height: 1.6;
-        color: var(--theme-text-secondary);
-        white-space: pre-wrap;
-        word-wrap: break-word;
-        margin-bottom: 12px;
-        border: 1px solid var(--theme-border-color);
-    }
-
-    .ai-output mark {
-        background-color: var(--theme-accent-translucent);
-        border-radius: 3px;
-        padding: 2px 4px;
-        color: var(--theme-text-primary);
-    }
-    
-    .ai-input {
-        width: 100%;
-        padding: 12px;
-        background: var(--theme-surface-bg);
-        border: 1px solid var(--theme-border-color);
-        border-radius: 10px;
-        color: var(--theme-text-primary);
-        font-size: 1rem;
-        margin-bottom: 10px;
-    }
-
-    .ai-input:focus {
-        outline: none;
-        border-color: var(--theme-accent-primary);
-        box-shadow: 0 0 0 3px var(--theme-accent-translucent);
-    }
-    
-    .ai-button, .summary-option-btn, .external-link-btn {
-        width: 100%;
-        padding: 12px;
-        background-color: var(--theme-text-secondary);
-        color: white;
-        border: none;
-        border-radius: 10px;
-        cursor: pointer;
-        font-weight: 600;
-        transition: var(--transition);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-        font-size: 1rem;
-        text-decoration: none; /* For anchor tags */
-    }
-
-    .ai-button:hover, .summary-option-btn:hover, .external-link-btn:hover {
-        background-color: var(--theme-text-primary);
-        transform: translateY(-2px);
-    }
-
-    .ai-button:disabled, .summary-option-btn:disabled {
-        opacity: 0.6;
-        cursor: not-allowed;
-    }
-
-    .summary-options {
-        display: flex;
-        gap: 8px;
-    }
-    
-    .summary-option-btn { flex: 1; margin-top: 0; }
-    
-    .writing-actions {
-        display: flex;
-        gap: 8px;
-    }
-    .writing-actions .ai-button {
-        flex: 1;
-    }
-
-    /* --- Settings Panel --- */
-    .panel-overlay {
-        position: fixed;
-        inset: 0;
-        background: rgba(0,0,0,0.5);
-        backdrop-filter: blur(5px);
-        z-index: var(--z-modal);
-        display: none;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .panel-overlay.visible {
-        display: flex;
-    }
-    
-    .settings-panel {
-        padding: 30px;
-        width: 100%;
-        max-width: 450px;
-    }
-
-    .theme-options {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-        gap: 12px;
-    }
-    
-    .theme-options input { display: none; }
-    
-    .theme-options label {
-        padding: 12px;
-        border-radius: 10px;
-        cursor: pointer;
-        border: 2px solid var(--theme-border-color);
-        transition: var(--transition);
-        text-align: center;
-        background: var(--theme-surface-bg);
-    }
-    
-    .theme-options input:checked + label {
-        border-color: var(--theme-accent-primary);
-        background-color: var(--theme-accent-translucent);
-        font-weight: 600;
-        color: var(--theme-accent-primary);
-    }
-    
-    /* --- Misc & Responsive --- */
-    .spinner { animation: spin 1s linear infinite; }
-    
-    @keyframes spin { 100% { transform: rotate(360deg); } }
-    
-    .toast {
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        padding: 12px 20px;
-        border-radius: 8px;
-        z-index: 9999;
-        font-weight: 500;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        transform: translateX(150%);
-        transition: transform 0.3s ease;
-    }
-
-    .toast.show { transform: translateX(0); }
-    .toast.success { background-color: #15C39A; color: white; }
-    .toast.error { background-color: #d32f2f; color: white; }
-    
-    @media (max-width: 768px) {
-        body { font-size: 16px; }
-
+        /* --- Main Content Area (Apple Note Style) --- */
         .main-content {
-            padding: 8px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            padding: 24px 12px;
+            transition: var(--transition);
+            position: relative;
         }
 
         .main-content.sidebar-open {
-            transform: scale(0.95) translateX(-10px);
-            border-radius: var(--border-radius);
-            overflow: hidden;
+            filter: brightness(0.95);
         }
-        header { padding: 0 12px; }
-        
-        #document-title { font-size: 1.8rem; }
-        
-        #text-editor { font-size: 1rem; }
-        
-        .ai-sidebar {
-            width: 95vw;
-        }
+
         .content-area {
-            padding: 1.5rem;
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: clamp(2rem, 5vw, 4rem);
+            border-radius: var(--border-radius);
+            position: relative;
+            -webkit-overflow-scrolling: touch;
+            background: var(--theme-surface-bg);
+            box-shadow: var(--theme-shadow);
+            margin: 0 auto;
+            width: 100%;
+            max-width: 900px;
         }
-        .writing-actions {
+
+        .empty-state {
+            display: flex;
             flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            text-align: center;
+            padding: 2rem;
         }
-    }
-</style>
+
+        .empty-state i {
+            font-size: clamp(3rem, 8vw, 5rem);
+            color: var(--theme-accent-primary);
+            opacity: 0.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .empty-state h2 {
+            font-size: clamp(1.2rem, 4vw, 1.8rem);
+            margin-bottom: 1rem;
+        }
+
+        .empty-state p {
+            font-size: clamp(0.9rem, 3vw, 1rem);
+            color: var(--theme-text-secondary);
+            max-width: 300px;
+            line-height: 1.5;
+        }
+
+        /* --- Document Title (Integrated into note) --- */
+        #document-title {
+            width: 100%;
+            padding: 0 10px 10px;
+            margin-bottom: 2rem;
+            border-radius: 0;
+            border: none;
+            border-bottom: 1px solid var(--theme-border-color);
+            background-color: transparent;
+            color: var(--theme-text-primary);
+            font-size: 2.2rem;
+            font-weight: 700;
+            transition: var(--transition);
+            box-shadow: none;
+        }
+
+        #document-title:focus {
+            outline: none;
+            border-color: var(--theme-accent-primary);
+            box-shadow: none;
+        }
+
+        /* --- Drag & Drop Overlay --- */
+        #drag-drop-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            border: 3px dashed var(--theme-accent-primary);
+            border-radius: var(--border-radius);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: clamp(1.2rem, 4vw, 1.5rem);
+            font-weight: 600;
+            color: white;
+            z-index: var(--z-overlay);
+            text-align: center;
+            padding: 2rem;
+        }
+
+        #drag-drop-overlay.visible {
+            display: flex;
+        }
+
+        /* --- PDF Viewer & Text Editor --- */
+        #pdf-viewer {
+            position: relative;
+        }
+
+        #pdf-viewer .page-container {
+            margin: 0 auto 20px auto;
+            box-shadow: var(--theme-shadow);
+            max-width: 100%;
+            overflow: hidden;
+            border-radius: 12px;
+        }
+
+        #pdf-viewer canvas {
+            display: block;
+            width: 100%;
+            height: auto;
+            max-width: 100%;
+            border-radius: 8px;
+        }
+
+        #text-editor {
+            display: none;
+            min-height: 70vh;
+            width: 100%;
+            padding: 1rem;
+            font-size: 1.1rem;
+            line-height: 1.8;
+            letter-spacing: 0.2px;
+            color: var(--theme-text-primary);
+            border: none;
+            outline: none;
+            background: transparent;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            -webkit-user-select: text;
+            -moz-user-select: text;
+            -ms-user-select: text;
+            user-select: text;
+            border-radius: 12px;
+        }
+
+        #text-editor:empty:before {
+            content: attr(data-placeholder);
+            color: var(--theme-text-secondary);
+            opacity: 0.7;
+            pointer-events: none;
+        }
+
+        /* --- PDF Text Overlay --- */
+        .pdf-text-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            overflow: hidden;
+            opacity: 0.2;
+            line-height: 1;
+            border-radius: 8px;
+        }
+
+        .pdf-text-layer::selection {
+            background: var(--theme-accent-translucent);
+        }
+
+        .pdf-text-layer span {
+            color: transparent;
+            position: absolute;
+            white-space: pre;
+            cursor: text;
+        }
+
+        /* --- AI Sidebar (Apple Notes Style) --- */
+        .ai-sidebar {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: var(--sidebar-width);
+            height: 100vh;
+            transform: translateX(100%);
+            transition: transform var(--transition);
+            z-index: var(--z-sidebar);
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            box-shadow: -10px 0 40px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            background: var(--theme-sidebar-bg);
+            border-left: 1px solid var(--theme-border-color);
+            border-radius: 24px 0 0 24px;
+        }
+
+        .ai-sidebar.open {
+            transform: translateX(0);
+        }
+
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--theme-border-color);
+        }
+
+        .sidebar-content { 
+            flex-grow: 1; 
+        }
+
+        .ai-section {
+            margin-bottom: 25px;
+            background: var(--theme-surface-bg);
+            border-radius: 18px;
+            padding: 18px;
+            border: 1px solid var(--theme-border-color);
+            box-shadow: var(--theme-card-shadow);
+        }
+
+        .ai-section h4 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--theme-text-primary);
+        }
+
+        .ai-section i {
+            color: var(--theme-accent-primary);
+        }
+
+        .ai-output {
+            background: var(--theme-bg-color);
+            padding: 15px;
+            border-radius: 14px;
+            min-height: 80px;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: var(--theme-text-secondary);
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            margin-bottom: 12px;
+            border: 1px solid var(--theme-border-color);
+            position: relative;
+        }
+
+        .ai-output mark {
+            background-color: var(--theme-accent-translucent);
+            border-radius: 3px;
+            padding: 2px 4px;
+            color: var(--theme-text-primary);
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--theme-accent-primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 6px 10px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .copy-btn:hover {
+            background: var(--theme-accent-secondary);
+        }
+
+        .ai-input {
+            width: 100%;
+            padding: 12px;
+            background: var(--theme-surface-bg);
+            border: 1px solid var(--theme-border-color);
+            border-radius: 14px;
+            color: var(--theme-text-primary);
+            font-size: 1rem;
+            margin-bottom: 10px;
+        }
+
+        .ai-input:focus {
+            outline: none;
+            border-color: var(--theme-accent-primary);
+            box-shadow: 0 0 0 3px var(--theme-accent-translucent);
+        }
+
+        .ai-button, .summary-option-btn, .external-link-btn {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--theme-text-secondary);
+            color: white;
+            border: none;
+            border-radius: 14px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 1rem;
+            text-decoration: none;
+        }
+
+        .ai-button:hover, .summary-option-btn:hover, .external-link-btn:hover {
+            background-color: var(--theme-text-primary);
+            transform: translateY(-2px);
+        }
+
+        .ai-button:disabled, .summary-option-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .summary-options {
+            display: flex;
+            gap: 8px;
+        }
+
+        .summary-option-btn { 
+            flex: 1; 
+            margin-top: 0; 
+        }
+
+        .writing-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .writing-actions .ai-button {
+            flex: 1;
+        }
+
+        /* --- Settings Panel --- */
+        .panel-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(5px);
+            z-index: var(--z-modal);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .panel-overlay.visible {
+            display: flex;
+        }
+
+        .settings-panel {
+            padding: 30px;
+            width: 100%;
+            max-width: 450px;
+            border-radius: var(--border-radius);
+        }
+
+        .theme-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 12px;
+        }
+
+        .theme-options input { 
+            display: none; 
+        }
+
+        .theme-options label {
+            padding: 12px;
+            border-radius: 14px;
+            cursor: pointer;
+            border: 2px solid var(--theme-border-color);
+            transition: var(--transition);
+            text-align: center;
+            background: var(--theme-surface-bg);
+        }
+
+        .theme-options input:checked + label {
+            border-color: var(--theme-accent-primary);
+            background-color: var(--theme-accent-translucent);
+            font-weight: 600;
+            color: var(--theme-accent-primary);
+        }
+
+        /* --- Misc & Responsive --- */
+        .spinner { 
+            animation: spin 1s linear infinite; 
+        }
+
+        @keyframes spin { 
+            100% { 
+                transform: rotate(360deg); 
+            } 
+        }
+
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 12px 20px;
+            border-radius: 14px;
+            z-index: 9999;
+            font-weight: 500;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transform: translateX(150%);
+            transition: transform 0.3s ease;
+        }
+
+        .toast.show { 
+            transform: translateX(0); 
+        }
+
+        .toast.success { 
+            background-color: #15C39A; 
+            color: white; 
+        }
+
+        .toast.error { 
+            background-color: #d32f2f; 
+            color: white; 
+        }
+
+        @media (max-width: 768px) {
+            body { 
+                font-size: 16px; 
+            }
+
+            .main-content {
+                padding: 8px;
+            }
+
+            .main-content.sidebar-open {
+                transform: scale(0.95) translateX(-10px);
+                border-radius: var(--border-radius);
+                overflow: hidden;
+            }
+
+            header { 
+                padding: 0 12px; 
+            }
+
+            #document-title { 
+                font-size: 1.8rem; 
+            }
+
+            #text-editor { 
+                font-size: 1rem; 
+            }
+
+            .ai-sidebar {
+                width: 95vw;
+                border-radius: 24px 0 0 24px;
+            }
+
+            .content-area {
+                padding: 1.5rem;
+            }
+
+            .writing-actions {
+                flex-direction: column;
+            }
+
+            .welcome-options {
+                flex-direction: column;
+            }
+
+            .welcome-title {
+                font-size: 2rem;
+            }
+
+            .welcome-subtitle {
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header-title {
+                font-size: 1.3rem;
+            }
+
+            .header-btn {
+                width: 40px;
+                height: 40px;
+            }
+
+            .content-area {
+                padding: 1rem;
+            }
+
+            .ai-section {
+                padding: 15px;
+            }
+
+            .summary-options {
+                flex-direction: column;
+            }
+
+            .theme-options {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
 </head>
 <body>
     <div id="drag-drop-overlay">
@@ -674,6 +896,33 @@
             <i class="fas fa-file-pdf fa-3x"></i>
             <br><br>
             Drop PDF Here to Analyze
+        </div>
+    </div>
+
+    <div class="dynamic-island" id="dynamicIsland">
+        <div class="dynamic-island-content">
+            <i class="fas fa-robot"></i>
+            <span>Gridora AI</span>
+        </div>
+    </div>
+
+    <div class="welcome-screen" id="welcomeScreen">
+        <div class="welcome-logo">
+            <i class="fas fa-magic"></i>
+        </div>
+        <h1 class="welcome-title">Gridora</h1>
+        <p class="welcome-subtitle">Your AI-powered document assistant for reading, research, and writing</p>
+        <div class="welcome-options">
+            <div class="welcome-option" id="readingOption">
+                <i class="fas fa-book-reader"></i>
+                <h3>Reading Assistant</h3>
+                <p>Upload documents, extract text, and get AI-powered summaries and insights</p>
+            </div>
+            <div class="welcome-option" id="researchOption">
+                <i class="fas fa-search"></i>
+                <h3>Research Assistant</h3>
+                <p>Analyze content, find related information, and generate study materials</p>
+            </div>
         </div>
     </div>
 
@@ -732,18 +981,31 @@
                 <!-- Smart Summary Section -->
                 <div class="ai-section">
                     <h4><i class="fas fa-file-alt"></i>Smart Summary</h4>
-                    <div id="summary-output" class="ai-output">Click a size to generate an intelligent summary of your document.</div>
+                    <div id="summary-output" class="ai-output">
+                        Click a size to generate an intelligent summary of your document.
+                        <button class="copy-btn" id="copy-summary-btn" style="display: none;">
+                            <i class="fas fa-copy"></i> Copy
+                        </button>
+                    </div>
                     <div class="summary-options">
                         <button id="summarize-btn-small" class="summary-option-btn" data-size="small">Small</button>
                         <button id="summarize-btn-medium" class="summary-option-btn" data-size="medium">Medium</button>
                         <button id="summarize-btn-large" class="summary-option-btn" data-size="large">Large</button>
                     </div>
+                    <button id="key-insights-btn" class="ai-button" style="margin-top: 10px;">
+                        <i class="fas fa-lightbulb"></i>Key Insights
+                    </button>
                 </div>
 
                 <!-- Writing Assistant Section -->
                 <div class="ai-section">
                     <h4><i class="fas fa-pen-ruler"></i>Writing Assistant</h4>
-                    <div id="writing-output" class="ai-output">Get suggestions to improve your writing clarity, style, and impact.</div>
+                    <div id="writing-output" class="ai-output">
+                        Get suggestions to improve your writing clarity, style, and impact.
+                        <button class="copy-btn" id="copy-writing-btn" style="display: none;">
+                            <i class="fas fa-copy"></i> Copy
+                        </button>
+                    </div>
                     <div class="writing-actions">
                          <button id="writing-btn" class="ai-button">
                             <i class="fas fa-magic"></i>Analyze
@@ -762,7 +1024,12 @@
                            class="ai-input"
                            placeholder="Ask a question about the content..."
                            aria-label="Question input">
-                    <div id="qa-answer" class="ai-output">Get intelligent answers based on the content.</div>
+                    <div id="qa-answer" class="ai-output">
+                        Get intelligent answers based on the content.
+                        <button class="copy-btn" id="copy-qa-btn" style="display: none;">
+                            <i class="fas fa-copy"></i> Copy
+                        </button>
+                    </div>
                     <button id="qa-btn" class="ai-button">
                         <i class="fas fa-search"></i>Get Answer
                     </button>
@@ -771,7 +1038,12 @@
                 <!-- Key Points Section -->
                 <div class="ai-section">
                     <h4><i class="fas fa-list-ul"></i>Key Points</h4>
-                    <div id="keypoints-output" class="ai-output">Extract the most important points from your document.</div>
+                    <div id="keypoints-output" class="ai-output">
+                        Extract the most important points from your document.
+                        <button class="copy-btn" id="copy-keypoints-btn" style="display: none;">
+                            <i class="fas fa-copy"></i> Copy
+                        </button>
+                    </div>
                     <button id="keypoints-btn" class="ai-button">
                         <i class="fas fa-lightbulb"></i>Extract Key Points
                     </button>
@@ -780,7 +1052,12 @@
                 <!-- Study Quiz Section -->
                 <div class="ai-section">
                     <h4><i class="fas fa-graduation-cap"></i>Study Quiz</h4>
-                    <div id="quiz-output" class="ai-output">Generate a quiz to test your knowledge of the document.</div>
+                    <div id="quiz-output" class="ai-output">
+                        Generate a quiz to test your knowledge of the document.
+                        <button class="copy-btn" id="copy-quiz-btn" style="display: none;">
+                            <i class="fas fa-copy"></i> Copy
+                        </button>
+                    </div>
                     <button id="quiz-btn" class="ai-button">
                         <i class="fas fa-question"></i>Generate Quiz
                     </button>
@@ -789,7 +1066,12 @@
                 <!-- Content Analysis Section -->
                 <div class="ai-section">
                     <h4><i class="fas fa-chart-pie"></i>Content Analysis</h4>
-                    <div id="analysis-output" class="ai-output">Analyze the sentiment, readability, and word count of your document.</div>
+                    <div id="analysis-output" class="ai-output">
+                        Analyze the sentiment, readability, and word count of your document.
+                        <button class="copy-btn" id="copy-analysis-btn" style="display: none;">
+                            <i class="fas fa-copy"></i> Copy
+                        </button>
+                    </div>
                     <button id="analysis-btn" class="ai-button">
                         <i class="fas fa-magnifying-glass-chart"></i>Analyze Content
                     </button>
@@ -855,655 +1137,772 @@
         </div>
     </div>
 
-<script>
-// ALL JAVASCRIPT REMAINS THE SAME AS IN THE ORIGINAL PROMPT
-document.addEventListener('DOMContentLoaded', function() {
-    'use strict';
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            'use strict';
 
-    let state = {
-        pdfDoc: null,
-        extractedText: '',
-        currentMode: 'pdf',
-        isAiProcessing: false,
-        isPdfLoading: false,
-    };
+            let state = {
+                pdfDoc: null,
+                extractedText: '',
+                currentMode: 'pdf',
+                isAiProcessing: false,
+                isPdfLoading: false,
+                currentMode: 'reading' // 'reading' or 'research'
+            };
 
-    class OptiChainAI {
-        constructor() {
-            this.stopWords = new Set(['a', 'about', 'above', 'after', 'again', 'against', 'all', 'am', 'an', 'and', 'any', 'are', 'as', 'at', 'be', 'because', 'been', 'before', 'being', 'below', 'between', 'both', 'but', 'by', 'can', 'cannot', 'could', 'did', 'do', 'does', 'doing', 'down', 'during', 'each', 'few', 'for', 'from', 'further', 'had', 'has', 'have', 'having', 'he', 'her', 'here', 'hers', 'herself', 'him', 'himself', 'his', 'how', 'i', 'if', 'in', 'into', 'is', 'it', 'its', 'itself', 'me', 'more', 'most', 'my', 'myself', 'no', 'nor', 'not', 'of', 'off', 'on', 'once', 'only', 'or', 'other', 'our', 'ours', 'ourselves', 'out', 'over', 'own', 'same', 'she', 'should', 'so', 'some', 'such', 'than', 'that', 'the', 'their', 'theirs', 'them', 'themselves', 'then', 'there', 'these', 'they', 'this', 'those', 'through', 'to', 'too', 'under', 'until', 'up', 'very', 'was', 'we', 'were', 'what', 'when', 'where', 'which', 'while', 'who', 'whom', 'why', 'with', 'you', 'your', 'yours', 'yourself', 'yourselves']);
-        }
-
-        preprocessText(text) {
-            if (!text || typeof text !== 'string') return '';
-            let processed = text;
-            processed = processed.replace(/ﬁ/g, 'fi').replace(/ﬂ/g, 'fl');
-            processed = processed.replace(/\s+/g, ' ').trim();
-            processed = processed.replace(/([a-z])-\s+([a-z])/g, '$1$2');
-            return processed;
-        }
-
-        tokenizeSentences(text) {
-            if (!text) return [];
-            return text.match(/[^.!?]+[.!?]\s*(?=[A-Z]|\d|"|"|'|$)/g)
-                ?.map(s => s.trim())
-                .filter(s => s.length > 15 && s.length < 1500) || [];
-        }
-
-        generateSummary(text, size = 'medium') {
-            let targetSentenceCount;
-            switch (size) {
-                case 'small': targetSentenceCount = 3; break;
-                case 'large': targetSentenceCount = 8; break;
-                default: targetSentenceCount = 5;
-            }
-
-            const sentences = this.tokenizeSentences(this.preprocessText(text));
-            if (sentences.length <= targetSentenceCount) {
-                return sentences.join(' ');
-            }
-
-            const keywords = this.extractKeyWords(text, 20);
-
-            const scoredSentences = sentences.map((sentence, i) => {
-                const sentenceLower = sentence.toLowerCase();
-                let score = 0;
-                const positionRatio = i / sentences.length;
-                if (positionRatio < 0.2) score += 2.0;
-                if (positionRatio > 0.8) score += 1.5;
-                keywords.forEach(kw => {
-                    if (sentenceLower.includes(kw.word)) {
-                        score += kw.score;
-                    }
-                });
-                if (sentence.length < 20 || sentence.length > 800) score *= 0.5;
-                const cuePhrases = ['in conclusion', 'in summary', 'the main point', 'importantly', 'essentially'];
-                if (cuePhrases.some(phrase => sentenceLower.startsWith(phrase))) score *= 2.0;
-                return { sentence, score, index: i };
-            });
-
-            const topSentences = scoredSentences
-                .sort((a, b) => b.score - a.score)
-                .slice(0, targetSentenceCount)
-                .sort((a, b) => a.index - b.index);
-
-            return topSentences.map(item => item.sentence).join(' ');
-        }
-        
-        answerQuestion(text, question) {
-            const sentences = this.tokenizeSentences(this.preprocessText(text));
-            const questionWords = new Set(question.toLowerCase().replace('?','').split(/\s+/).filter(w => !this.stopWords.has(w) && w.length > 2));
-            if (questionWords.size === 0) return "Please ask a more specific question.";
-            let bestSentence = { text: "", score: -1 };
-            sentences.forEach(sentence => {
-                const sentenceLower = sentence.toLowerCase();
-                let score = 0;
-                let matchedWords = 0;
-                questionWords.forEach(qWord => {
-                    if (sentenceLower.includes(qWord)) {
-                        score += 2;
-                        matchedWords++;
-                    }
-                });
-                if (matchedWords > 1) score += matchedWords * 3;
-                if (/\b(is|are|was|were)\b/i.test(sentence) && sentence.length < 250) score *= 1.5;
-                if (score > bestSentence.score) bestSentence = { text: sentence, score: score };
-            });
-            if (bestSentence.score <= 1) return "I could not find a confident answer. Try rephrasing your question.";
-            let answerText = bestSentence.text;
-            questionWords.forEach(word => {
-                const regex = new RegExp(`\\b(${word})\\b`, 'gi');
-                answerText = answerText.replace(regex, `<mark>$1</mark>`);
-            });
-            return answerText;
-        }
-
-        extractKeyWords(text, count = 10) {
-            const words = this.preprocessText(text).toLowerCase().replace(/[^\w\s]/g, ' ').split(/\s+/).filter(word => word.length > 3 && !this.stopWords.has(word));
-            const wordFreq = {};
-            words.forEach(word => { wordFreq[word] = (wordFreq[word] || 0) + 1; });
-            const scores = Object.entries(wordFreq).map(([word, freq]) => ({
-                word,
-                score: freq * Math.log(words.length / (wordFreq[word] || 1))
-            }));
-            return scores.sort((a, b) => b.score - a.score).slice(0, count);
-        }
-
-        extractKeyPoints(text) {
-            const summary = this.generateSummary(text, 'large');
-            const points = summary.split('. ').filter(p => p.trim().length > 0).map(p => p.trim() + '.');
-            return points.map((point, index) => `${index + 1}. ${point}`).join('\n\n') || "No key points could be extracted.";
-        }
-        
-        analyzeWriting(text) {
-            const sentences = this.tokenizeSentences(this.preprocessText(text));
-            let results = { passive: [], fillers: [], weasels: [], longSentences: [] };
-            
-            const passiveRegex = /\b(am|is|are|was|were|be|being|been)\b\s\w+ed\b/i;
-            sentences.forEach(s => { if(passiveRegex.test(s)) results.passive.push(s); });
-            
-            const fillerRegex = /\b(basically|actually|literally|like|just|really|very|stuff|things|you know|sort of|kind of)\b/gi;
-            const fillerMatches = text.match(fillerRegex);
-            if (fillerMatches) results.fillers = [...new Set(fillerMatches)];
-            
-            const weaselRegex = /\b(many|various|several|some|few|most|often|sometimes|arguably|perhaps|could|might)\b/gi;
-            const weaselMatches = text.match(weaselRegex);
-            if (weaselMatches) results.weasels = [...new Set(weaselMatches)];
-            
-            sentences.forEach(s => { if(s.length > 150) results.longSentences.push(s); });
-            
-            let report = "✍️ **Writing Analysis**\n\n";
-            if (results.passive.length > 0) {
-                report += `**Passive Voice:** ${results.passive.length} sentence(s) might be in passive voice. Consider making them more active.\n*Example: "${results.passive[0]}"*\n\n`;
-            }
-            if (results.fillers.length > 0) {
-                report += `**Filler Words:** Found common filler words. Your writing might be stronger without them.\n*Examples: ${results.fillers.slice(0, 5).join(', ')}*\n\n`;
-            }
-            if (results.weasels.length > 0) {
-                report += `**Vague Language:** These words can make your writing less direct.\n*Examples: ${results.weasels.slice(0, 5).join(', ')}*\n\n`;
-            }
-            if (results.longSentences.length > 0) {
-                report += `**Long Sentences:** ${results.longSentences.length} sentences might be too long. Consider breaking them up for better readability.\n\n`;
-            }
-            if (report.length < 50) return "✅ Your writing looks clear and direct! No major issues found.";
-
-            return report;
-        }
-
-        fixGrammar(text) {
-            let correctedText = text;
-            
-            // Simplified filler word removal
-            const fillerWords = /\b(basically|actually|literally|like|just|really|very|sort of|kind of)\b/gi;
-            correctedText = correctedText.replace(fillerWords, '');
-
-            // Rule-based passive to active (very simplified example)
-            // Example: "The ball was hit by the boy." -> "The boy hit the ball."
-            const passiveRegex = /(\w+)\s(was|were)\s(\w+ed)\sby\s(\w+)/i;
-            correctedText = correctedText.replace(passiveRegex, '$4 $3 $1');
-            
-            // Remove extra whitespace created by replacements
-            correctedText = correctedText.replace(/\s+/g, ' ').trim();
-            
-            return correctedText;
-        }
-
-        generateQuiz(text) {
-            const sentences = this.tokenizeSentences(this.preprocessText(text));
-            const keywords = this.extractKeyWords(text, 10);
-            let quiz = [];
-            
-            keywords.forEach(kw => {
-                const keywordSentences = sentences.filter(s => s.toLowerCase().includes(kw.word));
-                if(keywordSentences.length > 0) {
-                    const questionSentence = keywordSentences[0];
-                    const question = questionSentence.replace(new RegExp(kw.word, 'ig'), '_____');
-                    quiz.push({question: question, answer: kw.word});
+            class OptiChainAI {
+                constructor() {
+                    this.stopWords = new Set(['a', 'about', 'above', 'after', 'again', 'against', 'all', 'am', 'an', 'and', 'any', 'are', 'as', 'at', 'be', 'because', 'been', 'before', 'being', 'below', 'between', 'both', 'but', 'by', 'can', 'cannot', 'could', 'did', 'do', 'does', 'doing', 'down', 'during', 'each', 'few', 'for', 'from', 'further', 'had', 'has', 'have', 'having', 'he', 'her', 'here', 'hers', 'herself', 'him', 'himself', 'his', 'how', 'i', 'if', 'in', 'into', 'is', 'it', 'its', 'itself', 'me', 'more', 'most', 'my', 'myself', 'no', 'nor', 'not', 'of', 'off', 'on', 'once', 'only', 'or', 'other', 'our', 'ours', 'ourselves', 'out', 'over', 'own', 'same', 'she', 'should', 'so', 'some', 'such', 'than', 'that', 'the', 'their', 'theirs', 'them', 'themselves', 'then', 'there', 'these', 'they', 'this', 'those', 'through', 'to', 'too', 'under', 'until', 'up', 'very', 'was', 'we', 'were', 'what', 'when', 'where', 'which', 'while', 'who', 'whom', 'why', 'with', 'you', 'your', 'yours', 'yourself', 'yourselves']);
                 }
-            });
 
-            if (quiz.length === 0) return "Could not generate a quiz from this text.";
-            return quiz.slice(0, 5).map((item, index) => `${index + 1}. ${item.question}\n   <mark>Answer: ${item.answer}</mark>`).join('\n\n');
-        }
+                preprocessText(text) {
+                    if (!text || typeof text !== 'string') return '';
+                    let processed = text;
+                    processed = processed.replace(/ﬁ/g, 'fi').replace(/ﬂ/g, 'fl');
+                    processed = processed.replace(/\s+/g, ' ').trim();
+                    processed = processed.replace(/([a-z])-\s+([a-z])/g, '$1$2');
+                    return processed;
+                }
 
-        countWords(text) {
-            if (!text || typeof text.trim() !== 'string') return 0;
-            const words = text.trim().split(/\s+/);
-            return words.filter(word => word !== '').length;
-        }
+                tokenizeSentences(text) {
+                    if (!text) return [];
+                    return text.match(/[^.!?]+[.!?]\s*(?=[A-Z]|\d|"|"|'|$)/g)
+                        ?.map(s => s.trim())
+                        .filter(s => s.length > 15 && s.length < 1500) || [];
+                }
 
-        analyzeContent(text) {
-            const positiveWords = ['good', 'great', 'excellent', 'amazing', 'awesome', 'love', 'like', 'happy', 'beautiful', 'wonderful', 'positive', 'success', 'benefit', 'advantage'];
-            const negativeWords = ['bad', 'terrible', 'horrible', 'awful', 'hate', 'dislike', 'sad', 'ugly', 'boring', 'negative', 'problem', 'issue', 'difficulty', 'challenge'];
-            
-            let positiveScore = 0;
-            let negativeScore = 0;
-            const words = this.preprocessText(text).toLowerCase().split(/\s+/);
-            
-            words.forEach(word => {
-                if(positiveWords.includes(word)) positiveScore++;
-                if(negativeWords.includes(word)) negativeScore++;
-            });
-
-            let sentiment = "Neutral";
-            if (positiveScore > negativeScore * 1.5) sentiment = "Positive";
-            else if (negativeScore > positiveScore * 1.5) sentiment = "Negative";
-            
-            const readabilityScore = this.calculateReadability(text);
-            
-            return `**Word Count:** ${this.countWords(text)}\n**Sentence Count:** ${this.tokenizeSentences(text).length}\n\n**Sentiment Analysis:** ${sentiment}\n**Readability Score:** ${readabilityScore}/100`;
-        }
-        
-        calculateReadability(text) {
-            const sentences = this.tokenizeSentences(text);
-            const words = this.preprocessText(text).split(/\s+/);
-            const syllables = this.countSyllables(text);
-            
-            if (sentences.length === 0 || words.length === 0) return 0;
-            
-            const avgSentenceLength = words.length / sentences.length;
-            const avgSyllablesPerWord = syllables / words.length;
-            
-            const score = 206.835 - (1.015 * avgSentenceLength) - (84.6 * avgSyllablesPerWord);
-            
-            return Math.max(0, Math.min(100, Math.round(score)));
-        }
-        
-        countSyllables(text) {
-            const words = this.preprocessText(text).toLowerCase().split(/\s+/);
-            let syllableCount = 0;
-            
-            words.forEach(word => {
-                word = word.replace(/(?:[^laeiouy]es|ed|[^laeiouy]e)$/, '');
-                word = word.replace(/^y/, '');
-                const matches = word.match(/[aeiouy]{1,2}/g);
-                syllableCount += matches ? matches.length : 1;
-            });
-            
-            return syllableCount;
-        }
-    }
-
-    const AI = new OptiChainAI();
-    const DOMElements = {
-        mainContent: document.getElementById('mainContent'),
-        pdfUpload: document.getElementById('pdf-upload'),
-        contentArea: document.getElementById('content-area'),
-        emptyState: document.getElementById('emptyState'),
-        pdfViewer: document.getElementById('pdf-viewer'),
-        textEditor: document.getElementById('text-editor'),
-        aiSidebar: document.getElementById('aiSidebar'),
-        dragDropOverlay: document.getElementById('drag-drop-overlay'),
-        modeToggleBtn: document.getElementById('mode-toggle-btn'),
-        downloadPdfBtn: document.getElementById('download-pdf-btn'),
-        uploadLabel: document.getElementById('upload-label'),
-        settingsOverlay: document.getElementById('settingsOverlay'),
-        themeOptions: document.getElementById('themeOptions'),
-        copyPasteBtn: document.getElementById('copy-paste-btn'),
-        documentTitle: document.getElementById('document-title'),
-    };
-    
-    function initialize() {
-        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.worker.min.js';
-        setupEventListeners();
-        loadSettings();
-        updateUIMode();
-        resetAiOutputs();
-    }
-
-    function setupEventListeners() {
-        DOMElements.pdfUpload.addEventListener('change', handleFileSelect, false);
-        document.getElementById('ai-toggle-btn').addEventListener('click', toggleAiSidebar);
-        document.getElementById('ai-close-btn').addEventListener('click', toggleAiSidebar);
-        DOMElements.modeToggleBtn.addEventListener('click', toggleMode);
-        DOMElements.downloadPdfBtn.addEventListener('click', downloadTextAsPDF);
-        DOMElements.copyPasteBtn.addEventListener('click', pasteFromClipboard);
-        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(evt => document.body.addEventListener(evt, preventDefaults, false));
-        ['dragenter', 'dragover'].forEach(evt => DOMElements.mainContent.addEventListener(evt, showDropOverlay, false));
-        ['dragleave', 'drop'].forEach(evt => DOMElements.mainContent.addEventListener(evt, hideDropOverlay, false));
-        DOMElements.mainContent.addEventListener('drop', handleDrop, false);
-        document.getElementById('settings-btn').addEventListener('click', () => DOMElements.settingsOverlay.classList.add('visible'));
-        document.getElementById('settings-close-btn').addEventListener('click', () => DOMElements.settingsOverlay.classList.remove('visible'));
-        DOMElements.settingsOverlay.addEventListener('click', e => { if (e.target === DOMElements.settingsOverlay) DOMElements.settingsOverlay.classList.remove('visible'); });
-        DOMElements.themeOptions.addEventListener('change', handleThemeChange);
-        
-        document.getElementById('summarize-btn-small').addEventListener('click', (e) => handleAIAction('summarize', { size: e.target.dataset.size }));
-        document.getElementById('summarize-btn-medium').addEventListener('click', (e) => handleAIAction('summarize', { size: e.target.dataset.size }));
-        document.getElementById('summarize-btn-large').addEventListener('click', (e) => handleAIAction('summarize', { size: e.target.dataset.size }));
-        document.getElementById('writing-btn').addEventListener('click', () => handleAIAction('writing'));
-        document.getElementById('fix-grammar-btn').addEventListener('click', () => handleAIAction('fix-grammar'));
-        document.getElementById('qa-btn').addEventListener('click', () => handleAIAction('qa'));
-        document.getElementById('keypoints-btn').addEventListener('click', () => handleAIAction('keypoints'));
-        document.getElementById('quiz-btn').addEventListener('click', () => handleAIAction('quiz'));
-        document.getElementById('analysis-btn').addEventListener('click', () => handleAIAction('analysis'));
-        document.getElementById('search-btn').addEventListener('click', () => handleAIAction('search'));
-        
-        document.getElementById('qa-input').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); handleAIAction('qa'); } });
-        document.getElementById('search-input').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); handleAIAction('search'); } });
-        DOMElements.textEditor.addEventListener('paste', handlePaste);
-    }
-    
-    function handlePaste(e) {
-        e.preventDefault();
-        const text = (e.clipboardData || window.clipboardData).getData('text/plain');
-        document.execCommand('insertText', false, text);
-    }
-    
-    async function pasteFromClipboard() {
-        try {
-            const text = await navigator.clipboard.readText();
-            DOMElements.textEditor.textContent += text;
-            toggleMode('text');
-            showToast('Text pasted successfully!', 'success');
-        } catch (err) {
-            console.error('Failed to read clipboard contents: ', err);
-            showToast("Could not paste from clipboard. Please try again.", 'error');
-        }
-    }
-
-    function toggleMode(mode = null) {
-        state.currentMode = mode ? mode : (state.currentMode === 'pdf') ? 'text' : 'pdf';
-        if (state.currentMode === 'text' && state.extractedText) {
-             DOMElements.textEditor.textContent = state.extractedText;
-        }
-        updateUIMode();
-        resetAiOutputs();
-    }
-
-    function updateUIMode() {
-        if (state.currentMode === 'pdf') {
-            DOMElements.pdfViewer.style.display = 'block';
-            DOMElements.textEditor.style.display = 'none';
-            DOMElements.downloadPdfBtn.style.display = 'none';
-            DOMElements.copyPasteBtn.style.display = 'none';
-            DOMElements.uploadLabel.style.display = 'flex';
-            DOMElements.modeToggleBtn.innerHTML = '<i class="fas fa-file-alt"></i>';
-            DOMElements.modeToggleBtn.title = "Switch to Text Mode";
-        } else {
-            DOMElements.pdfViewer.style.display = 'none';
-            DOMElements.textEditor.style.display = 'block';
-            DOMElements.downloadPdfBtn.style.display = 'flex';
-            DOMElements.copyPasteBtn.style.display = 'flex';
-            DOMElements.uploadLabel.style.display = 'none';
-            if(state.extractedText || DOMElements.textEditor.textContent){
-                DOMElements.emptyState.style.display = 'none';
-            }
-            DOMElements.modeToggleBtn.innerHTML = '<i class="fas fa-file-pdf"></i>';
-            DOMElements.modeToggleBtn.title = "Switch to PDF Mode";
-        }
-    }
-    
-    function toggleAiSidebar() {
-        const isOpen = DOMElements.aiSidebar.classList.toggle('open');
-        DOMElements.mainContent.classList.toggle('sidebar-open', isOpen);
-    }
-    
-    function loadSettings() {
-        const theme = localStorage.getItem('optichain_theme') || 'apple-notes';
-        document.documentElement.setAttribute('data-theme', theme);
-        const themeInput = document.querySelector(`#themeOptions input[value="${theme}"]`);
-        if (themeInput) themeInput.checked = true;
-    }
-
-    function handleThemeChange(e) {
-        document.documentElement.setAttribute('data-theme', e.target.value);
-        localStorage.setItem('optichain_theme', e.target.value);
-    }
-
-    function handleFileSelect(event) {
-        const file = event.target.files[0];
-        if (file && file.type === 'application/pdf') {
-            DOMElements.documentTitle.value = file.name.replace('.pdf', '');
-            loadPdfFromFile(file);
-        } else {
-            showToast('Please select a valid PDF file.', 'error');
-        }
-    }
-
-    function handleDrop(e) {
-        const file = e.dataTransfer.files[0];
-        if (file && file.type === 'application/pdf') {
-            DOMElements.documentTitle.value = file.name.replace('.pdf', '');
-            loadPdfFromFile(file);
-        } else {
-            showToast('Dropped file is not a valid PDF.', 'error');
-        }
-    }
-
-    function loadPdfFromFile(file) {
-        const fileReader = new FileReader();
-        fileReader.onload = (e) => loadPdf(new Uint8Array(e.target.result));
-        fileReader.readAsArrayBuffer(file);
-    }
-    
-    async function loadPdf(typedarray) {
-        if (state.isPdfLoading) return;
-        state.isPdfLoading = true;
-        setLoadingState(true, 'Loading PDF...');
-        
-        try {
-            state.pdfDoc = await pdfjsLib.getDocument(typedarray).promise;
-            DOMElements.pdfViewer.innerHTML = '';
-            DOMElements.emptyState.style.display = 'none';
-            
-            let textPromises = [];
-            for (let i = 1; i <= state.pdfDoc.numPages; i++) {
-                textPromises.push(state.pdfDoc.getPage(i).then(page => page.getTextContent()));
-            }
-            const allTextContents = await Promise.all(textPromises);
-            state.extractedText = allTextContents.map(tc => tc.items.map(item => item.str).join(' ')).join('\n\n');
-
-            for (let pageNum = 1; pageNum <= state.pdfDoc.numPages; pageNum++) {
-                await renderPage(pageNum, allTextContents[pageNum - 1]);
-            }
-            resetAiOutputs();
-            toggleMode('pdf');
-            showToast('PDF loaded successfully!', 'success');
-        } catch (error) {
-            console.error('Error loading PDF:', error);
-            showToast('Failed to load PDF. It may be corrupt or protected.', 'error');
-        } finally {
-            state.isPdfLoading = false;
-            setLoadingState(false);
-        }
-    }
-
-    async function renderPage(pageNum, textContent) {
-        const page = await state.pdfDoc.getPage(pageNum);
-        const viewport = page.getViewport({ scale: 1.5 });
-        const pageContainer = document.createElement('div');
-        pageContainer.className = 'page-container';
-        pageContainer.style.position = 'relative';
-        const canvas = document.createElement('canvas');
-        canvas.height = viewport.height;
-        canvas.width = viewport.width;
-        const textLayerDiv = document.createElement('div');
-        textLayerDiv.className = 'pdf-text-layer';
-        pageContainer.append(canvas, textLayerDiv);
-        DOMElements.pdfViewer.appendChild(pageContainer);
-        await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
-        textLayerDiv.style.width = viewport.width + 'px';
-        textLayerDiv.style.height = viewport.height + 'px';
-        pdfjsLib.renderTextLayer({ textContent, container: textLayerDiv, viewport, textDivs: [] });
-    }
-    
-    function getDocumentText() {
-        return (state.currentMode === 'pdf' ? state.extractedText : DOMElements.textEditor.textContent).trim();
-    }
-    
-    function resetAiOutputs() {
-        document.getElementById('summary-output').textContent = 'Generate an intelligent summary of your document.';
-        document.getElementById('qa-answer').textContent = 'Ask a question to get answers based on the content.';
-        document.getElementById('writing-output').textContent = 'Get suggestions to improve your writing.';
-        document.getElementById('keypoints-output').textContent = 'Extract the most important points and concepts.';
-        document.getElementById('quiz-output').textContent = 'Generate a quiz to test your knowledge.';
-        document.getElementById('analysis-output').textContent = 'Analyze the sentiment and tone of the document.';
-        document.getElementById('search-results').textContent = 'Find relevant information from the web. This will open in a new tab.';
-    }
-
-    async function handleAIAction(action, options = {}) {
-        if (state.isAiProcessing && action !== 'search') return;
-        
-        // Special case for web search to open a new tab immediately
-        if(action === 'search'){
-            const searchQuery = document.getElementById('search-input').value.trim();
-            if (!searchQuery) { showToast('Please enter a search query.', 'error'); return; }
-            const keywords = AI.extractKeyWords(getDocumentText(), 3).map(kw => kw.word);
-            const fullQuery = encodeURIComponent(searchQuery + " " + keywords.join(" "));
-            window.open(`https://www.google.com/search?q=${fullQuery}`, '_blank');
-            return;
-        }
-
-        const title = DOMElements.documentTitle.value.trim();
-        if (!title) {
-            showToast('Please provide a title for the document before using AI features.', 'error');
-            return;
-        }
-
-        const text = getDocumentText();
-        if (text.length < 50 && action !== 'fix-grammar') {
-            showToast('Please provide at least 50 characters of text for AI analysis.', 'error');
-            return;
-        }
-        
-        const buttonMap = {
-            summarize: 'summarize-btn-medium', qa: 'qa-btn', 
-            writing: 'writing-btn', 'fix-grammar': 'fix-grammar-btn', keypoints: 'keypoints-btn',
-            quiz: 'quiz-btn', analysis: 'analysis-btn'
-        };
-        const outputMap = {
-            summarize: 'summary-output', qa: 'qa-answer', 
-            writing: 'writing-output', 'fix-grammar': 'writing-output', keypoints: 'keypoints-output',
-            quiz: 'quiz-output', analysis: 'analysis-output'
-        };
-
-        const button = document.getElementById(buttonMap[action]);
-        const outputEl = document.getElementById(outputMap[action]);
-        const originalHTML = button.innerHTML;
-        
-        state.isAiProcessing = true;
-        document.querySelectorAll('.ai-button, .summary-option-btn').forEach(btn => btn.disabled = true);
-        if (action !== 'summarize') {
-            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Thinking...';
-        } else {
-            document.querySelectorAll('.summary-option-btn').forEach(b => {
-                b.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-            });
-        }
-
-        await new Promise(resolve => setTimeout(resolve, 50));
-        
-        try {
-            let result;
-            switch (action) {
-                case 'summarize': 
-                    result = AI.generateSummary(text, options.size);
-                    await typeEffect(outputEl, result);
-                    break;
-                case 'writing':
-                    result = AI.analyzeWriting(text);
-                    outputEl.innerHTML = result.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-                    break;
-                case 'fix-grammar':
-                    if (state.currentMode !== 'text') {
-                         showToast('Grammar correction is only available in Text Mode.', 'error');
-                         throw new Error('Wrong mode');
+                generateSummary(text, size = 'medium') {
+                    let targetSentenceCount;
+                    switch (size) {
+                        case 'small': targetSentenceCount = 3; break;
+                        case 'large': targetSentenceCount = 8; break;
+                        default: targetSentenceCount = 5;
                     }
-                    result = AI.fixGrammar(text);
-                    DOMElements.textEditor.textContent = result;
-                    outputEl.textContent = 'Grammar fixes have been applied to the text editor.';
-                    showToast('Grammar has been corrected!', 'success');
-                    break;
-                case 'qa':
-                    const question = document.getElementById('qa-input').value.trim();
-                    if (!question) { showToast('Please enter a question.', 'error'); throw new Error('No Question'); }
-                    result = AI.answerQuestion(text, question);
-                    outputEl.innerHTML = result;
-                    break;
-                case 'keypoints': 
-                    result = AI.extractKeyPoints(text);
-                    await typeEffect(outputEl, result);
-                    break;
-                case 'quiz':
-                    result = AI.generateQuiz(text);
-                    outputEl.innerHTML = result;
-                    break;
-                case 'analysis':
-                    result = AI.analyzeContent(text);
-                    outputEl.innerHTML = result.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-                    break;
-                default: throw new Error('Unknown action.');
+
+                    const sentences = this.tokenizeSentences(this.preprocessText(text));
+                    if (sentences.length <= targetSentenceCount) {
+                        return sentences.join(' ');
+                    }
+
+                    const keywords = this.extractKeyWords(text, 20);
+
+                    const scoredSentences = sentences.map((sentence, i) => {
+                        const sentenceLower = sentence.toLowerCase();
+                        let score = 0;
+                        const positionRatio = i / sentences.length;
+                        if (positionRatio < 0.2) score += 2.0;
+                        if (positionRatio > 0.8) score += 1.5;
+                        keywords.forEach(kw => {
+                            if (sentenceLower.includes(kw.word)) {
+                                score += kw.score;
+                            }
+                        });
+                        if (sentence.length < 20 || sentence.length > 800) score *= 0.5;
+                        const cuePhrases = ['in conclusion', 'in summary', 'the main point', 'importantly', 'essentially'];
+                        if (cuePhrases.some(phrase => sentenceLower.startsWith(phrase))) score *= 2.0;
+                        return { sentence, score, index: i };
+                    });
+
+                    const topSentences = scoredSentences
+                        .sort((a, b) => b.score - a.score)
+                        .slice(0, targetSentenceCount)
+                        .sort((a, b) => a.index - b.index);
+
+                    return topSentences.map(item => item.sentence).join(' ');
+                }
+
+                generateKeyInsights(text) {
+                    const summary = this.generateSummary(text, 'small');
+                    const keywords = this.extractKeyWords(text, 5);
+                    
+                    let insights = `**Key Insights:**\n\n`;
+                    insights += `**Main Topic:** ${summary.split('.')[0]}.\n\n`;
+                    insights += `**Key Concepts:** ${keywords.map(kw => kw.word).join(', ')}.\n\n`;
+                    
+                    const sentiment = this.analyzeSentiment(text);
+                    insights += `**Overall Tone:** ${sentiment}.\n\n`;
+                    
+                    const readability = this.calculateReadability(text);
+                    insights += `**Readability:** ${readability >= 70 ? 'Easy to understand' : readability >= 50 ? 'Moderate difficulty' : 'Complex content'}.\n\n`;
+                    
+                    return insights;
+                }
+
+                analyzeSentiment(text) {
+                    const positiveWords = ['good', 'great', 'excellent', 'amazing', 'awesome', 'love', 'like', 'happy', 'beautiful', 'wonderful', 'positive', 'success', 'benefit', 'advantage'];
+                    const negativeWords = ['bad', 'terrible', 'horrible', 'awful', 'hate', 'dislike', 'sad', 'ugly', 'boring', 'negative', 'problem', 'issue', 'difficulty', 'challenge'];
+                    
+                    let positiveScore = 0;
+                    let negativeScore = 0;
+                    const words = this.preprocessText(text).toLowerCase().split(/\s+/);
+                    
+                    words.forEach(word => {
+                        if(positiveWords.includes(word)) positiveScore++;
+                        if(negativeWords.includes(word)) negativeScore++;
+                    });
+
+                    if (positiveScore > negativeScore * 1.5) return "Positive";
+                    else if (negativeScore > positiveScore * 1.5) return "Negative";
+                    return "Neutral";
+                }
+
+                answerQuestion(text, question) {
+                    const sentences = this.tokenizeSentences(this.preprocessText(text));
+                    const questionWords = new Set(question.toLowerCase().replace('?','').split(/\s+/).filter(w => !this.stopWords.has(w) && w.length > 2));
+                    if (questionWords.size === 0) return "Please ask a more specific question.";
+                    let bestSentence = { text: "", score: -1 };
+                    sentences.forEach(sentence => {
+                        const sentenceLower = sentence.toLowerCase();
+                        let score = 0;
+                        let matchedWords = 0;
+                        questionWords.forEach(qWord => {
+                            if (sentenceLower.includes(qWord)) {
+                                score += 2;
+                                matchedWords++;
+                            }
+                        });
+                        if (matchedWords > 1) score += matchedWords * 3;
+                        if (/\b(is|are|was|were)\b/i.test(sentence) && sentence.length < 250) score *= 1.5;
+                        if (score > bestSentence.score) bestSentence = { text: sentence, score: score };
+                    });
+                    if (bestSentence.score <= 1) return "I could not find a confident answer. Try rephrasing your question.";
+                    let answerText = bestSentence.text;
+                    questionWords.forEach(word => {
+                        const regex = new RegExp(`\\b(${word})\\b`, 'gi');
+                        answerText = answerText.replace(regex, `<mark>$1</mark>`);
+                    });
+                    return answerText;
+                }
+
+                extractKeyWords(text, count = 10) {
+                    const words = this.preprocessText(text).toLowerCase().replace(/[^\w\s]/g, ' ').split(/\s+/).filter(word => word.length > 3 && !this.stopWords.has(word));
+                    const wordFreq = {};
+                    words.forEach(word => { wordFreq[word] = (wordFreq[word] || 0) + 1; });
+                    const scores = Object.entries(wordFreq).map(([word, freq]) => ({
+                        word,
+                        score: freq * Math.log(words.length / (wordFreq[word] || 1))
+                    }));
+                    return scores.sort((a, b) => b.score - a.score).slice(0, count);
+                }
+
+                extractKeyPoints(text) {
+                    const summary = this.generateSummary(text, 'large');
+                    const points = summary.split('. ').filter(p => p.trim().length > 0).map(p => p.trim() + '.');
+                    return points.map((point, index) => `${index + 1}. ${point}`).join('\n\n') || "No key points could be extracted.";
+                }
+
+                analyzeWriting(text) {
+                    const sentences = this.tokenizeSentences(this.preprocessText(text));
+                    let results = { passive: [], fillers: [], weasels: [], longSentences: [] };
+                    
+                    const passiveRegex = /\b(am|is|are|was|were|be|being|been)\b\s\w+ed\b/i;
+                    sentences.forEach(s => { if(passiveRegex.test(s)) results.passive.push(s); });
+                    
+                    const fillerRegex = /\b(basically|actually|literally|like|just|really|very|stuff|things|you know|sort of|kind of)\b/gi;
+                    const fillerMatches = text.match(fillerRegex);
+                    if (fillerMatches) results.fillers = [...new Set(fillerMatches)];
+                    
+                    const weaselRegex = /\b(many|various|several|some|few|most|often|sometimes|arguably|perhaps|could|might)\b/gi;
+                    const weaselMatches = text.match(weaselRegex);
+                    if (weaselMatches) results.weasels = [...new Set(weaselMatches)];
+                    
+                    sentences.forEach(s => { if(s.length > 150) results.longSentences.push(s); });
+                    
+                    let report = "✍️ **Writing Analysis**\n\n";
+                    if (results.passive.length > 0) {
+                        report += `**Passive Voice:** ${results.passive.length} sentence(s) might be in passive voice. Consider making them more active.\n*Example: "${results.passive[0]}"*\n\n`;
+                    }
+                    if (results.fillers.length > 0) {
+                        report += `**Filler Words:** Found common filler words. Your writing might be stronger without them.\n*Examples: ${results.fillers.slice(0, 5).join(', ')}*\n\n`;
+                    }
+                    if (results.weasels.length > 0) {
+                        report += `**Vague Language:** These words can make your writing less direct.\n*Examples: ${results.weasels.slice(0, 5).join(', ')}*\n\n`;
+                    }
+                    if (results.longSentences.length > 0) {
+                        report += `**Long Sentences:** ${results.longSentences.length} sentences might be too long. Consider breaking them up for better readability.\n\n`;
+                    }
+                    if (report.length < 50) return "✅ Your writing looks clear and direct! No major issues found.";
+
+                    return report;
+                }
+
+                fixGrammar(text) {
+                    let correctedText = text;
+                    
+                    // Simplified filler word removal
+                    const fillerWords = /\b(basically|actually|literally|like|just|really|very|sort of|kind of)\b/gi;
+                    correctedText = correctedText.replace(fillerWords, '');
+
+                    // Rule-based passive to active (very simplified example)
+                    // Example: "The ball was hit by the boy." -> "The boy hit the ball."
+                    const passiveRegex = /(\w+)\s(was|were)\s(\w+ed)\sby\s(\w+)/i;
+                    correctedText = correctedText.replace(passiveRegex, '$4 $3 $1');
+                    
+                    // Remove extra whitespace created by replacements
+                    correctedText = correctedText.replace(/\s+/g, ' ').trim();
+                    
+                    return correctedText;
+                }
+
+                generateQuiz(text) {
+                    const sentences = this.tokenizeSentences(this.preprocessText(text));
+                    const keywords = this.extractKeyWords(text, 10);
+                    let quiz = [];
+                    
+                    keywords.forEach(kw => {
+                        const keywordSentences = sentences.filter(s => s.toLowerCase().includes(kw.word));
+                        if(keywordSentences.length > 0) {
+                            const questionSentence = keywordSentences[0];
+                            const question = questionSentence.replace(new RegExp(kw.word, 'ig'), '_____');
+                            quiz.push({question: question, answer: kw.word});
+                        }
+                    });
+
+                    if (quiz.length === 0) return "Could not generate a quiz from this text.";
+                    return quiz.slice(0, 5).map((item, index) => `${index + 1}. ${item.question}\n   <mark>Answer: ${item.answer}</mark>`).join('\n\n');
+                }
+
+                countWords(text) {
+                    if (!text || typeof text.trim() !== 'string') return 0;
+                    const words = text.trim().split(/\s+/);
+                    return words.filter(word => word !== '').length;
+                }
+
+                analyzeContent(text) {
+                    const positiveWords = ['good', 'great', 'excellent', 'amazing', 'awesome', 'love', 'like', 'happy', 'beautiful', 'wonderful', 'positive', 'success', 'benefit', 'advantage'];
+                    const negativeWords = ['bad', 'terrible', 'horrible', 'awful', 'hate', 'dislike', 'sad', 'ugly', 'boring', 'negative', 'problem', 'issue', 'difficulty', 'challenge'];
+                    
+                    let positiveScore = 0;
+                    let negativeScore = 0;
+                    const words = this.preprocessText(text).toLowerCase().split(/\s+/);
+                    
+                    words.forEach(word => {
+                        if(positiveWords.includes(word)) positiveScore++;
+                        if(negativeWords.includes(word)) negativeScore++;
+                    });
+
+                    let sentiment = "Neutral";
+                    if (positiveScore > negativeScore * 1.5) sentiment = "Positive";
+                    else if (negativeScore > positiveScore * 1.5) sentiment = "Negative";
+                    
+                    const readabilityScore = this.calculateReadability(text);
+                    
+                    return `**Word Count:** ${this.countWords(text)}\n**Sentence Count:** ${this.tokenizeSentences(text).length}\n\n**Sentiment Analysis:** ${sentiment}\n**Readability Score:** ${readabilityScore}/100`;
+                }
+
+                calculateReadability(text) {
+                    const sentences = this.tokenizeSentences(text);
+                    const words = this.preprocessText(text).split(/\s+/);
+                    const syllables = this.countSyllables(text);
+                    
+                    if (sentences.length === 0 || words.length === 0) return 0;
+                    
+                    const avgSentenceLength = words.length / sentences.length;
+                    const avgSyllablesPerWord = syllables / words.length;
+                    
+                    const score = 206.835 - (1.015 * avgSentenceLength) - (84.6 * avgSyllablesPerWord);
+                    
+                    return Math.max(0, Math.min(100, Math.round(score)));
+                }
+
+                countSyllables(text) {
+                    const words = this.preprocessText(text).toLowerCase().split(/\s+/);
+                    let syllableCount = 0;
+                    
+                    words.forEach(word => {
+                        word = word.replace(/(?:[^laeiouy]es|ed|[^laeiouy]e)$/, '');
+                        word = word.replace(/^y/, '');
+                        const matches = word.match(/[aeiouy]{1,2}/g);
+                        syllableCount += matches ? matches.length : 1;
+                    });
+                    
+                    return syllableCount;
+                }
             }
 
-        } catch (error) {
-            if(error.message !== 'No Question' && error.message !== 'No Query' && error.message !== 'Wrong mode') {
-                console.error(`AI action '${action}' failed:`, error);
-                outputEl.textContent = `An error occurred. Please try again.`;
+            const AI = new OptiChainAI();
+
+            const DOMElements = {
+                mainContent: document.getElementById('mainContent'),
+                pdfUpload: document.getElementById('pdf-upload'),
+                contentArea: document.getElementById('content-area'),
+                emptyState: document.getElementById('emptyState'),
+                pdfViewer: document.getElementById('pdf-viewer'),
+                textEditor: document.getElementById('text-editor'),
+                aiSidebar: document.getElementById('aiSidebar'),
+                dragDropOverlay: document.getElementById('drag-drop-overlay'),
+                modeToggleBtn: document.getElementById('mode-toggle-btn'),
+                downloadPdfBtn: document.getElementById('download-pdf-btn'),
+                uploadLabel: document.getElementById('upload-label'),
+                settingsOverlay: document.getElementById('settingsOverlay'),
+                themeOptions: document.getElementById('themeOptions'),
+                copyPasteBtn: document.getElementById('copy-paste-btn'),
+                documentTitle: document.getElementById('document-title'),
+                welcomeScreen: document.getElementById('welcomeScreen'),
+                readingOption: document.getElementById('readingOption'),
+                researchOption: document.getElementById('researchOption'),
+                dynamicIsland: document.getElementById('dynamicIsland')
+            };
+
+            function initialize() {
+                pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.worker.min.js';
+                setupEventListeners();
+                loadSettings();
+                updateUIMode();
+                resetAiOutputs();
+                
+                // Show welcome screen initially
+                DOMElements.welcomeScreen.style.display = 'flex';
             }
-        } finally {
-            state.isAiProcessing = false;
-            document.querySelectorAll('.ai-button, .summary-option-btn').forEach(btn => btn.disabled = false);
-            if (action !== 'summarize') button.innerHTML = originalHTML;
-            else {
-                document.getElementById('summarize-btn-small').innerHTML = "Small";
-                document.getElementById('summarize-btn-medium').innerHTML = "Medium";
-                document.getElementById('summarize-btn-large').innerHTML = "Large";
+
+            function setupEventListeners() {
+                DOMElements.pdfUpload.addEventListener('change', handleFileSelect, false);
+                document.getElementById('ai-toggle-btn').addEventListener('click', toggleAiSidebar);
+                document.getElementById('ai-close-btn').addEventListener('click', toggleAiSidebar);
+                DOMElements.modeToggleBtn.addEventListener('click', toggleMode);
+                DOMElements.downloadPdfBtn.addEventListener('click', downloadTextAsPDF);
+                DOMElements.copyPasteBtn.addEventListener('click', pasteFromClipboard);
+                ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(evt => document.body.addEventListener(evt, preventDefaults, false));
+                ['dragenter', 'dragover'].forEach(evt => DOMElements.mainContent.addEventListener(evt, showDropOverlay, false));
+                ['dragleave', 'drop'].forEach(evt => DOMElements.mainContent.addEventListener(evt, hideDropOverlay, false));
+                DOMElements.mainContent.addEventListener('drop', handleDrop, false);
+                document.getElementById('settings-btn').addEventListener('click', () => DOMElements.settingsOverlay.classList.add('visible'));
+                document.getElementById('settings-close-btn').addEventListener('click', () => DOMElements.settingsOverlay.classList.remove('visible'));
+                DOMElements.settingsOverlay.addEventListener('click', e => { if (e.target === DOMElements.settingsOverlay) DOMElements.settingsOverlay.classList.remove('visible'); });
+                DOMElements.themeOptions.addEventListener('change', handleThemeChange);
+
+                // Welcome screen options
+                DOMElements.readingOption.addEventListener('click', () => selectMode('reading'));
+                DOMElements.researchOption.addEventListener('click', () => selectMode('research'));
+
+                // AI Action buttons
+                document.getElementById('summarize-btn-small').addEventListener('click', (e) => handleAIAction('summarize', { size: e.target.dataset.size }));
+                document.getElementById('summarize-btn-medium').addEventListener('click', (e) => handleAIAction('summarize', { size: e.target.dataset.size }));
+                document.getElementById('summarize-btn-large').addEventListener('click', (e) => handleAIAction('summarize', { size: e.target.dataset.size }));
+                document.getElementById('writing-btn').addEventListener('click', () => handleAIAction('writing'));
+                document.getElementById('fix-grammar-btn').addEventListener('click', () => handleAIAction('fix-grammar'));
+                document.getElementById('qa-btn').addEventListener('click', () => handleAIAction('qa'));
+                document.getElementById('keypoints-btn').addEventListener('click', () => handleAIAction('keypoints'));
+                document.getElementById('quiz-btn').addEventListener('click', () => handleAIAction('quiz'));
+                document.getElementById('analysis-btn').addEventListener('click', () => handleAIAction('analysis'));
+                document.getElementById('search-btn').addEventListener('click', () => handleAIAction('search'));
+                document.getElementById('key-insights-btn').addEventListener('click', () => handleAIAction('key-insights'));
+
+                // Copy buttons
+                document.getElementById('copy-summary-btn').addEventListener('click', () => copyToClipboard('summary-output'));
+                document.getElementById('copy-writing-btn').addEventListener('click', () => copyToClipboard('writing-output'));
+                document.getElementById('copy-qa-btn').addEventListener('click', () => copyToClipboard('qa-answer'));
+                document.getElementById('copy-keypoints-btn').addEventListener('click', () => copyToClipboard('keypoints-output'));
+                document.getElementById('copy-quiz-btn').addEventListener('click', () => copyToClipboard('quiz-output'));
+                document.getElementById('copy-analysis-btn').addEventListener('click', () => copyToClipboard('analysis-output'));
+
+                document.getElementById('qa-input').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); handleAIAction('qa'); } });
+                document.getElementById('search-input').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); handleAIAction('search'); } });
+                DOMElements.textEditor.addEventListener('paste', handlePaste);
             }
-        }
-    }
 
-    async function typeEffect(element, text, speed = 15) {
-        element.textContent = '';
-        for (let i = 0; i < text.length; i++) {
-            element.textContent += text.charAt(i);
-            await new Promise(resolve => setTimeout(resolve, speed));
-        }
-    }
-    
-    function preventDefaults(e) { e.preventDefault(); e.stopPropagation(); }
-    function showDropOverlay() { DOMElements.dragDropOverlay.classList.add('visible'); }
-    function hideDropOverlay() { DOMElements.dragDropOverlay.classList.remove('visible'); }
+            function selectMode(mode) {
+                state.currentMode = mode;
+                DOMElements.welcomeScreen.style.display = 'none';
+                DOMElements.dynamicIsland.classList.add('expanded');
+                
+                setTimeout(() => {
+                    DOMElements.dynamicIsland.classList.remove('expanded');
+                }, 2000);
+                
+                showToast(`Welcome to ${mode === 'reading' ? 'Reading' : 'Research'} Mode!`, 'success');
+            }
 
-    function setLoadingState(isLoading, message = '') {
-        if(isLoading){
-             DOMElements.pdfViewer.innerHTML = `<div style="text-align: center; padding: 2rem;"><i class="fas fa-spinner fa-spin fa-2x"></i><br><br>${message}</div>`;
-        } else {
-             if (!DOMElements.pdfViewer.hasChildNodes()){
-                 DOMElements.emptyState.style.display = 'flex';
-             }
-        }
-    }
-    
-    function showToast(message, type = 'success') {
-        const toast = document.createElement('div');
-        toast.textContent = message;
-        toast.className = `toast ${type}`;
-        document.body.appendChild(toast);
-        
-        setTimeout(() => toast.classList.add('show'), 10);
-        
-        setTimeout(() => {
-            toast.classList.remove('show');
-            setTimeout(() => toast.remove(), 300);
-        }, 4000);
-    }
-    
-    async function downloadTextAsPDF() {
-        const { jsPDF } = window.jspdf;
-        const editor = DOMElements.textEditor;
-        const title = DOMElements.documentTitle.value.trim();
-        
-        if (!editor.textContent.trim()) {
-            showToast("There's no text to download.", 'error');
-            return;
-        }
+            function copyToClipboard(outputId) {
+                const outputElement = document.getElementById(outputId);
+                const textToCopy = outputElement.textContent || outputElement.innerText;
+                
+                navigator.clipboard.writeText(textToCopy).then(() => {
+                    showToast('Copied to clipboard!', 'success');
+                }).catch(err => {
+                    console.error('Failed to copy text: ', err);
+                    showToast('Failed to copy text', 'error');
+                });
+            }
 
-        if (!title) {
-            showToast("Please provide a title for the document.", 'error');
-            return;
-        }
+            function handlePaste(e) {
+                e.preventDefault();
+                const text = (e.clipboardData || window.clipboardData).getData('text/plain');
+                document.execCommand('insertText', false, text);
+            }
 
-        setLoadingState(true, "Generating PDF...");
+            async function pasteFromClipboard() {
+                try {
+                    const text = await navigator.clipboard.readText();
+                    DOMElements.textEditor.textContent += text;
+                    toggleMode('text');
+                    showToast('Text pasted successfully!', 'success');
+                } catch (err) {
+                    console.error('Failed to read clipboard contents: ', err);
+                    showToast("Could not paste from clipboard. Please try again.", 'error');
+                }
+            }
 
-        try {
-            const doc = new jsPDF();
-            doc.setFontSize(18);
-            doc.text(title, 10, 10);
-            doc.setFontSize(12);
-            const text = editor.textContent;
-            const splitText = doc.splitTextToSize(text, 180); 
-            doc.text(splitText, 10, 20);
-            doc.save(`${title.replace(/ /g, '_')}.pdf`);
-            showToast('PDF downloaded successfully!', 'success');
-        } catch (error) {
-            console.error('Error generating PDF:', error);
-            showToast('Failed to generate PDF. Please try again.', 'error');
-        } finally {
-            setLoadingState(false);
-        }
-    }
-    
-    initialize();
-});
-</script>
+            function toggleMode(mode = null) {
+                state.currentMode = mode ? mode : (state.currentMode === 'pdf') ? 'text' : 'pdf';
+                if (state.currentMode === 'text' && state.extractedText) {
+                    DOMElements.textEditor.textContent = state.extractedText;
+                }
+                updateUIMode();
+                resetAiOutputs();
+            }
+
+            function updateUIMode() {
+                if (state.currentMode === 'pdf') {
+                    DOMElements.pdfViewer.style.display = 'block';
+                    DOMElements.textEditor.style.display = 'none';
+                    DOMElements.downloadPdfBtn.style.display = 'none';
+                    DOMElements.copyPasteBtn.style.display = 'none';
+                    DOMElements.uploadLabel.style.display = 'flex';
+                    DOMElements.modeToggleBtn.innerHTML = '<i class="fas fa-file-alt"></i>';
+                    DOMElements.modeToggleBtn.title = "Switch to Text Mode";
+                } else {
+                    DOMElements.pdfViewer.style.display = 'none';
+                    DOMElements.textEditor.style.display = 'block';
+                    DOMElements.downloadPdfBtn.style.display = 'flex';
+                    DOMElements.copyPasteBtn.style.display = 'flex';
+                    DOMElements.uploadLabel.style.display = 'none';
+                    if(state.extractedText || DOMElements.textEditor.textContent){
+                        DOMElements.emptyState.style.display = 'none';
+                    }
+                    DOMElements.modeToggleBtn.innerHTML = '<i class="fas fa-file-pdf"></i>';
+                    DOMElements.modeToggleBtn.title = "Switch to PDF Mode";
+                }
+            }
+
+            function toggleAiSidebar() {
+                const isOpen = DOMElements.aiSidebar.classList.toggle('open');
+                DOMElements.mainContent.classList.toggle('sidebar-open', isOpen);
+            }
+
+            function loadSettings() {
+                const theme = localStorage.getItem('optichain_theme') || 'apple-notes';
+                document.documentElement.setAttribute('data-theme', theme);
+                const themeInput = document.querySelector(`#themeOptions input[value="${theme}"]`);
+                if (themeInput) themeInput.checked = true;
+            }
+
+            function handleThemeChange(e) {
+                document.documentElement.setAttribute('data-theme', e.target.value);
+                localStorage.setItem('optichain_theme', e.target.value);
+            }
+
+            function handleFileSelect(event) {
+                const file = event.target.files[0];
+                if (file && file.type === 'application/pdf') {
+                    DOMElements.documentTitle.value = file.name.replace('.pdf', '');
+                    loadPdfFromFile(file);
+                } else {
+                    showToast('Please select a valid PDF file.', 'error');
+                }
+            }
+
+            function handleDrop(e) {
+                const file = e.dataTransfer.files[0];
+                if (file && file.type === 'application/pdf') {
+                    DOMElements.documentTitle.value = file.name.replace('.pdf', '');
+                    loadPdfFromFile(file);
+                } else {
+                    showToast('Dropped file is not a valid PDF.', 'error');
+                }
+            }
+
+            function loadPdfFromFile(file) {
+                const fileReader = new FileReader();
+                fileReader.onload = (e) => loadPdf(new Uint8Array(e.target.result));
+                fileReader.readAsArrayBuffer(file);
+            }
+
+            async function loadPdf(typedarray) {
+                if (state.isPdfLoading) return;
+                state.isPdfLoading = true;
+                setLoadingState(true, 'Loading PDF...');
+
+                try {
+                    state.pdfDoc = await pdfjsLib.getDocument(typedarray).promise;
+                    DOMElements.pdfViewer.innerHTML = '';
+                    DOMElements.emptyState.style.display = 'none';
+                    
+                    let textPromises = [];
+                    for (let i = 1; i <= state.pdfDoc.numPages; i++) {
+                        textPromises.push(state.pdfDoc.getPage(i).then(page => page.getTextContent()));
+                    }
+                    const allTextContents = await Promise.all(textPromises);
+                    state.extractedText = allTextContents.map(tc => tc.items.map(item => item.str).join(' ')).join('\n\n');
+
+                    for (let pageNum = 1; pageNum <= state.pdfDoc.numPages; pageNum++) {
+                        await renderPage(pageNum, allTextContents[pageNum - 1]);
+                    }
+                    resetAiOutputs();
+                    toggleMode('pdf');
+                    showToast('PDF loaded successfully!', 'success');
+                } catch (error) {
+                    console.error('Error loading PDF:', error);
+                    showToast('Failed to load PDF. It may be corrupt or protected.', 'error');
+                } finally {
+                    state.isPdfLoading = false;
+                    setLoadingState(false);
+                }
+            }
+
+            async function renderPage(pageNum, textContent) {
+                const page = await state.pdfDoc.getPage(pageNum);
+                const viewport = page.getViewport({ scale: 1.5 });
+                const pageContainer = document.createElement('div');
+                pageContainer.className = 'page-container';
+                pageContainer.style.position = 'relative';
+                const canvas = document.createElement('canvas');
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
+                const textLayerDiv = document.createElement('div');
+                textLayerDiv.className = 'pdf-text-layer';
+                pageContainer.append(canvas, textLayerDiv);
+                DOMElements.pdfViewer.appendChild(pageContainer);
+                await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
+                textLayerDiv.style.width = viewport.width + 'px';
+                textLayerDiv.style.height = viewport.height + 'px';
+                pdfjsLib.renderTextLayer({ textContent, container: textLayerDiv, viewport, textDivs: [] });
+            }
+
+            function getDocumentText() {
+                return (state.currentMode === 'pdf' ? state.extractedText : DOMElements.textEditor.textContent).trim();
+            }
+
+            function resetAiOutputs() {
+                document.getElementById('summary-output').textContent = 'Generate an intelligent summary of your document.';
+                document.getElementById('qa-answer').textContent = 'Ask a question to get answers based on the content.';
+                document.getElementById('writing-output').textContent = 'Get suggestions to improve your writing.';
+                document.getElementById('keypoints-output').textContent = 'Extract the most important points and concepts.';
+                document.getElementById('quiz-output').textContent = 'Generate a quiz to test your knowledge.';
+                document.getElementById('analysis-output').textContent = 'Analyze the sentiment and tone of the document.';
+                document.getElementById('search-results').textContent = 'Find relevant information from the web. This will open in a new tab.';
+                
+                // Hide all copy buttons
+                document.querySelectorAll('.copy-btn').forEach(btn => {
+                    btn.style.display = 'none';
+                });
+            }
+
+            async function handleAIAction(action, options = {}) {
+                if (state.isAiProcessing && action !== 'search') return;
+
+                // Special case for web search to open a new tab immediately
+                if(action === 'search'){
+                    const searchQuery = document.getElementById('search-input').value.trim();
+                    if (!searchQuery) { showToast('Please enter a search query.', 'error'); return; }
+                    const keywords = AI.extractKeyWords(getDocumentText(), 3).map(kw => kw.word);
+                    const fullQuery = encodeURIComponent(searchQuery + " " + keywords.join(" "));
+                    window.open(`https://www.google.com/search?q=${fullQuery}`, '_blank');
+                    return;
+                }
+
+                const title = DOMElements.documentTitle.value.trim();
+                if (!title) {
+                    showToast('Please provide a title for the document before using AI features.', 'error');
+                    return;
+                }
+
+                const text = getDocumentText();
+                if (text.length < 50 && action !== 'fix-grammar') {
+                    showToast('Please provide at least 50 characters of text for AI analysis.', 'error');
+                    return;
+                }
+
+                const buttonMap = {
+                    summarize: 'summarize-btn-medium', 
+                    qa: 'qa-btn', 
+                    writing: 'writing-btn', 
+                    'fix-grammar': 'fix-grammar-btn', 
+                    keypoints: 'keypoints-btn',
+                    quiz: 'quiz-btn', 
+                    analysis: 'analysis-btn',
+                    'key-insights': 'key-insights-btn'
+                };
+                
+                const outputMap = {
+                    summarize: 'summary-output', 
+                    qa: 'qa-answer', 
+                    writing: 'writing-output', 
+                    'fix-grammar': 'writing-output', 
+                    keypoints: 'keypoints-output',
+                    quiz: 'quiz-output', 
+                    analysis: 'analysis-output',
+                    'key-insights': 'summary-output'
+                };
+
+                const button = document.getElementById(buttonMap[action]);
+                const outputEl = document.getElementById(outputMap[action]);
+                const copyBtn = document.getElementById(`copy-${outputMap[action].replace('-output', '')}-btn`);
+                const originalHTML = button ? button.innerHTML : '';
+
+                state.isAiProcessing = true;
+                document.querySelectorAll('.ai-button, .summary-option-btn').forEach(btn => btn.disabled = true);
+                if (action !== 'summarize' && button) {
+                    button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Thinking...';
+                } else if (action === 'summarize') {
+                    document.querySelectorAll('.summary-option-btn').forEach(b => {
+                        b.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+                    });
+                }
+
+                await new Promise(resolve => setTimeout(resolve, 50));
+
+                try {
+                    let result;
+                    switch (action) {
+                        case 'summarize': 
+                            result = AI.generateSummary(text, options.size);
+                            await typeEffect(outputEl, result);
+                            break;
+                        case 'key-insights':
+                            result = AI.generateKeyInsights(text);
+                            outputEl.innerHTML = result.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                            break;
+                        case 'writing':
+                            result = AI.analyzeWriting(text);
+                            outputEl.innerHTML = result.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                            break;
+                        case 'fix-grammar':
+                            if (state.currentMode !== 'text') {
+                                 showToast('Grammar correction is only available in Text Mode.', 'error');
+                                 throw new Error('Wrong mode');
+                            }
+                            result = AI.fixGrammar(text);
+                            DOMElements.textEditor.textContent = result;
+                            outputEl.textContent = 'Grammar fixes have been applied to the text editor.';
+                            showToast('Grammar has been corrected!', 'success');
+                            break;
+                        case 'qa':
+                            const question = document.getElementById('qa-input').value.trim();
+                            if (!question) { showToast('Please enter a question.', 'error'); throw new Error('No Question'); }
+                            result = AI.answerQuestion(text, question);
+                            outputEl.innerHTML = result;
+                            break;
+                        case 'keypoints': 
+                            result = AI.extractKeyPoints(text);
+                            await typeEffect(outputEl, result);
+                            break;
+                        case 'quiz':
+                            result = AI.generateQuiz(text);
+                            outputEl.innerHTML = result;
+                            break;
+                        case 'analysis':
+                            result = AI.analyzeContent(text);
+                            outputEl.innerHTML = result.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                            break;
+                        default: throw new Error('Unknown action.');
+                    }
+
+                    // Show copy button if we have content
+                    if (result && copyBtn) {
+                        copyBtn.style.display = 'block';
+                    }
+
+                } catch (error) {
+                    if(error.message !== 'No Question' && error.message !== 'No Query' && error.message !== 'Wrong mode') {
+                        console.error(`AI action '${action}' failed:`, error);
+                        outputEl.textContent = `An error occurred. Please try again.`;
+                    }
+                } finally {
+                    state.isAiProcessing = false;
+                    document.querySelectorAll('.ai-button, .summary-option-btn').forEach(btn => btn.disabled = false);
+                    if (action !== 'summarize' && button) {
+                        button.innerHTML = originalHTML;
+                    } else if (action === 'summarize') {
+                        document.getElementById('summarize-btn-small').innerHTML = "Small";
+                        document.getElementById('summarize-btn-medium').innerHTML = "Medium";
+                        document.getElementById('summarize-btn-large').innerHTML = "Large";
+                    }
+                }
+            }
+
+            async function typeEffect(element, text, speed = 15) {
+                element.textContent = '';
+                for (let i = 0; i < text.length; i++) {
+                    element.textContent += text.charAt(i);
+                    await new Promise(resolve => setTimeout(resolve, speed));
+                }
+            }
+
+            function preventDefaults(e) { 
+                e.preventDefault(); 
+                e.stopPropagation(); 
+            }
+
+            function showDropOverlay() { 
+                DOMElements.dragDropOverlay.classList.add('visible'); 
+            }
+
+            function hideDropOverlay() { 
+                DOMElements.dragDropOverlay.classList.remove('visible'); 
+            }
+
+            function setLoadingState(isLoading, message = '') {
+                if(isLoading){
+                    DOMElements.pdfViewer.innerHTML = `<div style="text-align: center; padding: 2rem;"><i class="fas fa-spinner fa-spin fa-2x"></i><br><br>${message}</div>`;
+                } else {
+                    if (!DOMElements.pdfViewer.hasChildNodes()){
+                        DOMElements.emptyState.style.display = 'flex';
+                    }
+                }
+            }
+
+            function showToast(message, type = 'success') {
+                const toast = document.createElement('div');
+                toast.textContent = message;
+                toast.className = `toast ${type}`;
+                document.body.appendChild(toast);
+
+                setTimeout(() => toast.classList.add('show'), 10);
+
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                    setTimeout(() => toast.remove(), 300);
+                }, 4000);
+            }
+
+            async function downloadTextAsPDF() {
+                const { jsPDF } = window.jspdf;
+                const editor = DOMElements.textEditor;
+                const title = DOMElements.documentTitle.value.trim();
+
+                if (!editor.textContent.trim()) {
+                    showToast("There's no text to download.", 'error');
+                    return;
+                }
+
+                if (!title) {
+                    showToast("Please provide a title for the document.", 'error');
+                    return;
+                }
+
+                setLoadingState(true, "Generating PDF...");
+
+                try {
+                    const doc = new jsPDF();
+                    doc.setFontSize(18);
+                    doc.text(title, 10, 10);
+                    doc.setFontSize(12);
+                    const text = editor.textContent;
+                    const splitText = doc.splitTextToSize(text, 180); 
+                    doc.text(splitText, 10, 20);
+                    doc.save(`${title.replace(/ /g, '_')}.pdf`);
+                    showToast('PDF downloaded successfully!', 'success');
+                } catch (error) {
+                    console.error('Error generating PDF:', error);
+                    showToast('Failed to generate PDF. Please try again.', 'error');
+                } finally {
+                    setLoadingState(false);
+                }
+            }
+
+            initialize();
+        });
+    </script>
 </body>
 </html>
