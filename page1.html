@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" href="Chronofocus.png" type="image/x-icon">
-<title>Chrono Focus - Cozy Edition</title>
+<title>Chrono Focus - Zenith Edition</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -24,11 +24,13 @@
 --success: #4CAF50;
 --danger: #F44336;
 --warning: #FF9800;
---border-radius: 20px;
+/* --- LAYOUT ENHANCEMENT: Increased roundness for a softer, modern feel --- */
+--border-radius: 28px;
 --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
---shadow-sm: 0 4px 15px rgba(var(--primary-rgb), 0.08);
---shadow-md: 0 8px 30px rgba(var(--primary-rgb), 0.12);
---shadow-lg: 0 12px 35px rgba(var(--primary-rgb), 0.2);
+/* --- LAYOUT ENHANCEMENT: Softer, more sophisticated shadows --- */
+--shadow-sm: 0 4px 20px rgba(var(--primary-rgb), 0.07);
+--shadow-md: 0 8px 35px rgba(var(--primary-rgb), 0.10);
+--shadow-lg: 0 12px 45px rgba(var(--primary-rgb), 0.15);
 
 /* Task Colors */
 --task-color-red: #F44336;
@@ -109,76 +111,101 @@ body.theme-liquid-glass-topaz { --background: #141e30; --surface: rgba(36, 49, 7
 
 /* This is the key style for the glass effect. It applies to any theme class that STARTS with "theme-liquid-glass" */
 [class*="theme-liquid-glass"] .section,
-[class*="theme-liquid-glass"] .dock-button {
-backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.1);
+[class*="theme-liquid-glass"] .dock-button,
+[class*="theme-liquid-glass"] .theme-modal-content {
+    backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
-/* --- GLOBAL & LAYOUT --- */
+/* --- GLOBAL & WORLD-CLASS LAYOUT --- */
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
-body { background-color: var(--background); color: var(--text-primary); min-height: 100vh; padding: 25px; overflow-x: hidden; transition: background-color 0.5s ease; }
-.app { max-width: 900px; margin: 0 auto; }
+body { background-color: var(--background); color: var(--text-primary); min-height: 100vh; padding: 40px; overflow-x: hidden; transition: background-color 0.5s ease; }
+
+/* LAYOUT ENHANCEMENT: A wider, centered main container with a sophisticated grid layout on larger screens */
+.app {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 35px; /* Increased gap for better spacing */
+}
+
 .app > * { opacity: 0; transform: translateY(30px); animation: sweetFadeIn 0.8s cubic-bezier(0.165, 0.84, 0.44, 1) forwards; }
 /* Staggered animation */
 .app-header { animation-delay: 0.1s; }
 .main-dock { animation-delay: 0.2s; }
 .task-section { animation-delay: 0.3s; }
-.calendar-section { animation-delay: 0.4s; }
-.pomodoro-section { animation-delay: 0.5s; }
+.content-grid { animation-delay: 0.4s; }
 .app-footer { animation-delay: 0.6s; }
 
-.app-header { text-align: center; margin-bottom: 40px; }
-.app-header h1 { font-size: 3rem; font-weight: 700; color: var(--text-primary); letter-spacing: -1.5px; }
-.app-header p { color: var(--text-secondary); font-size: 1.15rem; margin-top: 5px; }
+.app-header { text-align: center; margin-bottom: 20px; }
+.app-header h1 { font-size: 3.5rem; font-weight: 700; color: var(--text-primary); letter-spacing: -2px; }
+.app-header p { color: var(--text-secondary); font-size: 1.25rem; margin-top: 5px; }
+
+/* LAYOUT ENHANCEMENT: A grid for secondary sections to sit side-by-side on desktop */
+.content-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 35px;
+}
+
+/* On screens wider than 900px, create a two-column layout */
+@media (min-width: 900px) {
+    .content-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
 
 /* Dock Navigation */
-.main-dock { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 40px; }
-.dock-button { padding: 25px; background: var(--surface); backdrop-filter: blur(10px); border-radius: var(--border-radius); text-align: center; border: 1px solid var(--border-color); transition: var(--transition); box-shadow: var(--shadow-sm); cursor: pointer; color: var(--text-primary); text-decoration: none; position: relative; overflow: hidden; }
-.dock-button:hover { transform: translateY(-10px); box-shadow: var(--shadow-lg); border-color: rgba(var(--primary-rgb), 0.3); }
-.dock-button i { font-size: 2.2rem; margin-bottom: 15px; color: var(--primary); background-color: var(--primary-light); width: 64px; height: 64px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; transition: var(--transition); }
-.dock-button:hover i { transform: scale(1.15) rotate(-8deg); box-shadow: 0 0 20px rgba(var(--primary-rgb), 0.4); }
-.dock-button h2 { font-size: 1.15rem; font-weight: 600; margin: 0; }
-.dock-button p { font-size: 0.88rem; color: var(--text-secondary); }
+.main-dock {
+    display: grid;
+    /* LAYOUT ENHANCEMENT: Dock now gracefully adapts to 4 items */
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 25px;
+}
+.dock-button { padding: 30px; background: var(--surface); backdrop-filter: blur(10px); border-radius: var(--border-radius); text-align: center; border: 1px solid var(--border-color); transition: var(--transition); box-shadow: var(--shadow-sm); cursor: pointer; color: var(--text-primary); text-decoration: none; position: relative; overflow: hidden; }
+.dock-button:hover { transform: translateY(-12px); box-shadow: var(--shadow-lg); border-color: rgba(var(--primary-rgb), 0.4); }
+.dock-button i { font-size: 2.5rem; margin-bottom: 18px; color: var(--primary); background-color: var(--primary-light); width: 70px; height: 70px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; transition: var(--transition); }
+.dock-button:hover i { transform: scale(1.15) rotate(-10deg); box-shadow: 0 0 25px rgba(var(--primary-rgb), 0.5); }
+.dock-button h2 { font-size: 1.2rem; font-weight: 600; margin: 0; }
+.dock-button p { font-size: 0.9rem; color: var(--text-secondary); }
 
 /* Glow Effect */
 .study-tools { animation: pulseGlow 2.5s infinite ease-out; }
-@keyframes pulseGlow { 0%, 100% { box-shadow: var(--shadow-md); } 50% { box-shadow: 0 0 25px 8px rgba(var(--primary-rgb), 0.4); } }
+@keyframes pulseGlow { 0%, 100% { box-shadow: var(--shadow-md); } 50% { box-shadow: 0 0 30px 10px rgba(var(--primary-rgb), 0.35); } }
 
 /* Section Styling */
-.section { background: var(--surface); backdrop-filter: blur(12px); padding: 35px; border-radius: var(--border-radius); margin-bottom: 30px; border: 1px solid var(--border-color); box-shadow: var(--shadow-md); transition: var(--transition); }
-.section-header { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 15px; margin-bottom: 25px; }
-.section-header h2 { color: var(--text-primary); font-size: 1.6rem; display: flex; align-items: center; gap: 12px; font-weight: 600; margin:0; }
+.section { background: var(--surface); backdrop-filter: blur(12px); padding: 40px; border-radius: var(--border-radius); border: 1px solid var(--border-color); box-shadow: var(--shadow-md); transition: var(--transition); }
+.section-header { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 15px; margin-bottom: 30px; }
+.section-header h2 { color: var(--text-primary); font-size: 1.8rem; display: flex; align-items: center; gap: 15px; font-weight: 600; margin:0; }
 
 /* Buttons & Inputs */
-button { padding: 12px 22px; background: var(--primary); color: #fff; border: none; border-radius: 14px; cursor: pointer; font-weight: 500; font-size: 1rem; transition: var(--transition); display: inline-flex; align-items: center; justify-content: center; gap: 8px; box-shadow: var(--shadow-sm); }
-button:hover:not(:disabled) { background: var(--text-primary); box-shadow: var(--shadow-lg); transform: translateY(-3px); }
+button { padding: 14px 25px; background: var(--primary); color: #fff; border: none; border-radius: 18px; cursor: pointer; font-weight: 500; font-size: 1rem; transition: var(--transition); display: inline-flex; align-items: center; justify-content: center; gap: 8px; box-shadow: var(--shadow-sm); }
+button:hover:not(:disabled) { background: var(--text-primary); box-shadow: var(--shadow-lg); transform: translateY(-4px); }
 button:active:not(:disabled) { transform: translateY(-1px) scale(0.98); }
 button:disabled { opacity: 0.6; cursor: not-allowed; }
-input, select { padding: 12px 20px; background: var(--background); border: 1px solid var(--border-color); border-radius: 14px; font-size: 1rem; color: var(--text-primary); transition: var(--transition); width: 100%; -webkit-appearance: none; appearance: none; }
+input, select { padding: 14px 22px; background: var(--background); border: 1px solid var(--border-color); border-radius: 18px; font-size: 1rem; color: var(--text-primary); transition: var(--transition); width: 100%; -webkit-appearance: none; appearance: none; }
 input::placeholder { color: var(--text-secondary); }
-input:focus, select:focus { border-color: rgba(var(--primary-rgb), 0.5); outline: none; background: var(--surface); box-shadow: 0 0 0 4px rgba(var(--primary-rgb), 0.1); }
-select { background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22%239E8D86%22%3E%3Cpath%20d%3D%22M10%2012l-6-6h12l-6%206z%22%2F%3E%3C%2Fsvg%3E'); background-repeat: no-repeat; background-position: right 15px center; background-size: 12px; padding-right: 40px;}
+input:focus, select:focus { border-color: rgba(var(--primary-rgb), 0.5); outline: none; background: var(--surface); box-shadow: 0 0 0 5px rgba(var(--primary-rgb), 0.1); }
+select { background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22%239E8D86%22%3E%3Cpath%20d%3D%22M10%2012l-6-6h12l-6%206z%22%2F%3E%3C%2Fsvg%3E'); background-repeat: no-repeat; background-position: right 18px center; background-size: 12px; padding-right: 40px;}
 
 /* Task Manager Enhanced */
-.task-input-form { display: grid; gap: 15px; margin-bottom: 25px; grid-template-columns: 1fr; }
-.task-main-input { display: grid; grid-template-columns: 1fr auto; gap: 15px; }
-.task-options { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
-.task-filters { display: flex; gap: 10px; }
-.task-filters button { background: none; color: var(--text-secondary); box-shadow: none; padding: 8px 15px; font-weight: 500; border: 1px solid var(--border-color); }
+.task-input-form { display: grid; gap: 18px; margin-bottom: 30px; grid-template-columns: 1fr; }
+.task-main-input { display: grid; grid-template-columns: 1fr auto; gap: 18px; }
+.task-options { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+.task-filters { display: flex; gap: 12px; }
+.task-filters button { background: none; color: var(--text-secondary); box-shadow: none; padding: 10px 18px; font-weight: 500; border: 1px solid var(--border-color); }
 .task-filters button:hover { background-color: var(--primary-light); color: var(--primary); }
 .task-filters button.active { background: var(--primary); color: #fff; border-color: var(--primary); }
 #taskList { list-style-type: none; }
-#taskList li { display: flex; align-items: center; padding: 15px; border-radius: 16px; margin-bottom: 12px; border: 1px solid var(--border-color); border-left: 5px solid transparent; transition: all 0.4s ease; gap: 15px; background: rgba(var(--primary-rgb), 0.02); overflow: hidden; opacity: 0; }
-/* Animate task list items one by one */
-#taskList li {
-    animation: slideFadeIn 0.5s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
-}
+#taskList li { display: flex; align-items: center; padding: 18px; border-radius: 20px; margin-bottom: 15px; border: 1px solid var(--border-color); border-left: 6px solid transparent; transition: all 0.4s ease; gap: 18px; background: rgba(var(--primary-rgb), 0.02); overflow: hidden; opacity: 0; }
+#taskList li { animation: slideFadeIn 0.5s cubic-bezier(0.165, 0.84, 0.44, 1) forwards; }
 #taskList li:nth-child(1) { animation-delay: 0.05s; }
 #taskList li:nth-child(2) { animation-delay: 0.1s; }
 #taskList li:nth-child(3) { animation-delay: 0.15s; }
 #taskList li:nth-child(4) { animation-delay: 0.2s; }
 #taskList li:nth-child(5) { animation-delay: 0.25s; }
-/* and so on... a script could generate more if needed */
-
 #taskList li:hover { background: var(--surface); border-color: rgba(var(--primary-rgb), 0.3); transform: scale(1.02); box-shadow: var(--shadow-sm); }
 li.completed { opacity: 0.6; background: transparent; }
 .completed .task-text { text-decoration: line-through; color: var(--text-secondary); }
@@ -186,108 +213,71 @@ li.priority-important { background: var(--primary-light); font-weight: 500; bord
 .important-star { color: var(--warning); margin-right: 8px; }
 li.deleting { animation: fadeOutShrink 0.5s ease forwards; }
 .task-content { display: flex; align-items: center; gap: 15px; flex-grow: 1; }
-.task-icon { width: 40px; height: 40px; border-radius: 12px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 1.2rem; background-color: var(--primary-light); color: var(--primary); }
+.task-icon { width: 44px; height: 44px; border-radius: 16px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 1.3rem; background-color: var(--primary-light); color: var(--primary); }
 .task-actions { display: flex; gap: 10px; margin-left: auto; }
-.task-actions button { background: none; box-shadow: none; color: var(--secondary); width: 38px; height: 38px; padding: 0; font-size: 1rem; border-radius: 12px; }
+.task-actions button { background: none; box-shadow: none; color: var(--secondary); width: 40px; height: 40px; padding: 0; font-size: 1.1rem; border-radius: 14px; }
 .task-actions .complete-btn:hover { background: rgba(var(--success), 0.1); color: var(--success); }
 .task-actions .edit-btn:hover { background: var(--primary-light); color: var(--primary); }
 .task-actions .delete-btn:hover { background: rgba(var(--danger), 0.1); color: var(--danger); }
 
 /* Calendar */
-.calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; }
-.calendar-day-name { font-weight: 600; color: var(--text-secondary); padding: 10px 0; text-align: center; }
-.calendar-day { height: 48px; border-radius: 16px; cursor: pointer; transition: var(--transition); border: 2px solid transparent; position: relative; display: flex; justify-content: center; align-items: center; font-weight: 500; }
+.calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 12px; }
+.calendar-day-name { font-weight: 600; color: var(--text-secondary); padding: 12px 0; text-align: center; }
+.calendar-day { height: 50px; border-radius: 18px; cursor: pointer; transition: var(--transition); border: 2px solid transparent; position: relative; display: flex; justify-content: center; align-items: center; font-weight: 500; }
 .calendar-day.other-month { opacity: 0.4; pointer-events: none; }
 .calendar-day:not(.other-month):hover { background-color: var(--primary-light); transform: scale(1.05); }
 .calendar-day.today { font-weight: 700; color: var(--primary); border-color: var(--primary); }
 .calendar-day.selected { background-color: var(--primary); color: #fff; box-shadow: var(--shadow-lg); transform: scale(1.1); }
-.calendar-day.has-task::after { content: ''; position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%); width: 6px; height: 6px; border-radius: 50%; background-color: var(--primary); }
+.calendar-day.has-task::after { content: ''; position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%); width: 7px; height: 7px; border-radius: 50%; background-color: var(--primary); }
 .calendar-day.selected.has-task::after { background-color: #fff; }
 .calendar-nav { display: flex; gap: 5px; align-items: center;}
-.calendar-nav button { padding: 0; width: 35px; height: 35px; border-radius: 50%; }
+.calendar-nav button { padding: 0; width: 38px; height: 38px; border-radius: 50%; }
 
 /* --- Pomodoro Timer: ENHANCED --- */
 .pomodoro-section { text-align: center; }
-
-.pomodoro-modes { display: flex; justify-content: center; gap: 10px; margin-bottom: 15px; }
-.pomodoro-modes button { background: none; color: var(--text-secondary); box-shadow: none; padding: 8px 18px; font-weight: 500; border: 1px solid var(--border-color); }
+.pomodoro-modes { display: flex; justify-content: center; gap: 12px; margin-bottom: 20px; }
+.pomodoro-modes button { background: none; color: var(--text-secondary); box-shadow: none; padding: 10px 20px; font-weight: 500; border: 1px solid var(--border-color); }
 .pomodoro-modes button:hover { background-color: var(--primary-light); color: var(--primary); }
 .pomodoro-modes button.active { background: var(--primary); color: #fff; border-color: var(--primary); }
-
-.pomodoro-timer-circle {
-    position: relative;
-    width: 220px;
-    height: 220px;
-    margin: 30px auto;
-}
-
-.pomodoro-progress-ring {
-    transform: rotate(-90deg);
-}
-
-.pomodoro-progress-ring__track {
-    stroke: var(--border-color);
-}
-
-.pomodoro-progress-ring__progress {
-    stroke: var(--primary);
-    stroke-linecap: round;
-    transition: stroke-dashoffset 0.5s cubic-bezier(0.65, 0, 0.35, 1);
-}
-
-.pomodoro-timer-display {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 3.8rem;
-    font-weight: 600;
-    color: var(--text-primary);
-    margin: 0;
-    letter-spacing: -1px;
-    transition: var(--transition);
-}
-
-.pomodoro-timer-circle.running .pomodoro-progress-ring__progress {
-    animation: slowPulse 2s infinite ease-in-out;
-}
-
-@keyframes slowPulse {
-    50% { stroke: var(--text-primary); }
-}
-
-.pomodoro-controls { display: flex; justify-content: center; align-items: center; gap: 20px; }
-.pomodoro-controls button { font-size: 1.2rem; width: 64px; height: 64px; border-radius: 50%; padding: 0; box-shadow: var(--shadow-md); }
-.pomodoro-controls #pomodoro-start-pause i { font-size: 1.8rem; }
+.pomodoro-timer-circle { position: relative; width: 240px; height: 240px; margin: 35px auto; }
+.pomodoro-progress-ring { transform: rotate(-90deg); }
+.pomodoro-progress-ring__track { stroke: var(--border-color); }
+.pomodoro-progress-ring__progress { stroke: var(--primary); stroke-linecap: round; transition: stroke-dashoffset 0.5s cubic-bezier(0.65, 0, 0.35, 1); }
+.pomodoro-timer-display { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 4rem; font-weight: 600; color: var(--text-primary); margin: 0; letter-spacing: -1.5px; transition: var(--transition); }
+.pomodoro-timer-circle.running .pomodoro-progress-ring__progress { animation: slowPulse 2s infinite ease-in-out; }
+@keyframes slowPulse { 50% { stroke: var(--text-primary); } }
+.pomodoro-controls { display: flex; justify-content: center; align-items: center; gap: 22px; }
+.pomodoro-controls button { font-size: 1.3rem; width: 70px; height: 70px; border-radius: 50%; padding: 0; box-shadow: var(--shadow-md); }
+.pomodoro-controls #pomodoro-start-pause i { font-size: 2rem; }
 /* --- End of Pomodoro Timer CSS --- */
 
 
 /* Theme Customizer */
-.theme-fab { position: fixed; bottom: 25px; right: 25px; width: 60px; height: 60px; background: var(--primary); color: white; border-radius: 50%; border: none; font-size: 1.5rem; cursor: pointer; z-index: 1000; box-shadow: var(--shadow-lg); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-.theme-fab:hover { transform: scale(1.1) rotate(20deg); box-shadow: 0 12px 30px rgba(var(--primary-rgb), 0.5); }
-.theme-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(8px); z-index: 1001; display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: opacity 0.4s ease, visibility 0.4s ease; }
+.theme-fab { position: fixed; bottom: 30px; right: 30px; width: 64px; height: 64px; background: var(--primary); color: white; border-radius: 50%; border: none; font-size: 1.6rem; cursor: pointer; z-index: 1000; box-shadow: var(--shadow-lg); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+.theme-fab:hover { transform: scale(1.1) rotate(25deg); box-shadow: 0 12px 35px rgba(var(--primary-rgb), 0.5); }
+.theme-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(10px); z-index: 1001; display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: opacity 0.4s ease, visibility 0.4s ease; }
 .theme-modal.visible { opacity: 1; visibility: visible; }
-.theme-modal-content { background: var(--surface); padding: 30px; border-radius: var(--border-radius); width: 90%; max-width: 700px; transform: scale(0.9) translateY(20px); transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1); position: relative; max-height: 85vh; overflow-y: auto; }
+.theme-modal-content { background: var(--surface); padding: 35px; border-radius: var(--border-radius); width: 90%; max-width: 800px; transform: scale(0.9) translateY(20px); transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1); position: relative; max-height: 85vh; overflow-y: auto; }
 .theme-modal.visible .theme-modal-content { transform: scale(1) translateY(0); }
-.theme-modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-.theme-modal-header h2 { font-weight: 600; color: var(--text-primary); }
-.close-modal-btn { background: none; border: none; font-size: 1.5rem; color: var(--text-secondary); cursor: pointer; padding: 5px; box-shadow: none; line-height: 1; }
-.theme-group h3 { font-size: 1.1rem; font-weight: 500; color: var(--text-secondary); margin: 25px 0 15px; text-align: left; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
-.theme-palette { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 15px; }
+.theme-modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+.theme-modal-header h2 { font-weight: 600; color: var(--text-primary); font-size: 1.5rem;}
+.close-modal-btn { background: none; border: none; font-size: 1.8rem; color: var(--text-secondary); cursor: pointer; padding: 5px; box-shadow: none; line-height: 1; }
+.theme-group h3 { font-size: 1.2rem; font-weight: 500; color: var(--text-secondary); margin: 30px 0 18px; text-align: left; border-bottom: 1px solid var(--border-color); padding-bottom: 12px; }
+.theme-palette { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 18px; }
 .theme-card { cursor: pointer; text-align: center; transition: transform 0.2s ease; }
-.theme-card:hover { transform: translateY(-5px); }
-.theme-card-swatch { width: 100%; height: 60px; border-radius: 16px; transition: var(--transition); border: 2px solid var(--border-color); position: relative; }
-.theme-card-swatch.active { border-color: var(--primary); transform: scale(1.05); }
-.theme-card-swatch.active::after { content: '\f00c'; font-family: 'Font Awesome 6 Free'; font-weight: 900; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; font-size: 1.5rem; text-shadow: 0 0 10px rgba(0,0,0,0.7); }
-.theme-card span { font-size: 0.9rem; color: var(--text-primary); font-weight: 500; margin-top: 10px; display: block; }
+.theme-card:hover { transform: translateY(-6px); }
+.theme-card-swatch { width: 100%; height: 65px; border-radius: 20px; transition: var(--transition); border: 3px solid transparent; position: relative; background-clip: padding-box; }
+.theme-card-swatch.active { border-color: var(--primary); transform: scale(1.05); box-shadow: var(--shadow-lg); }
+.theme-card-swatch.active::after { content: '\f00c'; font-family: 'Font Awesome 6 Free'; font-weight: 900; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; font-size: 1.6rem; text-shadow: 0 0 12px rgba(0,0,0,0.8); }
+.theme-card span { font-size: 0.95rem; color: var(--text-primary); font-weight: 500; margin-top: 12px; display: block; }
 
 /* Footer */
-.app-footer { text-align: center; margin-top: 40px; padding-bottom: 20px; color: var(--text-secondary); }
+.app-footer { text-align: center; margin-top: 40px; padding: 20px 0; color: var(--text-secondary); }
 .app-footer p { font-weight: 500; }
-.app-footer span { font-weight: 600; background-color: var(--primary-light); color: var(--primary); padding: 4px 10px; border-radius: 10px; }
+.app-footer span { font-weight: 600; background-color: var(--primary-light); color: var(--primary); padding: 5px 12px; border-radius: 12px; }
 
 /* Toast & Animations */
-.toast { position: fixed; bottom: 20px; left: 50%; padding: 15px 25px; background: var(--surface); backdrop-filter: blur(10px); color: var(--text-primary); border-radius: 14px; box-shadow: var(--shadow-lg); border: 1px solid var(--border-color); transform: translate(-50%, 200%); opacity: 0; transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1); z-index: 1002; font-weight: 500; }
+.toast { position: fixed; bottom: 25px; left: 50%; padding: 16px 28px; background: var(--surface); backdrop-filter: blur(10px); color: var(--text-primary); border-radius: 18px; box-shadow: var(--shadow-lg); border: 1px solid var(--border-color); transform: translate(-50%, 200%); opacity: 0; transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1); z-index: 1002; font-weight: 500; }
 .toast.show { transform: translate(-50%, 0); opacity: 1; }
 
 @keyframes sweetFadeIn { from { opacity: 0; transform: translateY(30px) scale(0.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
@@ -296,21 +286,18 @@ li.deleting { animation: fadeOutShrink 0.5s ease forwards; }
 
 /* --- RESPONSIVE: ENHANCED FOR MOBILE --- */
 @media (max-width: 768px) {
-  body { padding: 15px; }
-  .app-header h1 { font-size: 2.2rem; }
-  .app-header p { font-size: 1rem; margin-top: 8px; }
-  .section { padding: 20px; }
+  body { padding: 20px; }
+  .app { gap: 25px; }
+  .app-header h1 { font-size: 2.5rem; letter-spacing: -1px;}
+  .app-header p { font-size: 1.1rem; }
+  .section { padding: 25px; }
   .section-header { flex-direction: column; align-items: flex-start; gap: 10px; margin-bottom: 20px; }
-  .section-header h2 { font-size: 1.4rem; }
+  .section-header h2 { font-size: 1.5rem; }
 
   /* Dock Navigation optimized for mobile */
-  .main-dock {
-      grid-template-columns: repeat(2, 1fr);
-      gap: 15px;
-      margin-bottom: 30px;
-  }
+  .main-dock { grid-template-columns: repeat(2, 1fr); gap: 18px; }
   .dock-button { padding: 20px 15px; }
-  .dock-button i { font-size: 1.8rem; width: 50px; height: 50px; margin-bottom: 10px; }
+  .dock-button i { font-size: 2rem; width: 55px; height: 55px; margin-bottom: 12px; }
   .dock-button h2 { font-size: 1rem; }
   .dock-button p { font-size: 0.8rem; }
  
@@ -318,49 +305,36 @@ li.deleting { animation: fadeOutShrink 0.5s ease forwards; }
   .task-main-input { grid-template-columns: 1fr; }
   .task-options { grid-template-columns: 1fr; }
   button, input, select { font-size: 0.95rem; }
-  #taskList li { padding: 12px; gap: 10px; }
-  .task-icon { width: 36px; height: 36px; font-size: 1.1rem; }
-  .task-actions button { width: 34px; height: 34px; font-size: 0.9rem; }
+  #taskList li { padding: 15px; gap: 12px; border-radius: 16px; }
+  .task-icon { width: 38px; height: 38px; font-size: 1.1rem; border-radius: 12px;}
+  .task-actions button { width: 36px; height: 36px; font-size: 0.9rem; }
  
   /* Calendar Compact Layout */
   .calendar-grid { gap: 5px; }
-  .calendar-day { height: 40px; font-size: 0.9rem; }
+  .calendar-day { height: 42px; font-size: 0.9rem; border-radius: 14px;}
 
   /* Pomodoro Timer smaller elements */
-  .pomodoro-timer-circle {
-      width: 180px;
-      height: 180px;
-      margin: 20px auto;
-  }
-  .pomodoro-progress-ring {
-      width: 180px;
-      height: 180px;
-  }
-   .pomodoro-progress-ring circle {
-       r: 82;
-       cx: 90;
-       cy: 90;
-   }
-  .pomodoro-timer-display { font-size: 2.8rem; }
-  .pomodoro-controls button { width: 56px; height: 56px; }
-  .pomodoro-controls #pomodoro-start-pause i { font-size: 1.5rem; }
-  .pomodoro-modes button { padding: 6px 14px; }
+  .pomodoro-timer-circle { width: 200px; height: 200px; margin: 25px auto; }
+  .pomodoro-progress-ring { width: 200px; height: 200px; }
+   .pomodoro-progress-ring circle { r: 92; cx: 100; cy: 100; }
+  .pomodoro-timer-display { font-size: 3.2rem; }
+  .pomodoro-controls button { width: 60px; height: 60px; }
+  .pomodoro-controls #pomodoro-start-pause i { font-size: 1.6rem; }
+  .pomodoro-modes button { padding: 8px 16px; }
 
   /* Floating button adjustment */
-  .theme-fab { bottom: 15px; right: 15px; width: 55px; height: 55px; }
+  .theme-fab { bottom: 20px; right: 20px; width: 60px; height: 60px; }
 
   /* Theme Modal compact view */
   .theme-modal-content { padding: 20px; }
-  .theme-palette {
-    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
-    gap: 10px;
-  }
-  .theme-card-swatch { height: 50px; }
+  .theme-palette { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 12px; }
+  .theme-card-swatch { height: 55px; }
 }
 
 </style>
 </head>
-<body class="theme-default">
+<!-- THEME ENHANCEMENT: Set the new "best in the world" default theme to Aurora Twilight -->
+<body class="theme-aurora-twilight">
 
 <div class="app">
 
@@ -382,6 +356,14 @@ li.deleting { animation: fadeOutShrink 0.5s ease forwards; }
             <div>
                 <h2>Study Materials</h2>
                 <p>Tools & Resources</p>
+            </div>
+        </a>
+        <!-- NEW FEATURE: Added the Optichain AI Tools button as requested -->
+        <a href="page20.html" class="dock-button">
+            <i class="fa-solid fa-wand-magic-sparkles"></i>
+            <div>
+                <h2>Optichain AI Tools</h2>
+                <p>Boost Your Workflow</p>
             </div>
         </a>
         <a href="page9.html" class="dock-button">
@@ -434,46 +416,49 @@ li.deleting { animation: fadeOutShrink 0.5s ease forwards; }
         <ul id="taskList"></ul>
     </section>
 
-    <section class="section calendar-section">
-        <div class="section-header">
-            <h2><i class="fa-solid fa-calendar-days"></i> Calendar</h2>
-            <div class="calendar-nav">
-                <button id="prevMonthBtn" aria-label="Previous month"><i class="fa-solid fa-chevron-left"></i></button>
-                <h3 id="monthYear"></h3>
-                <button id="nextMonthBtn" aria-label="Next month"><i class="fa-solid fa-chevron-right"></i></button>
+    <!-- LAYOUT ENHANCEMENT: New grid container for the Calendar and Focus Timer -->
+    <div class="content-grid">
+        <section class="section calendar-section">
+            <div class="section-header">
+                <h2><i class="fa-solid fa-calendar-days"></i> Calendar</h2>
+                <div class="calendar-nav">
+                    <button id="prevMonthBtn" aria-label="Previous month"><i class="fa-solid fa-chevron-left"></i></button>
+                    <h3 id="monthYear"></h3>
+                    <button id="nextMonthBtn" aria-label="Next month"><i class="fa-solid fa-chevron-right"></i></button>
+                </div>
             </div>
-        </div>
-        <div class="calendar-grid" id="dayNames"></div>
-        <div class="calendar-grid" id="calendarGrid"></div>
-    </section>
+            <div class="calendar-grid" id="dayNames"></div>
+            <div class="calendar-grid" id="calendarGrid"></div>
+        </section>
 
-    <section class="section pomodoro-section">
-        <div class="section-header" style="justify-content: center;">
-            <h2><i class="fa-solid fa-clock"></i> Focus Timer</h2>
-        </div>
-        <div class="pomodoro-modes" id="pomodoro-modes">
-            <button class="active" data-mode="pomodoro">Pomodoro</button>
-            <button data-mode="shortBreak">Short Break</button>
-            <button data-mode="longBreak">Long Break</button>
-        </div>
-        
-        <div class="pomodoro-timer-circle">
-            <svg class="pomodoro-progress-ring" width="220" height="220">
-                <circle class="pomodoro-progress-ring__track" stroke-width="8" fill="transparent" r="102" cx="110" cy="110"/>
-                <circle class="pomodoro-progress-ring__progress" stroke-width="8" fill="transparent" r="102" cx="110" cy="110"/>
-            </svg>
-            <div id="pomodoro-timer-display" class="pomodoro-timer-display">25:00</div>
-        </div>
-        
-        <div class="pomodoro-controls">
-            <button id="pomodoro-start-pause" aria-label="Start or pause the timer"><i class="fa-solid fa-play"></i></button>
-            <button id="pomodoro-reset" aria-label="Reset the timer"><i class="fa-solid fa-rotate-right"></i></button>
-        </div>
-    </section>
+        <section class="section pomodoro-section">
+            <div class="section-header" style="justify-content: center;">
+                <h2><i class="fa-solid fa-clock"></i> Focus Timer</h2>
+            </div>
+            <div class="pomodoro-modes" id="pomodoro-modes">
+                <button class="active" data-mode="pomodoro">Pomodoro</button>
+                <button data-mode="shortBreak">Short Break</button>
+                <button data-mode="longBreak">Long Break</button>
+            </div>
+            
+            <div class="pomodoro-timer-circle">
+                <svg class="pomodoro-progress-ring" width="240" height="240">
+                    <circle class="pomodoro-progress-ring__track" stroke-width="10" fill="transparent" r="110" cx="120" cy="120"/>
+                    <circle class="pomodoro-progress-ring__progress" stroke-width="10" fill="transparent" r="110" cx="120" cy="120"/>
+                </svg>
+                <div id="pomodoro-timer-display" class="pomodoro-timer-display">25:00</div>
+            </div>
+            
+            <div class="pomodoro-controls">
+                <button id="pomodoro-start-pause" aria-label="Start or pause the timer"><i class="fa-solid fa-play"></i></button>
+                <button id="pomodoro-reset" aria-label="Reset the timer"><i class="fa-solid fa-rotate-right"></i></button>
+            </div>
+        </section>
+    </div>
    
     <footer class="app-footer">
-        <p>It's just the start...</p>
-        <span>Beta 5.1</span>
+        <p>Your journey to focus begins now.</p>
+        <span>Zenith 1.0</span>
     </footer>
 
 </div>
@@ -556,19 +541,19 @@ class ChronoFocusApp {
         this.renderCalendar();
         this.loadTasks();
         this.updatePomodoroDisplay();
-        console.log("Chrono Focus Enhanced Initialized!");
+        console.log("Chrono Focus Zenith Initialized!");
     }
    
     // --- THEME MANAGEMENT ---
     ThemeManager = {
         themes: [
-            // Special - CORRECTED IDs
-            { id: 'serenity', name: 'Serenity', color: '#A2BFE0', group: 'special' },
+             // Special
+            { id: 'theme-aurora-twilight', name: 'Twilight', gradient: 'linear-gradient(-45deg, #1e1e2f, #6a538d)', group: 'special' },
             { id: 'theme-liquid-glass', name: 'Sapphire', gradient: 'linear-gradient(135deg, #1a1a2e, #162238)', group: 'special' },
-            { id: 'theme-liquid-glass-emerald', name: 'Emerald', gradient: 'linear-gradient(135deg, #0f2027, #2c5364)', group: 'special' },
-            { id: 'theme-liquid-glass-amethyst', name: 'Amethyst', gradient: 'linear-gradient(135deg, #23074d, #4c2c72)', group: 'special' },
-            { id: 'theme-liquid-glass-ruby', name: 'Ruby', gradient: 'linear-gradient(135deg, #3c1053, #ad5389)', group: 'special' },
-            { id: 'theme-liquid-glass-topaz', name: 'Topaz', gradient: 'linear-gradient(135deg, #141e30, #243b55)', group: 'special' },
+            { id: 'theme-aurora-boreal', name: 'Boreal', gradient: 'linear-gradient(-45deg, #0d1a26, #3c164f)', group: 'special' },
+            { id: 'theme-aurora-nebula', name: 'Nebula', gradient: 'linear-gradient(-45deg, #2a0a4a, #da2a9a)', group: 'special' },
+            { id: 'theme-onyx', name: 'Onyx', color: '#00CFE8', group: 'special' },
+            { id: 'serenity', name: 'Serenity', color: '#A2BFE0', group: 'special' },
 
             // Cozy
             { id: 'default', name: 'Mocha', color: '#8D6E63', group: 'cozy' },
@@ -577,21 +562,19 @@ class ChronoFocusApp {
 
             // Vibrant
             { id: 'theme-vibrant-cherry', name: 'Cherry', color: '#EC407A', group: 'vibrant' }, { id: 'theme-vibrant-lime', name: 'Lime', color: '#9CCC65', group: 'vibrant' }, { id: 'theme-vibrant-tangerine', name: 'Tangerine', color: '#FFA726', group: 'vibrant' }, { id: 'theme-vibrant-grape', name: 'Grape', color: '#AB47BC', group: 'vibrant' }, { id: 'theme-vibrant-aqua', name: 'Aqua', color: '#26C6DA', group: 'vibrant' },
+            { id: 'theme-aurora-sunrise', name: 'Sunrise', gradient: 'linear-gradient(-45deg, #FFDAB9, #FFA07A)', group: 'vibrant' },
 
             // Dark
-            { id: 'theme-onyx', name: 'Onyx', color: '#00CFE8', group: 'dark' },
             { id: 'theme-mono-graphite', name: 'Graphite', color: '#E0E0E0', group: 'dark' }, { id: 'theme-elements-earth', name: 'Earth', color: '#A1683A', group: 'dark' }, { id: 'theme-mono-ink', name: 'Ink', color: '#e0fbfc', group: 'dark' }, { id: 'theme-elements-fire', name: 'Fire', color: '#E55B3C', group: 'dark' }, { id: 'theme-elements-water', name: 'Water', color: '#5292C1', group: 'dark' },
           
-            // Aurora
-            { id: 'theme-aurora-boreal', name: 'Boreal', gradient: 'linear-gradient(-45deg, #0d1a26, #3c164f)', group: 'aurora' }, { id: 'theme-aurora-sunrise', name: 'Sunrise', gradient: 'linear-gradient(-45deg, #FFDAB9, #FFA07A)', group: 'aurora' }, { id: 'theme-aurora-twilight', name: 'Twilight', gradient: 'linear-gradient(-45deg, #1e1e2f, #6a538d)', group: 'aurora' }, { id: 'theme-aurora-cosmos', name: 'Cosmos', gradient: 'linear-gradient(-45deg, #000428, #004e92)', group: 'aurora' }, { id: 'theme-aurora-nebula', name: 'Nebula', gradient: 'linear-gradient(-45deg, #2a0a4a, #da2a9a)', group: 'aurora' }, { id: 'theme-aurora-forest', name: 'Forest', gradient: 'linear-gradient(-45deg, #0d2618, #1b5e20)', group: 'aurora' }, { id: 'theme-aurora-sunset', name: 'Sunset', gradient: 'linear-gradient(-45deg, #2c0d2c, #6a1b9a)', group: 'aurora' }, { id: 'theme-aurora-midnight', name: 'Midnight', gradient: 'linear-gradient(-45deg, #0a0a1a, #283593)', group: 'aurora' }, { id: 'theme-aurora-cottoncandy', name: 'Cotton Candy', gradient: 'linear-gradient(-45deg, #fce4ec, #f8bbd0)', group: 'aurora' }, { id: 'theme-aurora-golden', name: 'Golden', gradient: 'linear-gradient(-45deg, #fffde7, #fff9c4)', group: 'aurora' }, { id: 'theme-aurora-dream', name: 'Dream', gradient: 'linear-gradient(-45deg, #F3E5F5, #CE93D8)', group: 'aurora' }, { id: 'theme-aurora-lagoon', name: 'Lagoon', gradient: 'linear-gradient(-45deg, #E0F7FA, #80DEEA)', group: 'aurora' },
-
             // Retro
             { id: 'theme-retro-diner', name: 'Diner', color: '#EF6060', group: 'retro' }, { id: 'theme-retro-arcade', name: 'Arcade', color: '#ff00ff', group: 'retro' }, { id: 'theme-retro-vinyl', name: 'Vinyl', color: '#C70039', group: 'retro' },
         ],
         init(app) {
             this.app = app;
             this.createModalContent();
-            const savedTheme = localStorage.getItem('chronoFocusTheme') || 'default';
+            // Get saved theme, or use the new default 'theme-aurora-twilight'
+            const savedTheme = localStorage.getItem('chronoFocusTheme') || 'theme-aurora-twilight';
             this.set(savedTheme);
         },
         set(themeId) {
@@ -607,7 +590,7 @@ class ChronoFocusApp {
                 return acc;
             }, {});
 
-            const groupOrder = ['special', 'cozy', 'vibrant', 'dark', 'aurora', 'retro'];
+            const groupOrder = ['special', 'cozy', 'vibrant', 'dark', 'retro'];
             let fullHTML = '';
 
             for (const groupName of groupOrder) {
@@ -757,7 +740,11 @@ class ChronoFocusApp {
         const today = new Date();
         const fragment = document.createDocumentFragment();
 
-        for (let i = 0; i < firstDay; i++) fragment.appendChild(document.createElement('div'));
+        for (let i = 0; i < firstDay; i++) {
+            const emptyCell = document.createElement('div');
+            emptyCell.classList.add('other-month');
+            fragment.appendChild(emptyCell);
+        }
        
         for (let i = 1; i <= daysInMonth; i++) {
             const dayCell = document.createElement('div');
@@ -789,6 +776,7 @@ class ChronoFocusApp {
         this.dom.pomodoroDisplay.textContent = timeString;
         document.title = `${timeString} - Chrono Focus`;
         
+        if (!this.circumference) return;
         const totalDuration = this.state.pomodoro.modes[this.state.pomodoro.mode];
         const progress = (totalDuration - this.state.pomodoro.timeRemaining) / totalDuration;
         const offset = this.circumference * (1 - progress);
@@ -816,6 +804,7 @@ class ChronoFocusApp {
             clearInterval(this.state.pomodoro.timerId);
             this.state.pomodoro.isRunning = false;
             this.dom.pomodoroCircle.classList.remove('running');
+            this.dom.pomodoroStartPause.querySelector('i').className = 'fa-solid fa-play';
             this.finishSound.play();
             const modeName = this.state.pomodoro.mode.replace(/([A-Z])/g, ' $1').toLowerCase();
             this.showToast(`${modeName.charAt(0).toUpperCase() + modeName.slice(1)} session finished!`);
@@ -912,5 +901,4 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 
 </body>
-</html>
 </html>
