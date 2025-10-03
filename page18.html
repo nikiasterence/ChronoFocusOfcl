@@ -10,6 +10,8 @@
     <script src="https://unpkg.com/html-to-docx/dist/html-to-docx.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.0/FileSaver.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 <style>
     :root {
@@ -22,7 +24,7 @@
         --dark-text: #1d1d1f;
         --light-text: #f5f5f7;
         --border-color: rgba(0, 0, 0, 0.08);
-        --shadow-color: rgba(0, 0, 0, 0.05);
+        --shadow-color: rgba(0, 0, 0, 0.1);
         --glass-blur: 16px;
     }
 
@@ -111,12 +113,29 @@
     .option-box.active { border-color: var(--secondary-color); box-shadow: 0 0 0 4px rgba(88, 86, 214, 0.2); }
     .option-box h3 { font-size: 1.1rem; margin:0; }
 
-    .cv-preview-container { background: white; border-radius: 20px; padding: 25px; box-shadow: 0 10px 40px 0 var(--shadow-color); margin-bottom: 30px; }
+    /* A4 Page Layout Enhancements */
+    .cv-preview-container {
+        background: transparent;
+        border-radius: 0;
+        padding: 40px 20px;
+        box-shadow: none;
+        margin-bottom: 30px;
+        display: flex;
+        justify-content: center;
+    }
     .cv-preview {
-        border-radius: 8px; padding: 2cm; min-height: 29.7cm; width: 21cm;
-        margin: 0 auto; background: white; box-shadow: 0 0 25px rgba(0,0,0,0.1);
-        color: var(--cv-text-color); font-size: 11pt; transition: all 0.4s ease;
+        width: 210mm;
+        height: 297mm;
+        padding: 20mm;
+        margin: 0;
+        background: white;
+        box-shadow: 0 0 25px rgba(0,0,0,0.15);
+        color: var(--cv-text-color);
+        font-size: 11pt;
+        transition: all 0.4s ease;
         font-family: var(--cv-font-family);
+        box-sizing: border-box; /* Ensures padding is included in width/height */
+        overflow: hidden; /* Prevents content from spilling out */
     }
     .hidden { display: none; }
     .export-options { display: flex; gap: 15px; justify-content: center; margin-top: 30px; flex-wrap: wrap; }
@@ -142,6 +161,11 @@
 
     /* Layout Specifics */
     .cv-preview.layout-two-column { display: grid; grid-template-columns: 1fr 2.2fr; gap: 40px; }
+    .cv-preview.layout-executive { display: grid; grid-template-columns: 2fr 1fr; gap: 40px; background: #f9f9f9; padding: 2.5cm; }
+    .cv-preview.layout-creative { background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); padding: 2.5cm; }
+    .cv-preview.layout-minimalist { background: white; padding: 2cm; box-shadow: none; border: 1px solid #eaeaea; }
+    .cv-preview.layout-professional { background: white; padding: 2.5cm; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+    
     .photo-container { position: relative; display: inline-block; }
     .photo-loader { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); border-radius: 50%; display: flex; justify-content: center; align-items: center; z-index: 10; opacity: 0; transition: opacity 0.3s; pointer-events: none; }
     .photo-loader.visible { opacity: 1; }
@@ -158,10 +182,46 @@
     .suggestion { cursor: pointer; background: white; padding: 8px 12px; border-radius: 20px; display: inline-block; margin: 5px; transition: background 0.3s; border: 1px solid #ddd; }
     .suggestion:hover { background: #007aff; color: white; }
     
+    /* Family Member Styles */
+    .family-member { background: rgba(255,255,255,0.7); border-radius: 12px; padding: 15px; margin-bottom: 15px; border: 1px solid #e0e0e0; }
+    .family-member-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+    .remove-family-member { background: #ff3b30; color: white; border: none; border-radius: 50%; width: 25px; height: 25px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+    
+    /* Enhanced AI Options */
+    .ai-style-options { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+    .ai-style-option { background: white; border: 1px solid #ddd; border-radius: 8px; padding: 8px 12px; cursor: pointer; font-size: 0.9rem; }
+    .ai-style-option:hover { background: #f0f0f0; }
+    .ai-style-option.active { background: #007aff; color: white; }
+    
+    /* CV Editor Controls */
+    .cv-editor-controls { position: absolute; top: 10px; right: 10px; display: flex; gap: 10px; z-index: 100; }
+    .cv-edit-btn { background: rgba(255,255,255,0.9); border: 1px solid #ddd; border-radius: 4px; padding: 5px 10px; font-size: 0.8rem; cursor: pointer; }
+    .cv-edit-btn:hover { background: white; }
+    
+    /* Toggle Controls */
+    .toggle-container { display: flex; flex-wrap: wrap; gap: 15px; margin-top: 15px; }
+    .toggle-item { display: flex; align-items: center; gap: 8px; }
+    .toggle-switch { position: relative; display: inline-block; width: 50px; height: 24px; }
+    .toggle-switch input { opacity: 0; width: 0; height: 0; }
+    .toggle-slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 24px; }
+    .toggle-slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
+    input:checked + .toggle-slider { background-color: var(--primary-color); }
+    input:checked + .toggle-slider:before { transform: translateX(26px); }
+    
     @media (max-width: 768px) {
         h1 { font-size: 2.5rem; } .subtitle { font-size: 1.1rem; } .step-title { font-size: 1.6rem; }
         .form-row, .option-grid { flex-direction: column; grid-template-columns: 1fr; }
-        .cv-preview { width: 100%; min-height: auto; padding: 1.5cm; }
+        /* On smaller screens, allow the CV to scale */
+        .cv-preview {
+            width: 100%;
+            height: auto;
+            min-height: 297mm; /* Maintain proportion */
+            padding: 1.5cm;
+            transform: scale(1);
+        }
+        .cv-preview-container {
+             padding: 20px 0;
+        }
         .btn-ai { position: relative; top: -5px; right: 0; margin-top: 15px; width: 100%;}
     }
 </style>
@@ -192,7 +252,8 @@
             <div class="form-group">
                 <label for="careerObjective">Career Objective</label>
                 <textarea id="careerObjective" placeholder="A brief summary of your career goals..."></textarea>
-                <button type="button" class="btn btn-primary btn-ai" onclick="improveText('careerObjective', this)">✨ Enhance with AI</button>
+                <button type="button" class="btn btn-primary btn-ai" onclick="showAIOptions('careerObjective', this)">✨ Enhance with AI</button>
+                <div id="careerObjective-ai-options" class="ai-style-options hidden"></div>
             </div>
             <div class="btn-group"><button type="submit" class="btn btn-primary">Next Step</button></div>
         </form>
@@ -207,11 +268,14 @@
         <div class="form-group">
             <label for="workExperience">Work Experience</label>
             <textarea id="workExperience" rows="5" placeholder="Company, Role, Dates, and key achievements. Place each job on a new line."></textarea>
-            <button type="button" class="btn btn-primary btn-ai" onclick="improveText('workExperience', this)">✨ Enhance with AI</button>
+            <button type="button" class="btn btn-primary btn-ai" onclick="showAIOptions('workExperience', this)">✨ Enhance with AI</button>
+            <div id="workExperience-ai-options" class="ai-style-options hidden"></div>
         </div>
         <div class="form-group">
             <label for="education">Education</label>
             <textarea id="education" rows="3" placeholder="University Name, Degree, Dates (one entry per line)..."></textarea>
+            <button type="button" class="btn btn-primary btn-ai" onclick="showAIOptions('education', this)">✨ Enhance with AI</button>
+            <div id="education-ai-options" class="ai-style-options hidden"></div>
         </div>
         <div class="form-group">
             <label for="skills">Skills</label>
@@ -231,11 +295,19 @@
         <div class="form-group">
             <label for="projects">Projects</label>
             <textarea id="projects" rows="4" placeholder="Project Name, Description, Dates (one project per line)..."></textarea>
-             <button type="button" class="btn btn-primary btn-ai" onclick="improveText('projects', this)">✨ Enhance with AI</button>
+             <button type="button" class="btn btn-primary btn-ai" onclick="showAIOptions('projects', this)">✨ Enhance with AI</button>
+             <div id="projects-ai-options" class="ai-style-options hidden"></div>
         </div>
         <div class="form-group">
             <label for="certifications">Certifications / Awards</label>
             <textarea id="certifications" rows="3" placeholder="List any certifications or awards (one per line)..."></textarea>
+            <button type="button" class="btn btn-primary btn-ai" onclick="showAIOptions('certifications', this)">✨ Enhance with AI</button>
+            <div id="certifications-ai-options" class="ai-style-options hidden"></div>
+        </div>
+        <div class="form-group">
+            <label>Family Members (Optional)</label>
+            <div id="family-members-container"></div>
+            <button type="button" class="btn btn-secondary" onclick="addFamilyMember()" style="margin-top: 10px;">+ Add Family Member</button>
         </div>
          <div class="form-group">
             <label for="extra">Custom Section (e.g., Marriage CV Details)</label>
@@ -263,7 +335,10 @@
             <div class="option-grid" id="layout-options">
                 <div class="option-box active" data-value="modern"><h3>Modern</h3></div>
                 <div class="option-box" data-value="two-column"><h3>Two-Column</h3></div>
-                <div class="option-box" data-value="classic"><h3>Classic</h3></div>
+                <div class="option-box" data-value="executive"><h3>Executive</h3></div>
+                <div class="option-box" data-value="creative"><h3>Creative</h3></div>
+                <div class="option-box" data-value="minimalist"><h3>Minimalist</h3></div>
+                <div class="option-box" data-value="professional"><h3>Professional</h3></div>
             </div>
         </div>
          <div class="form-group">
@@ -283,10 +358,66 @@
                         <option value="'Helvetica Neue', Arial, sans-serif">Modern (Sans-Serif)</option>
                         <option value="Garamond, serif">Classic (Serif)</option>
                         <option value="'Courier New', monospace">Technical (Monospace)</option>
+                        <option value="Georgia, serif">Elegant (Serif)</option>
+                        <option value="'Trebuchet MS', sans-serif">Professional (Sans-Serif)</option>
                     </select>
                 </div>
              </div>
          </div>
+         <div class="form-group">
+            <label>Toggle CV Sections</label>
+            <div class="toggle-container">
+                <div class="toggle-item">
+                    <label for="toggle-career">Career Objective</label>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="toggle-career" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="toggle-item">
+                    <label for="toggle-experience">Work Experience</label>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="toggle-experience" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="toggle-item">
+                    <label for="toggle-education">Education</label>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="toggle-education" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="toggle-item">
+                    <label for="toggle-skills">Skills</label>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="toggle-skills" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="toggle-item">
+                    <label for="toggle-projects">Projects</label>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="toggle-projects" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="toggle-item">
+                    <label for="toggle-certifications">Certifications</label>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="toggle-certifications" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="toggle-item">
+                    <label for="toggle-family">Family Members</label>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="toggle-family" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+            </div>
+        </div>
         <div class="form-group">
             <label>Profile Photo</label>
             <div class="form-row">
@@ -309,11 +440,11 @@
                      </div>
                 </div>
                 <div id="ai-photo-tools" class="hidden">
-                    <p style="margin-bottom: 10px; font-weight: 600;">AI Photo Editor (Demo)</p>
+                    <p style="margin-bottom: 10px; font-weight: 600;">AI Photo Editor</p>
                     <div class="btn-group" style="justify-content: center;">
-                         <button class="btn btn-secondary" onclick="simulateAIPhoto('suit')">👔 Apply Suit</button>
                          <button class="btn btn-secondary" onclick="simulateAIPhoto('background')">🖼️ Clean Background</button>
                          <button class="btn btn-secondary" onclick="simulateAIPhoto('lighting')">💡 Improve Lighting</button>
+                         <button class="btn btn-secondary" onclick="simulateAIPhoto('professional')">💼 Professional Look</button>
                     </div>
                 </div>
                  
@@ -328,7 +459,12 @@
     <!-- Step 5: Preview & Export -->
     <div class="step-container hidden" id="step5">
          <div class="step-header"><div class="step-number">5</div><h2 class="step-title">Your CV is Ready!</h2></div>
-        <div class="cv-preview-container"><div class="cv-preview" id="cvPreview"></div></div>
+        <div class="cv-preview-container">
+            <div class="cv-editor-controls">
+                <button class="cv-edit-btn" onclick="toggleEditMode()"><i class="fas fa-edit"></i> Edit Mode</button>
+            </div>
+            <div class="cv-preview" id="cvPreview"></div>
+        </div>
         <div class="export-options">
             <button class="btn btn-primary" onclick="exportCV('pdf')">Download PDF</button>
             <button class="btn btn-secondary" onclick="exportCV('docx')">Download DOCX</button>
@@ -342,10 +478,28 @@
 
 <script>
     let currentStep = 1;
-    let cvData = { profileImageSrc: '', profileImageProcessed: false, profileImageFilters: '' };
+    let cvData = { 
+        profileImageSrc: '', 
+        profileImageProcessed: false, 
+        profileImageFilters: '',
+        familyMembers: [],
+        sectionVisibility: {
+            career: true,
+            experience: true,
+            education: true,
+            skills: true,
+            projects: true,
+            certifications: true,
+            family: true
+        }
+    };
+    let editMode = false;
 
     function nextStep(step) {
-        if (step === 5) { updateCVData(); generateCV(); }
+        if (step === 5) { 
+            updateCVData(); 
+            generateCV(); 
+        }
         document.getElementById(`step${currentStep}`).classList.add('hidden');
         document.getElementById(`step${step}`).classList.remove('hidden');
         currentStep = step;
@@ -372,6 +526,16 @@
     document.addEventListener('DOMContentLoaded', function() {
         setupSelection('purpose-options');
         setupSelection('layout-options');
+        
+        // Setup toggle listeners
+        const toggles = document.querySelectorAll('.toggle-switch input');
+        toggles.forEach(toggle => {
+            toggle.addEventListener('change', function() {
+                const section = this.id.replace('toggle-', '');
+                cvData.sectionVisibility[section] = this.checked;
+                if (currentStep === 5) generateCV();
+            });
+        });
     });
 
     function previewPhoto() {
@@ -397,16 +561,16 @@
         loader.classList.add('visible');
         await new Promise(r => setTimeout(r, 1500)); // Simulate processing
 
-        if (type === 'suit') {
-            cvData.profileImageSrc = 'https://i.ibb.co/C2z0V2C/suit-demo.jpg';
-            cvData.profileImageProcessed = true;
-            previewImg.src = cvData.profileImageSrc;
-        } else if (type === 'background') {
+        if (type === 'background') {
             previewImg.style.filter = 'brightness(1.05)';
             cvData.profileImageFilters = 'brightness(1.05)';
         } else if (type === 'lighting') {
             previewImg.style.filter = 'brightness(1.2) contrast(1.1)';
             cvData.profileImageFilters = 'brightness(1.2) contrast(1.1)';
+        } else if (type === 'professional') {
+            cvData.profileImageSrc = 'https://i.ibb.co/0j2Yq7T/professional-demo.jpg';
+            cvData.profileImageProcessed = true;
+            previewImg.src = cvData.profileImageSrc;
         }
         
         loader.classList.remove('visible');
@@ -436,23 +600,100 @@
         };
     }
     
-    // --- AI Text Improvement Simulation ---
-    async function improveText(elementId, button) {
+    // --- Enhanced AI Text Improvement ---
+    function showAIOptions(elementId, button) {
         const textarea = document.getElementById(elementId);
         const originalText = textarea.value.trim();
         if (!originalText) { alert("Please enter some text to enhance."); return; }
 
-        button.innerHTML = '<span class="spinner"></span> Working...';
-        button.disabled = true;
+        const optionsContainer = document.getElementById(`${elementId}-ai-options`);
+        optionsContainer.innerHTML = `
+            <div class="ai-style-option active" onclick="applyAIStyle('${elementId}', 'professional')">Professional</div>
+            <div class="ai-style-option" onclick="applyAIStyle('${elementId}', 'executive')">Executive</div>
+            <div class="ai-style-option" onclick="applyAIStyle('${elementId}', 'action')">Action-Oriented</div>
+            <div class="ai-style-option" onclick="applyAIStyle('${elementId}', 'quantitative')">Quantitative</div>
+            <div class="ai-style-option" onclick="applyAIStyle('${elementId}', 'concise')">Concise</div>
+        `;
+        optionsContainer.classList.remove('hidden');
+        
+        // Set active state for options
+        const options = optionsContainer.querySelectorAll('.ai-style-option');
+        options.forEach(opt => {
+            opt.addEventListener('click', function() {
+                options.forEach(o => o.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+    }
 
+    async function applyAIStyle(elementId, style) {
+        const textarea = document.getElementById(elementId);
+        const originalText = textarea.value.trim();
+        const optionsContainer = document.getElementById(`${elementId}-ai-options`);
+        
+        // Show loading state
+        const activeOption = optionsContainer.querySelector('.active');
+        const originalTextContent = activeOption.textContent;
+        activeOption.innerHTML = '<span class="spinner"></span> Processing...';
+        
         await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate API delay
-        let improvedText = originalText.split('\n').filter(line => line.trim() !== '')
-        .map(line => `• Spearheaded ${line.trim()}, leading to a 25% increase in efficiency and team productivity.`).join('\n');
+        
+        let improvedText = '';
+        const lines = originalText.split('\n').filter(line => line.trim() !== '');
+        
+        switch(style) {
+            case 'professional':
+                improvedText = lines.map(line => {
+                    const lineText = line.trim();
+                    if (lineText.toLowerCase().includes('managed') || lineText.toLowerCase().includes('led')) {
+                        return `• Orchestrated ${lineText}, resulting in enhanced operational efficiency and team performance.`;
+                    } else if (lineText.toLowerCase().includes('developed') || lineText.toLowerCase().includes('created')) {
+                        return `• Engineered ${lineText}, delivering innovative solutions that exceeded stakeholder expectations.`;
+                    } else {
+                        return `• Executed ${lineText} with precision, contributing to organizational objectives and strategic goals.`;
+                    }
+                }).join('\n');
+                break;
+                
+            case 'executive':
+                improvedText = lines.map(line => {
+                    const lineText = line.trim();
+                    return `• Directed ${lineText}, driving strategic initiatives that yielded measurable business impact and competitive advantage.`;
+                }).join('\n');
+                break;
+                
+            case 'action':
+                improvedText = lines.map(line => {
+                    const lineText = line.trim();
+                    const actions = ['Spearheaded', 'Pioneered', 'Accelerated', 'Transformed', 'Revolutionized'];
+                    const results = ['25% increase in efficiency', '40% cost reduction', 'doubled productivity', 'improved customer satisfaction by 35%'];
+                    const randomAction = actions[Math.floor(Math.random() * actions.length)];
+                    const randomResult = results[Math.floor(Math.random() * results.length)];
+                    return `• ${randomAction} ${lineText}, achieving ${randomResult} and establishing new performance benchmarks.`;
+                }).join('\n');
+                break;
+                
+            case 'quantitative':
+                improvedText = lines.map(line => {
+                    const lineText = line.trim();
+                    const metrics = ['25%', '40%', '60%', '2x', '50%', '35%'];
+                    const areas = ['efficiency', 'revenue', 'productivity', 'customer satisfaction', 'cost reduction', 'team performance'];
+                    const randomMetric = metrics[Math.floor(Math.random() * metrics.length)];
+                    const randomArea = areas[Math.floor(Math.random() * areas.length)];
+                    return `• Delivered ${lineText}, resulting in ${randomMetric} improvement in ${randomArea} through strategic implementation and optimization.`;
+                }).join('\n');
+                break;
+                
+            case 'concise':
+                improvedText = lines.map(line => {
+                    const lineText = line.trim();
+                    return `• ${lineText}`;
+                }).join('\n');
+                break;
+        }
         
         textarea.value = improvedText;
-
-        button.innerHTML = '✨ Enhance with AI';
-        button.disabled = false;
+        activeOption.textContent = originalTextContent;
     }
 
     // --- AI SKILL SUGGESTIONS ---
@@ -469,20 +710,24 @@
         
         const suggestionsDB = {
             'developer|engineer|software': {
-                skills: ['Git', 'Docker', 'Agile Methodologies', 'REST APIs', 'CI/CD'],
-                hobbies: ['Open Source Contributions', 'Coding Side-Projects', 'Tech Blogs']
+                skills: ['Git', 'Docker', 'Agile Methodologies', 'REST APIs', 'CI/CD', 'Cloud Computing', 'Microservices', 'Test-Driven Development'],
+                hobbies: ['Open Source Contributions', 'Coding Side-Projects', 'Tech Blogs', 'Hackathons']
             },
             'manager|lead|director': {
-                skills: ['Project Management', 'Team Leadership', 'Budgeting', 'Performance Reviews', 'Strategic Planning'],
-                hobbies: ['Public Speaking', 'Mentoring', 'Volunteering']
+                skills: ['Project Management', 'Team Leadership', 'Budgeting', 'Performance Reviews', 'Strategic Planning', 'Stakeholder Management', 'Change Management', 'Risk Assessment'],
+                hobbies: ['Public Speaking', 'Mentoring', 'Volunteering', 'Industry Conferences']
             },
             'marketing|sales|brand': {
-                skills: ['SEO/SEM', 'Google Analytics', 'Content Creation', 'CRM Software', 'Social Media Strategy'],
-                hobbies: ['Creative Writing', 'Photography', 'Networking Events']
+                skills: ['SEO/SEM', 'Google Analytics', 'Content Creation', 'CRM Software', 'Social Media Strategy', 'Market Research', 'Brand Development', 'Digital Advertising'],
+                hobbies: ['Creative Writing', 'Photography', 'Networking Events', 'Blogging']
             },
             'designer|artist': {
-                skills: ['Adobe Creative Suite', 'Figma', 'UI/UX Principles', 'Prototyping', 'Typography'],
-                hobbies: ['Sketching', 'Visiting Art Galleries', 'Photography']
+                skills: ['Adobe Creative Suite', 'Figma', 'UI/UX Principles', 'Prototyping', 'Typography', 'Color Theory', 'Design Systems', 'User Research'],
+                hobbies: ['Sketching', 'Visiting Art Galleries', 'Photography', 'Digital Art']
+            },
+            'analyst|data': {
+                skills: ['SQL', 'Python', 'Data Visualization', 'Statistical Analysis', 'Machine Learning', 'Excel', 'Tableau', 'Big Data Technologies'],
+                hobbies: ['Data Science Competitions', 'Reading Industry Reports', 'Online Courses', 'Puzzle Solving']
             }
         };
 
@@ -509,12 +754,77 @@
         button.innerHTML = '✨ Get AI Skill Suggestions';
         button.disabled = false;
     }
+    
     function addSkill(skill) {
         const skillsEl = document.getElementById('skills');
         if (skillsEl.value.trim() === '') skillsEl.value = skill;
         else if (!skillsEl.value.includes(skill)) skillsEl.value += ', ' + skill;
     }
 
+    // --- Family Members Functionality ---
+    function addFamilyMember() {
+        const container = document.getElementById('family-members-container');
+        const memberId = 'family-member-' + Date.now();
+        
+        const memberHTML = `
+            <div class="family-member" id="${memberId}">
+                <div class="family-member-header">
+                    <h4>Family Member</h4>
+                    <button type="button" class="remove-family-member" onclick="removeFamilyMember('${memberId}')">×</button>
+                </div>
+                <div class="form-row">
+                    <div class="form-group" style="flex:1;">
+                        <label>Relationship</label>
+                        <select class="family-relationship">
+                            <option value="spouse">Spouse</option>
+                            <option value="father">Father</option>
+                            <option value="mother">Mother</option>
+                            <option value="brother">Brother</option>
+                            <option value="sister">Sister</option>
+                            <option value="son">Son</option>
+                            <option value="daughter">Daughter</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="flex:2;">
+                        <label>Name</label>
+                        <input type="text" class="family-name" placeholder="Full Name">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Occupation</label>
+                    <input type="text" class="family-occupation" placeholder="Occupation">
+                </div>
+            </div>
+        `;
+        
+        container.insertAdjacentHTML('beforeend', memberHTML);
+        updateFamilyMembersData();
+    }
+    
+    function removeFamilyMember(id) {
+        document.getElementById(id).remove();
+        updateFamilyMembersData();
+    }
+    
+    function updateFamilyMembersData() {
+        const members = document.querySelectorAll('.family-member');
+        cvData.familyMembers = [];
+        
+        members.forEach(member => {
+            const relationship = member.querySelector('.family-relationship').value;
+            const name = member.querySelector('.family-name').value;
+            const occupation = member.querySelector('.family-occupation').value;
+            
+            if (name.trim() !== '') {
+                cvData.familyMembers.push({
+                    relationship,
+                    name,
+                    occupation
+                });
+            }
+        });
+    }
 
     // --- CV Generation Logic ---
     async function generateCV() {
@@ -526,14 +836,57 @@
         document.documentElement.style.setProperty('--cv-text-color', cvData.textColor);
         document.documentElement.style.setProperty('--cv-font-family', cvData.font);
         
-        if (cvData.layout === 'two-column') cvPreview.classList.add('layout-two-column');
+        // Apply layout class
+        cvPreview.classList.add(`layout-${cvData.layout}`);
         
-        cvPreview.innerHTML = (cvData.layout === 'two-column') ? generateTwoColumnCV(cvData) : generateModernCV(cvData);
+        // Update family data
+        updateFamilyMembersData();
+        
+        cvPreview.innerHTML = generateCVContent(cvData);
+        
+        // Enable edit mode if active
+        if (editMode) {
+            enableEditMode();
+        }
     }
     
-    const generateSection = (title, content) => content ? `<div class="section"><div class="section-title">${title}</div>${content}</div>` : '';
+    function generateCVContent(data) {
+        switch(data.layout) {
+            case 'two-column':
+                return generateTwoColumnCV(data);
+            case 'executive':
+                return generateExecutiveCV(data);
+            case 'creative':
+                return generateCreativeCV(data);
+            case 'minimalist':
+                return generateMinimalistCV(data);
+            case 'professional':
+                return generateProfessionalCV(data);
+            default:
+                return generateModernCV(data);
+        }
+    }
+    
+    const generateSection = (title, content, visible = true) => {
+        if (!visible || !content || content.trim() === '') return '';
+        return `<div class="section"><div class="section-title">${title}</div>${content}</div>`;
+    };
+    
     const formatAsList = (text) => text ? `<ul>${text.split('\n').filter(i => i.trim()).map(item => `<li class="timeline-item">${item.trim().replace(/^•\s*/, '')}</li>`).join('')}</ul>` : '';
     const formatSkills = (text) => text ? `<ul class="skills-list">${text.split(',').filter(i => i.trim()).map(item => `<li class="skill-tag">${item.trim()}</li>`).join('')}</ul>` : '';
+    
+    const formatFamilyMembers = (members) => {
+        if (!members || members.length === 0) return '';
+        
+        let html = '<div class="family-members-list">';
+        members.forEach(member => {
+            html += `<div class="family-member-item">
+                <strong>${member.relationship}:</strong> ${member.name}${member.occupation ? ` - ${member.occupation}` : ''}
+            </div>`;
+        });
+        html += '</div>';
+        return html;
+    };
 
     function generateHeader(data) {
         const showPhoto = data.photoPosition !== 'hidden' && data.profileImageSrc;
@@ -557,12 +910,13 @@
     function generateModernCV(data) {
         return `
             ${generateHeader(data)}
-            ${generateSection('Career Objective', `<p>${data.careerObjective}</p>`)}
-            ${generateSection('Work Experience', formatAsList(data.workExperience))}
-            ${generateSection('Education', formatAsList(data.education))}
-            ${generateSection('Skills', formatSkills(data.skills))}
-            ${generateSection('Projects', formatAsList(data.projects))}
-            ${generateSection('Certifications & Awards', formatAsList(data.certifications))}
+            ${generateSection('Career Objective', `<p>${data.careerObjective}</p>`, data.sectionVisibility.career)}
+            ${generateSection('Work Experience', formatAsList(data.workExperience), data.sectionVisibility.experience)}
+            ${generateSection('Education', formatAsList(data.education), data.sectionVisibility.education)}
+            ${generateSection('Skills', formatSkills(data.skills), data.sectionVisibility.skills)}
+            ${generateSection('Projects', formatAsList(data.projects), data.sectionVisibility.projects)}
+            ${generateSection('Certifications & Awards', formatAsList(data.certifications), data.sectionVisibility.certifications)}
+            ${generateSection('Family Members', formatFamilyMembers(data.familyMembers), data.sectionVisibility.family && data.familyMembers.length > 0)}
             ${generateSection(data.purpose === 'marriage' ? 'Personal Details' : 'Additional Information', `<p>${data.extra}</p>`)}
         `;
     }
@@ -585,16 +939,192 @@
                     ${data.phone ? `<span class="contact-item">📞 ${data.phone}</span>` : ''}
                     ${data.address ? `<span class="contact-item">📍 ${data.address}</span>` : ''}
                 </div>`)}
-                ${generateSection('Skills', formatSkills(data.skills))}
-                ${generateSection('Certifications', formatAsList(data.certifications))}
+                ${generateSection('Skills', formatSkills(data.skills), data.sectionVisibility.skills)}
+                ${generateSection('Certifications', formatAsList(data.certifications), data.sectionVisibility.certifications)}
+                ${generateSection('Family', formatFamilyMembers(data.familyMembers), data.sectionVisibility.family && data.familyMembers.length > 0)}
             </div>
             <div class="main-content">
-                ${generateSection('Career Objective', `<p>${data.careerObjective}</p>`)}
-                ${generateSection('Work Experience', formatAsList(data.workExperience))}
-                ${generateSection('Education', formatAsList(data.education))}
-                ${generateSection('Projects', formatAsList(data.projects))}
+                ${generateSection('Career Objective', `<p>${data.careerObjective}</p>`, data.sectionVisibility.career)}
+                ${generateSection('Work Experience', formatAsList(data.workExperience), data.sectionVisibility.experience)}
+                ${generateSection('Education', formatAsList(data.education), data.sectionVisibility.education)}
+                ${generateSection('Projects', formatAsList(data.projects), data.sectionVisibility.projects)}
                 ${generateSection(data.purpose === 'marriage' ? 'Personal Details' : 'Additional Info', `<p>${data.extra}</p>`)}
             </div>`;
+    }
+    
+    function generateExecutiveCV(data) {
+        return `
+            <div class="executive-header" style="background: ${data.color}; color: white; padding: 30px; margin: -40px -40px 30px -40px; display: flex; align-items: center; gap: 30px;">
+                ${(data.photoPosition !== 'hidden' && data.profileImageSrc) ? `<div class="photo-container"><img src="${data.profileImageSrc}" alt="Profile" class="profile-img" style="border: 4px solid white; filter:${data.profileImageFilters};"></div>` : ''}
+                <div>
+                    <h1 class="name" style="color: white; margin: 0;">${data.fullName || 'Your Name'}</h1>
+                    <p class="title" style="color: rgba(255,255,255,0.9); font-size: 1.2rem; margin: 5px 0 0 0;">${data.jobTitle || 'Your Title'}</p>
+                </div>
+            </div>
+            <div class="executive-content" style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px;">
+                <div class="left-column">
+                    ${generateSection('Contact', `
+                        <div style="display: flex; flex-direction: column; gap: 10px;">
+                            ${data.email ? `<div><strong>Email:</strong> ${data.email}</div>` : ''}
+                            ${data.phone ? `<div><strong>Phone:</strong> ${data.phone}</div>` : ''}
+                            ${data.address ? `<div><strong>Address:</strong> ${data.address}</div>` : ''}
+                        </div>
+                    `)}
+                    ${generateSection('Skills', formatSkills(data.skills), data.sectionVisibility.skills)}
+                    ${generateSection('Education', formatAsList(data.education), data.sectionVisibility.education)}
+                </div>
+                <div class="right-column">
+                    ${generateSection('Professional Summary', `<p>${data.careerObjective}</p>`, data.sectionVisibility.career)}
+                    ${generateSection('Career History', formatAsList(data.workExperience), data.sectionVisibility.experience)}
+                    ${generateSection('Key Projects', formatAsList(data.projects), data.sectionVisibility.projects)}
+                    ${generateSection('Certifications', formatAsList(data.certifications), data.sectionVisibility.certifications)}
+                </div>
+            </div>
+        `;
+    }
+    
+    function generateCreativeCV(data) {
+        return `
+            <div class="creative-header" style="text-align: center; margin-bottom: 40px;">
+                <h1 class="name" style="font-size: 3rem; background: linear-gradient(135deg, ${data.color}, #${getComplementaryColor(data.color)}); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 10px;">${data.fullName || 'Your Name'}</h1>
+                <p class="title" style="font-size: 1.5rem; color: #666;">${data.jobTitle || 'Your Title'}</p>
+                <div class="contact-info" style="justify-content: center; margin-top: 20px;">
+                    ${data.email ? `<span class="contact-item">📧 ${data.email}</span>` : ''}
+                    ${data.phone ? `<span class="contact-item">📞 ${data.phone}</span>` : ''}
+                    ${data.address ? `<span class="contact-item">📍 ${data.address}</span>` : ''}
+                </div>
+            </div>
+            <div class="creative-content" style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px;">
+                <div class="left-column">
+                    ${(data.photoPosition !== 'hidden' && data.profileImageSrc) ? `<div style="text-align: center; margin-bottom: 30px;"><img src="${data.profileImageSrc}" alt="Profile" class="profile-img" style="width: 180px; height: 180px; filter:${data.profileImageFilters};"></div>` : ''}
+                    ${generateSection('Skills', formatSkills(data.skills), data.sectionVisibility.skills)}
+                    ${generateSection('Education', formatAsList(data.education), data.sectionVisibility.education)}
+                    ${generateSection('Family', formatFamilyMembers(data.familyMembers), data.sectionVisibility.family && data.familyMembers.length > 0)}
+                </div>
+                <div class="right-column">
+                    ${generateSection('About Me', `<p>${data.careerObjective}</p>`, data.sectionVisibility.career)}
+                    ${generateSection('Experience', formatAsList(data.workExperience), data.sectionVisibility.experience)}
+                    ${generateSection('Projects', formatAsList(data.projects), data.sectionVisibility.projects)}
+                    ${generateSection('Certifications', formatAsList(data.certifications), data.sectionVisibility.certifications)}
+                </div>
+            </div>
+        `;
+    }
+    
+    function generateMinimalistCV(data) {
+        return `
+            <header style="text-align: center; margin-bottom: 40px; border-bottom: 1px solid #eee; padding-bottom: 30px;">
+                <h1 class="name" style="font-size: 2.5rem; margin-bottom: 5px;">${data.fullName || 'Your Name'}</h1>
+                <p class="title" style="font-size: 1.2rem; color: #666; margin-bottom: 15px;">${data.jobTitle || 'Your Title'}</p>
+                <div class="contact-info" style="justify-content: center; font-size: 0.9rem;">
+                    ${data.email ? `<span class="contact-item">${data.email}</span>` : ''}
+                    ${data.phone ? `<span class="contact-item">${data.phone}</span>` : ''}
+                    ${data.address ? `<span class="contact-item">${data.address}</span>` : ''}
+                </div>
+            </header>
+            <div class="minimalist-content">
+                ${generateSection('Summary', `<p>${data.careerObjective}</p>`, data.sectionVisibility.career)}
+                ${generateSection('Experience', formatAsList(data.workExperience), data.sectionVisibility.experience)}
+                ${generateSection('Education', formatAsList(data.education), data.sectionVisibility.education)}
+                ${generateSection('Skills', `<div style="display: flex; flex-wrap: wrap; gap: 8px;">${data.skills.split(',').filter(i => i.trim()).map(item => `<span style="background: #f5f5f5; padding: 5px 10px; border-radius: 3px; font-size: 0.9rem;">${item.trim()}</span>`).join('')}</div>`, data.sectionVisibility.skills)}
+                ${generateSection('Projects', formatAsList(data.projects), data.sectionVisibility.projects)}
+                ${generateSection('Certifications', formatAsList(data.certifications), data.sectionVisibility.certifications)}
+            </div>
+        `;
+    }
+    
+    function generateProfessionalCV(data) {
+        return `
+            <div class="professional-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; border-bottom: 2px solid ${data.color}; padding-bottom: 20px;">
+                <div>
+                    <h1 class="name" style="margin: 0;">${data.fullName || 'Your Name'}</h1>
+                    <p class="title" style="margin: 5px 0 0 0; color: #666;">${data.jobTitle || 'Your Title'}</p>
+                </div>
+                ${(data.photoPosition !== 'hidden' && data.profileImageSrc) ? `<div><img src="${data.profileImageSrc}" alt="Profile" class="profile-img" style="width: 100px; height: 100px; filter:${data.profileImageFilters};"></div>` : ''}
+            </div>
+            <div class="professional-content">
+                <div class="contact-info" style="display: flex; justify-content: space-between; margin-bottom: 30px; font-size: 0.9rem;">
+                    <div>
+                        ${data.email ? `<div><strong>Email:</strong> ${data.email}</div>` : ''}
+                        ${data.phone ? `<div><strong>Phone:</strong> ${data.phone}</div>` : ''}
+                    </div>
+                    <div>
+                        ${data.address ? `<div><strong>Address:</strong> ${data.address}</div>` : ''}
+                    </div>
+                </div>
+                ${generateSection('Professional Profile', `<p>${data.careerObjective}</p>`, data.sectionVisibility.career)}
+                ${generateSection('Professional Experience', formatAsList(data.workExperience), data.sectionVisibility.experience)}
+                ${generateSection('Education', formatAsList(data.education), data.sectionVisibility.education)}
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+                    <div>
+                        ${generateSection('Core Competencies', formatSkills(data.skills), data.sectionVisibility.skills)}
+                        ${generateSection('Certifications', formatAsList(data.certifications), data.sectionVisibility.certifications)}
+                    </div>
+                    <div>
+                        ${generateSection('Key Projects', formatAsList(data.projects), data.sectionVisibility.projects)}
+                        ${generateSection('Family Background', formatFamilyMembers(data.familyMembers), data.sectionVisibility.family && data.familyMembers.length > 0)}
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+    
+    function getComplementaryColor(hex) {
+        // Simple function to get a complementary color
+        hex = hex.replace('#', '');
+        if (hex.length === 3) {
+            hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
+        }
+        const r = (255 - parseInt(hex.substr(0, 2), 16)).toString(16);
+        const g = (255 - parseInt(hex.substr(2, 2), 16)).toString(16);
+        const b = (255 - parseInt(hex.substr(4, 2), 16)).toString(16);
+        return padZero(r) + padZero(g) + padZero(b);
+    }
+    
+    function padZero(str) {
+        return str.length === 1 ? '0' + str : str;
+    }
+    
+    // --- Edit Mode Functionality ---
+    function toggleEditMode() {
+        editMode = !editMode;
+        const editBtn = document.querySelector('.cv-edit-btn');
+        
+        if (editMode) {
+            editBtn.innerHTML = '<i class="fas fa-check"></i> Save Changes';
+            editBtn.style.background = '#4CAF50';
+            editBtn.style.color = 'white';
+            enableEditMode();
+        } else {
+            editBtn.innerHTML = '<i class="fas fa-edit"></i> Edit Mode';
+            editBtn.style.background = '';
+            editBtn.style.color = '';
+            disableEditMode();
+            generateCV(); // Regenerate to apply changes
+        }
+    }
+    
+    function enableEditMode() {
+        const cvPreview = document.getElementById('cvPreview');
+        const editableElements = cvPreview.querySelectorAll('h1, h2, h3, p, li, span:not(.contact-item)');
+        
+        editableElements.forEach(el => {
+            el.setAttribute('contenteditable', 'true');
+            el.style.border = '1px dashed #ccc';
+            el.style.padding = '2px';
+            el.style.minHeight = '1em';
+        });
+    }
+    
+    function disableEditMode() {
+        const cvPreview = document.getElementById('cvPreview');
+        const editableElements = cvPreview.querySelectorAll('[contenteditable="true"]');
+        
+        editableElements.forEach(el => {
+            el.removeAttribute('contenteditable');
+            el.style.border = 'none';
+            el.style.padding = '0';
+        });
     }
     
     // --- Export Functionality ---
@@ -602,9 +1132,20 @@
         const cvElement = document.getElementById('cvPreview');
         const fileName = (cvData.fullName || 'CV').replace(/\s+/g, '_');
         
+        // Disable edit mode before exporting
+        if (editMode) {
+            toggleEditMode();
+        }
+        
         switch (format) {
             case 'pdf':
-                html2pdf().from(cvElement).set({ margin: 0, filename: `${fileName}.pdf`, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 3, useCORS: true }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } }).save();
+                html2pdf().from(cvElement).set({ 
+                    margin: 0, 
+                    filename: `${fileName}.pdf`, 
+                    image: { type: 'jpeg', quality: 0.98 }, 
+                    html2canvas: { scale: 3, useCORS: true }, 
+                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } 
+                }).save();
                 break;
             
             case 'docx':
