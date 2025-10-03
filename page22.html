@@ -1,0 +1,1846 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <link rel="icon" href="Chronofocus.png" type="image/x-icon">
+    <title>StudyVERSE - Your Cosmic Study Companion</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
+    <style>
+        :root {
+            /* Theme will be dynamically set by JS */
+            --primary-glow: #8A2BE2;
+            --secondary-glow: #5D3FD3;
+            --tertiary-glow: #9370DB;
+            --background: #121212;
+            --text-primary: #FFFFFF;
+            --text-secondary: rgba(255, 255, 255, 0.8);
+            --glass-bg: rgba(255, 255, 255, 0.08);
+            --glass-border: rgba(255, 255, 255, 0.15);
+            --shadow-color: rgba(0, 0, 0, 0.5);
+            --card-bg: rgba(30, 30, 46, 0.7);
+            --accent: #BB86FC;
+
+            /* Dock size variables, default to medium */
+            --dock-icon-size: 60px;
+            --dock-padding: 12px;
+            --app-padding: 30px;
+            --mobile-scale: 1; /* Adjust scaling for mobile layout */
+        }
+
+        /* Mobile-first approach */
+        @media (max-width: 768px) {
+            :root {
+                --mobile-scale: 0.95; /* Slightly smaller app on tablets */
+                --dock-icon-size: 55px;
+                --dock-padding: 10px;
+                --app-padding: 25px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            :root {
+                --mobile-scale: 0.9; /* More scaling for small phones */
+                --dock-icon-size: 50px;
+                --dock-padding: 8px;
+                --app-padding: 20px;
+            }
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+
+        /* Enhanced Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(45deg, var(--accent), var(--primary-glow));
+            border-radius: 12px;
+            box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.3);
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(45deg, var(--primary-glow), var(--secondary-glow));
+        }
+
+        body {
+            min-height: 100vh;
+            background-color: var(--background);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            color: var(--text-primary);
+            flex-direction: column;
+            gap: 20px;
+            /* Increased padding-bottom to avoid overlap with bottom dock */
+            padding-bottom: 160px; 
+            transition: background-color 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), padding 0.5s ease;
+            overflow-x: hidden;
+        }
+
+        /* Enhanced Aurora Background */
+        .aurora-container {
+            position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: -2; overflow: hidden;
+        }
+
+        .aurora-item {
+            position: absolute; border-radius: 50%;
+            /* --- PERFORMANCE OPTIMIZATION: Reduced blur radius significantly --- */
+            filter: blur(80px); opacity: 0;
+            transition: all 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            /* --- PERFORMANCE OPTIMIZATION: Hinting browser about upcoming animations --- */
+            will-change: transform, opacity;
+        }
+
+        .aurora-item:nth-child(1) {
+            width: 600px; height: 600px;
+            background: radial-gradient(circle, var(--primary-glow), transparent 70%);
+            top: 10%; left: 10%;
+            animation: aurora-glow-1 20s infinite alternate ease-in-out;
+        }
+
+        .aurora-item:nth-child(2) {
+            width: 500px; height: 500px;
+            background: radial-gradient(circle, var(--secondary-glow), transparent 70%);
+            bottom: 5%; right: 5%;
+            animation: aurora-glow-2 25s infinite alternate ease-in-out;
+        }
+
+        .aurora-item:nth-child(3) {
+            width: 400px; height: 400px;
+            background: radial-gradient(circle, var(--tertiary-glow), transparent 70%);
+            top: 50%; left: 50%;
+            animation: aurora-glow-3 18s infinite alternate ease-in-out;
+        }
+
+        .aurora-item:nth-child(4) {
+            width: 350px; height: 350px;
+            background: radial-gradient(circle, var(--primary-glow), transparent 70%);
+            top: 25%; right: 20%;
+            animation: aurora-glow-2 22s infinite alternate-reverse ease-in-out;
+        }
+
+        @keyframes aurora-glow-1 {
+            0% { transform: scale(1) translate(0, 0) rotate(0deg); opacity: 0.2; }
+            50% { transform: scale(1.3) translate(20px, -20px) rotate(45deg); opacity: 0.4; }
+            100% { transform: scale(1.6) translate(40px, -40px) rotate(90deg); opacity: 0.3; }
+        }
+        @keyframes aurora-glow-2 {
+            0% { transform: scale(1) translate(0, 0) rotate(0deg); opacity: 0.3; }
+            50% { transform: scale(1.2) translate(-15px, 25px) rotate(-45deg); opacity: 0.5; }
+            100% { transform: scale(1.4) translate(-30px, 50px) rotate(-90deg); opacity: 0.4; }
+        }
+        @keyframes aurora-glow-3 {
+            0% { transform: scale(1) translate(-50%, -50%) rotate(0deg); opacity: 0.25; }
+            50% { transform: scale(1.25) translate(-45%, -55%) rotate(90deg); opacity: 0.45; }
+            100% { transform: scale(1.5) translate(-40%, -60%) rotate(180deg); opacity: 0.35; }
+        }
+
+        /* Enhanced App Container with Liquid Glass Effect */
+        .app {
+            width: min(95%, 600px); 
+            background: var(--card-bg);
+            /* --- PERFORMANCE NOTE: backdrop-filter is intensive. This value is a compromise. --- */
+            backdrop-filter: blur(20px) saturate(1.8);
+            -webkit-backdrop-filter: blur(20px) saturate(1.8);
+            border-radius: 28px; 
+            padding: var(--app-padding); 
+            box-shadow: 
+                0 15px 60px var(--shadow-color),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2),
+                inset 0 -1px 0 rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border); 
+            text-align: center;
+            position: relative; 
+            z-index: 1;
+            transform: scale(var(--mobile-scale));
+            margin-top: 20px; /* Add margin to avoid top overlap */
+        }
+
+        .app::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            border-radius: 28px;
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.1) 0%, 
+                rgba(255, 255, 255, 0.05) 50%,
+                rgba(255, 255, 255, 0.02) 100%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        h1 {
+            font-size: clamp(2rem, 4vw, 2.8rem); 
+            margin-bottom: 25px; 
+            display: flex;
+            justify-content: center; 
+            align-items: center; 
+            gap: 15px;
+            font-weight: 700;
+            text-shadow: 0 3px 15px rgba(0, 0, 0, 0.3);
+            color: var(--accent);
+            animation: glow-pulse 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow-pulse {
+            from { text-shadow: 0 3px 15px rgba(0, 0, 0, 0.3), 0 0 30px var(--accent); }
+            to { text-shadow: 0 3px 15px rgba(0, 0, 0, 0.3), 0 0 50px var(--accent); }
+        }
+
+        .tip-container {
+            min-height: 150px; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; margin: 20px 0; padding: 20px;
+            background: rgba(0,0,0,0.25); 
+            backdrop-filter: blur(15px);
+            border-radius: 24px;
+            box-shadow: 
+                inset 0 0 30px rgba(0, 0, 0, 0.3),
+                0 8px 32px rgba(0, 0, 0, 0.2); 
+            transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            border: 1px solid var(--glass-border); 
+            position: relative;
+        }
+
+        .tip-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 
+                inset 0 0 30px rgba(0, 0, 0, 0.2),
+                0 15px 45px rgba(0, 0, 0, 0.3);
+        }
+
+        #tip { 
+            font-size: clamp(1rem, 2.5vw, 1.1rem); 
+            line-height: 1.6; 
+            text-shadow: 0 2px 8px var(--shadow-color); 
+            font-weight: 400; 
+        }
+
+        .copy-tip-btn {
+            position: absolute; top: 12px; right: 12px;
+            background: rgba(255,255,255,0.1); 
+            backdrop-filter: blur(10px);
+            border: none; color: var(--text-primary);
+            padding: 10px 12px; border-radius: 12px; 
+            cursor: pointer; opacity: 0.6; 
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .tip-container:hover .copy-tip-btn { 
+            opacity: 1; 
+            transform: scale(1.1);
+            background: rgba(255,255,255,0.2);
+        }
+
+        .copy-feedback {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+            background: linear-gradient(135deg, var(--accent), var(--primary-glow));
+            color: var(--background);
+            padding: 12px 20px;
+            border-radius: 12px;
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            pointer-events: none;
+            font-weight: 600;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Enhanced Caffeine Counter */
+        .caffeine-counter {
+            margin-top: 20px; padding: 18px; 
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px);
+            border-radius: 20px; 
+            display: flex; justify-content: space-between;
+            align-items: center; 
+            box-shadow: 
+                inset 0 0 15px rgba(0, 0, 0, 0.2),
+                0 8px 25px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--glass-border);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .caffeine-counter:hover {
+            transform: translateY(-2px);
+            box-shadow: 
+                inset 0 0 15px rgba(0, 0, 0, 0.15),
+                0 12px 35px rgba(0, 0, 0, 0.2);
+        }
+
+        .caffeine-display { 
+            font-size: clamp(0.9rem, 2vw, 1rem); 
+            font-weight: 500; 
+        }
+        
+        .caffeine-warning { 
+            color: #ff6b6b; 
+            font-size: clamp(0.75rem, 1.8vw, 0.8rem); 
+            margin-top: 5px; 
+            display: none; 
+            font-weight: bold; 
+            animation: warning-pulse 1s infinite;
+        }
+
+        @keyframes warning-pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        .reset-btn {
+            padding: 10px 16px; 
+            font-size: clamp(0.75rem, 1.8vw, 0.8rem); 
+            border-radius: 14px;
+            background: var(--glass-bg); 
+            backdrop-filter: blur(10px);
+            color: var(--text-secondary);
+            border: 1px solid var(--glass-border); 
+            cursor: pointer;
+            display: flex; align-items: center; gap: 8px;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        
+        .reset-btn:hover { 
+            background: rgba(255,255,255,0.15); 
+            color: var(--text-primary);
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Calendar Styles */
+        .calendar-container {
+            margin-top: 25px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            padding: 18px;
+            border: 1px solid var(--glass-border);
+            position: relative;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .calendar-container:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.2);
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .calendar-header h3 {
+            font-size: clamp(1.1rem, 2.5vw, 1.3rem);
+            color: var(--accent);
+        }
+
+        .calendar-toggle {
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            cursor: pointer;
+            font-size: 1.3rem;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            padding: 8px;
+            border-radius: 12px;
+        }
+
+        .calendar-toggle:hover {
+            color: var(--accent);
+            background: rgba(255, 255, 255, 0.1);
+            transform: scale(1.1) rotate(180deg);
+        }
+
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 6px;
+        }
+
+        .calendar-day {
+            height: clamp(32px, 6vw, 40px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            font-size: clamp(0.8rem, 2vw, 0.95rem);
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            position: relative;
+        }
+
+        .calendar-day.header {
+            font-weight: 600;
+            color: var(--accent);
+            cursor: default;
+        }
+
+        .calendar-day.empty {
+            background: transparent;
+            cursor: default;
+        }
+
+        .calendar-day.normal {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(5px);
+        }
+
+        .calendar-day.today {
+            background: linear-gradient(135deg, var(--accent), var(--primary-glow));
+            color: var(--background);
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .calendar-day.has-tip:hover {
+            background: linear-gradient(135deg, rgba(187, 134, 252, 0.3), rgba(138, 43, 226, 0.3));
+            transform: scale(1.1);
+        }
+
+        .day-tip {
+            margin-top: 15px;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.25);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            font-size: clamp(0.9rem, 2vw, 0.95rem);
+            display: none;
+            border: 1px solid var(--glass-border);
+        }
+
+        /* DOCK SIZE STYLES */
+        .dock.size-small { 
+            --dock-icon-size: 48px; 
+            --dock-padding: 8px;
+            gap: 4px;
+        }
+        .dock.size-medium { 
+            --dock-icon-size: 60px;
+            --dock-padding: 12px;
+            gap: 6px;
+        }
+        .dock.size-large { 
+            --dock-icon-size: 72px;
+            --dock-padding: 16px;
+            gap: 8px;
+        }
+        
+        /* ENHANCED DOCK STYLES */
+        .dock {
+            position: fixed; 
+            display: flex;
+            align-items: center; 
+            padding: var(--dock-padding); 
+            background: rgba(18, 18, 30, 0.85);
+            backdrop-filter: blur(25px) saturate(1.8); 
+            -webkit-backdrop-filter: blur(25px) saturate(1.8);
+            box-shadow: 
+                0 12px 50px var(--shadow-color),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2),
+                inset 0 -1px 0 rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--glass-border); 
+            z-index: 100;
+            transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+            transform-origin: center;
+        }
+
+        /* Enhanced Dock Positions */
+        .dock.dock-bottom {
+            bottom: 20px; 
+            left: 50%; 
+            border-radius: 28px;
+            flex-direction: row; 
+            transform: translateX(-50%);
+        }
+
+        .dock.dock-left {
+            left: 15px; 
+            top: 50%; 
+            border-radius: 28px;
+            flex-direction: column;
+            transform: translateY(-50%);
+        }
+
+        .dock.dock-right {
+            right: 15px; 
+            top: 50%; 
+            border-radius: 28px;
+            flex-direction: column;
+            transform: translateY(-50%);
+        }
+
+        /* Super Fluid Dock Icons */
+        .dock-icon {
+            width: var(--dock-icon-size);
+            height: var(--dock-icon-size);
+            border-radius: 18px;
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center;
+            cursor: pointer; 
+            position: relative;
+            color: white; 
+            font-size: calc(var(--dock-icon-size) * 0.45);
+            box-shadow: 
+                0 8px 25px rgba(0, 0, 0, 0.4),
+                inset 0 1px 2px rgba(255,255,255,0.2),
+                inset 0 -1px 2px rgba(0, 0, 0, 0.3);
+            text-decoration: none; 
+            flex-shrink: 0;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            /* --- PERFORMANCE OPTIMIZATION: Faster transform animations --- */
+            will-change: transform;
+        }
+
+        /* Liquid Shine Effect */
+        .dock-icon::before {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%;
+            width: 200%; height: 200%;
+            background: conic-gradient(from 0deg, 
+                transparent, 
+                rgba(255, 255, 255, 0.3), 
+                transparent, 
+                rgba(255, 255, 255, 0.1), 
+                transparent);
+            transition: opacity 0.8s ease;
+            opacity: 0;
+        }
+
+        .dock-icon:hover::before {
+            animation: liquid-shine 2s infinite linear;
+            opacity: 1;
+        }
+
+        @keyframes liquid-shine {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        /* JS-controlled hover effect styles */
+        .dock-icon:hover { 
+            box-shadow: 
+                0 20px 60px rgba(0,0,0,0.6),
+                inset 0 2px 4px rgba(255,255,255,0.3),
+                0 0 30px var(--accent);
+            z-index: 10;
+        }
+
+        /* --- DOCK ANIMATION OPTIMIZATION: Switched to pure CSS for performance --- */
+        .dock.anim-bubble .dock-icon, .dock.anim-scale .dock-icon {
+            transition: transform 0.15s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+        /* Bubble Animation */
+        .dock.anim-bubble .dock-icon:hover {
+            transform: scale(1.4);
+        }
+        /* Fisheye/Scale Animation */
+        .dock.anim-scale .dock-icon:hover {
+            transform: scale(1.7);
+        }
+        .dock.anim-scale .dock-icon:hover + .dock-icon,
+        .dock.anim-scale .dock-icon:has(+ .dock-icon:hover) {
+            transform: scale(1.4);
+        }
+        .dock.anim-scale .dock-icon:hover + .dock-icon + .dock-icon,
+        .dock.anim-scale .dock-icon:has(+ .dock-icon + .dock-icon:hover) {
+            transform: scale(1.15);
+        }
+        /* End of Dock Animation */
+
+        /* Ripple Effect on Click */
+        .dock-icon::after {
+            content: '';
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 0; height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.4);
+            transform: translate(-50%, -50%);
+            transition: width 0.4s ease-out, height 0.4s ease-out, opacity 0.5s ease-out;
+            pointer-events: none;
+            opacity: 1;
+        }
+
+        .dock-icon:active::after {
+            width: 200%; 
+            height: 200%;
+            opacity: 0;
+        }
+
+        /* Enhanced Icon Labels */
+        .dock-icon-label {
+            position: absolute; 
+            font-size: clamp(0.7rem, 1.8vw, 0.8rem);
+            color: var(--text-primary); 
+            text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            white-space: nowrap; 
+            font-weight: 600;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(15px);
+            padding: 8px 12px;
+            border-radius: 12px;
+            pointer-events: none;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+            transform: translateY(10px);
+        }
+
+        .dock-icon:hover .dock-icon-label {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .dock.dock-bottom .dock-icon-label { 
+            bottom: calc(100% + 15px);
+            left: 50%;
+            transform: translateX(-50%) translateY(10px);
+        }
+        .dock.dock-bottom .dock-icon:hover .dock-icon-label {
+            transform: translateX(-50%) translateY(0);
+        }
+        
+        .dock.dock-left .dock-icon-label { 
+            left: calc(100% + 15px);
+            top: 50%; 
+            transform: translateY(-50%) translateX(-10px);
+        }
+        .dock.dock-left .dock-icon:hover .dock-icon-label {
+            transform: translateY(-50%) translateX(0);
+        }
+        
+        .dock.dock-right .dock-icon-label { 
+            right: calc(100% + 15px); 
+            top: 50%; 
+            transform: translateY(-50%) translateX(10px);
+        }
+        .dock.dock-right .dock-icon:hover .dock-icon-label {
+            transform: translateY(-50%) translateX(0);
+        }
+        
+        /* Enhanced Dock Icon Gradients */
+        .dock-launchpad { background: linear-gradient(135deg, #A7A6A7 0%, #767576 100%);}
+        .dock-tip { background: linear-gradient(135deg, #FF9A8B 0%, #FF6A88 50%, #FF99AC 100%); }
+        .dock-study { background: linear-gradient(135deg, #FAD961 0%, #F76B1C 100%); }
+        .dock-measure { background: linear-gradient(135deg, #42E695 0%, #3BB2B8 100%); }
+        .dock-caffeine { background: linear-gradient(135deg, #A172FF 0%, #6B5CE7 100%); }
+        .dock-researcho { background: linear-gradient(135deg, #4ECDC4 0%, #00CEC9 100%); }
+        .dock-typing { background: linear-gradient(135deg, #5EE7DF 0%, #B490CA 100%); }
+        .dock-puzzle { background: linear-gradient(135deg, #6A11CB 0%, #2575FC 100%); }
+        .dock-draw { background: linear-gradient(135deg, #F5576C 0%, #F093FB 100%); }
+        .dock-whiteboard { background: linear-gradient(135deg, #4FACFE 0%, #00F2FE 100%); }
+        .dock-booknest { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .dock-moodly { background: linear-gradient(135deg, #F8B9D6 0%, #E87CC2 100%); }
+        .dock-pomodoro { background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%); }
+        .dock-deep-focus { background: linear-gradient(135deg, #6577F6 0%, #855CF8 100%); }
+        .dock-focus { background: linear-gradient(135deg, #8338EC 0%, #3A86FF 100%); }
+        .dock-motivation { background: linear-gradient(135deg, #FB5607 0%, #FF006E 100%); }
+        .dock-task { background: linear-gradient(135deg, #2196F3 0%, #673AB7 100%); }
+        .dock-chono-copilot { background: linear-gradient(135deg, #4FACFE 0%, #21D4FD 100%); }
+        .dock-code-cody { background: linear-gradient(135deg, #00C9FF 0%, #92FE9D 100%); }
+        .dock-ai-chat { background: linear-gradient(135deg, #00B4DB, #0083B0); }
+        .dock-cv-maker { background: linear-gradient(135deg, #6c757d, #343a40); }
+        .dock-tag-generator { background: linear-gradient(135deg, #20c997, #17a2b8); }
+
+        /* Enhanced Focus Submenu */
+        .focus-submenu {
+            position: absolute;
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border-radius: 18px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            border: 1px solid var(--glass-border);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            box-shadow: 
+                0 15px 50px rgba(0,0,0,0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            z-index: 101;
+        }
+
+        .dock.dock-bottom .focus-submenu {
+            bottom: 110%; 
+            left: 50%;
+            transform: translateX(-50%) translateY(10px) scale(0.9);
+        }
+        
+        .dock.dock-bottom .dock-icon.dock-focus:hover .focus-submenu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0) scale(1);
+        }
+
+        .dock.dock-left .focus-submenu {
+            left: 110%;
+            top: 50%;
+            transform: translateY(-50%) translateX(-10px) scale(0.9);
+        }
+        
+        .dock.dock-left .dock-icon.dock-focus:hover .focus-submenu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(-50%) translateX(0) scale(1);
+        }
+
+        .dock.dock-right .focus-submenu {
+            right: 110%;
+            top: 50%;
+            transform: translateY(-50%) translateX(10px) scale(0.9);
+        }
+        
+        .dock.dock-right .dock-icon.dock-focus:hover .focus-submenu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(-50%) translateX(0) scale(1);
+        }
+
+        .focus-submenu-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 14px;
+            border-radius: 12px;
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            font-size: clamp(0.85rem, 2vw, 0.9rem);
+            backdrop-filter: blur(5px);
+        }
+        
+        .focus-submenu-item:hover {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
+            transform: translateX(5px);
+        }
+        
+        .focus-submenu-item i {
+            width: 20px;
+            text-align: center;
+            font-size: 1rem;
+        }
+
+        /* SETTINGS AND THEME CONTROLS */
+        .app-controls {
+            position: absolute; 
+            top: 20px; 
+            right: 20px;
+            z-index: 10; 
+        }
+        
+        .control-icon { 
+            font-size: clamp(1.1rem, 2.5vw, 1.3rem); 
+            cursor: pointer; 
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55); 
+            text-shadow: 0 3px 10px rgba(0,0,0,0.4); 
+            color: var(--accent);
+            padding: 8px;
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .control-icon:hover {  
+            transform: scale(1.2) rotate(25deg); 
+            color: var(--secondary-glow); 
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* ===== ENHANCED SETTINGS MODAL STYLES ===== */
+        .settings-modal-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        .settings-modal-overlay.visible {
+            display: flex;
+            opacity: 1;
+        }
+
+        .settings-modal-content {
+            background: var(--card-bg);
+            backdrop-filter: blur(25px);
+            border: 1px solid var(--glass-border);
+            padding: 30px;
+            border-radius: 28px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 85vh; /* Added for themes */
+            display: flex; /* Added for themes */
+            flex-direction: column; /* Added for themes */
+            box-shadow: 0 25px 80px rgba(0,0,0,0.6);
+            position: relative;
+        }
+        .settings-modal-content h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: var(--accent);
+            font-size: clamp(1.6rem, 4vw, 2rem);
+            text-shadow: 0 3px 15px rgba(0, 0, 0, 0.3);
+            flex-shrink: 0; /* prevent shrinking */
+        }
+        .settings-modal-close-btn {
+            position: absolute; top: 15px; right: 15px;
+            background: rgba(255,255,255,0.1);
+            border: none; color: var(--text-primary);
+            width: 35px; height: 35px; border-radius: 50%;
+            font-size: 1.4rem; cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            z-index: 2; /* Ensure it's above content */
+        }
+        .settings-modal-close-btn:hover {
+            background: var(--accent); color: var(--background);
+            transform: rotate(90deg) scale(1.1);
+        }
+
+        .settings-group {
+            margin-bottom: 25px;
+            flex-shrink: 0;
+        }
+        .settings-group h3 {
+            font-size: clamp(1rem, 2.5vw, 1.1rem);
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+            font-weight: 500;
+            text-align: left;
+            border-bottom: 1px solid var(--glass-border);
+            padding-bottom: 8px;
+        }
+        .settings-options {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+        .settings-btn { 
+            background: rgba(255,255,255,0.1); 
+            border: 1px solid transparent; color: var(--text-primary); 
+            padding: 8px 12px; border-radius: 10px; cursor: pointer; 
+            transition: all 0.3s ease; font-size: clamp(0.8rem, 2vw, 0.9rem);
+            font-weight: 500; flex-grow: 1;
+        }
+        .settings-btn:hover { background: rgba(255,255,255,0.2); transform: scale(1.05); }
+        .settings-btn.active { 
+            background: linear-gradient(135deg, var(--accent), var(--primary-glow)); 
+            border-color: rgba(255,255,255,0.5); color: var(--background);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* Integrated Theme Grid Styles */
+        .theme-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(clamp(60px, 12vw, 70px), 1fr));
+            gap: 15px;
+            overflow-y: auto;
+            padding: 10px;
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            background: rgba(0,0,0,0.1);
+        }
+        
+        .theme-dot {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            border-radius: 12px;
+            cursor: pointer;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            padding: 0;
+            background-color: transparent;
+            position: relative;
+        }
+        
+        .theme-dot:hover {
+            transform: scale(1.1) rotate(5deg);
+            border-color: var(--accent);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4);
+        }
+        
+        .theme-dot .theme-color-swatch {
+            flex: 1;
+            height: 100%;
+            transition: all 0.3s ease;
+        }
+
+        .theme-dot-label {
+            position: absolute;
+            bottom: 0; left: 0;
+            width: 100%;
+            font-size: clamp(0.55rem, 1.5vw, 0.65rem);
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(10px);
+            color: white;
+            padding: 3px;
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-weight: 500;
+        }
+        
+        /* ===== 20x BETTER LAUNCHPAD STYLES (IMPROVEMENT) ===== */
+        .launchpad-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(12px) saturate(1.8);
+            -webkit-backdrop-filter: blur(12px) saturate(1.8);
+            z-index: 999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            gap: 40px;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.5s cubic-bezier(0.25, 1, 0.5, 1), visibility 0.5s;
+        }
+        .launchpad-overlay.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* --- IMPROVEMENT: Added dedicated launchpad close button --- */
+        #launchpad-close-btn {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            background: rgba(0,0,0,0.4);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            color: var(--text-primary);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-size: 2rem;
+            line-height: 1;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            opacity: 0;
+        }
+
+        .launchpad-overlay.visible #launchpad-close-btn {
+            opacity: 1;
+            transition-delay: 0.3s;
+        }
+
+        #launchpad-close-btn:hover {
+            transform: scale(1.1) rotate(90deg);
+            background: var(--accent);
+            color: var(--background);
+        }
+
+        #launchpad-search {
+            width: clamp(300px, 60vw, 500px);
+            height: 50px;
+            background: rgba(0,0,0,0.4);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 0 20px;
+            font-size: 1.2rem;
+            color: var(--text-primary);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+
+        .launchpad-overlay.visible #launchpad-search {
+            opacity: 1;
+            transform: translateY(0);
+            transition-delay: 0.1s;
+        }
+        
+        #launchpad-search:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 25px rgba(187, 134, 252, 0.5);
+        }
+        
+        .launchpad-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+            gap: 35px;
+            width: 90%;
+            max-width: 1200px;
+            padding: 40px;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+        
+        .launchpad-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: var(--text-primary);
+            gap: 12px;
+            /* --- IMPROVEMENT: Using separate animations for entrance and exit --- */
+            animation-duration: 0.5s;
+            animation-timing-function: cubic-bezier(0.25, 0.8, 0.25, 1);
+            animation-fill-mode: forwards;
+        }
+
+        .launchpad-item:hover {
+            /* --- IMPROVEMENT: Use !important to override animation transforms during hover --- */
+            transform: scale(1.1) !important;
+            transition: transform 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        .launchpad-overlay.visible .launchpad-item {
+            animation-name: launchpad-item-appear;
+            /* Stagger the entrance animation */
+            animation-delay: calc(0.2s + (var(--item-index) * 0.03s));
+        }
+        /* --- IMPROVEMENT: Added exit animation --- */
+        .launchpad-overlay.hiding .launchpad-item {
+            animation-name: launchpad-item-disappear;
+            /* Stagger the exit animation in reverse */
+            animation-delay: calc(var(--item-index-rev) * 0.02s);
+        }
+
+        @keyframes launchpad-item-appear {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        @keyframes launchpad-item-disappear {
+            from { opacity: 1; transform: scale(1); }
+            to { opacity: 0; transform: scale(0.9); }
+        }
+        
+        .launchpad-item .dock-icon {
+            width: 80px;
+            height: 80px;
+            font-size: 36px;
+            border-radius: 22px;
+            margin-bottom: 5px;
+        }
+
+        .launchpad-item .launchpad-item-label {
+            font-size: 1rem;
+            font-weight: 500;
+            text-shadow: 0 2px 8px var(--shadow-color);
+        }
+
+
+        /* ===== ENHANCED CHAT AI STYLES ===== */
+        .chat-window {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: clamp(300px, 80vw, 380px);
+            height: clamp(400px, 60vh, 550px);
+            background: var(--card-bg);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            box-shadow: 0 20px 60px var(--shadow-color);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            z-index: 1000;
+            transform: translateY(30px) scale(0.9);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            /* --- PERFORMANCE OPTIMIZATION: Prepare for transform/opacity changes --- */
+            will-change: transform, opacity;
+        }
+
+        .chat-window.open {
+            transform: translateY(0) scale(1);
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .chat-header {
+            padding: 20px;
+            font-weight: 600;
+            border-bottom: 1px solid var(--glass-border);
+            color: var(--accent);
+            text-align: center;
+            font-size: clamp(1rem, 2.5vw, 1.2rem);
+            flex-shrink: 0;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .chat-messages {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .chat-message {
+            padding: 12px 18px;
+            border-radius: 20px;
+            max-width: 85%;
+            line-height: 1.5;
+            font-size: clamp(0.9rem, 2vw, 1rem);
+            backdrop-filter: blur(10px);
+            animation: message-appear 0.4s ease-out;
+        }
+
+        @keyframes message-appear {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .chat-message.user {
+            background: linear-gradient(135deg, var(--accent), var(--primary-glow));
+            color: var(--background);
+            align-self: flex-end;
+            border-bottom-right-radius: 6px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .chat-message.ai {
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px);
+            color: var(--text-secondary);
+            align-self: flex-start;
+            border-bottom-left-radius: 6px;
+            border: 1px solid var(--glass-border);
+        }
+
+        .chat-input-area {
+            display: flex;
+            padding: 18px;
+            border-top: 1px solid var(--glass-border);
+            gap: 12px;
+            flex-shrink: 0;
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        #chat-input {
+            flex-grow: 1;
+            background: rgba(0,0,0,0.4);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 14px;
+            padding: 0 18px;
+            color: var(--text-primary);
+            font-size: clamp(0.9rem, 2vw, 1rem);
+            height: 45px;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        #chat-input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 20px rgba(187, 134, 252, 0.4);
+            background: rgba(0,0,0,0.6);
+        }
+
+        #chat-send-btn {
+            background: linear-gradient(135deg, var(--accent), var(--primary-glow));
+            border: none;
+            color: var(--background);
+            width: 45px;
+            height: 45px;
+            border-radius: 14px;
+            font-size: clamp(1.1rem, 2.5vw, 1.3rem);
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        #chat-send-btn:hover {
+            transform: scale(1.1) rotate(15deg);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+        }
+        
+        /* ENHANCED RESPONSIVE STYLES */
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+                padding-bottom: 120px;
+                gap: 15px; /* Reduce gap on mobile */
+            }
+            
+            .dock.dock-bottom {
+                width: 95%;
+                overflow-x: auto;
+                justify-content: flex-start;
+                padding: 10px;
+                -webkit-overflow-scrolling: touch;
+            }
+            
+            .dock.dock-bottom::-webkit-scrollbar {
+                display: none;
+            }
+            
+            .dock.dock-left, .dock.dock-right {
+                max-height: 80vh;
+                overflow-y: auto;
+                padding: 15px 8px;
+                top: 50%;
+                transform: translateY(-50%);
+                /* Make sure it doesnt overlap the main card */
+                max-height: calc(100vh - 40px);
+            }
+            .dock.dock-left { left: 10px; }
+            .dock.dock-right { right: 10px; }
+
+
+            .dock.dock-left::-webkit-scrollbar, .dock.dock-right::-webkit-scrollbar {
+                display: none;
+            }
+            
+            .calendar-day {
+                height: clamp(28px, 8vw, 35px);
+                font-size: clamp(0.75rem, 2vw, 0.85rem);
+            }
+
+            .settings-modal-content h2 {
+                font-size: clamp(1.4rem, 5vw, 1.8rem);
+            }
+            
+            .chat-window {
+                width: 95vw;
+                height: 65vh;
+                bottom: 15px;
+                right: 2.5vw;
+                max-width: none;
+            }
+
+            .launchpad-grid {
+                grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+                gap: 20px;
+                padding: 20px;
+            }
+            .launchpad-item .dock-icon {
+                width: 65px;
+                height: 65px;
+                font-size: 30px;
+            }
+            .launchpad-item .launchpad-item-label {
+                font-size: 0.85rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+                padding-top: 10px;
+                padding-bottom: 100px;
+                /* This ensures vertical scrolling for all content */
+                justify-content: flex-start; 
+                min-height: 100vh;
+            }
+            
+            #launchpad-close-btn {
+                top: 20px; right: 20px;
+                width: 40px; height: 40px;
+                font-size: 1.5rem;
+            }
+            
+            .caffeine-counter {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+                padding: 15px;
+            }
+            
+            .calendar {
+                gap: 4px;
+            }
+            
+            .calendar-day {
+                height: clamp(26px, 8vw, 32px);
+                font-size: clamp(0.7rem, 2vw, 0.8rem);
+            }
+            
+            .app-controls {
+                top: 12px;
+                right: 15px;
+                gap: 8px;
+            }
+            
+            .control-icon {
+                font-size: 1.1rem;
+                padding: 6px;
+            }
+        }
+
+        /* --- NEW: Enhanced Loading Animation --- */
+        .app {
+            animation: app-entrance 1s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+        }
+
+        @keyframes app-entrance {
+            0% {
+                opacity: 0;
+                transform: scale(calc(var(--mobile-scale) * 0.95)) translateY(40px);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(var(--mobile-scale)) translateY(0);
+            }
+        }
+
+        /* --- NEW: Dock entrance animation --- */
+        .dock {
+            animation: dock-entrance 0.8s cubic-bezier(0.25, 1, 0.5, 1) 0.3s both;
+        }
+
+        @keyframes dock-entrance {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+
+        .dock.dock-bottom {
+            animation-name: dock-entrance-bottom;
+        }
+        @keyframes dock-entrance-bottom {
+            0% { opacity: 0; transform: translateX(-50%) translateY(50px); }
+            100% { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+
+        .dock.dock-left {
+            animation-name: dock-entrance-left;
+        }
+        @keyframes dock-entrance-left {
+            0% { opacity: 0; transform: translateY(-50%) translateX(-50px); }
+            100% { opacity: 1; transform: translateY(-50%) translateX(0); }
+        }
+
+        .dock.dock-right {
+            animation-name: dock-entrance-right;
+        }
+        @keyframes dock-entrance-right {
+            0% { opacity: 0; transform: translateY(-50%) translateX(50px); }
+            100% { opacity: 1; transform: translateY(-50%) translateX(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="aurora-container">
+        <div class="aurora-item"></div><div class="aurora-item"></div>
+        <div class="aurora-item"></div><div class="aurora-item"></div>
+    </div>
+
+    <!-- ===== BETTER LAUNCHPAD OVERLAY (IMPROVEMENT) ===== -->
+    <div class="launchpad-overlay" id="launchpad-overlay">
+        <!-- IMPROVEMENT: Added a dedicated close button -->
+        <button class="launchpad-close-btn" id="launchpad-close-btn" title="Close (Esc)">&times;</button>
+        <input type="text" id="launchpad-search" placeholder="Search Apps...">
+        <div class="launchpad-grid" id="launchpad-grid">
+            <!-- App icons will be dynamically inserted here by JavaScript -->
+        </div>
+    </div>
+
+
+    <div class="dock dock-bottom size-medium">
+        <!-- MODIFIED DOCK AS PER REQUEST -->
+        <a href="page11.html" class="dock-icon dock-moodly" aria-label="Moodly AI"><i class="fas fa-smile-beam"></i><div class="dock-icon-label">Moodly AI</div></a>
+        <div id="chat-ai-dock-icon" class="dock-icon dock-ai-chat" aria-label="Optichain AI"><i class="fas fa-robot"></i><div class="dock-icon-label">Optichain AI</div></div>
+        <a href="page18.html" class="dock-icon dock-cv-maker" aria-label="Cozytustudios AI CV"><i class="fas fa-id-card"></i><div class="dock-icon-label">Cozytustudios AI CV</div></a>
+        <a href="page19.html" class="dock-icon dock-tag-generator" aria-label="Gridora Tag Manager"><i class="fas fa-tags"></i><div class="dock-icon-label">Gridora Tag Manager</div></a>
+    </div>
+
+    <div class="app">
+        <div class="app-controls">
+            <!-- MODIFIED: Settings icon removed to disable dock customization -->
+        </div>
+
+        <h1><i class="fas fa-brain"></i> Optichain ai tools</h1> <!-- MODIFIED APP NAME -->
+        <div class="tip-container">
+            <div class="copy-feedback" id="copy-feedback">Copied!</div>
+            <button class="copy-tip-btn" onclick="copyTip()"><i class="fas fa-copy"></i></button>
+            <p id="tip">Welcome! Click the lightbulb for a study tip.</p>
+        </div>
+        <div class="caffeine-counter">
+            <div>
+                <span class="caffeine-display">Caffeine: <span id="caffeine-count">0</span> mg</span>
+                <div class="caffeine-warning" id="caffeine-warning">Max recommended: 400mg</div>
+            </div>
+            <button class="reset-btn" onclick="resetCaffeine()"><i class="fas fa-redo"></i> Reset</button>
+        </div>
+
+        <div class="calendar-container">
+            <div class="calendar-header">
+                <h3>Study Calendar</h3>
+                <button class="calendar-toggle" onclick="toggleCalendar()">
+                    <i class="fas fa-chevron-up" id="calendar-toggle-icon"></i>
+                </button>
+            </div>
+            <div id="calendar-content">
+                <div class="calendar" id="calendar">
+                    <!-- Calendar will be generated by JavaScript -->
+                </div>
+                <div class="day-tip" id="day-tip"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== ENHANCED SETTINGS MODAL (WITH THEMES) ===== -->
+    <div class="settings-modal-overlay" id="settings-modal-overlay">
+        <div class="settings-modal-content">
+            <button class="settings-modal-close-btn" id="settings-modal-close-btn">&times;</button>
+            <h2>Settings</h2>
+
+            <div class="settings-group">
+                <h3>Dock Position</h3>
+                <div class="settings-options" id="dock-pos-options">
+                    <button class="settings-btn" data-pos="left">Left</button>
+                    <button class="settings-btn active" data-pos="bottom">Bottom</button>
+                    <button class="settings-btn" data-pos="right">Right</button>
+                </div>
+            </div>
+
+            <div class="settings-group">
+                <h3>Dock Size</h3>
+                <div class="settings-options" id="dock-size-options">
+                    <button class="settings-btn" data-size="small">S</button>
+                    <button class="settings-btn active" data-size="medium">M</button>
+                    <button class="settings-btn" data-size="large">L</button>
+                </div>
+            </div>
+
+            <div class="settings-group">
+                <h3>Dock Animation</h3>
+                <div class="settings-options" id="dock-anim-options">
+                    <button class="settings-btn active" data-anim="none">Off</button>
+                    <button class="settings-btn" data-anim="scale">Scale</button>
+                    <button class="settings-btn" data-anim="bubble">Bubble</button>
+                </div>
+            </div>
+            
+            <!-- NEW INTEGRATED THEME SECTION -->
+            <div class="settings-group" style="flex-grow: 1; display: flex; flex-direction: column;">
+                <h3>Choose a Theme</h3>
+                <div class="theme-grid" id="theme-grid-container">
+                    <!-- Theme boxes will be dynamically generated here by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== ENHANCED CHAT AI INTERFACE ===== -->
+    <div class="chat-window" id="chat-window">
+        <div class="chat-header">Optichain AI</div>
+        <div class="chat-messages" id="chat-messages">
+            <!-- Messages will be injected by JavaScript -->
+        </div>
+        <div class="chat-input-area">
+            <input type="text" id="chat-input" placeholder="Ask me something...">
+            <button id="chat-send-btn"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
+<script>
+    // --- DOM ELEMENT SELECTORS (Cached for performance) ---
+    const tipElement = document.getElementById("tip");
+    const caffeineCountEl = document.getElementById("caffeine-count");
+    const caffeineWarningEl = document.getElementById("caffeine-warning");
+    const dockElement = document.querySelector(".dock");
+    const calendarElement = document.getElementById("calendar");
+    const dayTipElement = document.getElementById("day-tip");
+    const calendarToggleIcon = document.getElementById("calendar-toggle-icon");
+    const copyFeedbackEl = document.getElementById('copy-feedback');
+    
+    // SETTINGS MODAL SELECTORS
+    const settingsControlIcon = document.getElementById('settings-control-icon');
+    const settingsModalOverlay = document.getElementById('settings-modal-overlay');
+    const settingsModalCloseBtn = document.getElementById('settings-modal-close-btn');
+    const dockPosButtons = document.querySelectorAll('#dock-pos-options .settings-btn');
+    const dockSizeButtons = document.querySelectorAll('#dock-size-options .settings-btn');
+    const dockAnimButtons = document.querySelectorAll('#dock-anim-options .settings-btn');
+    const themeGridContainer = document.getElementById('theme-grid-container');
+
+    // CHAT AI SELECTORS
+    const chatAiDockIcon = document.getElementById('chat-ai-dock-icon');
+    const chatWindow = document.getElementById('chat-window');
+    const chatMessagesContainer = document.getElementById('chat-messages');
+    const chatInput = document.getElementById('chat-input');
+    const chatSendBtn = document.getElementById('chat-send-btn');
+    
+    // LAUNCHPAD SELECTORS
+    const launchpadDockIcon = document.getElementById('launchpad-dock-icon');
+    const launchpadOverlay = document.getElementById('launchpad-overlay');
+    const launchpadGrid = document.getElementById('launchpad-grid');
+    const launchpadSearch = document.getElementById('launchpad-search');
+    const launchpadCloseBtn = document.getElementById('launchpad-close-btn');
+
+    // --- APP STATE ---
+    let caffeineIntake = 0;
+    let calendarVisible = true;
+    let launchpadTimeout;
+    
+    const tips = [ 
+        "Break your study time into 25-minute intervals with the Pomodoro Technique.", "Use active recall by testing yourself, not just rereading notes.", "Explain what you've learned to someone else to solidify your understanding.", "Create a dedicated, distraction-free study zone.", "Use flashcards for key terms and concepts.", "Review material consistently, a little bit each day.", "Prioritize sleep; it's crucial for memory consolidation.", "Stay hydrated and eat nutritious brain food.", "Use mind maps to visualize connections between ideas.", "Take short, regular breaks to avoid burnout.", "Teach concepts to an imaginary audience to identify knowledge gaps.", "Use the Feynman Technique: simplify complex topics as if explaining to a child.", "Change study locations occasionally to improve memory retention.", "Practice spaced repetition for long-term memorization.", "Start with the most challenging material when your mind is freshest."
+    ];
+    
+    // --- THEME DEFINITIONS (CURATED LIST FOR PERFORMANCE) ---
+    const themes = { 
+        "cosmic-dark": { "--primary-glow": "#8A2BE2", "--secondary-glow": "#5D3FD3", "--tertiary-glow": "#9370DB", "--background": "#121212", "--text-primary": "#FFFFFF", "--glass-bg": "rgba(255, 255, 255, 0.08)", "--glass-border": "rgba(255, 255, 255, 0.15)", "--card-bg": "rgba(30, 30, 46, 0.7)", "--accent": "#BB86FC" }, 
+        "midnight-blue": { "--primary-glow": "#0f3460", "--secondary-glow": "#533483", "--tertiary-glow": "#1e90ff", "--background": "#1a1a2e", "--text-primary": "#e0e0e0", "--glass-bg": "rgba(0, 0, 0, 0.2)", "--glass-border": "rgba(255, 255, 255, 0.15)", "--card-bg": "rgba(39, 39, 62, 0.7)", "--accent": "#4cc9f0" }, 
+        "forest-deep": { "--primary-glow": "#0f3b2d", "--secondary-glow": "#1b5e45", "--tertiary-glow": "#2e8b56", "--background": "#0f3b2d", "--text-primary": "#e0f2e9", "--glass-bg": "rgba(0, 0, 0, 0.2)", "--glass-border": "rgba(255, 255, 255, 0.15)", "--card-bg": "rgba(40, 80, 60, 0.7)", "--accent": "#42e695" }, 
+        "synthwave": { "--primary-glow": "#f20089", "--secondary-glow": "#00f5d4", "--tertiary-glow": "#e500a4", "--background": "#2d00f7", "--text-primary": "#ffffff", "--glass-bg": "rgba(0, 0, 0, 0.2)", "--glass-border": "rgba(255, 255, 255, 0.15)", "--card-bg": "rgba(80, 0, 200, 0.7)", "--accent": "#ff00ff" },
+        "cozy-mocha": { "--primary-glow": "#c89f7f", "--secondary-glow": "#7c6a59", "--tertiary-glow": "#a5886e", "--background": "#4a3f35", "--text-primary": "#f5f5dc", "--glass-bg": "rgba(245, 245, 220, 0.1)", "--glass-border": "rgba(245, 245, 220, 0.2)", "--card-bg": "rgba(87, 72, 60, 0.7)", "--accent": "#e0cda9" },
+        "sunset-peach": { "--primary-glow": "#ffc0cb", "--secondary-glow": "#ffa07a", "--tertiary-glow": "#ffdab9", "--background": "#ffeadb", "--text-primary": "#5c4033", "--glass-bg": "rgba(92, 64, 51, 0.08)", "--glass-border": "rgba(92, 64, 51, 0.15)", "--card-bg": "rgba(255, 237, 224, 0.7)", "--accent": "#ff6b6b" },
+        "lavender-dream": { "--primary-glow": "#dda0dd", "--secondary-glow": "#d8bfd8", "--tertiary-glow": "#cbc3e3", "--background": "#e6e6fa", "--text-primary": "#483d8b", "--glass-bg": "rgba(72, 61, 139, 0.08)", "--glass-border": "rgba(72, 61, 139, 0.15)", "--card-bg": "rgba(238, 221, 255, 0.7)", "--accent": "#9370db" },
+        "oceanic-abyss": { "--primary-glow": "#1f4287", "--secondary-glow": "#071e3d", "--tertiary-glow": "#278ea5", "--background": "#1d2b53", "--text-primary": "#f0f8ff", "--glass-bg": "rgba(31, 66, 135, 0.1)", "--glass-border": "rgba(255, 255, 255, 0.15)", "--card-bg": "rgba(10, 25, 47, 0.7)", "--accent": "#21e6c1" },
+        "crimson-study": { "--primary-glow": "#dc2626", "--secondary-glow": "#b91c1c", "--tertiary-glow": "#f87171", "--background": "#7f1d1d", "--text-primary": "#fecaca", "--glass-bg": "rgba(254, 202, 202, 0.08)", "--glass-border": "rgba(254, 202, 202, 0.2)", "--card-bg": "rgba(153, 27, 27, 0.7)", "--accent": "#ef4444" },
+        "solarized-light": { "--primary-glow": "#eee8d5", "--secondary-glow": "#b58900", "--tertiary-glow": "#268bd2", "--background": "#fdf6e3", "--text-primary": "#657b83", "--glass-bg": "rgba(101, 123, 131, 0.08)", "--glass-border": "rgba(101, 123, 131, 0.15)", "--card-bg": "rgba(238, 232, 213, 0.7)", "--accent": "#d33682" },
+        "liquid-gold": { "--primary-glow": "#FFD700", "--secondary-glow": "#FFA500", "--tertiary-glow": "#B8860B", "--background": "#000000", "--text-primary": "#FFFFFF", "--glass-bg": "rgba(255, 215, 0, 0.1)", "--glass-border": "rgba(255, 215, 0, 0.2)", "--card-bg": "rgba(20, 15, 0, 0.7)", "--accent": "#FFD700" },
+        "hacker-matrix": { "--primary-glow": "#00ff00", "--secondary-glow": "#00dd00", "--tertiary-glow": "#00aa00", "--background": "#000000", "--text-primary": "#00ff00", "--glass-bg": "rgba(0, 255, 0, 0.08)", "--glass-border": "rgba(0, 255, 0, 0.15)", "--card-bg": "rgba(5, 20, 5, 0.7)", "--accent": "#00ff00" }
+    };
+
+    // --- CORE FUNCTIONS ---
+    
+    function playSound(url) { 
+        try { new Audio(url).play(); } catch (e) { console.error("Audio playback error:", e); }
+    }
+    
+    function newTip() {
+        playSound('https://www.soundjay.com/buttons/sounds/button-16.mp3');
+        tipElement.style.opacity = 0;
+        setTimeout(() => {
+            const newTip = tips[Math.floor(Math.random() * tips.length)];
+            tipElement.textContent = newTip;
+            localStorage.setItem('currentTip', newTip);
+            tipElement.style.opacity = 1;
+        }, 300);
+    }
+    
+    function copyTip() { 
+        navigator.clipboard.writeText(tipElement.textContent).then(() => { 
+            playSound('https://www.soundjay.com/buttons/sounds/button-7.mp3');
+            copyFeedbackEl.style.opacity = 1;
+            copyFeedbackEl.style.transform = 'translate(-50%, -50%) scale(1)';
+            setTimeout(() => {
+                copyFeedbackEl.style.opacity = 0;
+                copyFeedbackEl.style.transform = 'translate(-50%, -50%) scale(0.8)';
+            }, 1500);
+        }).catch(err => console.error('Failed to copy text: ', err));
+    }
+    
+    function openStudyWithMe() { 
+        window.open('page3.html', '_blank'); 
+    }
+
+    function addCaffeine() {
+        caffeineIntake += Math.floor(Math.random() * 81) + 40; // Add 40-120mg
+        localStorage.setItem('caffeineIntake', caffeineIntake);
+        updateCaffeineDisplay();
+    }
+    
+    function resetCaffeine() {
+        caffeineIntake = 0;
+        localStorage.setItem('caffeineIntake', caffeineIntake);
+        updateCaffeineDisplay();
+    }
+
+    function updateCaffeineDisplay() {
+        caffeineCountEl.textContent = caffeineIntake;
+        caffeineWarningEl.style.display = 'none';
+        if (caffeineIntake >= 400) { 
+            caffeineWarningEl.style.display = "block"; 
+            caffeineWarningEl.textContent = "⚠️ Daily max exceeded!"; 
+        } else if (caffeineIntake >= 300) { 
+            caffeineWarningEl.style.display = "block"; 
+            caffeineWarningEl.textContent = "Max recommended: 400mg"; 
+        }
+    }
+    
+    function setTheme(themeName) {
+        const selectedTheme = themes[themeName]; 
+        if (!selectedTheme) return false;
+        
+        for (const [key, value] of Object.entries(selectedTheme)) { 
+            document.documentElement.style.setProperty(key, value); 
+        }
+        localStorage.setItem('studyVerseTheme', themeName);
+        return true;
+    }
+
+    function populateThemeSelector() {
+        themeGridContainer.innerHTML = '';
+        for (const themeName in themes) {
+            const themeColors = themes[themeName];
+            const displayName = themeName.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+            const dot = document.createElement('button');
+            dot.className = 'theme-dot';
+            dot.title = displayName;
+            dot.dataset.theme = themeName;
+            dot.innerHTML = `
+                <span class="theme-color-swatch" style="background-color: ${themeColors['--primary-glow']}"></span>
+                <span class="theme-color-swatch" style="background-color: ${themeColors['--accent']}"></span>
+                <span class="theme-color-swatch" style="background-color: ${themeColors['--background']}"></span>
+                <div class="theme-dot-label">${displayName}</div>
+            `;
+            dot.addEventListener('click', () => setTheme(themeName));
+            themeGridContainer.appendChild(dot);
+        }
+    }
+    
+    // --- MODAL FUNCTIONS (SETTINGS) ---
+    function openSettingsModal() { 
+        if(settingsModalOverlay) settingsModalOverlay.classList.add('visible'); 
+    }
+    function closeSettingsModal() { 
+        if(settingsModalOverlay) settingsModalOverlay.classList.remove('visible'); 
+    }
+
+    function setDockPosition(position) {
+        if (!['left', 'bottom', 'right'].includes(position)) position = 'bottom'; 
+        dockElement.classList.remove('dock-left', 'dock-bottom', 'dock-right');
+        dockElement.classList.add(`dock-${position}`);
+        dockPosButtons.forEach(btn => btn.classList.toggle('active', btn.dataset.pos === position));
+        localStorage.setItem('studyVerseDockPosition', position);
+    }
+
+    function setDockSize(size) {
+        if (!['small', 'medium', 'large'].includes(size)) size = 'medium'; 
+        dockElement.classList.remove('size-small', 'size-medium', 'size-large');
+        dockElement.classList.add(`size-${size}`);
+        dockSizeButtons.forEach(btn => btn.classList.toggle('active', btn.dataset.size === size));
+        localStorage.setItem('studyVerseDockSize', size);
+    }
+    
+    function generateCalendar() {
+        const now = new Date();
+        const year = now.getFullYear(), month = now.getMonth();
+        const firstDay = new Date(year, month, 1).getDay();
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        let calendarHTML = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(d => `<div class="calendar-day header">${d}</div>`).join('');
+        for (let i = 0; i < firstDay; i++) { calendarHTML += `<div class="calendar-day empty"></div>`; }
+        for (let day = 1; day <= daysInMonth; day++) {
+            const isToday = now.getDate() === day;
+            const hasTip = Math.random() > 0.7; 
+            calendarHTML += `<div class="calendar-day ${isToday ? 'today' : 'normal'} ${hasTip ? 'has-tip' : ''}" data-day="${day}">${day}</div>`;
+        }
+        calendarElement.innerHTML = calendarHTML;
+        document.querySelectorAll('.calendar-day.has-tip').forEach(day => {
+            day.addEventListener('click', () => showDayTip(day.getAttribute('data-day')));
+        });
+    }
+    
+    function showDayTip(day) {
+        dayTipElement.textContent = `Tip for day ${day}: ${tips[Math.floor(Math.random() * tips.length)]}`;
+        dayTipElement.style.display = 'block';
+    }
+    
+    function toggleCalendar() {
+        calendarVisible = !calendarVisible;
+        document.getElementById('calendar-content').style.display = calendarVisible ? 'block' : 'none';
+        calendarToggleIcon.className = calendarVisible ? 'fas fa-chevron-up' : 'fas fa-chevron-down';
+    }
+    
+    // --- LAUNCHPAD LOGIC ---
+    function populateLaunchpad() {
+        launchpadGrid.innerHTML = '';
+        const icons = dockElement.querySelectorAll('.dock-icon:not(.dock-launchpad)');
+        icons.forEach((icon, index) => {
+            const labelText = icon.querySelector('.dock-icon-label')?.textContent || icon.getAttribute('aria-label') || 'App';
+            const launchpadItem = document.createElement(icon.tagName.toLowerCase() === 'a' ? 'a' : 'div');
+            launchpadItem.className = 'launchpad-item';
+            if(icon.tagName === 'A') {
+                launchpadItem.href = icon.href;
+                if (icon.target === '_blank') launchpadItem.target = '_blank';
+            }
+            if (icon.onclick) launchpadItem.onclick = icon.onclick;
+            
+            const iconClone = icon.cloneNode(true);
+            iconClone.querySelector('.dock-icon-label')?.remove();
+            iconClone.querySelector('.focus-submenu')?.remove();
+            
+            launchpadItem.innerHTML = `<div class="launchpad-item-label">${labelText}</div>`;
+            launchpadItem.prepend(iconClone);
+
+            launchpadItem.style.setProperty('--item-index', index);
+            launchpadItem.style.setProperty('--item-index-rev', icons.length - 1 - index);
+            launchpadGrid.appendChild(launchpadItem);
+        });
+    }
+    
+    function toggleLaunchpad() {
+        clearTimeout(launchpadTimeout);
+        if (!launchpadOverlay.classList.contains('visible')) {
+            launchpadOverlay.classList.remove('hiding');
+            populateLaunchpad(); 
+            launchpadOverlay.classList.add('visible');
+            launchpadSearch.focus(); 
+        } else {
+            launchpadOverlay.classList.add('hiding');
+            launchpadTimeout = setTimeout(() => {
+                launchpadOverlay.classList.remove('visible', 'hiding');
+                launchpadSearch.value = ''; 
+                filterLaunchpadApps(''); 
+            }, 500);
+        }
+    }
+    
+    function filterLaunchpadApps(query) {
+        const searchTerm = query.toLowerCase().trim();
+        launchpadGrid.querySelectorAll('.launchpad-item').forEach(app => {
+            const label = app.querySelector('.launchpad-item-label').textContent.toLowerCase();
+            app.style.display = label.includes(searchTerm) ? 'flex' : 'none';
+        });
+    }
+
+    // --- CHAT AI LOGIC ---
+    function setupChatAI() {
+        if(chatAiDockIcon) chatAiDockIcon.addEventListener('click', () => chatWindow.classList.toggle('open'));
+        if(chatSendBtn) chatSendBtn.addEventListener('click', handleUserMessage);
+        if(chatInput) chatInput.addEventListener('keyup', e => { if (e.key === 'Enter') handleUserMessage(); });
+        if(chatMessagesContainer.children.length === 0) {
+            appendAiMessage("Hello! I'm the Optichain AI assistant. How can I help? You can ask me to change the theme or navigate to a page.");
+        }
+    }
+    function handleUserMessage() {
+        const messageText = chatInput.value.trim();
+        if (messageText) {
+            appendUserMessage(messageText);
+            chatInput.value = "";
+            setTimeout(() => processAiCommand(messageText.toLowerCase()), 500 + Math.random() * 400);
+        }
+    }
+    function appendUserMessage(text) { appendMessage(text, 'user'); }
+    function appendAiMessage(text) { appendMessage(text, 'ai'); }
+    function appendMessage(text, type) {
+        const messageEl = document.createElement('div');
+        messageEl.classList.add('chat-message', type);
+        messageEl.textContent = text;
+        chatMessagesContainer.appendChild(messageEl);
+        chatMessagesContainer.scrollTop = chatMessagesContainer.scrollHeight;
+    }
+    function processAiCommand(command) {
+        const themeMatch = command.match(/(change|set) theme to (.+)/);
+        if (themeMatch) {
+            const requestedTheme = themeMatch[2].trim().replace(/\s+/g, '-');
+            const themeDisplayName = requestedTheme.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+            if (setTheme(requestedTheme)) {
+                appendAiMessage(`Of course! I've changed the theme to ${themeDisplayName}.`);
+            } else {
+                appendAiMessage(`I'm sorry, I couldn't find a theme called "${themeDisplayName}". You can pick one from settings, if available.`);
+            }
+            return;
+        }
+
+        const navMatch = command.match(/(go to|open|take me to) (the )?(.+)/);
+        const pageNavigationMap = { 'moodly ai': 'page11.html', 'cozytustudios ai cv': 'page18.html', 'cv maker': 'page18.html', 'gridora tag manager': 'page19.html', 'tag manager': 'page19.html' };
+        if (navMatch) {
+            const pageQuery = navMatch[3].trim().replace(/ page$/, ''); 
+            if (pageNavigationMap[pageQuery]) {
+                appendAiMessage(`Certainly, heading to the ${pageQuery.charAt(0).toUpperCase() + pageQuery.slice(1)} page now!`);
+                window.location.href = pageNavigationMap[pageQuery];
+            } else {
+                appendAiMessage(`Sorry, I don't know the "${pageQuery}" page.`);
+            }
+            return;
+        }
+
+        appendAiMessage("I'm not sure I understand. You can ask me to 'change theme to...' or 'go to...'.");
+    }
+    
+    function loadState() {
+        caffeineIntake = parseInt(localStorage.getItem('caffeineIntake'), 10) || 0;
+        updateCaffeineDisplay();
+        tipElement.textContent = localStorage.getItem('currentTip') || "Welcome! Click the lightbulb for a study tip.";
+        if (themeGridContainer) populateThemeSelector(); 
+        const savedTheme = localStorage.getItem('studyVerseTheme');
+        setTheme(savedTheme && themes[savedTheme] ? savedTheme : 'cosmic-dark');
+        if (dockPosButtons.length > 0) setDockPosition(localStorage.getItem('studyVerseDockPosition') || 'bottom');
+        if (dockSizeButtons.length > 0) setDockSize(localStorage.getItem('studyVerseDockSize') || 'medium');
+        if (dockAnimButtons.length > 0) setDockAnimation(localStorage.getItem('studyVerseDockAnimationType') || 'none');
+        generateCalendar();
+        setupChatAI();
+    }
+    
+    // --- OPTIMIZED DOCK ANIMATION LOGIC ---
+    function setDockAnimation(type) {
+        dockElement.classList.remove('anim-scale', 'anim-bubble');
+        if (type === 'scale' || type === 'bubble') dockElement.classList.add(`anim-${type}`);
+        localStorage.setItem('studyVerseDockAnimationType', type);
+        dockAnimButtons.forEach(btn => btn.classList.toggle('active', btn.dataset.anim === type));
+    }
+
+    // --- INITIALIZATION ---
+    document.addEventListener("DOMContentLoaded", () => {
+        // Setup Settings Modal listeners (if settings icon exists)
+        if (settingsControlIcon) {
+            settingsControlIcon.addEventListener('click', openSettingsModal);
+        }
+        if (settingsModalCloseBtn) {
+            settingsModalCloseBtn.addEventListener('click', closeSettingsModal);
+        }
+        if (settingsModalOverlay) {
+            settingsModalOverlay.addEventListener('click', e => { if (e.target === settingsModalOverlay) closeSettingsModal(); });
+        }
+        
+        if (dockPosButtons) dockPosButtons.forEach(btn => btn.addEventListener('click', () => setDockPosition(btn.dataset.pos)));
+        if (dockSizeButtons) dockSizeButtons.forEach(btn => btn.addEventListener('click', () => setDockSize(btn.dataset.size)));
+        if (dockAnimButtons) dockAnimButtons.forEach(btn => btn.addEventListener('click', () => setDockAnimation(btn.dataset.anim)));
+        
+        // LAUNCHPAD LISTENERS (if launchpad icon exists)
+        if (launchpadDockIcon) {
+            launchpadDockIcon.addEventListener('click', toggleLaunchpad);
+            launchpadCloseBtn.addEventListener('click', toggleLaunchpad);
+            launchpadOverlay.addEventListener('click', e => { if(e.target === launchpadOverlay) toggleLaunchpad(); });
+            launchpadSearch.addEventListener('input', e => filterLaunchpadApps(e.target.value));
+        }
+        
+        // Close modals with the 'Escape' key
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') {
+                if (launchpadOverlay && launchpadOverlay.classList.contains('visible')) toggleLaunchpad();
+                if (settingsModalOverlay && settingsModalOverlay.classList.contains('visible')) closeSettingsModal();
+                if (chatWindow && chatWindow.classList.contains('open')) chatWindow.classList.remove('open');
+            }
+        });
+
+        // Load all user preferences and states
+        loadState();
+    });
+</script>
+</body>
+</html>
