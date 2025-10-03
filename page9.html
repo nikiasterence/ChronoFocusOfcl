@@ -121,34 +121,25 @@
     .page.active { opacity: 1; transform: translateY(0); pointer-events: auto; }
     .page-title { font-size: 1.6rem; font-weight: 600; margin-bottom: 20px; margin-top: 0; color: var(--text-primary); }
 
-    /* --- NEW: Dock Navigation "Dynamic Island" --- */
     /* --- NEW: IMPROVED DOCK LAYOUT --- */
     .dock {
         position: absolute;
-        bottom: 15px;
         bottom: 20px; /* Increased bottom spacing */
         left: 50%;
         transform: translateX(-50%);
         width: calc(100% - 40px);
         max-width: 380px;
-        height: 65px; /* Slightly taller for better proportions */
         height: 70px; /* Slightly taller for a better feel */
         z-index: 100;
         display: flex;
         justify-content: space-around;
         align-items: center;
-        border-radius: 32.5px; /* Pill shape */
-        padding: 0 10px; /* Add some horizontal padding */
         border-radius: 35px; /* Fully rounded pill shape */
         padding: 0 10px;
         /* Softer, more lifted shadow */
         box-shadow: 0 10px 30px -10px var(--shadow-color);
     }
     .dock-item {
-        display: flex; flex-direction: column; align-items: center;
-        justify-content: center; gap: 4px; border: none; background: none;
-        color: var(--text-secondary); cursor: pointer;
-        width: 75px; height: 60px; /* Adjust height */
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -161,14 +152,11 @@
         width: 80px; /* Increased tap area */
         height: 60px;
         transition: var(--transition);
-        border-radius: 20px; /* Rounded highlight on active/hover */
         border-radius: 20px; /* Softer rounded highlight */
         -webkit-tap-highlight-color: transparent;
         position: relative; /* For icon/text animation */
         top: 0;
     }
-    .dock-item i { font-size: 22px; }
-    .dock-item span { font-size: 10px; font-weight: 500; opacity: 0; transition: opacity 0.3s ease; }
     .dock-item i {
         font-size: 24px; /* Larger icon */
         transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
@@ -184,10 +172,7 @@
     /* Active state animation */
     .dock-item.active {
         color: var(--primary);
-        background: rgba(var(--primary-rgb), 0.1);
     }
-    .dock-item.active span { opacity: 1; }
-    .dock-item:not(.active):hover { color: var(--text-primary); }
     .dock-item.active i {
         transform: translateY(-8px); /* Move icon up */
     }
@@ -202,24 +187,20 @@
 
     /* --- TASK MANAGER PAGE --- */
     #new-task-form h3 { margin:0 0 15px; }
-    /* NEW: Input row for icon and name */
     .task-input-row { display: flex; gap: 10px; align-items: center; margin-bottom: 10px; }
     #task-icon { flex: 0 0 50px; text-align: center; font-size: 20px; padding: 12px 0; }
     #task-name { flex-grow: 1; }
 
     #new-task-form input, #new-task-form textarea, #new-task-form button {
-        width: 100%; padding: 12px; margin-bottom: 10px; border-radius: 12px;
         width: 100%; padding: 12px; margin-bottom: 10px; border-radius: 16px; /* More rounded */
         border: 1px solid var(--border-color); box-sizing: border-box;
         background: var(--primary-light); color: var(--text-primary);
         font-family: 'Poppins', sans-serif; transition: var(--transition);
         -webkit-appearance: none;
-        font-size: 16px; /* Prevent zoom on iOS */
         font-size: 16px;
     }
     #new-task-form input:focus, #new-task-form textarea:focus {
         border-color: var(--primary);
-        box-shadow: 0 0 0 2px rgba(var(--primary-rgb), 0.2);
         box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.2);
         outline: none;
     }
@@ -228,7 +209,6 @@
     #new-task-form button[type="submit"]:hover { filter: brightness(1.1); }
     .or-divider { text-align: center; margin: 15px 0; color: var(--text-secondary); }
 
-    /* --- NEW: Aesthetic Task List & Items --- */
     /* --- Aesthetic Task List & Items --- */
     .task-list-container { margin-top: 20px; }
     .inbox-date-header {
@@ -247,16 +227,12 @@
     .task-item {
         animation: item-in 0.4s ease forwards;
         display: flex;
-        align-items: center; /* Vertically center align content */
         align-items: center;
         margin-bottom: 12px;
         padding: 15px;
-        background: var(--surface); /* Use surface color for better depth */
-        border-radius: 16px; /* Softer, rounder edges */
         background: var(--surface);
         border-radius: 18px; /* Softer edges */
         border: 1px solid var(--border-color);
-        box-shadow: 0 4px 16px rgba(var(--primary-rgb), 0.05); /* Add subtle shadow */
         box-shadow: 0 4px 16px rgba(var(--primary-rgb), 0.05);
         transition: all 0.3s ease;
         position: relative;
@@ -267,8 +243,6 @@
         opacity: 0.7;
     }
     .task-item.completed .task-item-content { text-decoration: line-through; color: var(--text-secondary); }
-
-    .task-item .task-icon { font-size: 24px; margin-right: 15px; flex-shrink: 0; }
     .task-item .task-icon {
         font-size: 20px;
         margin-right: 15px;
@@ -284,7 +258,10 @@
     .task-item-content { flex-grow: 1; }
     .task-item strong { display: block; }
     .task-item-meta { font-size: 0.8em; color: var(--text-secondary); }
-@@ -213,6 +265,15 @@
+    .task-item .actions { display: flex; align-items: center; margin-left: auto; padding-left: 10px; }
+    .task-item button {
+        background: none; border: none; cursor: pointer; padding: 5px;
+        color: var(--text-secondary); font-size: 16px; transition: color 0.2s;
         -webkit-tap-highlight-color: transparent;
     }
     .task-item button:hover { color: var(--primary); }
@@ -300,12 +277,25 @@
 
     /* --- CALENDAR VIEW --- */
     #calendar-view-page header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-@@ -235,29 +296,73 @@
+    #month-year { font-size: 1.3rem; margin: 0; }
+    .calendar-nav button { background: none; border: none; font-size: 24px; cursor: pointer; color: var(--text-primary); }
+    .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; text-align: center; }
+    .calendar-grid div {
+        padding: 5px; border-radius: 50%; position: relative;
+        min-height: 30px; display: flex; align-items: center;
+        justify-content: center; font-size: 0.7rem;
+    }
+    .calendar-grid .day-name { font-weight: 600; color: var(--text-secondary); cursor: default; }
+    .calendar-grid .calendar-day { cursor: pointer; transition: all 0.3s ease; }
+    .calendar-grid .calendar-day:hover { background: var(--primary-light); }
+    .calendar-grid .today { background-color: var(--primary-light); color: var(--primary); font-weight: 600; }
+    .calendar-grid .selected { box-shadow: 0 0 0 2px var(--primary); }
+    .calendar-grid .has-tasks::after {
+        content: ''; position: absolute; bottom: 5px; left: 50%;
+        transform: translateX(-50%); width: 5px; height: 5px;
         background-color: var(--primary); border-radius: 50%;
     }
 
-    /* --- SETTINGS PAGE --- */
-    #settings-page .settings-group { margin-bottom: 25px; }
     /* --- NEW: IMPROVED SETTINGS PAGE --- */
     #settings-page .settings-group {
         margin-bottom: 20px;
@@ -319,18 +309,11 @@
         border: 1px solid var(--border-color);
     }
     #settings-page .settings-group h4 {
-        margin-top: 0; margin-bottom: 10px; color: var(--text-primary);
-        border-bottom: 1px solid var(--border-color); padding-bottom: 5px;
         margin-top: 0; margin-bottom: 15px; color: var(--text-primary);
         border-bottom: 1px solid var(--border-color);
         padding-bottom: 10px;
         font-weight: 600; /* Bolder headings */
     }
-    .settings-option { margin-bottom: 15px; }
-    .settings-option label { display: block; margin-bottom: 8px; font-weight: 500; font-size: 0.9em; }
-    .settings-option input[type="number"], .settings-option select, .settings-option input[type="color"] {
-        width: 100%; padding: 10px; border-radius: 10px; border: 1px solid var(--border-color);
-        background: var(--primary-light); color: var(--text-primary);
     .settings-option { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
     .settings-option label {
         flex-grow: 1;
@@ -359,12 +342,9 @@
         appearance: menulist; /* Native dropdown arrow */
         -webkit-appearance: menulist;
     }
-    .theme-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 10px; margin-top: 15px; }
 
     .theme-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 15px; margin-top: 15px; }
     .theme-item {
-        height: 60px; border-radius: 12px; cursor: pointer;
-        transition: transform 0.2s, box-shadow 0.2s; position: relative; overflow: hidden;
         height: 60px;
         border-radius: 16px; /* More rounded */
         cursor: pointer;
@@ -374,14 +354,11 @@
         border: 2px solid transparent;
     }
     .theme-item:hover { transform: scale(1.05); }
-    .theme-item.active { box-shadow: 0 0 0 3px var(--primary); }
     .theme-item.active {
         box-shadow: 0 0 0 3px var(--primary);
         border-color: var(--background); /* Inner border to not affect layout */
     }
     .theme-item .theme-name {
-        position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.5);
-        color: white; padding: 3px; font-size: 0.7em; text-align: center;
         position: absolute; bottom: 0; left: 0; right: 0;
         background: rgba(0,0,0,0.5);
         color: white; padding: 4px; font-size: 0.7em;
@@ -389,41 +366,118 @@
     }
 
     /* --- AI Assistant --- */
-@@ -286,7 +391,7 @@
+    .ai-assistant-btn {
+        position: fixed; bottom: 85px; right: 20px; width: 50px; height: 50px;
+        border-radius: 50%; background: var(--primary); color: white;
+        border: none; cursor: pointer; z-index: 1001;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        display: flex; align-items: center; justify-content: center;
+        transition: var(--transition);
+        -webkit-tap-highlight-color: transparent;
+    }
+    .ai-assistant-panel {
+        position: fixed; bottom: 145px; right: 20px;
+        width: calc(100vw - 40px); max-width: 380px; height: 450px; max-height: 55vh;
+        z-index: 1000; display: none; flex-direction: column;
+        animation: modal-in 0.4s; transform-origin: bottom right;
+    }
+    .ai-header { padding: 15px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
+    .ai-conversation { flex-grow: 1; padding: 15px; overflow-y: auto; }
+    .ai-message { margin-bottom: 15px; padding: 10px; border-radius: 10px; max-width: 85%; word-wrap: break-word; }
+    .ai-user { background: var(--primary-light); margin-left: auto; }
+    .ai-bot { background: var(--surface); border: 1px solid var(--border-color); margin-right: auto;}
+    .ai-input-area { padding: 15px; border-top: 1px solid var(--border-color); display: flex; }
+    .ai-input { flex-grow: 1; padding: 10px; border-radius: 20px; border: 1px solid var(--border-color); background: var(--primary-light); }
     .ai-send { background: var(--primary); color: white; border-radius: 50%; width: 40px; height: 40px; margin-left: 10px; }
     @keyframes modal-in { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
 
-    /* --- NEW: Focus View --- */
     /* --- Focus View --- */
     .focus-view-container {
         position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: none;
         flex-direction: column; justify-content: center; align-items: center;
-@@ -297,14 +402,14 @@
+        z-index: 2000; opacity: 0; transition: opacity 0.5s;
+    }
+    .focus-view-container.visible { display: flex; opacity: 1; }
+    .focus-view-container.light-mode { background: #FFFFFF; color: #121212; }
     .focus-view-container.dark-mode { background: #121212; color: #FFFFFF; }
     .color-fill-bg { position: absolute; top: 0; left: 0; width: 100%; height: 0; z-index: -1; transition: height 1s linear; }
     .focus-content { text-align: center; z-index: 1; padding: 20px; }
-    /* NEW: Icon in focus view */
     #focus-task-icon { font-size: 2.5rem; margin-bottom: 10px; }
     #focus-task-name { font-size: 1.5rem; margin-bottom: 20px; }
     #focus-timer { font-size: 2.5rem; font-weight: 300; margin: 20px 0; letter-spacing: 2px; }
     #focus-status-text { text-transform: uppercase; letter-spacing: 2px; margin-bottom: 30px; }
     .focus-controls button {
         background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.3);
-        padding: 12px 18px; margin: 5px; border-radius: 8px; cursor: pointer; transition: background 0.3s;
         padding: 12px 18px; margin: 5px; border-radius: 12px; /* rounder */
         cursor: pointer; transition: background 0.3s;
         -webkit-tap-highlight-color: transparent;
     }
     .focus-view-container.light-mode button { background: rgba(0,0,0,0.05); border: 1px solid rgba(0,0,0,0.1); color: #121212; }
-@@ -331,7 +436,6 @@
+    .focus-view-container.dark-mode button { color: white; }
+
+</style>
+</head>
+<body>
+    <audio id="complete-sound" src="https://actions.google.com/sounds/v1/alarms/notification_bell.ogg" preload="auto"></audio>
+    <audio id="cancel-sound" src="https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg" preload="auto"></audio>
+
+<div class="app-container glass-effect">
+    <main class="content-area">
+
+        <!-- PAGE: INBOX -->
+        <div id="inbox-page" class="page">
+            <h1 class="page-title">Inbox</h1>
+            <div class="task-list-container" id="inbox-task-list"></div>
+        </div>
+
+        <!-- PAGE: TASK MANAGER -->
+        <div id="manager-page" class="page active">
+            <h1 class="page-title">Manager</h1>
             <div class="card glass-effect" style="padding: 15px;">
                  <form id="new-task-form">
                     <h3>New Task</h3>
-                     <!-- NEW: Task Input Row with Icon -->
                      <div class="task-input-row">
                          <input type="text" id="task-icon" placeholder="🗓️" maxlength="2">
                          <input type="text" id="task-name" placeholder="What is your focus?" required>
-@@ -377,33 +481,48 @@
+                     </div>
+                     <input type="date" id="task-date" required>
+                      <div class="time-inputs">
+                        <input type="time" id="task-start-time" title="Start Time">
+                        <input type="time" id="task-end-time" title="End Time">
+                      </div>
+                      <div class="or-divider">OR</div>
+                     <div class="duration-inputs">
+                         <input type="number" id="task-hours" placeholder="Hours" min="0">
+                         <input type="number" id="task-minutes" placeholder="Minutes" min="0" max="59">
+                     </div>
+                     <button type="submit">Create Task</button>
+                 </form>
+            </div>
+             <div class="task-list-container glass-effect" style="margin-top:20px; padding:15px;">
+                <h3 style="margin-top:0;">Today's Tasks</h3>
+                <div id="manager-task-list"></div>
+             </div>
+        </div>
+
+        <!-- PAGE: CALENDAR -->
+        <div id="calendar-page" class="page">
+            <h1 class="page-title">Calendar</h1>
+            <div id="calendar-view" class="glass-effect" style="padding:15px;">
+                <header>
+                    <h2 id="month-year" style="font-size: 1.2rem; margin:0;">September 2025</h2>
+                    <div class="calendar-nav">
+                        <button id="prev-month">&lt;</button>
+                        <button id="next-month">&gt;</button>
+                    </div>
+                </header>
+                <div class="calendar-grid"></div>
+            </div>
+            <div class="task-list-container glass-effect" style="margin-top:20px; padding:15px;">
+                <h3 id="calendar-task-list-title" style="margin-top:0;">Tasks</h3>
+                <div id="calendar-task-list"></div>
+            </div>
+        </div>
+
         <!-- PAGE: SETTINGS -->
         <div id="settings-page" class="page">
             <h1 class="page-title">Settings</h1>
@@ -432,9 +486,7 @@
                 <h4>Appearance</h4>
                 <div class="settings-option">
                     <label for="theme-selector">Theme</label>
-                    <div class="theme-grid" id="theme-grid"></div>
                 </div>
-                <div class="settings-option">
                 <div class="theme-grid" id="theme-grid"></div>
                  <div class="settings-option" style="margin-top: 20px;">
                     <label for="focus-fill-color">Focus Session Color</label>
@@ -444,9 +496,6 @@
 
             <div class="settings-group">
                 <h4>Pomodoro</h4>
-                <div class="settings-option"><label>Pomodoro Duration (min)</label><input type="number" id="pomodoro-duration" value="25"></div>
-                <div class="settings-option"><label>Short Break (min)</label><input type="number" id="break-duration" value="5"></div>
-                <div class="settings-option"><label>Long Break (min)</label><input type="number" id="long-break-duration" value="15"></div>
                 <div class="settings-option">
                     <label>Pomodoro (min)</label>
                     <input type="number" id="pomodoro-duration" value="25">
@@ -464,11 +513,8 @@
             <div class="settings-group">
                 <h4>General</h4>
                 <div class="settings-option">
-                    <label for="auto-delete">Auto-delete completed tasks after</label>
                     <label for="auto-delete">Auto-delete tasks after</label>
                     <select id="auto-delete">
-                        <option value="0">Never</option><option value="1">1 day</option>
-                        <option value="7">1 week</option><option value="30">1 month</option>
                         <option value="0">Never</option>
                         <option value="1">1 day</option>
                         <option value="7">1 week</option>
@@ -480,16 +526,47 @@
         </div>
 
     </main>
-@@ -432,7 +551,7 @@
+
+    <nav class="dock glass-effect">
+        <button class="dock-item" data-page="inbox-page"><i class="fas fa-inbox"></i><span>Inbox</span></button>
+        <button class="dock-item active" data-page="manager-page"><i class="fas fa-list-check"></i><span>Manager</span></button>
+        <button class="dock-item" data-page="calendar-page"><i class="fas fa-calendar-days"></i><span>Calendar</span></button>
+        <button class="dock-item" data-page="settings-page"><i class="fas fa-cog"></i><span>Settings</span></button>
+    </nav>
+</div>
+
+<!-- AI Assistant Floating UI -->
+<button class="ai-assistant-btn" id="ai-assistant-btn"><i class="fas fa-wand-magic-sparkles"></i></button>
+<div class="ai-assistant-panel glass-effect" id="ai-assistant-panel">
+    <div class="ai-header">
+        <h4>AI Assistant</h4>
+        <button class="ai-close" id="ai-close">&times;</button>
+    </div>
+    <div class="ai-conversation" id="ai-conversation">
+        <div class="ai-message ai-bot">How can I help you focus today? Try: "Schedule physics study for 45 minutes" or "Create a task for tomorrow".</div>
+    </div>
+    <div class="ai-input-area">
+        <input type="text" class="ai-input" id="ai-input" placeholder="Ask me...">
+        <button class="ai-send" id="ai-send" type="button"><i class="fas fa-paper-plane"></i></button>
     </div>
 </div>
 
-<!-- NEW: FOCUS VIEW MODAL with Icon -->
 <!-- FOCUS VIEW MODAL -->
 <div class="focus-view-container" id="focus-view">
     <div class="color-fill-bg" id="color-fill-bg"></div>
     <div class="focus-content">
-@@ -451,6 +570,7 @@
+        <div id="focus-task-icon"></div>
+        <h2 id="focus-task-name"></h2>
+        <div id="focus-timer">00:00:00</div>
+        <p id="focus-status-text">Remaining</p>
+        <div class="focus-controls">
+            <button id="pause-resume-btn">Pause</button>
+            <button id="complete-btn">✓ Complete</button>
+            <button id="exit-focus-btn">Exit Focus</button>
+        </div>
+    </div>
+</div>
+
 <script>
 document.addEventListener('DOMContentLoaded', () => {
     // --- State Management ---
@@ -497,30 +574,70 @@ document.addEventListener('DOMContentLoaded', () => {
     let tasks = [];
     let currentDate = new Date();
     let selectedCalendarDate = new Date();
-@@ -472,7 +592,6 @@
+    let timerInterval;
+    let timeRemaining;
+    let isPaused = false;
+    let totalDuration;
+    let currentTaskID = null;
+
+    // --- Element Selectors ---
+    const pages = document.querySelectorAll('.page');
+    const dockItems = document.querySelectorAll('.dock-item');
+    const aiAssistantBtn = document.getElementById('ai-assistant-btn');
+
+    const monthYearEl = document.getElementById('month-year');
+    const calendarGrid = document.querySelector('.calendar-grid');
+    const prevMonthBtn = document.getElementById('prev-month');
+    const nextMonthBtn = document.getElementById('next-month');
     const calendarTaskListTitle = document.getElementById('calendar-task-list-title');
 
     const taskForm = document.getElementById('new-task-form');
-    // NEW: Icon input selector
     const taskIconInput = document.getElementById('task-icon');
     const taskNameInput = document.getElementById('task-name');
     const taskDateInput = document.getElementById('task-date');
-@@ -487,7 +606,6 @@
+    const taskStartTimeInput = document.getElementById('task-start-time');
+    const taskEndTimeInput = document.getElementById('task-end-time');
+    const taskHoursInput = document.getElementById('task-hours');
+    const taskMinutesInput = document.getElementById('task-minutes');
+
+    const inboxTaskList = document.getElementById('inbox-task-list');
+    const managerTaskList = document.getElementById('manager-task-list');
+    const calendarTaskList = document.getElementById('calendar-task-list');
 
     const focusView = document.getElementById('focus-view');
     const colorFillBg = document.getElementById('color-fill-bg');
-    // NEW: Focus task icon selector
     const focusTaskIconEl = document.getElementById('focus-task-icon');
     const focusTaskNameEl = document.getElementById('focus-task-name');
     const focusTimerEl = document.getElementById('focus-timer');
-@@ -518,21 +636,28 @@
+    const focusStatusTextEl = document.getElementById('focus-status-text');
+    const pauseResumeBtn = document.getElementById('pause-resume-btn');
+    const completeBtn = document.getElementById('complete-btn');
+    const exitFocusBtn = document.getElementById('exit-focus-btn');
+
+    const themeGrid = document.getElementById('theme-grid');
+    const focusFillColorInput = document.getElementById('focus-fill-color');
+    const completeSound = document.getElementById('complete-sound');
+
+    // Utility Functions
+    const toYYYYMMDD = (date) => date.toISOString().split('T')[0];
+
+    // --- THEMES ---
+    const ALL_THEMES = [
+         {name: 'Cozy Mocha', value: 'default', category: 'light', color: '#8D6E63'},
+         {name: 'Sage', value: 'theme-sage', category: 'light', color: '#799975'},
+         {name: 'Rose', value: 'theme-rose', category: 'light', color: '#D4A6B2'},
+         {name: 'Mist', value: 'theme-mist', category: 'light', color: '#94AEC3'},
+         {name: 'Lavender', value: 'theme-lavender', category: 'light', color: '#9E8FB2'},
+         {name: 'Minimalist', value: 'theme-minimalist-light', category: 'light', color: '#f5f5f5'},
+         {name: 'Dark Mode', value: 'dark-mode', category: 'dark', color: '#1A1A2E'},
+         {name: 'Minimalist Dark', value: 'theme-minimalist-dark', category: 'dark', color: '#121212'},
+         {name: 'Boreal', value: 'theme-aurora-boreal', category: 'aurora', color: 'linear-gradient(-45deg, #0d1a26, #1a3a52, #3c164f, #1a233b)'},
+         {name: 'Twilight', value: 'theme-aurora-twilight', category: 'aurora', color: 'linear-gradient(-45deg, #1e1e2f, #3a2e5d, #6a538d, #2f274a)'},
          {name: 'Cotton Candy', value: 'theme-aurora-cottoncandy', category: 'aurora', color: 'linear-gradient(-45deg, #fce4ec, #f8bbd0, #f48fb1, #ff80ab)'},
     ];
 
-    // --- CORE LOGIC ---
     // --- CORE LOGIC (IMPROVED LOCAL STORAGE) ---
     function saveAndRerender() {
-        localStorage.setItem('focusTimerTasks', JSON.stringify(tasks));
         try {
             localStorage.setItem(TASKS_STORAGE_KEY, JSON.stringify(tasks));
         } catch (error) {
@@ -531,8 +648,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function loadTasks() {
-        const storedTasks = localStorage.getItem('focusTimerTasks');
-        tasks = storedTasks ? JSON.parse(storedTasks) : [];
         try {
             const storedTasks = localStorage.getItem(TASKS_STORAGE_KEY);
             tasks = storedTasks ? JSON.parse(storedTasks) : [];
@@ -541,19 +656,16 @@ document.addEventListener('DOMContentLoaded', () => {
             tasks = [];
         }
     }
-    
-    // REMOVED getIconForTask function as it's no longer needed.
 
-    // --- RENDERING (MODIFIED) ---
     // --- RENDERING (IMPROVED TASK ITEM) ---
     function renderTaskItem(task) {
         const taskItem = document.createElement('div');
         taskItem.className = `task-item ${task.completed ? 'completed' : ''}`;
-@@ -541,34 +666,66 @@
+        taskItem.dataset.id = task.id;
+        const timeInfo = task.startTime ? `${task.startTime}${task.endTime ? ' - ' + task.endTime : ''}` : ``;
         const durationInfo = task.duration ? `${task.duration} min` : '';
         const meta = [timeInfo, durationInfo].filter(Boolean).join(' • ');
 
-        // NEW: Uses task.icon for the icon display
         taskItem.innerHTML = `
             <button class="complete-task" title="${task.completed ? 'Mark Incomplete' : 'Mark Complete'}">${task.completed ? '<i class="fas fa-undo"></i>' : '<i class="fas fa-check"></i>'}</button>
             <div class="task-icon">${task.icon || '📌'}</div>
@@ -563,7 +675,6 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
             <div class="actions">
                ${!task.completed ? `<button class="start-focus" title="Start Focus"><i class="fas fa-play"></i></button>` : ''}
-               <button class="complete-task" title="${task.completed ? 'Mark Incomplete' : 'Mark Complete'}">${task.completed ? '<i class="fas fa-undo"></i>' : '<i class="fas fa-check"></i>'}</button>
                <button class="delete-task" title="Delete Task"><i class="fas fa-trash"></i></button>
             </div>`;
         return taskItem;
@@ -572,8 +683,6 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderAllTaskLists() {
         // --- IMPROVED INBOX RENDERING ---
         inboxTaskList.innerHTML = '';
-        tasks.sort((a,b) => new Date(a.date) - new Date(b.date)).forEach(task => inboxTaskList.appendChild(renderTaskItem(task)));
-        if (tasks.length === 0) inboxTaskList.innerHTML = '<p>Your inbox is empty. Add a task in the Manager tab!</p>';
         const sortedTasks = [...tasks].sort((a, b) => new Date(a.date) - new Date(b.date));
 
         const tasksByDate = sortedTasks.reduce((acc, task) => {
@@ -610,7 +719,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // --- MANAGER & CALENDAR LISTS (UNCHANGED) ---
         managerTaskList.innerHTML = '';
-        const todayStr = toYYYYMMDD(new Date());
         tasks.filter(t => t.date === todayStr).forEach(task => managerTaskList.appendChild(renderTaskItem(task)));
         if (managerTaskList.innerHTML === '') managerTaskList.innerHTML = '<p>No tasks for today.</p>';
 
@@ -621,58 +729,274 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderTasksForCalendarDate(date) {
         const dateStr = toYYYYMMDD(date);
         calendarTaskList.innerHTML = '';
-@@ -629,7 +786,7 @@
+        calendarTaskListTitle.textContent = `Tasks for ${date.toLocaleDateString()}`;
+        const tasksForDate = tasks.filter(task => task.date === dateStr);
+        if (tasksForDate.length > 0) {
+            tasksForDate.forEach(task => calendarTaskList.appendChild(renderTaskItem(task)));
+        } else {
+            calendarTaskList.innerHTML = '<p>No tasks scheduled for this day.</p>';
+        }
+    }
+
+    function renderCalendar() {
+        calendarGrid.innerHTML = '';
+        const year = currentDate.getFullYear();
+        const month = currentDate.getMonth();
+        monthYearEl.textContent = `${currentDate.toLocaleString('default', { month: 'long' })} ${year}`;
+
+        ['S', 'M', 'T', 'W', 'T', 'F', 'S'].forEach(day => {
+            const dayEl = document.createElement('div'); dayEl.className = 'day-name'; dayEl.textContent = day; calendarGrid.appendChild(dayEl);
+        });
+
+        const firstDayOfMonth = new Date(year, month, 1).getDay();
+        for (let i = 0; i < firstDayOfMonth; i++) calendarGrid.appendChild(document.createElement('div'));
+
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        const todayStr = toYYYYMMDD(new Date());
+        const selectedStr = toYYYYMMDD(selectedCalendarDate);
+
+        for (let day = 1; day <= daysInMonth; day++) {
+            const dayEl = document.createElement('div');
+            dayEl.textContent = day;
+            dayEl.classList.add('calendar-day');
+            const dateObj = new Date(year, month, day);
+            const dateStr = toYYYYMMDD(dateObj);
+
+            if (dateStr === todayStr) dayEl.classList.add('today');
+            if (dateStr === selectedStr) dayEl.classList.add('selected');
+            if (tasks.some(task => task.date === dateStr)) dayEl.classList.add('has-tasks');
+
+            dayEl.addEventListener('click', () => {
+                document.querySelector('.calendar-day.selected')?.classList.remove('selected');
+                dayEl.classList.add('selected');
+                selectedCalendarDate = dateObj;
+                renderTasksForCalendarDate(selectedCalendarDate);
+            });
+            calendarGrid.appendChild(dayEl);
+        }
+    }
+
+    // --- Navigation ---
+    function switchPage(pageId) {
+        aiAssistantBtn.style.display = (pageId === 'manager-page') ? 'flex' : 'none';
+        pages.forEach(p => p.classList.remove('active'));
+        document.getElementById(pageId).classList.add('active');
+        dockItems.forEach(item => {
+            item.classList.toggle('active', item.dataset.page === pageId);
         });
     }
 
-    // --- Task Handling (MODIFIED) ---
     // --- Task Handling ---
     taskForm.addEventListener('submit', (e) => {
         e.preventDefault();
         let duration = (parseInt(taskHoursInput.value) || 0) * 60 + (parseInt(taskMinutesInput.value) || 0);
-@@ -641,16 +798,15 @@
+        if (!duration && taskStartTimeInput.value && taskEndTimeInput.value) {
+            const start = new Date(`1970-01-01T${taskStartTimeInput.value}`);
+            const end = new Date(`1970-01-01T${taskEndTimeInput.value}`);
+            duration = Math.round((end - start) / 60000);
+        }
         if (duration <= 0 && (!taskStartTimeInput.value || !taskEndTimeInput.value)) {
             // Allow creating tasks with 0 duration if no times are set
         } else if (duration < 0) {
-             return; // Prevent tasks with negative duration
              return;
         }
         if(!taskNameInput.value.trim()) return;
 
-        // NEW: Added 'icon' to the task object
         tasks.push({
             id: Date.now().toString(),
             name: taskNameInput.value.trim(),
             date: taskDateInput.value,
-            icon: taskIconInput.value || '📌', // Default icon
             icon: taskIconInput.value || '📌',
             startTime: taskStartTimeInput.value,
             endTime: taskEndTimeInput.value,
             duration: duration,
-@@ -681,15 +837,14 @@
+            completed: false,
+        });
+        taskForm.reset();
+        taskDateInput.value = toYYYYMMDD(new Date());
         saveAndRerender();
     });
 
-    // --- FOCUS TIMER (MODIFIED) ---
+    document.querySelector('.content-area').addEventListener('click', e => {
+        const button = e.target.closest('button');
+        if (!button) return;
+        const taskItem = button.closest('.task-item');
+        if (!taskItem) return;
+        const taskId = taskItem.dataset.id;
+
+        if (button.classList.contains('delete-task')) {
+            tasks = tasks.filter(t => t.id !== taskId);
+        } else if (button.classList.contains('complete-task')) {
+            const task = tasks.find(t => t.id === taskId);
+            if(task) task.completed = !task.completed;
+        } else if (button.classList.contains('start-focus')) {
+            const task = tasks.find(t => t.id === taskId);
+            if(task && task.duration > 0) startFocusSession(task);
+            else if (task) alert("Cannot start focus session for tasks with no duration.");
+        }
+        saveAndRerender();
+    });
+
     // --- FOCUS TIMER ---
     function startFocusSession(task) {
         currentTaskID = task.id;
         timeRemaining = totalDuration = task.duration * 60;
-        
-        // NEW: Set the icon and name on the focus view
 
         focusTaskIconEl.textContent = task.icon || '📌';
         focusTaskNameEl.textContent = task.name;
-        
 
         focusTimerEl.textContent = formatTime(timeRemaining);
         isPaused = false;
         pauseResumeBtn.textContent = 'Pause';
-@@ -842,44 +997,43 @@
+
+        const isDarkMode = document.body.classList.contains('dark-mode') || document.body.className.includes('dark');
+        focusView.className = `focus-view-container visible ${isDarkMode ? 'dark-mode' : 'light-mode'}`;
+
+        colorFillBg.style.background = localStorage.getItem('focusFillColor') || '#8D6E63';
+
+        if (timerInterval) clearInterval(timerInterval);
+        startTimer();
+    }
+
+    function startTimer() {
+        timerInterval = setInterval(() => {
+            if(isPaused) return;
+            timeRemaining--;
+            focusTimerEl.textContent = formatTime(timeRemaining);
+            document.title = `${formatTime(timeRemaining)} - ${focusTaskNameEl.textContent}`;
+            colorFillBg.style.height = `${((totalDuration - timeRemaining) / totalDuration) * 100}%`;
+
+            if(timeRemaining <= 0) {
+                clearInterval(timerInterval);
+                completeSound.play();
+                completeTask(currentTaskID, true);
+                setTimeout(endFocusSession, 1000);
+            }
+        }, 1000);
+    }
+
+    function endFocusSession() {
+        clearInterval(timerInterval);
+        focusView.classList.remove('visible');
+        document.title = 'ChronoFocus';
+        saveAndRerender();
+    }
+
+    function completeTask(taskId) {
+        const task = tasks.find(t => t.id === taskId);
+        if(task) task.completed = true;
+    }
+
+    function formatTime(seconds) {
+        if (seconds < 0) seconds = 0;
+        const h = Math.floor(seconds / 3600).toString().padStart(2, '0');
+        const m = Math.floor((seconds % 3600) / 60).toString().padStart(2, '0');
+        const s = (seconds % 60).toString().padStart(2, '0');
+        return `${h}:${m}:${s}`;
+    }
+
+    // --- SETTINGS ---
+    function applyTheme(theme) {
+        document.body.className = theme === 'default' ? '' : theme;
+        localStorage.setItem('focusTimerTheme', theme);
+        document.querySelectorAll('.theme-item.active').forEach(i => i.classList.remove('active'));
+        document.querySelector(`.theme-item[data-theme="${theme}"]`)?.classList.add('active');
+    }
+
+    function populateThemeDashboard() {
+        themeGrid.innerHTML = '';
+        ALL_THEMES.forEach(theme => {
+            const item = document.createElement('div');
+            item.className = 'theme-item';
+            item.dataset.theme = theme.value;
+            item.style.background = theme.color;
+            item.innerHTML = `<div class="theme-name">${theme.name}</div>`;
+            item.addEventListener('click', () => applyTheme(theme.value));
+            themeGrid.appendChild(item);
+        });
+    }
+
+    // --- EVENT LISTENERS ---
+    dockItems.forEach(item => {
+        item.addEventListener('click', () => switchPage(item.dataset.page));
+    });
+    prevMonthBtn.addEventListener('click', () => { currentDate.setMonth(currentDate.getMonth() - 1); renderCalendar(); });
+    nextMonthBtn.addEventListener('click', () => { currentDate.setMonth(currentDate.getMonth() + 1); renderCalendar(); });
+
+    pauseResumeBtn.addEventListener('click', () => { isPaused = !isPaused; pauseResumeBtn.textContent = isPaused ? 'Resume' : 'Pause'; });
+    completeBtn.addEventListener('click', () => { completeTask(currentTaskID); endFocusSession(); });
+    exitFocusBtn.addEventListener('click', endFocusSession);
+
+    focusFillColorInput.addEventListener('input', (e) => {
+        localStorage.setItem('focusFillColor', e.target.value);
+    });
+
+    // --- AI ASSISTANT ---
+    const aiPanel = document.getElementById('ai-assistant-panel');
+    const aiConversation = document.getElementById('ai-conversation');
+    const aiInput = document.getElementById('ai-input');
+    const aiSendBtn = document.getElementById('ai-send');
+
+    aiAssistantBtn.addEventListener('click', () => {
+        aiPanel.style.display = 'flex';
+        aiInput.focus();
+    });
+    document.getElementById('ai-close').addEventListener('click', () => { aiPanel.style.display = 'none'; });
+    aiSendBtn.addEventListener('click', handleAIInput);
+    aiInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') handleAIInput(); });
+
+    document.addEventListener('click', (e) => {
+        if (aiPanel.style.display === 'flex' && !aiPanel.contains(e.target) && e.target !== aiAssistantBtn && !aiAssistantBtn.contains(e.target)) {
+            aiPanel.style.display = 'none';
+        }
+    });
+
+    function addMessageToAI(message, sender) {
+        const messageEl = document.createElement('div');
+        messageEl.className = `ai-message ai-${sender}`;
+        messageEl.textContent = message;
+        aiConversation.appendChild(messageEl);
+        aiConversation.scrollTop = aiConversation.scrollHeight;
+    }
+
+    function handleAIInput() {
+        const userInput = aiInput.value.trim();
+        if (!userInput) return;
+        addMessageToAI(userInput, 'user');
+        aiInput.value = '';
+        processAICommand(userInput);
+    }
+
+    function processAICommand(command) {
+        const lowerCmd = command.toLowerCase();
+        let taskName = lowerCmd;
+        let duration = 0;
+        let date = toYYYYMMDD(new Date());
+
+        const dateKeywords = {
+            'tomorrow': () => { const d = new Date(); d.setDate(d.getDate() + 1); return toYYYYMMDD(d); },
+            'next week': () => { const d = new Date(); d.setDate(d.getDate() + 7); return toYYYYMMDD(d); },
+            'next month': () => { const d = new Date(); d.setMonth(d.getMonth() + 1); return toYYYYMMDD(d); },
+            'monday': getNextDayOfWeek(1), 'tuesday': getNextDayOfWeek(2),
+            'wednesday': getNextDayOfWeek(3), 'thursday': getNextDayOfWeek(4),
+            'friday': getNextDayOfWeek(5), 'saturday': getNextDayOfWeek(6), 'sunday': getNextDayOfWeek(0)
+        };
+        for (const [kw, fn] of Object.entries(dateKeywords)) {
+            if (lowerCmd.includes(kw)) { date = fn(); taskName = taskName.replace(kw, '').trim(); break; }
+        }
+
+        const durationRegex = /(\d+)\s*(min|mins|minutes|hr|hrs|hours)/g;
+        let match;
+        while ((match = durationRegex.exec(lowerCmd)) !== null) {
+            const val = parseInt(match[1]);
+            duration += match[2].startsWith('h') ? val * 60 : val;
+            taskName = taskName.replace(match[0], '').trim();
+        }
+
+        taskName = taskName.replace(/schedule|create|add|task|a|an|remind me to|for|reminder for/g, '').trim();
         taskName = taskName.charAt(0).toUpperCase() + taskName.slice(1);
 
         if (taskName) {
-            // NEW: Added 'icon' to AI-created tasks
             tasks.push({
                 id: Date.now().toString(), name: taskName, date: date,
                 icon: '🤖', startTime: '', endTime: '',
