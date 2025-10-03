@@ -1788,7 +1788,7 @@
                     return {
                         sentences: sentences.length,
                         paragraphs: paragraphs.length,
-                        avgSentencesPerParagraph: sentences.length / paragraphs.length
+                        avgSentencesPerParagraph: paragraphs.length > 0 ? sentences.length / paragraphs.length : 0
                     };
                 }
 
@@ -1871,13 +1871,13 @@
                     if (weaselMatches) results.weasels = [...new Set(weaselMatches)];
                     
                     // Long sentences
-                    sentences.forEach(s => { if(s.length > 150) results.longSentences.push(s); });
+                    sentences.forEach(s => { if(s.split(/\s+/).length > 25) results.longSentences.push(s); });
                     
                     // Repetitive words/phrases
                     const words = text.toLowerCase().split(/\s+/);
                     const wordFreq = {};
                     words.forEach(word => { 
-                        if (word.length > 4) {
+                        if (word.length > 4 && !this.stopWords.has(word)) {
                             wordFreq[word] = (wordFreq[word] || 0) + 1; 
                         }
                     });
@@ -1940,11 +1940,14 @@
                         'teh': 'the',
                         'adn': 'and',
                         'thier': 'their',
+                        'theyre': "they're",
                         'recieve': 'receive',
                         'seperate': 'separate',
                         'definately': 'definitely',
                         'occured': 'occurred',
-                        'alot': 'a lot'
+                        'alot': 'a lot',
+                        'accomodate': 'accommodate',
+                        'goverment': 'government'
                     };
                     
                     Object.keys(commonMistakes).forEach(mistake => {
@@ -2025,7 +2028,7 @@
                             correctAnswer.substring(0, correctAnswer.length - 1), // remove last letter
                             correctAnswer + 'ing' // gerund
                         ];
-                        return [...similarWords, ...variations].slice(0, 3);
+                        return [...new Set([...similarWords, ...variations])].slice(0, 3);
                     }
                     
                     return similarWords.slice(0, 3);
@@ -2059,24 +2062,30 @@
                     analysisText += `**Paragraph Count:** ${structure.paragraphs}\n\n`;
                     
                     analysisText += `**Sentiment Analysis:** ${sentiment}\n`;
-                    analysisText += `**Readability Score:** ${readability}/100\n`;
+                    analysisText += `**Readability Score (Flesch):** ${readability}/100\n`;
                     analysisText += `**Content Complexity:** ${complexity}\n\n`;
                     
                     analysisText += `**Document Structure:**\n`;
-                    analysisText += `- Average sentences per paragraph: ${structure.avgSentencesPerParagraph.toFixed(1)}\n`;
+                    analysisText += `- Avg. sentences per paragraph: ${structure.avgSentencesPerParagraph.toFixed(1)}\n`;
                     
                     return analysisText;
                 }
 
                 countSyllables(text) {
-                    const words = this.preprocessText(text).toLowerCase().split(/\s+/);
+                    if (!text) return 0;
+                    text = text.toLowerCase();
+                    const words = this.preprocessText(text).split(/\s+/);
                     let syllableCount = 0;
                     
                     words.forEach(word => {
+                        if (word.length <= 3) {
+                            syllableCount += 1;
+                            return;
+                        }
                         word = word.replace(/(?:[^laeiouy]es|ed|[^laeiouy]e)$/, '');
                         word = word.replace(/^y/, '');
                         const matches = word.match(/[aeiouy]{1,2}/g);
-                        syllableCount += matches ? matches.length : 1;
+                        syllableCount += matches ? matches.length : 0;
                     });
                     
                     return syllableCount;
@@ -2114,57 +2123,6 @@
                 
                 // Show welcome screen initially
                 DOMElements.welcomeScreen.style.display = 'flex';
-                
-                // Set up scroll detection for dynamic island
-                setupScrollDetection();
-            }
-
-            function setupScrollDetection() {
-                let ticking = false;
-                
-                window.addEventListener('scroll', function() {
-                    if (!ticking) {
-                        window.requestAnimationFrame(function() {
-                            handleScroll();
-                            ticking = false;
-                        });
-                        ticking = true;
-                    }
-                });
-            }
-
-            function handleScroll() {
-                const currentScrollY = window.scrollY;
-                
-                // Hide dynamic island when scrolling down, show when scrolling up
-                if (currentScrollY > state.lastScrollY && currentScrollY > 100) {
-                    // Scrolling down
-                    if (state.dynamicIslandVisible) {
-                        hideDynamicIsland();
-                    }
-                } else if (currentScrollY < state.lastScrollY || currentScrollY <= 100) {
-                    // Scrolling up or at top
-                    if (!state.dynamicIslandVisible) {
-                        showDynamicIsland();
-                    }
-                }
-                
-                state.lastScrollY = currentScrollY;
-            }
-
-            function hideDynamicIsland() {
-                state.dynamicIslandVisible = false;
-                DOMElements.dynamicIsland.classList.add('hidden');
-                // Also close expanded state if open
-                if (state.dynamicIslandExpanded) {
-                    state.dynamicIslandExpanded = false;
-                    DOMElements.dynamicIsland.classList.remove('expanded');
-                }
-            }
-
-            function showDynamicIsland() {
-                state.dynamicIslandVisible = true;
-                DOMElements.dynamicIsland.classList.remove('hidden');
             }
 
             function setupEventListeners() {
@@ -2176,33 +2134,31 @@
                 document.getElementById('dynamic-upload-label').addEventListener('click', () => DOMElements.pdfUpload.click());
                 document.getElementById('dynamic-image-label').addEventListener('click', () => DOMElements.imageUpload.click());
                 document.getElementById('dynamic-copy-paste').addEventListener('click', pasteFromClipboard);
-                document.getElementById('dynamic-menu-toggle').addEventListener('click', toggleDropdown);
+                document.getElementById('dynamic-menu-toggle').addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    toggleDropdown();
+                });
 
                 // Welcome screen options
                 DOMElements.readingOption.addEventListener('click', () => selectMode('reading'));
                 DOMElements.researchOption.addEventListener('click', () => selectMode('research'));
 
-                // Dynamic Island
+                // Dynamic Island - Support both click and touch
                 DOMElements.dynamicIsland.addEventListener('click', toggleDynamicIsland);
+                DOMElements.dynamicIsland.addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    toggleDynamicIsland();
+                });
 
                 // Settings
                 document.getElementById('settings-close-btn').addEventListener('click', () => DOMElements.settingsOverlay.classList.remove('visible'));
                 DOMElements.settingsOverlay.addEventListener('click', e => { if (e.target === DOMElements.settingsOverlay) DOMElements.settingsOverlay.classList.remove('visible'); });
                 DOMElements.themeOptions.addEventListener('change', handleThemeChange);
-
-                // Dropdown menu
-                document.getElementById('dropdown-download-pdf').addEventListener('click', downloadTextAsPDF);
-                document.getElementById('dropdown-ai-assistant').addEventListener('click', toggleAiSidebar);
-                document.getElementById('dropdown-settings').addEventListener('click', () => {
-                    DOMElements.settingsOverlay.classList.add('visible');
-                    toggleDropdown();
-                });
-                document.getElementById('dropdown-export-text').addEventListener('click', exportAsText);
-                document.getElementById('dropdown-clear-document').addEventListener('click', clearDocument);
-
+                
                 // Close dropdown when clicking outside
                 document.addEventListener('click', (e) => {
-                    if (state.dropdownOpen && !e.target.closest('.dynamic-island')) {
+                    const dropdown = document.getElementById('dynamic-dropdown');
+                    if (state.dropdownOpen && !e.target.closest('.dynamic-island') && dropdown && !dropdown.contains(e.target)) {
                         toggleDropdown(false);
                     }
                 });
@@ -2242,18 +2198,23 @@
             function toggleDropdown(show) {
                 state.dropdownOpen = show !== undefined ? show : !state.dropdownOpen;
                 
-                // Create dropdown if it doesn't exist
                 let dropdown = document.getElementById('dynamic-dropdown');
                 if (!dropdown) {
                     dropdown = document.createElement('div');
                     dropdown.id = 'dynamic-dropdown';
                     dropdown.className = 'dropdown-menu';
+                    document.body.appendChild(dropdown);
+                    
                     dropdown.innerHTML = `
                         <a href="#" class="dropdown-item" id="dropdown-download-pdf">
                             <i class="fas fa-file-pdf"></i>
                             <span>Download as PDF</span>
                         </a>
-                        <a href="#" class="dropdown-item" id="dropdown-ai-assistant">
+                        <a href="#" class="dropdown-item" id="dropdown-export-text">
+                            <i class="fas fa-file-export"></i>
+                            <span>Export as Text</span>
+                        </a>
+                         <a href="#" class="dropdown-item" id="dropdown-ai-assistant">
                             <i class="fas fa-robot"></i>
                             <span>AI Assistant</span>
                         </a>
@@ -2262,18 +2223,12 @@
                             <i class="fas fa-cog"></i>
                             <span>Settings</span>
                         </a>
-                        <a href="#" class="dropdown-item" id="dropdown-export-text">
-                            <i class="fas fa-file-export"></i>
-                            <span>Export as Text</span>
-                        </a>
                         <a href="#" class="dropdown-item" id="dropdown-clear-document">
                             <i class="fas fa-trash"></i>
                             <span>Clear Document</span>
                         </a>
                     `;
-                    document.body.appendChild(dropdown);
                     
-                    // Add event listeners to new dropdown items
                     document.getElementById('dropdown-download-pdf').addEventListener('click', downloadTextAsPDF);
                     document.getElementById('dropdown-ai-assistant').addEventListener('click', toggleAiSidebar);
                     document.getElementById('dropdown-settings').addEventListener('click', () => {
@@ -2285,53 +2240,38 @@
                 }
                 
                 if (state.dropdownOpen) {
-                    // Position dropdown below dynamic island
                     const islandRect = DOMElements.dynamicIsland.getBoundingClientRect();
                     dropdown.style.top = (islandRect.bottom + 10) + 'px';
-                    dropdown.style.left = '50%';
+                    dropdown.style.left = islandRect.left + (islandRect.width / 2) + 'px';
                     dropdown.style.transform = 'translateX(-50%)';
                     dropdown.classList.add('show');
                 } else {
                     dropdown.classList.remove('show');
                 }
-                
-                // Collapse dynamic island when opening dropdown on mobile
-                if (window.innerWidth <= 768 && state.dropdownOpen) {
-                    state.dynamicIslandExpanded = false;
-                    DOMElements.dynamicIsland.classList.remove('expanded');
-                }
             }
 
             function toggleDynamicIsland() {
-                if (window.innerWidth <= 768) {
-                    state.dynamicIslandExpanded = !state.dynamicIslandExpanded;
-                    DOMElements.dynamicIsland.classList.toggle('expanded', state.dynamicIslandExpanded);
-                    
-                    // Auto-collapse after 5 seconds
-                    if (state.dynamicIslandExpanded) {
-                        setTimeout(() => {
-                            if (state.dynamicIslandExpanded) {
-                                toggleDynamicIsland();
-                            }
-                        }, 5000);
-                    }
+                if (state.dropdownOpen) {
+                    toggleDropdown(false);
                 }
+                state.dynamicIslandExpanded = !state.dynamicIslandExpanded;
+                DOMElements.dynamicIsland.classList.toggle('expanded', state.dynamicIslandExpanded);
             }
-
+            
             function selectMode(mode) {
                 state.currentAppMode = mode;
-                DOMElements.welcomeScreen.style.display = 'none';
-                DOMElements.dynamicIsland.classList.add('expanded');
-                
+                DOMElements.welcomeScreen.style.animation = 'welcome-fade-out 0.5s ease-out forwards';
                 setTimeout(() => {
-                    DOMElements.dynamicIsland.classList.add('hidden');
-                    setTimeout(() => {
-                        DOMElements.dynamicIsland.classList.remove('expanded', 'hidden');
-                    }, 500);
-                }, 2000);
-                
+                    DOMElements.welcomeScreen.style.display = 'none';
+                }, 500);
+
+                if (mode === 'research') {
+                    toggleMode('text'); // Switch to text mode for research
+                }
+
                 showToast(`Welcome to ${mode === 'reading' ? 'Reading' : 'Research'} Mode!`, 'success');
             }
+
 
             function copyToClipboard(outputId) {
                 const outputElement = document.getElementById(outputId);
@@ -2354,8 +2294,10 @@
             async function pasteFromClipboard() {
                 try {
                     const text = await navigator.clipboard.readText();
+                    if (state.currentMode !== 'text') {
+                         toggleMode('text');
+                    }
                     DOMElements.textEditor.textContent += text;
-                    toggleMode('text');
                     showToast('Text pasted successfully!', 'success');
                 } catch (err) {
                     console.error('Failed to read clipboard contents: ', err);
@@ -2373,37 +2315,26 @@
             }
 
             function updateUIMode() {
-                if (state.currentMode === 'pdf') {
-                    DOMElements.pdfViewer.style.display = 'block';
-                    DOMElements.textEditor.style.display = 'none';
-                    DOMElements.emptyState.style.display = 'none';
-                } else {
-                    DOMElements.pdfViewer.style.display = 'none';
-                    DOMElements.textEditor.style.display = 'block';
-                    if(state.extractedText || DOMElements.textEditor.textContent){
-                        DOMElements.emptyState.style.display = 'none';
-                    }
-                }
+                const isPdfMode = state.currentMode === 'pdf';
+                const hasContent = state.pdfDoc || (DOMElements.textEditor.textContent || state.extractedText).trim().length > 0;
+
+                DOMElements.pdfViewer.style.display = isPdfMode ? 'block' : 'none';
+                DOMElements.textEditor.style.display = isPdfMode ? 'none' : 'block';
+                DOMElements.emptyState.style.display = hasContent ? 'none' : 'flex';
             }
+
 
             function toggleAiSidebar() {
                 const isOpen = DOMElements.aiSidebar.classList.toggle('open');
                 DOMElements.mainContent.classList.toggle('sidebar-open', isOpen);
                 
-                // Collapse dynamic island when opening sidebar on mobile
-                if (window.innerWidth <= 768 && isOpen) {
-                    state.dynamicIslandExpanded = false;
-                    DOMElements.dynamicIsland.classList.remove('expanded');
-                }
-                
-                // Close dropdown if open
                 if (state.dropdownOpen) {
                     toggleDropdown(false);
                 }
             }
 
             function loadSettings() {
-                const theme = localStorage.getItem('optichain_theme') || 'apple-notes';
+                const theme = localStorage.getItem('gridora_theme') || 'apple-notes';
                 document.documentElement.setAttribute('data-theme', theme);
                 const themeInput = document.querySelector(`#themeOptions input[value="${theme}"]`);
                 if (themeInput) themeInput.checked = true;
@@ -2411,7 +2342,7 @@
 
             function handleThemeChange(e) {
                 document.documentElement.setAttribute('data-theme', e.target.value);
-                localStorage.setItem('optichain_theme', e.target.value);
+                localStorage.setItem('gridora_theme', e.target.value);
             }
 
             function handleFileSelect(event) {
@@ -2427,6 +2358,9 @@
             function handleImageUpload(event) {
                 const file = event.target.files[0];
                 if (file && file.type.startsWith('image/')) {
+                     if (state.currentMode !== 'text') {
+                        toggleMode('text');
+                    }
                     insertImage(file);
                 } else {
                     showToast('Please select a valid image file.', 'error');
@@ -2438,6 +2372,7 @@
                 reader.onload = function(e) {
                     const imageContainer = document.createElement('div');
                     imageContainer.className = 'image-container';
+                    imageContainer.contentEditable = false; // Make container non-editable
                     
                     const img = document.createElement('img');
                     img.src = e.target.result;
@@ -2453,10 +2388,12 @@
                     imageContainer.appendChild(img);
                     imageContainer.appendChild(removeBtn);
                     
-                    // Insert image at the end of the text editor
+                    // Insert a non-breaking space for cursor placement
+                    const space = document.createTextNode('\u00A0');
+
                     DOMElements.textEditor.appendChild(imageContainer);
-                    
-                    // Scroll to the image
+                    DOMElements.textEditor.appendChild(space);
+
                     imageContainer.scrollIntoView({ behavior: 'smooth' });
                     
                     showToast('Image uploaded successfully!', 'success');
@@ -2470,6 +2407,9 @@
                     DOMElements.documentTitle.value = file.name.replace('.pdf', '');
                     loadPdfFromFile(file);
                 } else if (file && file.type.startsWith('image/')) {
+                    if (state.currentMode !== 'text') {
+                        toggleMode('text');
+                    }
                     insertImage(file);
                 } else {
                     showToast('Dropped file is not a valid PDF or image.', 'error');
@@ -2490,7 +2430,6 @@
                 try {
                     state.pdfDoc = await pdfjsLib.getDocument(typedarray).promise;
                     DOMElements.pdfViewer.innerHTML = '';
-                    DOMElements.emptyState.style.display = 'none';
                     
                     let textPromises = [];
                     for (let i = 1; i <= state.pdfDoc.numPages; i++) {
@@ -2502,7 +2441,6 @@
                     for (let pageNum = 1; pageNum <= state.pdfDoc.numPages; pageNum++) {
                         await renderPage(pageNum, allTextContents[pageNum - 1]);
                     }
-                    resetAiOutputs();
                     toggleMode('pdf');
                     showToast('PDF loaded successfully!', 'success');
                 } catch (error) {
@@ -2511,6 +2449,7 @@
                 } finally {
                     state.isPdfLoading = false;
                     setLoadingState(false);
+                    updateUIMode();
                 }
             }
 
@@ -2534,7 +2473,7 @@
             }
 
             function getDocumentText() {
-                return (state.currentMode === 'pdf' ? state.extractedText : DOMElements.textEditor.textContent).trim();
+                 return (state.currentMode === 'pdf' ? state.extractedText : DOMElements.textEditor.innerText).trim();
             }
 
             function resetAiOutputs() {
@@ -2546,16 +2485,12 @@
                 document.getElementById('analysis-output').textContent = 'Analyze the sentiment and tone of the document.';
                 document.getElementById('search-results').textContent = 'Find relevant information from the web. This will open in a new tab.';
                 
-                // Hide all copy buttons
-                document.querySelectorAll('.copy-btn').forEach(btn => {
-                    btn.style.display = 'none';
-                });
+                document.querySelectorAll('.copy-btn').forEach(btn => btn.style.display = 'none');
             }
 
             async function handleAIAction(action, options = {}) {
                 if (state.isAiProcessing && action !== 'search') return;
 
-                // Special case for web search to open a new tab immediately
                 if(action === 'search'){
                     const searchQuery = document.getElementById('search-input').value.trim();
                     if (!searchQuery) { showToast('Please enter a search query.', 'error'); return; }
@@ -2564,72 +2499,59 @@
                     window.open(`https://www.google.com/search?q=${fullQuery}`, '_blank');
                     return;
                 }
-
-                const title = DOMElements.documentTitle.value.trim();
-                if (!title) {
-                    showToast('Please provide a title for the document before using AI features.', 'error');
-                    return;
-                }
-
+                
                 const text = getDocumentText();
-                if (text.length < 50 && action !== 'fix-grammar') {
+                if (text.length < 50 && action !== 'fix-grammar' && action !== 'writing') {
                     showToast('Please provide at least 50 characters of text for AI analysis.', 'error');
                     return;
                 }
 
-                const buttonMap = {
-                    summarize: 'summarize-btn-medium', 
-                    qa: 'qa-btn', 
-                    writing: 'writing-btn', 
-                    'fix-grammar': 'fix-grammar-btn', 
+                const buttonIdMap = {
+                    summarize: options.size ? `summarize-btn-${options.size}` : 'summarize-btn-medium',
+                    qa: 'qa-btn',
+                    writing: 'writing-btn',
+                    'fix-grammar': 'fix-grammar-btn',
                     keypoints: 'keypoints-btn',
-                    quiz: 'quiz-btn', 
+                    quiz: 'quiz-btn',
                     analysis: 'analysis-btn',
                     'key-insights': 'key-insights-btn'
                 };
-                
-                const outputMap = {
-                    summarize: 'summary-output', 
-                    qa: 'qa-answer', 
-                    writing: 'writing-output', 
-                    'fix-grammar': 'writing-output', 
+
+                const outputIdMap = {
+                    summarize: 'summary-output',
+                    qa: 'qa-answer',
+                    writing: 'writing-output',
+                    'fix-grammar': 'writing-output',
                     keypoints: 'keypoints-output',
-                    quiz: 'quiz-output', 
+                    quiz: 'quiz-output',
                     analysis: 'analysis-output',
                     'key-insights': 'summary-output'
                 };
 
-                const button = document.getElementById(buttonMap[action]);
-                const outputEl = document.getElementById(outputMap[action]);
-                const copyBtn = document.getElementById(`copy-${outputMap[action].replace('-output', '')}-btn`);
+                const button = document.getElementById(buttonIdMap[action]);
+                const outputEl = document.getElementById(outputIdMap[action]);
+                const copyBtn = document.getElementById(`copy-${outputIdMap[action].replace('-output','').replace('-answer','-qa')}-btn`);
                 const originalHTML = button ? button.innerHTML : '';
-
-                state.isAiProcessing = true;
-                document.querySelectorAll('.ai-button, .summary-option-btn').forEach(btn => btn.disabled = true);
-                if (action !== 'summarize' && button) {
-                    button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Thinking...';
-                } else if (action === 'summarize') {
-                    document.querySelectorAll('.summary-option-btn').forEach(b => {
-                        b.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-                    });
-                }
-
-                await new Promise(resolve => setTimeout(resolve, 50));
+                
+                setAIProcessing(true, button);
+               
+                await new Promise(resolve => setTimeout(resolve, 50)); // Allow UI to update
 
                 try {
-                    let result;
+                    let result = '';
+                    let formatAsHTML = false;
+
                     switch (action) {
                         case 'summarize': 
                             result = AI.generateSummary(text, options.size);
-                            await typeEffect(outputEl, result);
                             break;
                         case 'key-insights':
                             result = AI.generateKeyInsights(text);
-                            outputEl.innerHTML = result.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                            formatAsHTML = true;
                             break;
                         case 'writing':
                             result = AI.analyzeWriting(text);
-                            outputEl.innerHTML = result.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                             formatAsHTML = true;
                             break;
                         case 'fix-grammar':
                             if (state.currentMode !== 'text') {
@@ -2645,56 +2567,66 @@
                             const question = document.getElementById('qa-input').value.trim();
                             if (!question) { showToast('Please enter a question.', 'error'); throw new Error('No Question'); }
                             result = AI.answerQuestion(text, question);
-                            outputEl.innerHTML = result;
+                             formatAsHTML = true;
                             break;
                         case 'keypoints': 
                             result = AI.extractKeyPoints(text);
-                            await typeEffect(outputEl, result);
                             break;
                         case 'quiz':
                             result = AI.generateQuiz(text);
-                            outputEl.innerHTML = result;
+                            formatAsHTML = true;
                             break;
                         case 'analysis':
                             result = AI.analyzeContent(text);
-                            outputEl.innerHTML = result.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                             formatAsHTML = true;
                             break;
                         default: throw new Error('Unknown action.');
                     }
+                    
+                    if (action !== 'fix-grammar') {
+                         if (formatAsHTML) {
+                            outputEl.innerHTML = result.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
+                        } else {
+                            await typeEffect(outputEl, result);
+                        }
+                    }
 
-                    // Show copy button if we have content
                     if (result && copyBtn) {
                         copyBtn.style.display = 'block';
                     }
 
-                    // Add animation to AI response
                     outputEl.classList.add('ai-response');
-                    setTimeout(() => {
-                        outputEl.classList.remove('ai-response');
-                    }, 500);
+                    setTimeout(() => outputEl.classList.remove('ai-response'), 500);
 
                 } catch (error) {
-                    if(error.message !== 'No Question' && error.message !== 'No Query' && error.message !== 'Wrong mode') {
+                    if (error.message !== 'No Question' && error.message !== 'Wrong mode') {
                         console.error(`AI action '${action}' failed:`, error);
                         outputEl.textContent = `An error occurred. Please try again.`;
                     }
                 } finally {
-                    state.isAiProcessing = false;
-                    document.querySelectorAll('.ai-button, .summary-option-btn').forEach(btn => btn.disabled = false);
-                    if (action !== 'summarize' && button) {
-                        button.innerHTML = originalHTML;
-                    } else if (action === 'summarize') {
-                        document.getElementById('summarize-btn-small').innerHTML = "Small";
-                        document.getElementById('summarize-btn-medium').innerHTML = "Medium";
-                        document.getElementById('summarize-btn-large').innerHTML = "Large";
-                    }
+                    setAIProcessing(false, button, originalHTML);
                 }
             }
+            
+            function setAIProcessing(isProcessing, button, originalHTML = '') {
+                 state.isAiProcessing = isProcessing;
+                 document.querySelectorAll('.ai-button, .summary-option-btn').forEach(btn => btn.disabled = isProcessing);
+                 if (button) {
+                     button.innerHTML = isProcessing ? '<i class="fas fa-spinner fa-spin"></i> Thinking...' : originalHTML;
+                 }
+                 if (!isProcessing) {
+                    // Restore original text for summary buttons
+                    document.getElementById('summarize-btn-small').innerHTML = "Small";
+                    document.getElementById('summarize-btn-medium').innerHTML = "Medium";
+                    document.getElementById('summarize-btn-large').innerHTML = "Large";
+                 }
+            }
 
-            async function typeEffect(element, text, speed = 15) {
-                element.textContent = '';
+
+            async function typeEffect(element, text, speed = 10) {
+                element.innerHTML = '';
                 for (let i = 0; i < text.length; i++) {
-                    element.textContent += text.charAt(i);
+                    element.innerHTML += text.charAt(i);
                     await new Promise(resolve => setTimeout(resolve, speed));
                 }
             }
@@ -2713,13 +2645,20 @@
             }
 
             function setLoadingState(isLoading, message = '') {
-                if(isLoading){
-                    DOMElements.pdfViewer.innerHTML = `<div style="text-align: center; padding: 2rem;"><i class="fas fa-spinner fa-spin fa-2x"></i><br><br>${message}</div>`;
+                const targetElement = state.currentMode === 'pdf' ? DOMElements.pdfViewer : DOMElements.textEditor;
+                if (isLoading) {
+                    const loaderHTML = `<div style="text-align: center; padding: 2rem;"><i class="fas fa-spinner fa-spin fa-2x"></i><br><br>${message}</div>`;
+                    if (state.currentMode === 'pdf') {
+                         DOMElements.pdfViewer.innerHTML = loaderHTML;
+                    } else {
+                         // For text editor, perhaps show an overlay or a message
+                    }
                 } else {
-                    if (!DOMElements.pdfViewer.hasChildNodes()){
-                        DOMElements.emptyState.style.display = 'flex';
+                    if (state.currentMode === 'pdf' && DOMElements.pdfViewer.querySelector('.fa-spinner')) {
+                         DOMElements.pdfViewer.innerHTML = '';
                     }
                 }
+                updateUIMode();
             }
 
             function showToast(message, type = 'success') {
@@ -2738,55 +2677,45 @@
 
             async function downloadTextAsPDF() {
                 const { jsPDF } = window.jspdf;
-                const editor = DOMElements.textEditor;
-                const title = DOMElements.documentTitle.value.trim();
-
-                if (!editor.textContent.trim()) {
+                const title = DOMElements.documentTitle.value.trim() || 'Untitled_Document';
+                const textToExport = getDocumentText();
+                
+                if (!textToExport) {
                     showToast("There's no text to download.", 'error');
                     return;
                 }
 
-                if (!title) {
-                    showToast("Please provide a title for the document.", 'error');
-                    return;
-                }
-
                 setLoadingState(true, "Generating PDF...");
-
+                await new Promise(resolve => setTimeout(resolve, 50));
+                
                 try {
                     const doc = new jsPDF();
+                    doc.setFont("Helvetica", "normal");
                     doc.setFontSize(18);
-                    doc.text(title, 10, 10);
+                    doc.text(title, 10, 20);
                     doc.setFontSize(12);
-                    const text = editor.textContent;
-                    const splitText = doc.splitTextToSize(text, 180); 
-                    doc.text(splitText, 10, 20);
+                    const splitText = doc.splitTextToSize(textToExport, 180); 
+                    doc.text(splitText, 10, 30);
                     doc.save(`${title.replace(/ /g, '_')}.pdf`);
                     showToast('PDF downloaded successfully!', 'success');
                 } catch (error) {
                     console.error('Error generating PDF:', error);
                     showToast('Failed to generate PDF. Please try again.', 'error');
                 } finally {
-                    setLoadingState(false);
+                   setLoadingState(false);
                 }
             }
 
             function exportAsText() {
-                const editor = DOMElements.textEditor;
-                const title = DOMElements.documentTitle.value.trim();
+                const textToExport = getDocumentText();
+                const title = DOMElements.documentTitle.value.trim() || 'Untitled_Document';
 
-                if (!editor.textContent.trim()) {
+                if (!textToExport) {
                     showToast("There's no text to export.", 'error');
                     return;
                 }
 
-                if (!title) {
-                    showToast("Please provide a title for the document.", 'error');
-                    return;
-                }
-
-                const textContent = editor.textContent;
-                const blob = new Blob([textContent], { type: 'text/plain' });
+                const blob = new Blob([textToExport], { type: 'text/plain;charset=utf-8' });
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
@@ -2800,12 +2729,12 @@
 
             function clearDocument() {
                 if (confirm('Are you sure you want to clear the document? This action cannot be undone.')) {
-                    DOMElements.textEditor.textContent = '';
+                    DOMElements.textEditor.innerHTML = '';
                     DOMElements.pdfViewer.innerHTML = '';
-                    DOMElements.documentTitle.value = '';
+                    DOMElements.documentTitle.value = 'Untitled Document';
                     state.extractedText = '';
                     state.pdfDoc = null;
-                    DOMElements.emptyState.style.display = 'flex';
+                    updateUIMode();
                     resetAiOutputs();
                     showToast('Document cleared', 'success');
                 }
