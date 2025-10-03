@@ -1,1 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <link rel="icon" href="Chronofocus.png" type="image/x-icon">
+    <title>ChronoFocus</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            /* --- Default Cozy Mocha Palette --- */
+            --background: #F9F5F0;
+            --surface: rgba(255, 255, 255, 0.65);
+            --primary: #8D6E63;
+            --primary-rgb: 141, 110, 99;
+            --primary-light: #EFEBE9;
+            --secondary: #BCAAA4;
+            --text-primary: #5D4037;
+            --text-secondary: #776B66;
+            --border-color: rgba(231, 224, 217, 0.7);
+            --success: #66BB6A;
+            --danger: #EF5350;
+            --border-radius: 22px; /* Increased for a softer look */
+            --blur-effect: blur(20px);
+            --shadow-color: rgba(93, 64, 55, 0.15);
+            --transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
 
+        /* --- Dark Mode Palette --- */
+        --dark-background: #1A1A2E;
+        --dark-surface: rgba(26, 26, 46, 0.7);
+        --dark-primary: #CBA6F7;
+        --dark-primary-rgb: 203, 166, 247;
+        --dark-primary-light: rgba(203, 166, 247, 0.1);
+        --dark-text-primary: #E0E0FF;
+        --dark-text-secondary: #A6ADC8;
+        --dark-border-color: rgba(203, 166, 247, 0.2);
+        --dark-shadow-color: rgba(0, 0, 0, 0.4);
+
+    /* Dark mode */
+    body.dark-mode {
+        --background: var(--dark-background); --surface: var(--dark-surface);
+        --primary: var(--dark-primary); --primary-rgb: var(--dark-primary-rgb);
+        --primary-light: var(--dark-primary-light); --text-primary: var(--dark-text-primary);
+        --text-secondary: var(--dark-text-secondary); --border-color: var(--dark-border-color);
+        --shadow-color: var(--dark-shadow-color);
+    }
+
+    /* --- REFINED THEME PALETTES (Improved Readability) --- */
+    body.theme-sage { --background: #F1F5F1; --surface: rgba(255, 255, 255, 0.7); --primary: #799975; --primary-rgb: 121, 153, 117; --primary-light: #E6EEE5; --text-primary: #3E513D; --text-secondary: #7E8C7D; --border-color: #E3E9E2; --shadow-color: rgba(68, 87, 66, 0.1); }
+    body.theme-rose { --background: #FDF4F6; --surface: rgba(255, 255, 255, 0.7); --primary: #D4A6B2; --primary-rgb: 212, 166, 178; --primary-light: #F9EBEF; --text-primary: #7A5862; --text-secondary: #A99299; --border-color: #F3E6E9; --shadow-color: rgba(133, 97, 107, 0.1); }
+    body.theme-mist { --background: #F0F4F8; --surface: rgba(255, 255, 255, 0.7); --primary: #94AEC3; --primary-rgb: 148, 174, 195; --primary-light: #E9EFF4; --text-primary: #4F5E6B; --text-secondary: #93A0AC; --border-color: #E2E8ED; --shadow-color: rgba(86, 104, 121, 0.1); }
+    body.theme-lavender { --background: #F8F6FC; --surface: rgba(255, 255, 255, 0.7); --primary: #9E8FB2; --primary-rgb: 158, 143, 178; --primary-light: #EFECF5; --text-primary: #524761; --text-secondary: #8C819D; --border-color: #E8E4F0; --shadow-color: rgba(90, 78, 107, 0.1); }
+    body.theme-minimalist-light { --background: #FFFFFF; --surface: rgba(248, 248, 248, 0.8); --primary: #333333; --primary-rgb: 51,51,51; --primary-light: #F1F1F1; --text-primary: #121212; --text-secondary: #666666; --border-color: #EAEAEA; --shadow-color: rgba(0,0,0,0.05); }
+    body.theme-minimalist-dark { --background: #121212; --surface: rgba(28, 28, 28, 0.8); --primary: #E0E0E0; --primary-rgb: 224,224,224; --primary-light: #2A2A2A; --text-primary: #FAFAFA; --text-secondary: #AAAAAA; --border-color: rgba(255, 255, 255, 0.15); --shadow-color: rgba(0, 0, 0, 0.5); }
+
+    @keyframes auroraGradient { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
+    body[class*="theme-aurora"] { background-size: 400% 400%; animation: auroraGradient 20s ease infinite; }
+    body.theme-aurora-boreal { --background: #0d1a26; --surface: rgba(22, 34, 48, 0.85); --primary: #50E3C2; --primary-rgb: 80, 227, 194; --primary-light: rgba(80, 227, 194, 0.15); --text-primary: #E0F5FF; --text-secondary: #A0B8D0; --border-color: rgba(80, 227, 194, 0.2); --shadow-color: rgba(0, 0, 0, 0.25); background: linear-gradient(-45deg, #0d1a26, #1a3a52, #3c164f, #1a233b); }
+    body.theme-aurora-twilight { --background: #1e1e2f; --surface: rgba(38, 38, 59, 0.9); --primary: #C792EA; --primary-rgb: 199, 146, 234; --primary-light: rgba(199, 146, 234, 0.15); --text-primary: #E6E0FF; --text-secondary: #9E93B3; --border-color: rgba(199, 146, 234, 0.2); --shadow-color: rgba(0, 0, 0, 0.25); background: linear-gradient(-45deg, #1e1e2f, #3a2e5d, #6a538d, #2f274a); }
+    body.theme-aurora-cottoncandy { --background: #fce4ec; --surface: rgba(255, 255, 255, 0.9); --primary: #F48FB1; --primary-rgb: 244, 143, 177; --primary-light: rgba(248, 187, 208, 0.25); --text-primary: #880E4F; --text-secondary: #AD1457; --border-color: rgba(248, 187, 208, 0.5); --shadow-color: rgba(136, 14, 79, 0.1); background: linear-gradient(-45deg, #fce4ec, #f8bbd0, #f48fb1, #ff80ab); }
+
+    /* --- Global Styles & Resets --- */
+    * { box-sizing: border-box; }
+    html { height: 100%; }
+    body {
+        font-family: 'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+        color: var(--text-primary);
+        transition: background 0.5s ease, color 0.5s ease;
+        background: var(--background);
+        overflow: hidden; /* Prevent body scrollbars */
+    }
+
+    /* --- Glass Effect & Card Styling --- */
+    .glass-effect {
+        background: var(--surface);
+        backdrop-filter: var(--blur-effect);
+        -webkit-backdrop-filter: var(--blur-effect);
+        border-radius: var(--border-radius);
+        box-shadow: 0 8px 32px 0 var(--shadow-color);
+        border: 1px solid var(--border-color);
+    }
+
+    /* --- App Container & Page Views --- */
+    .app-container {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        position: relative;
+        transition: all 0.5s ease;
+        border-radius: 0;
+        box-shadow: none;
+    }
+
+    main.content-area {
+        flex-grow: 1;
+        overflow-y: auto;
+        overflow-x: hidden;
+        position: relative;
+        padding: 15px 15px calc(65px + 20px) 15px;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .page {
+        position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+        padding: 20px; overflow-y: auto; opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 0.4s ease, transform 0.4s ease;
+        pointer-events: none;
+    }
+    .page.active { opacity: 1; transform: translateY(0); pointer-events: auto; }
+    .page-title { font-size: 1.6rem; font-weight: 600; margin-bottom: 20px; margin-top: 0; color: var(--text-primary); }
+
+    /* --- NEW: Dock Navigation "Dynamic Island" --- */
+    /* --- NEW: IMPROVED DOCK LAYOUT --- */
+    .dock {
+        position: absolute;
+        bottom: 15px;
+        bottom: 20px; /* Increased bottom spacing */
+        left: 50%;
+        transform: translateX(-50%);
+        width: calc(100% - 40px);
+        max-width: 380px;
+        height: 65px; /* Slightly taller for better proportions */
+        height: 70px; /* Slightly taller for a better feel */
+        z-index: 100;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        border-radius: 32.5px; /* Pill shape */
+        padding: 0 10px; /* Add some horizontal padding */
+        border-radius: 35px; /* Fully rounded pill shape */
+        padding: 0 10px;
+        /* Softer, more lifted shadow */
+        box-shadow: 0 10px 30px -10px var(--shadow-color);
+    }
+    .dock-item {
+        display: flex; flex-direction: column; align-items: center;
+        justify-content: center; gap: 4px; border: none; background: none;
+        color: var(--text-secondary); cursor: pointer;
+        width: 75px; height: 60px; /* Adjust height */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        border: none;
+        background: none;
+        color: var(--text-secondary);
+        cursor: pointer;
+        width: 80px; /* Increased tap area */
+        height: 60px;
+        transition: var(--transition);
+        border-radius: 20px; /* Rounded highlight on active/hover */
+        border-radius: 20px; /* Softer rounded highlight */
+        -webkit-tap-highlight-color: transparent;
+        position: relative; /* For icon/text animation */
+        top: 0;
+    }
+    .dock-item i { font-size: 22px; }
+    .dock-item span { font-size: 10px; font-weight: 500; opacity: 0; transition: opacity 0.3s ease; }
+    .dock-item i {
+        font-size: 24px; /* Larger icon */
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+    .dock-item span {
+        font-size: 11px;
+        font-weight: 500;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        position: absolute;
+        bottom: 8px; /* Position text inside */
+    }
+    /* Active state animation */
+    .dock-item.active {
+        color: var(--primary);
+        background: rgba(var(--primary-rgb), 0.1);
+    }
+    .dock-item.active span { opacity: 1; }
+    .dock-item:not(.active):hover { color: var(--text-primary); }
+    .dock-item.active i {
+        transform: translateY(-8px); /* Move icon up */
+    }
+    .dock-item.active span {
+        opacity: 1; /* Fade in text */
+        transform: translateY(0);
+    }
+    .dock-item:not(.active):hover {
+        color: var(--text-primary);
+        background: rgba(var(--primary-rgb), 0.05);
+    }
+
+    /* --- TASK MANAGER PAGE --- */
+    #new-task-form h3 { margin:0 0 15px; }
+    /* NEW: Input row for icon and name */
+    .task-input-row { display: flex; gap: 10px; align-items: center; margin-bottom: 10px; }
+    #task-icon { flex: 0 0 50px; text-align: center; font-size: 20px; padding: 12px 0; }
+    #task-name { flex-grow: 1; }
+
+    #new-task-form input, #new-task-form textarea, #new-task-form button {
+        width: 100%; padding: 12px; margin-bottom: 10px; border-radius: 12px;
+        width: 100%; padding: 12px; margin-bottom: 10px; border-radius: 16px; /* More rounded */
+        border: 1px solid var(--border-color); box-sizing: border-box;
+        background: var(--primary-light); color: var(--text-primary);
+        font-family: 'Poppins', sans-serif; transition: var(--transition);
+        -webkit-appearance: none;
+        font-size: 16px; /* Prevent zoom on iOS */
+        font-size: 16px;
+    }
+    #new-task-form input:focus, #new-task-form textarea:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 2px rgba(var(--primary-rgb), 0.2);
+        box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.2);
+        outline: none;
+    }
+    #new-task-form .time-inputs, .duration-inputs { display: flex; flex-direction: column; gap: 10px; }
+    #new-task-form button[type="submit"] { background-color: var(--primary); color: white; cursor: pointer; font-weight: 500; margin-top: 10px; }
+    #new-task-form button[type="submit"]:hover { filter: brightness(1.1); }
+    .or-divider { text-align: center; margin: 15px 0; color: var(--text-secondary); }
+
+    /* --- NEW: Aesthetic Task List & Items --- */
+    /* --- Aesthetic Task List & Items --- */
+    .task-list-container { margin-top: 20px; }
+    .inbox-date-header {
+        font-weight: 600;
+        font-size: 0.9rem;
+        color: var(--text-secondary);
+        margin-top: 25px;
+        margin-bottom: 10px;
+        padding-bottom: 5px;
+        border-bottom: 1px solid var(--border-color);
+    }
+    .inbox-date-header:first-of-type {
+        margin-top: 0;
+    }
+    @keyframes item-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .task-item {
+        animation: item-in 0.4s ease forwards;
+        display: flex;
+        align-items: center; /* Vertically center align content */
+        align-items: center;
+        margin-bottom: 12px;
+        padding: 15px;
+        background: var(--surface); /* Use surface color for better depth */
+        border-radius: 16px; /* Softer, rounder edges */
+        background: var(--surface);
+        border-radius: 18px; /* Softer edges */
+        border: 1px solid var(--border-color);
+        box-shadow: 0 4px 16px rgba(var(--primary-rgb), 0.05); /* Add subtle shadow */
+        box-shadow: 0 4px 16px rgba(var(--primary-rgb), 0.05);
+        transition: all 0.3s ease;
+        position: relative;
+    }
+    .task-item.completed {
+        background: none;
+        box-shadow: none;
+        opacity: 0.7;
+    }
+    .task-item.completed .task-item-content { text-decoration: line-through; color: var(--text-secondary); }
+
+    .task-item .task-icon { font-size: 24px; margin-right: 15px; flex-shrink: 0; }
+    .task-item .task-icon {
+        font-size: 20px;
+        margin-right: 15px;
+        flex-shrink: 0;
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--primary-light);
+    }
+    .task-item-content { flex-grow: 1; }
+    .task-item strong { display: block; }
+    .task-item-meta { font-size: 0.8em; color: var(--text-secondary); }
+@@ -213,6 +265,15 @@
+        -webkit-tap-highlight-color: transparent;
+    }
+    .task-item button:hover { color: var(--primary); }
+    .task-item .complete-task {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        font-size: 20px;
+    }
+    .task-item .actions .start-focus, .task-item .actions .delete-task {
+        margin-left: 5px;
+    }
+
+    /* --- CALENDAR VIEW --- */
+    #calendar-view-page header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+@@ -235,29 +296,73 @@
+        background-color: var(--primary); border-radius: 50%;
+    }
+
+    /* --- SETTINGS PAGE --- */
+    #settings-page .settings-group { margin-bottom: 25px; }
+    /* --- NEW: IMPROVED SETTINGS PAGE --- */
+    #settings-page .settings-group {
+        margin-bottom: 20px;
+        padding: 20px;
+        /* Applying the glass effect to each group */
+        background: var(--surface);
+        backdrop-filter: var(--blur-effect);
+        -webkit-backdrop-filter: var(--blur-effect);
+        border-radius: var(--border-radius);
+        box-shadow: 0 8px 32px 0 var(--shadow-color);
+        border: 1px solid var(--border-color);
+    }
+    #settings-page .settings-group h4 {
+        margin-top: 0; margin-bottom: 10px; color: var(--text-primary);
+        border-bottom: 1px solid var(--border-color); padding-bottom: 5px;
+        margin-top: 0; margin-bottom: 15px; color: var(--text-primary);
+        border-bottom: 1px solid var(--border-color);
+        padding-bottom: 10px;
+        font-weight: 600; /* Bolder headings */
+    }
+    .settings-option { margin-bottom: 15px; }
+    .settings-option label { display: block; margin-bottom: 8px; font-weight: 500; font-size: 0.9em; }
+    .settings-option input[type="number"], .settings-option select, .settings-option input[type="color"] {
+        width: 100%; padding: 10px; border-radius: 10px; border: 1px solid var(--border-color);
+        background: var(--primary-light); color: var(--text-primary);
+    .settings-option { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+    .settings-option label {
+        flex-grow: 1;
+        margin: 0; /* Removed bottom margin */
+        font-weight: 500; font-size: 1em;
+        padding-right: 15px; /* Add space between label and input */
+    }
+    .settings-option input, .settings-option select {
+        width: auto;
+        flex-basis: 50%; /* Assign a base width for inputs */
+        max-width: 150px;
+        padding: 12px;
+        border-radius: 14px; /* More rounded */
+        border: 1px solid var(--border-color);
+        background: var(--primary-light);
+        color: var(--text-primary);
+        font-size: 16px;
+        transition: var(--transition);
+        -webkit-appearance: none;
+    }
+     .settings-option input[type="color"] {
+        flex-basis: 60px; height: 40px; padding: 5px;
+        border-radius: 12px;
+    }
+     .settings-option select {
+        appearance: menulist; /* Native dropdown arrow */
+        -webkit-appearance: menulist;
+    }
+    .theme-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 10px; margin-top: 15px; }
+
+    .theme-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 15px; margin-top: 15px; }
+    .theme-item {
+        height: 60px; border-radius: 12px; cursor: pointer;
+        transition: transform 0.2s, box-shadow 0.2s; position: relative; overflow: hidden;
+        height: 60px;
+        border-radius: 16px; /* More rounded */
+        cursor: pointer;
+        transition: transform 0.2s, box-shadow 0.3s;
+        position: relative;
+        overflow: hidden;
+        border: 2px solid transparent;
+    }
+    .theme-item:hover { transform: scale(1.05); }
+    .theme-item.active { box-shadow: 0 0 0 3px var(--primary); }
+    .theme-item.active {
+        box-shadow: 0 0 0 3px var(--primary);
+        border-color: var(--background); /* Inner border to not affect layout */
+    }
+    .theme-item .theme-name {
+        position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.5);
+        color: white; padding: 3px; font-size: 0.7em; text-align: center;
+        position: absolute; bottom: 0; left: 0; right: 0;
+        background: rgba(0,0,0,0.5);
+        color: white; padding: 4px; font-size: 0.7em;
+        text-align: center;
+    }
+
+    /* --- AI Assistant --- */
+@@ -286,7 +391,7 @@
+    .ai-send { background: var(--primary); color: white; border-radius: 50%; width: 40px; height: 40px; margin-left: 10px; }
+    @keyframes modal-in { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+
+    /* --- NEW: Focus View --- */
+    /* --- Focus View --- */
+    .focus-view-container {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: none;
+        flex-direction: column; justify-content: center; align-items: center;
+@@ -297,14 +402,14 @@
+    .focus-view-container.dark-mode { background: #121212; color: #FFFFFF; }
+    .color-fill-bg { position: absolute; top: 0; left: 0; width: 100%; height: 0; z-index: -1; transition: height 1s linear; }
+    .focus-content { text-align: center; z-index: 1; padding: 20px; }
+    /* NEW: Icon in focus view */
+    #focus-task-icon { font-size: 2.5rem; margin-bottom: 10px; }
+    #focus-task-name { font-size: 1.5rem; margin-bottom: 20px; }
+    #focus-timer { font-size: 2.5rem; font-weight: 300; margin: 20px 0; letter-spacing: 2px; }
+    #focus-status-text { text-transform: uppercase; letter-spacing: 2px; margin-bottom: 30px; }
+    .focus-controls button {
+        background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.3);
+        padding: 12px 18px; margin: 5px; border-radius: 8px; cursor: pointer; transition: background 0.3s;
+        padding: 12px 18px; margin: 5px; border-radius: 12px; /* rounder */
+        cursor: pointer; transition: background 0.3s;
+        -webkit-tap-highlight-color: transparent;
+    }
+    .focus-view-container.light-mode button { background: rgba(0,0,0,0.05); border: 1px solid rgba(0,0,0,0.1); color: #121212; }
+@@ -331,7 +436,6 @@
+            <div class="card glass-effect" style="padding: 15px;">
+                 <form id="new-task-form">
+                    <h3>New Task</h3>
+                     <!-- NEW: Task Input Row with Icon -->
+                     <div class="task-input-row">
+                         <input type="text" id="task-icon" placeholder="🗓️" maxlength="2">
+                         <input type="text" id="task-name" placeholder="What is your focus?" required>
+@@ -377,33 +481,48 @@
+        <!-- PAGE: SETTINGS -->
+        <div id="settings-page" class="page">
+            <h1 class="page-title">Settings</h1>
+
+            <div class="settings-group">
+                <h4>Appearance</h4>
+                <div class="settings-option">
+                    <label for="theme-selector">Theme</label>
+                    <div class="theme-grid" id="theme-grid"></div>
+                </div>
+                <div class="settings-option">
+                <div class="theme-grid" id="theme-grid"></div>
+                 <div class="settings-option" style="margin-top: 20px;">
+                    <label for="focus-fill-color">Focus Session Color</label>
+                    <input type="color" id="focus-fill-color" value="#8D6E63">
+                </div>
+            </div>
+
+            <div class="settings-group">
+                <h4>Pomodoro</h4>
+                <div class="settings-option"><label>Pomodoro Duration (min)</label><input type="number" id="pomodoro-duration" value="25"></div>
+                <div class="settings-option"><label>Short Break (min)</label><input type="number" id="break-duration" value="5"></div>
+                <div class="settings-option"><label>Long Break (min)</label><input type="number" id="long-break-duration" value="15"></div>
+                <div class="settings-option">
+                    <label>Pomodoro (min)</label>
+                    <input type="number" id="pomodoro-duration" value="25">
+                </div>
+                <div class="settings-option">
+                    <label>Short Break (min)</label>
+                    <input type="number" id="break-duration" value="5">
+                </div>
+                <div class="settings-option">
+                    <label>Long Break (min)</label>
+                    <input type="number" id="long-break-duration" value="15">
+                </div>
+            </div>
+
+            <div class="settings-group">
+                <h4>General</h4>
+                <div class="settings-option">
+                    <label for="auto-delete">Auto-delete completed tasks after</label>
+                    <label for="auto-delete">Auto-delete tasks after</label>
+                    <select id="auto-delete">
+                        <option value="0">Never</option><option value="1">1 day</option>
+                        <option value="7">1 week</option><option value="30">1 month</option>
+                        <option value="0">Never</option>
+                        <option value="1">1 day</option>
+                        <option value="7">1 week</option>
+                        <option value="30">1 month</option>
+                    </select>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+@@ -432,7 +551,7 @@
+    </div>
+</div>
+
+<!-- NEW: FOCUS VIEW MODAL with Icon -->
+<!-- FOCUS VIEW MODAL -->
+<div class="focus-view-container" id="focus-view">
+    <div class="color-fill-bg" id="color-fill-bg"></div>
+    <div class="focus-content">
+@@ -451,6 +570,7 @@
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    // --- State Management ---
+    const TASKS_STORAGE_KEY = 'chronoFocusTasks';
+    let tasks = [];
+    let currentDate = new Date();
+    let selectedCalendarDate = new Date();
+@@ -472,7 +592,6 @@
+    const calendarTaskListTitle = document.getElementById('calendar-task-list-title');
+
+    const taskForm = document.getElementById('new-task-form');
+    // NEW: Icon input selector
+    const taskIconInput = document.getElementById('task-icon');
+    const taskNameInput = document.getElementById('task-name');
+    const taskDateInput = document.getElementById('task-date');
+@@ -487,7 +606,6 @@
+
+    const focusView = document.getElementById('focus-view');
+    const colorFillBg = document.getElementById('color-fill-bg');
+    // NEW: Focus task icon selector
+    const focusTaskIconEl = document.getElementById('focus-task-icon');
+    const focusTaskNameEl = document.getElementById('focus-task-name');
+    const focusTimerEl = document.getElementById('focus-timer');
+@@ -518,21 +636,28 @@
+         {name: 'Cotton Candy', value: 'theme-aurora-cottoncandy', category: 'aurora', color: 'linear-gradient(-45deg, #fce4ec, #f8bbd0, #f48fb1, #ff80ab)'},
+    ];
+
+    // --- CORE LOGIC ---
+    // --- CORE LOGIC (IMPROVED LOCAL STORAGE) ---
+    function saveAndRerender() {
+        localStorage.setItem('focusTimerTasks', JSON.stringify(tasks));
+        try {
+            localStorage.setItem(TASKS_STORAGE_KEY, JSON.stringify(tasks));
+        } catch (error) {
+            console.error("Failed to save tasks to localStorage:", error);
+        }
+        renderAllTaskLists();
+        renderCalendar();
+    }
+
+    function loadTasks() {
+        const storedTasks = localStorage.getItem('focusTimerTasks');
+        tasks = storedTasks ? JSON.parse(storedTasks) : [];
+        try {
+            const storedTasks = localStorage.getItem(TASKS_STORAGE_KEY);
+            tasks = storedTasks ? JSON.parse(storedTasks) : [];
+        } catch (error) {
+            console.error("Failed to parse tasks from localStorage:", error);
+            tasks = [];
+        }
+    }
+    
+    // REMOVED getIconForTask function as it's no longer needed.
+
+    // --- RENDERING (MODIFIED) ---
+    // --- RENDERING (IMPROVED TASK ITEM) ---
+    function renderTaskItem(task) {
+        const taskItem = document.createElement('div');
+        taskItem.className = `task-item ${task.completed ? 'completed' : ''}`;
+@@ -541,34 +666,66 @@
+        const durationInfo = task.duration ? `${task.duration} min` : '';
+        const meta = [timeInfo, durationInfo].filter(Boolean).join(' • ');
+
+        // NEW: Uses task.icon for the icon display
+        taskItem.innerHTML = `
+            <button class="complete-task" title="${task.completed ? 'Mark Incomplete' : 'Mark Complete'}">${task.completed ? '<i class="fas fa-undo"></i>' : '<i class="fas fa-check"></i>'}</button>
+            <div class="task-icon">${task.icon || '📌'}</div>
+            <div class="task-item-content">
+                <strong>${task.name}</strong>
+                <p class="task-item-meta">${meta}</p>
+            </div>
+            <div class="actions">
+               ${!task.completed ? `<button class="start-focus" title="Start Focus"><i class="fas fa-play"></i></button>` : ''}
+               <button class="complete-task" title="${task.completed ? 'Mark Incomplete' : 'Mark Complete'}">${task.completed ? '<i class="fas fa-undo"></i>' : '<i class="fas fa-check"></i>'}</button>
+               <button class="delete-task" title="Delete Task"><i class="fas fa-trash"></i></button>
+            </div>`;
+        return taskItem;
+    }
+
+    function renderAllTaskLists() {
+        // --- IMPROVED INBOX RENDERING ---
+        inboxTaskList.innerHTML = '';
+        tasks.sort((a,b) => new Date(a.date) - new Date(b.date)).forEach(task => inboxTaskList.appendChild(renderTaskItem(task)));
+        if (tasks.length === 0) inboxTaskList.innerHTML = '<p>Your inbox is empty. Add a task in the Manager tab!</p>';
+        const sortedTasks = [...tasks].sort((a, b) => new Date(a.date) - new Date(b.date));
+
+        const tasksByDate = sortedTasks.reduce((acc, task) => {
+            (acc[task.date] = acc[task.date] || []).push(task);
+            return acc;
+        }, {});
+
+        const today = new Date();
+        const tomorrow = new Date();
+        tomorrow.setDate(today.getDate() + 1);
+
+        const todayStr = toYYYYMMDD(today);
+        const tomorrowStr = toYYYYMMDD(tomorrow);
+
+        const dateHeadings = {
+            [todayStr]: "Today",
+            [tomorrowStr]: "Tomorrow"
+        };
+
+        if (Object.keys(tasksByDate).length > 0) {
+            for (const dateStr in tasksByDate) {
+                const headerText = dateHeadings[dateStr] || new Date(dateStr + 'T00:00:00').toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' });
+                const header = document.createElement('h4');
+                header.className = 'inbox-date-header';
+                header.textContent = headerText;
+                inboxTaskList.appendChild(header);
+
+                tasksByDate[dateStr].forEach(task => inboxTaskList.appendChild(renderTaskItem(task)));
+            }
+        } else {
+            inboxTaskList.innerHTML = '<p>Your inbox is empty. Add a task in the Manager tab!</p>';
+        }
+
+
+        // --- MANAGER & CALENDAR LISTS (UNCHANGED) ---
+        managerTaskList.innerHTML = '';
+        const todayStr = toYYYYMMDD(new Date());
+        tasks.filter(t => t.date === todayStr).forEach(task => managerTaskList.appendChild(renderTaskItem(task)));
+        if (managerTaskList.innerHTML === '') managerTaskList.innerHTML = '<p>No tasks for today.</p>';
+
+        renderTasksForCalendarDate(selectedCalendarDate);
+    }
+
+
+    function renderTasksForCalendarDate(date) {
+        const dateStr = toYYYYMMDD(date);
+        calendarTaskList.innerHTML = '';
+@@ -629,7 +786,7 @@
+        });
+    }
+
+    // --- Task Handling (MODIFIED) ---
+    // --- Task Handling ---
+    taskForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        let duration = (parseInt(taskHoursInput.value) || 0) * 60 + (parseInt(taskMinutesInput.value) || 0);
+@@ -641,16 +798,15 @@
+        if (duration <= 0 && (!taskStartTimeInput.value || !taskEndTimeInput.value)) {
+            // Allow creating tasks with 0 duration if no times are set
+        } else if (duration < 0) {
+             return; // Prevent tasks with negative duration
+             return;
+        }
+        if(!taskNameInput.value.trim()) return;
+
+        // NEW: Added 'icon' to the task object
+        tasks.push({
+            id: Date.now().toString(),
+            name: taskNameInput.value.trim(),
+            date: taskDateInput.value,
+            icon: taskIconInput.value || '📌', // Default icon
+            icon: taskIconInput.value || '📌',
+            startTime: taskStartTimeInput.value,
+            endTime: taskEndTimeInput.value,
+            duration: duration,
+@@ -681,15 +837,14 @@
+        saveAndRerender();
+    });
+
+    // --- FOCUS TIMER (MODIFIED) ---
+    // --- FOCUS TIMER ---
+    function startFocusSession(task) {
+        currentTaskID = task.id;
+        timeRemaining = totalDuration = task.duration * 60;
+        
+        // NEW: Set the icon and name on the focus view
+
+        focusTaskIconEl.textContent = task.icon || '📌';
+        focusTaskNameEl.textContent = task.name;
+        
+
+        focusTimerEl.textContent = formatTime(timeRemaining);
+        isPaused = false;
+        pauseResumeBtn.textContent = 'Pause';
+@@ -842,44 +997,43 @@
+        taskName = taskName.charAt(0).toUpperCase() + taskName.slice(1);
+
+        if (taskName) {
+            // NEW: Added 'icon' to AI-created tasks
+            tasks.push({
+                id: Date.now().toString(), name: taskName, date: date,
+                icon: '🤖', startTime: '', endTime: '',
+                duration: duration, completed: false,
+            });
+            saveAndRerender();
+            const durationText = duration > 0 ? ` for ${duration} minutes` : '';
+            addMessageToAI(`Okay, I've scheduled "${taskName}"${durationText} on ${new Date(date + 'T00:00:00').toLocaleDateString()}.`, 'bot');
+        } else {
+            addMessageToAI("I'm sorry, I didn't understand that. Please try 'Schedule workout for 1 hour tomorrow'.", 'bot');
+        }
+    }
+
+    function getNextDayOfWeek(dayOfWeek) {
+        return () => {
+             const today = new Date(); const resultDate = new Date();
+             const dist = (dayOfWeek - today.getDay() + 7) % 7;
+             resultDate.setDate(today.getDate() + (dist === 0 ? 7 : dist));
+             return toYYYYMMDD(resultDate);
+        };
+    }
+
+    // --- INITIALIZATION ---
+    function initializeApp() {
+        loadTasks();
+        const savedTheme = localStorage.getItem('focusTimerTheme') || 'default';
+        populateThemeDashboard();
+        applyTheme(savedTheme);
+        focusFillColorInput.value = localStorage.getItem('focusFillColor') || '#8D6E63';
+        taskDateInput.value = toYYYYMMDD(new Date());
+        renderAllTaskLists();
+        renderCalendar();
+        switchPage('manager-page');
+    }
+
+    initializeApp();
+});
+</script>
+</body>
+</html>
