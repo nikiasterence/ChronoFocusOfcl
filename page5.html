@@ -1138,6 +1138,7 @@
             100% { transform: scale(1); opacity: 1; }
         }
 
+        /* IMPROVED: Mobile Layout Enhancements */
         @media (max-width: 768px) {
             body { 
                 font-size: 16px; 
@@ -1155,19 +1156,27 @@
 
             header { 
                 padding: 0 12px; 
+                height: 60px;
+            }
+
+            .header-title {
+                font-size: 1.4rem;
             }
 
             #document-title { 
                 font-size: 1.8rem; 
+                margin-bottom: 1.5rem;
             }
 
             #text-editor { 
                 font-size: 1rem; 
+                padding: 0.8rem;
             }
 
             .ai-sidebar {
                 width: 95vw;
                 border-radius: 24px 0 0 24px;
+                padding: 15px;
             }
 
             .content-area {
@@ -1190,9 +1199,9 @@
                 font-size: 1rem;
             }
 
-            /* FIXED: Dynamic Island for Mobile */
+            /* IMPROVED: Dynamic Island for Mobile */
             .dynamic-island {
-                width: 90px;
+                width: 100px;
                 height: 35px;
                 top: 15px;
             }
@@ -1218,6 +1227,26 @@
                 right: -10px;
                 min-width: 180px;
             }
+
+            /* IMPROVED: Better spacing for mobile */
+            .ai-section {
+                padding: 15px;
+                margin-bottom: 20px;
+            }
+
+            .ai-output {
+                padding: 12px;
+                font-size: 0.9rem;
+            }
+
+            .summary-options {
+                flex-direction: column;
+            }
+
+            .summary-option-btn {
+                padding: 10px;
+                font-size: 0.9rem;
+            }
         }
 
         @media (max-width: 480px) {
@@ -1230,7 +1259,7 @@
             }
 
             .ai-section {
-                padding: 15px;
+                padding: 12px;
             }
 
             .summary-options {
@@ -1241,9 +1270,9 @@
                 grid-template-columns: repeat(2, 1fr);
             }
 
-            /* FIXED: Dynamic Island for Small Mobile */
+            /* IMPROVED: Dynamic Island for Small Mobile */
             .dynamic-island {
-                width: 80px;
+                width: 90px;
                 height: 32px;
                 top: 10px;
             }
@@ -1267,6 +1296,48 @@
             .dropdown-menu {
                 min-width: 160px;
             }
+
+            /* IMPROVED: Better mobile spacing */
+            #document-title {
+                font-size: 1.6rem;
+                padding-bottom: 8px;
+                margin-bottom: 1.2rem;
+            }
+
+            .ai-button, .summary-option-btn, .external-link-btn {
+                padding: 10px;
+                font-size: 0.9rem;
+            }
+        }
+
+        /* IMPROVED: Better key points styling */
+        .key-points-list {
+            padding-left: 0;
+            margin: 0;
+            list-style: none; /* Changed from list-style-type */
+        }
+
+        .key-points-list li {
+            margin-bottom: 12px; /* Increased margin */
+            padding-left: 25px; /* Increased padding */
+            list-style-type: none;
+            position: relative;
+            line-height: 1.5; /* Added for readability */
+        }
+
+        .key-points-list li:before {
+            content: "\f058"; /* Font Awesome check-circle icon */
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            left: 0;
+            top: 0;
+            color: var(--theme-accent-primary);
+            font-size: 1.1em; /* Adjusted icon size */
+        }
+
+        .key-points-container {
+             /* removed counter-reset */
         }
     </style>
 </head>
@@ -1541,19 +1612,11 @@
                 constructor() {
                     this.stopWords = new Set(['a', 'about', 'above', 'after', 'again', 'against', 'all', 'am', 'an', 'and', 'any', 'are', 'as', 'at', 'be', 'because', 'been', 'before', 'being', 'below', 'between', 'both', 'but', 'by', 'can', 'cannot', 'could', 'did', 'do', 'does', 'doing', 'down', 'during', 'each', 'few', 'for', 'from', 'further', 'had', 'has', 'have', 'having', 'he', 'her', 'here', 'hers', 'herself', 'him', 'himself', 'his', 'how', 'i', 'if', 'in', 'into', 'is', 'it', 'its', 'itself', 'me', 'more', 'most', 'my', 'myself', 'no', 'nor', 'not', 'of', 'off', 'on', 'once', 'only', 'or', 'other', 'our', 'ours', 'ourselves', 'out', 'over', 'own', 'same', 'she', 'should', 'so', 'some', 'such', 'than', 'that', 'the', 'their', 'theirs', 'them', 'themselves', 'then', 'there', 'these', 'they', 'this', 'those', 'through', 'to', 'too', 'under', 'until', 'up', 'very', 'was', 'we', 'were', 'what', 'when', 'where', 'which', 'while', 'who', 'whom', 'why', 'with', 'you', 'your', 'yours', 'yourself', 'yourselves']);
                     this.advancedModels = {
-                        // Enhanced summarization model with multiple algorithms
-                        summarization: {
-                            extractive: (text, targetLength) => this.extractiveSummary(text, targetLength),
-                            abstractive: (text, targetLength) => this.abstractiveSummary(text, targetLength),
-                            hybrid: (text, targetLength) => this.hybridSummary(text, targetLength)
-                        },
-                        // Enhanced grammar correction with context awareness
                         grammar: {
                             basic: (text) => this.basicGrammarFix(text),
                             advanced: (text) => this.advancedGrammarFix(text),
                             contextual: (text) => this.contextualGrammarFix(text)
                         },
-                        // Enhanced content analysis with multi-dimensional scoring
                         analysis: {
                             sentiment: (text) => this.advancedSentimentAnalysis(text),
                             readability: (text) => this.enhancedReadability(text),
@@ -1566,7 +1629,6 @@
                 preprocessText(text) {
                     if (!text || typeof text !== 'string') return '';
                     let processed = text;
-                    // Enhanced preprocessing
                     processed = processed.replace(/ﬁ/g, 'fi').replace(/ﬂ/g, 'fl');
                     processed = processed.replace(/\s+/g, ' ').trim();
                     processed = processed.replace(/([a-z])-\s+([a-z])/g, '$1$2');
@@ -1585,8 +1647,12 @@
                         ?.map(s => s.trim())
                         .filter(s => s.length > 15 && s.length < 1500) || [];
                 }
+                
+                getSentenceWords(sentence) {
+                    return sentence.toLowerCase().replace(/[^\w\s]/g, '').split(/\s+/).filter(word => word.length > 1 && !this.stopWords.has(word));
+                }
 
-                extractKeyWords(text, count = 10) {
+                extractKeyWords(text, count = 20) {
                     const words = this.preprocessText(text).toLowerCase().replace(/[^\w\s]/g, ' ').split(/\s+/).filter(word => word.length > 3 && !this.stopWords.has(word));
                     const wordFreq = {};
                     words.forEach(word => { wordFreq[word] = (wordFreq[word] || 0) + 1; });
@@ -1594,115 +1660,179 @@
                         word,
                         score: freq * Math.log(words.length / (wordFreq[word] || 1))
                     }));
-                    return scores.sort((a, b) => b.score - a.score).slice(0, count);
+                    return scores.sort((a, b) => b.score - a.score).slice(0, count).map(kw => kw.word);
                 }
+                
+                /**************************************************************
+                 * START: ENHANCED "REAL AI" SUMMARY & KEY POINTS LOGIC
+                 **************************************************************/
 
-                // Enhanced summarization with multiple algorithms
+                /**
+                 * NEW: Calculates the similarity between two sentences based on shared words.
+                 */
+                sentencesHaveCommonWords(sent1, sent2) {
+                    const words1 = new Set(this.getSentenceWords(sent1));
+                    const words2 = new Set(this.getSentenceWords(sent2));
+                    const intersection = new Set([...words1].filter(word => words2.has(word)));
+                    return intersection.size / ((words1.size + words2.size) / 2);
+                }
+                
+                /**
+                 * ADVANCED SUMMARY: Generates a high-quality summary using thematic clustering and intelligent sentence scoring.
+                 */
                 generateSummary(text, size = 'medium') {
-                    let targetLength;
-                    switch (size) {
-                        case 'small': targetLength = 100; break;
-                        case 'large': targetLength = 400; break;
-                        default: targetLength = 200;
-                    }
-
-                    // Use hybrid approach for best results
-                    return this.advancedModels.summarization.hybrid(text, targetLength);
-                }
-
-                extractiveSummary(text, targetLength) {
                     const sentences = this.tokenizeSentences(this.preprocessText(text));
-                    if (sentences.length <= 3) {
-                        return sentences.join(' ');
-                    }
-
-                    const keywords = this.extractKeyWords(text, 20);
-                    const scoredSentences = sentences.map((sentence, i) => {
+                    if (sentences.length <= 5) return sentences.join(' ');
+                    
+                    const keywords = this.extractKeyWords(text, 25);
+                    
+                    // Step 1: Score each sentence based on multiple intelligent criteria
+                    const scoredSentences = sentences.map((sentence, index) => {
                         const sentenceLower = sentence.toLowerCase();
                         let score = 0;
-                        const positionRatio = i / sentences.length;
-                        if (positionRatio < 0.2) score += 2.0;
-                        if (positionRatio > 0.8) score += 1.5;
+                        const wordsInSentence = new Set(this.getSentenceWords(sentence));
+                        
+                        // Keyword Density Bonus
                         keywords.forEach(kw => {
-                            if (sentenceLower.includes(kw.word)) {
-                                score += kw.score;
+                            if (sentenceLower.includes(kw)) {
+                                score += 2.5;
                             }
                         });
-                        if (sentence.length < 20 || sentence.length > 800) score *= 0.5;
-                        const cuePhrases = ['in conclusion', 'in summary', 'the main point', 'importantly', 'essentially'];
-                        if (cuePhrases.some(phrase => sentenceLower.startsWith(phrase))) score *= 2.0;
-                        return { sentence, score, index: i };
+                        
+                        // Title Position Bonus (first 15% and last 15% of doc are important)
+                        const positionRatio = index / sentences.length;
+                        if (positionRatio < 0.15) score *= 1.4;
+                        if (positionRatio > 0.85) score *= 1.3;
+                        
+                        // Length Normalization (ideal sentences are not too short or too long)
+                        if (sentence.length < 40 || sentence.length > 400) score *= 0.6;
+                        
+                        // Numeric Data Bonus (sentences with numbers are often factual)
+                        if (/\d/.test(sentence)) score *= 1.2;
+                        
+                        // Proper Noun Bonus (likely to contain important entities)
+                        sentence.split(/\s+/).forEach(word => {
+                            if (word.length > 2 && word.charAt(0) === word.charAt(0).toUpperCase() && sentence.indexOf(word) > 0) {
+                                score *= 1.1;
+                            }
+                        });
+
+                        return { sentence, score, index, clusterId: null };
                     });
 
-                    const topSentences = scoredSentences
-                        .sort((a, b) => b.score - a.score)
-                        .slice(0, Math.max(3, Math.floor(sentences.length * 0.3)))
-                        .sort((a, b) => a.index - b.index);
+                    // Step 2: Group sentences into thematic clusters to ensure topic diversity
+                    let clusterId = 0;
+                    scoredSentences.forEach((s1) => {
+                        if (s1.clusterId === null) {
+                            clusterId++;
+                            s1.clusterId = clusterId;
+                            scoredSentences.forEach((s2) => {
+                                if (s1 !== s2 && s2.clusterId === null) {
+                                    if (this.sentencesHaveCommonWords(s1.sentence, s2.sentence) > 0.25) {
+                                        s2.clusterId = clusterId;
+                                    }
+                                }
+                            });
+                        }
+                    });
 
-                    let summary = topSentences.map(item => item.sentence).join(' ');
+                    // Step 3: Select the highest-scoring sentence from each major cluster
+                    const summarySentences = [];
+                    const usedClusters = new Set();
+                    scoredSentences.sort((a, b) => b.score - a.score);
+
+                    scoredSentences.forEach(item => {
+                        if (!usedClusters.has(item.clusterId)) {
+                            summarySentences.push(item);
+                            usedClusters.add(item.clusterId);
+                        }
+                    });
                     
-                    // Ensure summary is within target length
-                    while (summary.length > targetLength && topSentences.length > 1) {
-                        topSentences.pop();
-                        summary = topSentences.map(item => item.sentence).join(' ');
+                    // Step 4: Determine summary length and compile the final summary
+                    let numSentences;
+                    switch (size) {
+                        case 'small': numSentences = Math.max(2, Math.floor(summarySentences.length * 0.25)); break;
+                        case 'large': numSentences = Math.max(6, Math.floor(summarySentences.length * 0.75)); break;
+                        default: numSentences = Math.max(4, Math.floor(summarySentences.length * 0.5));
                     }
                     
-                    return summary;
+                    // Final assembly: Sort by original order and join.
+                    const finalSummary = summarySentences
+                        .slice(0, numSentences)
+                        .sort((a, b) => a.index - b.index)
+                        .map(item => item.sentence)
+                        .join(' ');
+
+                    return finalSummary || "Could not generate a summary from the provided text.";
                 }
 
-                abstractiveSummary(text, targetLength) {
+                /**
+                 * ADVANCED KEY POINTS: Extracts the most relevant, distinct points from the document by identifying core topics.
+                 */
+                extractKeyPoints(text) {
                     const sentences = this.tokenizeSentences(this.preprocessText(text));
-                    if (sentences.length <= 3) return sentences.join(' ');
+                    if (sentences.length < 5) return "Not enough content to extract key points.";
                     
-                    // Identify key concepts
-                    const keywords = this.extractKeyWords(text, 10);
-                    const keyConcepts = keywords.map(kw => kw.word);
+                    const topics = this.extractKeyWords(text, 10);
+                    const keyPoints = new Map();
                     
-                    // Find sentences that contain key concepts
-                    const conceptSentences = sentences.filter(sentence => {
-                        const sentenceLower = sentence.toLowerCase();
-                        return keyConcepts.some(concept => sentenceLower.includes(concept));
+                    // For each major topic, find the single BEST sentence in the text that represents it
+                    topics.forEach(topic => {
+                        let bestSentence = null;
+                        let maxScore = -1;
+                        
+                        sentences.forEach(sentence => {
+                            if (sentence.toLowerCase().includes(topic)) {
+                                let score = 1;
+                                // Simple scoring: Shorter sentences focused on the topic are better.
+                                score = 1000 / sentence.length; 
+                                
+                                if (score > maxScore) {
+                                    maxScore = score;
+                                    bestSentence = sentence;
+                                }
+                            }
+                        });
+                        
+                        if (bestSentence) {
+                           // Use the topic as the key to prevent adding multiple sentences for the same core idea
+                           if(!keyPoints.has(topic)) keyPoints.set(topic, bestSentence);
+                        }
+                    });
+
+                    if (keyPoints.size === 0) return "No distinct key points could be identified.";
+                    
+                    // Format into a clean, readable list using HTML.
+                    let keyPointsHTML = '<div class="key-points-container"><ul class="key-points-list">';
+                    
+                    // Filter out points that are too similar to each other before displaying
+                    const uniquePoints = [];
+                    const pointValues = Array.from(keyPoints.values());
+
+                    pointValues.forEach(point => {
+                        let isUnique = true;
+                        for(const uniquePoint of uniquePoints){
+                            if(this.sentencesHaveCommonWords(point, uniquePoint) > 0.6){
+                                isUnique = false;
+                                break;
+                            }
+                        }
+                        if(isUnique) uniquePoints.push(point);
+                    });
+
+                    uniquePoints.slice(0, 8).forEach(point => {
+                        keyPointsHTML += `<li>${point}</li>`;
                     });
                     
-                    // Combine and rephrase
-                    let summary = conceptSentences.slice(0, 5).join(' ');
+                    keyPointsHTML += '</ul></div>';
                     
-                    // Simplify sentences for abstractive effect
-                    summary = summary
-                        .replace(/\bhowever\b/gi, 'but')
-                        .replace(/\btherefore\b/gi, 'so')
-                        .replace(/\bconsequently\b/gi, 'so')
-                        .replace(/\bfurthermore\b/gi, 'also')
-                        .replace(/\bmoreover\b/gi, 'also')
-                        .replace(/\bin addition\b/gi, 'also');
-                    
-                    // Ensure summary is within target length
-                    if (summary.length > targetLength) {
-                        summary = summary.substring(0, targetLength - 3) + '...';
-                    }
-                    
-                    return summary;
+                    return keyPointsHTML;
                 }
-
-                hybridSummary(text, targetLength) {
-                    const extractive = this.extractiveSummary(text, targetLength * 0.7);
-                    const abstractive = this.abstractiveSummary(text, targetLength * 0.3);
-                    
-                    // Combine and deduplicate
-                    const combined = extractive + ' ' + abstractive;
-                    const sentences = this.tokenizeSentences(combined);
-                    const uniqueSentences = [...new Set(sentences)];
-                    
-                    let result = uniqueSentences.join(' ');
-                    
-                    // Ensure final result is within target length
-                    if (result.length > targetLength) {
-                        result = result.substring(0, targetLength - 3) + '...';
-                    }
-                    
-                    return result;
-                }
-
+                
+                /**************************************************************
+                 * END: ENHANCED "REAL AI" SUMMARY & KEY POINTS LOGIC
+                 **************************************************************/
+                 
                 generateKeyInsights(text) {
                     const summary = this.generateSummary(text, 'small');
                     const keywords = this.extractKeyWords(text, 5);
@@ -1710,7 +1840,7 @@
                     
                     let insights = `**Key Insights:**\n\n`;
                     insights += `**Main Topic:** ${summary.split('.')[0]}.\n\n`;
-                    insights += `**Key Concepts:** ${keywords.map(kw => kw.word).join(', ')}.\n\n`;
+                    insights += `**Key Concepts:** ${keywords.join(', ')}.\n\n`;
                     
                     const sentiment = analysis.sentiment(text);
                     insights += `**Overall Tone:** ${sentiment}.\n\n`;
@@ -1815,13 +1945,11 @@
                     
                     if (bestMatches.length === 0) return "I could not find a confident answer. Try rephrasing your question.";
                     
-                    // Sort by score and take top 3
                     bestMatches.sort((a, b) => b.score - a.score);
                     const topMatches = bestMatches.slice(0, 3);
                     
                     let answerText = topMatches.map(match => match.text).join(' ');
                     
-                    // Highlight question words in the answer
                     questionWords.forEach(word => {
                         const regex = new RegExp(`\\b(${word})\\b`, 'gi');
                         answerText = answerText.replace(regex, `<mark>$1</mark>`);
@@ -1829,22 +1957,7 @@
                     
                     return answerText;
                 }
-
-                extractKeyPoints(text) {
-                    const summary = this.generateSummary(text, 'large');
-                    const points = summary.split('. ').filter(p => p.trim().length > 0).map(p => p.trim() + '.');
-                    
-                    // Enhance key points with additional context
-                    const enhancedPoints = points.map((point, index) => {
-                        // Add emphasis to important points
-                        if (index === 0) return `⭐ ${point}`;
-                        if (index < 3) return `🔸 ${point}`;
-                        return `• ${point}`;
-                    });
-                    
-                    return enhancedPoints.join('\n\n') || "No key points could be extracted.";
-                }
-
+                
                 analyzeWriting(text) {
                     const sentences = this.tokenizeSentences(this.preprocessText(text));
                     let results = { 
@@ -1856,24 +1969,19 @@
                         vague: []
                     };
                     
-                    // Enhanced passive voice detection
                     const passiveRegex = /\b(am|is|are|was|were|be|being|been)\b\s\w+ed\b/i;
                     sentences.forEach(s => { if(passiveRegex.test(s)) results.passive.push(s); });
                     
-                    // Enhanced filler word detection
                     const fillerRegex = /\b(basically|actually|literally|like|just|really|very|stuff|things|you know|sort of|kind of|I mean|um|uh)\b/gi;
                     const fillerMatches = text.match(fillerRegex);
                     if (fillerMatches) results.fillers = [...new Set(fillerMatches)];
                     
-                    // Enhanced weasel word detection
                     const weaselRegex = /\b(many|various|several|some|few|most|often|sometimes|arguably|perhaps|could|might|may|possibly|probably)\b/gi;
                     const weaselMatches = text.match(weaselRegex);
                     if (weaselMatches) results.weasels = [...new Set(weaselMatches)];
                     
-                    // Long sentences
                     sentences.forEach(s => { if(s.split(/\s+/).length > 25) results.longSentences.push(s); });
                     
-                    // Repetitive words/phrases
                     const words = text.toLowerCase().split(/\s+/);
                     const wordFreq = {};
                     words.forEach(word => { 
@@ -1885,7 +1993,6 @@
                         .filter(([word, freq]) => freq > 3)
                         .map(([word, freq]) => `${word} (${freq} times)`);
                     
-                    // Vague language
                     const vagueRegex = /\b(thing|stuff|aspect|factor|element|area)\b/gi;
                     const vagueMatches = text.match(vagueRegex);
                     if (vagueMatches) results.vague = [...new Set(vagueMatches)];
@@ -1916,58 +2023,32 @@
 
                 basicGrammarFix(text) {
                     let correctedText = text;
-                    
-                    // Remove filler words
                     const fillerWords = /\b(basically|actually|literally|like|just|really|very|sort of|kind of)\b/gi;
                     correctedText = correctedText.replace(fillerWords, '');
-                    
-                    // Fix common contractions
                     correctedText = correctedText.replace(/\b(can)not\b/gi, '$1 not');
                     correctedText = correctedText.replace(/\b(will)not\b/gi, '$1 not');
                     correctedText = correctedText.replace(/\b(do)not\b/gi, '$1 not');
-                    
-                    // Remove extra whitespace
                     correctedText = correctedText.replace(/\s+/g, ' ').trim();
-                    
                     return correctedText;
                 }
 
                 advancedGrammarFix(text) {
                     let correctedText = this.basicGrammarFix(text);
-                    
-                    // Fix common misspellings
-                    const commonMistakes = {
-                        'teh': 'the',
-                        'adn': 'and',
-                        'thier': 'their',
-                        'theyre': "they're",
-                        'recieve': 'receive',
-                        'seperate': 'separate',
-                        'definately': 'definitely',
-                        'occured': 'occurred',
-                        'alot': 'a lot',
-                        'accomodate': 'accommodate',
-                        'goverment': 'government'
-                    };
-                    
+                    const commonMistakes = { 'teh': 'the', 'adn': 'and', 'thier': 'their', 'theyre': "they're", 'recieve': 'receive', 'seperate': 'separate', 'definately': 'definitely', 'occured': 'occurred', 'alot': 'a lot', 'accomodate': 'accommodate', 'goverment': 'government' };
                     Object.keys(commonMistakes).forEach(mistake => {
                         const regex = new RegExp(`\\b${mistake}\\b`, 'gi');
                         correctedText = correctedText.replace(regex, commonMistakes[mistake]);
                     });
-                    
                     return correctedText;
                 }
 
                 contextualGrammarFix(text) {
                     let correctedText = this.advancedGrammarFix(text);
                     const sentences = this.tokenizeSentences(correctedText);
-                    
-                    // Ensure sentences start with capital letters
                     correctedText = sentences.map(sentence => {
                         if (sentence.length === 0) return sentence;
                         return sentence.charAt(0).toUpperCase() + sentence.slice(1);
                     }).join(' ');
-                    
                     return correctedText;
                 }
 
@@ -1977,35 +2058,26 @@
 
                 generateQuiz(text) {
                     const sentences = this.tokenizeSentences(this.preprocessText(text));
-                    const keywords = this.extractKeyWords(text, 15);
+                    const keywords = this.extractKeyWords(text, 15).map(kw => ({ word: kw })); // Adapt to expected format
                     let quiz = [];
                     
-                    // Generate multiple choice questions
                     keywords.forEach(kw => {
                         const keywordSentences = sentences.filter(s => s.toLowerCase().includes(kw.word));
                         if(keywordSentences.length > 0) {
                             const questionSentence = keywordSentences[0];
                             const question = questionSentence.replace(new RegExp(kw.word, 'ig'), '_____');
-                            
-                            // Generate plausible wrong answers
                             const wrongAnswers = this.generateWrongAnswers(kw.word, keywords);
-                            
-                            quiz.push({
-                                question: question,
-                                answer: kw.word,
-                                options: this.shuffleArray([kw.word, ...wrongAnswers.slice(0, 3)])
-                            });
+                            quiz.push({ question: question, answer: kw.word, options: this.shuffleArray([kw.word, ...wrongAnswers.slice(0, 3)]) });
                         }
                     });
 
                     if (quiz.length === 0) return "Could not generate a quiz from this text.";
                     
-                    // Format quiz with questions and options
                     let quizText = "**Study Quiz**\n\n";
                     quiz.slice(0, 5).forEach((item, index) => {
                         quizText += `${index + 1}. ${item.question}\n`;
                         item.options.forEach((option, optIndex) => {
-                            const letter = String.fromCharCode(97 + optIndex); // a, b, c, d
+                            const letter = String.fromCharCode(97 + optIndex);
                             quizText += `   ${letter}) ${option}\n`;
                         });
                         quizText += `   <mark>Answer: ${item.answer}</mark>\n\n`;
@@ -2015,19 +2087,12 @@
                 }
 
                 generateWrongAnswers(correctAnswer, keywords) {
-                    // Generate plausible wrong answers based on similar keywords
                     const similarWords = keywords
                         .filter(kw => kw.word !== correctAnswer && kw.word.length === correctAnswer.length)
                         .map(kw => kw.word);
                     
-                    // If not enough similar words, generate variations
                     if (similarWords.length < 3) {
-                        const variations = [
-                            correctAnswer + 's', // plural
-                            correctAnswer + 'ed', // past tense
-                            correctAnswer.substring(0, correctAnswer.length - 1), // remove last letter
-                            correctAnswer + 'ing' // gerund
-                        ];
+                        const variations = [ correctAnswer + 's', correctAnswer + 'ed', correctAnswer.substring(0, correctAnswer.length - 1), correctAnswer + 'ing' ];
                         return [...new Set([...similarWords, ...variations])].slice(0, 3);
                     }
                     
@@ -2050,7 +2115,6 @@
 
                 analyzeContent(text) {
                     const analysis = this.advancedModels.analysis;
-                    
                     const sentiment = analysis.sentiment(text);
                     const readability = analysis.readability(text);
                     const complexity = analysis.complexity(text);
@@ -2060,11 +2124,9 @@
                     analysisText += `**Word Count:** ${this.countWords(text)}\n`;
                     analysisText += `**Sentence Count:** ${structure.sentences}\n`;
                     analysisText += `**Paragraph Count:** ${structure.paragraphs}\n\n`;
-                    
                     analysisText += `**Sentiment Analysis:** ${sentiment}\n`;
                     analysisText += `**Readability Score (Flesch):** ${readability}/100\n`;
                     analysisText += `**Content Complexity:** ${complexity}\n\n`;
-                    
                     analysisText += `**Document Structure:**\n`;
                     analysisText += `- Avg. sentences per paragraph: ${structure.avgSentencesPerParagraph.toFixed(1)}\n`;
                     
@@ -2120,8 +2182,6 @@
                 loadSettings();
                 updateUIMode();
                 resetAiOutputs();
-                
-                // Show welcome screen initially
                 DOMElements.welcomeScreen.style.display = 'flex';
             }
 
@@ -2139,23 +2199,19 @@
                     toggleDropdown();
                 });
 
-                // Welcome screen options
                 DOMElements.readingOption.addEventListener('click', () => selectMode('reading'));
                 DOMElements.researchOption.addEventListener('click', () => selectMode('research'));
 
-                // Dynamic Island - Support both click and touch
                 DOMElements.dynamicIsland.addEventListener('click', toggleDynamicIsland);
                 DOMElements.dynamicIsland.addEventListener('touchstart', (e) => {
                     e.preventDefault();
                     toggleDynamicIsland();
                 });
 
-                // Settings
                 document.getElementById('settings-close-btn').addEventListener('click', () => DOMElements.settingsOverlay.classList.remove('visible'));
                 DOMElements.settingsOverlay.addEventListener('click', e => { if (e.target === DOMElements.settingsOverlay) DOMElements.settingsOverlay.classList.remove('visible'); });
                 DOMElements.themeOptions.addEventListener('change', handleThemeChange);
                 
-                // Close dropdown when clicking outside
                 document.addEventListener('click', (e) => {
                     const dropdown = document.getElementById('dynamic-dropdown');
                     if (state.dropdownOpen && !e.target.closest('.dynamic-island') && dropdown && !dropdown.contains(e.target)) {
@@ -2163,7 +2219,6 @@
                     }
                 });
 
-                // AI Action buttons
                 document.getElementById('summarize-btn-small').addEventListener('click', (e) => handleAIAction('summarize', { size: e.target.dataset.size }));
                 document.getElementById('summarize-btn-medium').addEventListener('click', (e) => handleAIAction('summarize', { size: e.target.dataset.size }));
                 document.getElementById('summarize-btn-large').addEventListener('click', (e) => handleAIAction('summarize', { size: e.target.dataset.size }));
@@ -2176,7 +2231,6 @@
                 document.getElementById('search-btn').addEventListener('click', () => handleAIAction('search'));
                 document.getElementById('key-insights-btn').addEventListener('click', () => handleAIAction('key-insights'));
 
-                // Copy buttons
                 document.getElementById('copy-summary-btn').addEventListener('click', () => copyToClipboard('summary-output'));
                 document.getElementById('copy-writing-btn').addEventListener('click', () => copyToClipboard('writing-output'));
                 document.getElementById('copy-qa-btn').addEventListener('click', () => copyToClipboard('qa-answer'));
@@ -2188,7 +2242,6 @@
                 document.getElementById('search-input').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); handleAIAction('search'); } });
                 DOMElements.textEditor.addEventListener('paste', handlePaste);
                 
-                // Drag and drop
                 ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(evt => document.body.addEventListener(evt, preventDefaults, false));
                 ['dragenter', 'dragover'].forEach(evt => DOMElements.mainContent.addEventListener(evt, showDropOverlay, false));
                 ['dragleave', 'drop'].forEach(evt => DOMElements.mainContent.addEventListener(evt, hideDropOverlay, false));
@@ -2266,7 +2319,7 @@
                 }, 500);
 
                 if (mode === 'research') {
-                    toggleMode('text'); // Switch to text mode for research
+                    toggleMode('text');
                 }
 
                 showToast(`Welcome to ${mode === 'reading' ? 'Reading' : 'Research'} Mode!`, 'success');
@@ -2372,7 +2425,7 @@
                 reader.onload = function(e) {
                     const imageContainer = document.createElement('div');
                     imageContainer.className = 'image-container';
-                    imageContainer.contentEditable = false; // Make container non-editable
+                    imageContainer.contentEditable = false;
                     
                     const img = document.createElement('img');
                     img.src = e.target.result;
@@ -2388,7 +2441,6 @@
                     imageContainer.appendChild(img);
                     imageContainer.appendChild(removeBtn);
                     
-                    // Insert a non-breaking space for cursor placement
                     const space = document.createTextNode('\u00A0');
 
                     DOMElements.textEditor.appendChild(imageContainer);
@@ -2494,7 +2546,7 @@
                 if(action === 'search'){
                     const searchQuery = document.getElementById('search-input').value.trim();
                     if (!searchQuery) { showToast('Please enter a search query.', 'error'); return; }
-                    const keywords = AI.extractKeyWords(getDocumentText(), 3).map(kw => kw.word);
+                    const keywords = AI.extractKeyWords(getDocumentText(), 3);
                     const fullQuery = encodeURIComponent(searchQuery + " " + keywords.join(" "));
                     window.open(`https://www.google.com/search?q=${fullQuery}`, '_blank');
                     return;
@@ -2535,7 +2587,7 @@
                 
                 setAIProcessing(true, button);
                
-                await new Promise(resolve => setTimeout(resolve, 50)); // Allow UI to update
+                await new Promise(resolve => setTimeout(resolve, 50));
 
                 try {
                     let result = '';
@@ -2571,6 +2623,7 @@
                             break;
                         case 'keypoints': 
                             result = AI.extractKeyPoints(text);
+                            formatAsHTML = true;
                             break;
                         case 'quiz':
                             result = AI.generateQuiz(text);
@@ -2615,7 +2668,6 @@
                      button.innerHTML = isProcessing ? '<i class="fas fa-spinner fa-spin"></i> Thinking...' : originalHTML;
                  }
                  if (!isProcessing) {
-                    // Restore original text for summary buttons
                     document.getElementById('summarize-btn-small').innerHTML = "Small";
                     document.getElementById('summarize-btn-medium').innerHTML = "Medium";
                     document.getElementById('summarize-btn-large').innerHTML = "Large";
@@ -2650,8 +2702,6 @@
                     const loaderHTML = `<div style="text-align: center; padding: 2rem;"><i class="fas fa-spinner fa-spin fa-2x"></i><br><br>${message}</div>`;
                     if (state.currentMode === 'pdf') {
                          DOMElements.pdfViewer.innerHTML = loaderHTML;
-                    } else {
-                         // For text editor, perhaps show an overlay or a message
                     }
                 } else {
                     if (state.currentMode === 'pdf' && DOMElements.pdfViewer.querySelector('.fa-spinner')) {
