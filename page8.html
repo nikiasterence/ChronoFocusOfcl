@@ -3,33 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
-     <link rel="icon" href="Chronofocus.png" type="image/x-icon">
-    <title>Enhanced Draw Board</title>
+    <title>Digital Notebook</title>
     
-    <!-- Icons from Font Awesome -->
+    <!-- Icons from Font Awesome for a clean, consistent look -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- jsPDF library for creating PDFs, loaded from a CDN -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
     <style>
-        /* --- 1. General Setup & Design System --- */
+        /* --- 1. General Setup & Design System ("Cozy" Aesthetic) --- */
         :root {
-            --primary-color: #5b21b6; /* Deep Violet */
-            --secondary-color: #3b82f6; /* Cool Blue */
-            --background-start: #f5f3ff;
-            --background-end: #eff6ff;
-            --font-color: #333;
-            --light-grey: #e5e7eb;
+            /* Light Theme */
+            --primary-color: #3b82f6; /* Muted Blue */
+            --background-color: #f8fafc; /* Soft White/Light Gray */
+            --paper-color: #ffffff;
+            --font-color: #1e293b; /* Charcoal Tone */
+            --light-grey: #e2e8f0;
             --white-color: #ffffff;
-            --shadow-color: rgba(0, 0, 0, 0.1);
+            --shadow-color: rgba(99, 102, 241, 0.1);
+            --shadow-color-light: rgba(0, 0, 0, 0.05);
+
+            /* Dark Theme Colors */
+            --dark-background: #1e293b; /* Slate 800 */
+            --dark-paper: #334155;      /* Slate 700 */
+            --dark-font: #f1f5f9;       /* Slate 100 */
+            --dark-light-grey: #475569; /* Slate 600 */
+            --dark-primary: #60a5fa;      /* Lighter Blue for contrast */
+
+            --border-radius-large: 16px;
+            --border-radius-medium: 12px;
+
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* --- Dark Mode Style Overrides --- */
+        body.dark-mode {
+            --background-color: var(--dark-background);
+            --paper-color: var(--dark-paper);
+            --font-color: var(--dark-font);
+            --light-grey: var(--dark-light-grey);
+            --primary-color: var(--dark-primary);
+            --shadow-color: rgba(0, 0, 0, 0.2);
+            --shadow-color-light: rgba(0, 0, 0, 0.1);
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
             -webkit-tap-highlight-color: transparent;
         }
 
@@ -37,545 +57,696 @@
             height: 100%;
             width: 100%;
             overflow: hidden;
-            position: fixed;
-            background: linear-gradient(135deg, var(--background-end), var(--background-start));
+            position: fixed; 
+            background-color: var(--background-color);
         }
 
         body {
             display: flex;
-            flex-direction: column;
             color: var(--font-color);
         }
 
-        /* --- 2. Main Layout --- */
+        /* --- 2. Main Layout Structure --- */
         .app-container {
             display: flex;
-            flex: 1;
-            height: 100%;
             flex-direction: column;
+            width: 100%;
+            height: 100%;
         }
         
         .toolbar {
-            padding: 10px;
+            padding: 10px 16px;
             display: flex;
             align-items: center;
             justify-content: center;
-            flex-wrap: wrap;
+            flex-wrap: wrap; 
             gap: 12px;
-            background: var(--white-color);
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             border-bottom: 1px solid var(--light-grey);
-            box-shadow: 0 4px 12px var(--shadow-color);
+            box-shadow: 0 4px 12px var(--shadow-color-light);
             flex-shrink: 0;
             z-index: 100;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+        body.dark-mode .toolbar {
+            background: rgba(30, 41, 59, 0.8); /* Translucent dark */
         }
 
-        .whiteboard {
+        .writing-area {
             flex-grow: 1;
             position: relative;
-            background-color: #f8fafc;
-            cursor: crosshair;
+            display: grid;
+            place-items: center;
+            padding: 16px;
         }
 
         canvas {
             display: block;
             width: 100%;
             height: 100%;
+            background-color: var(--paper-color);
+            border-radius: var(--border-radius-medium);
+            box-shadow: 0 5px 25px var(--shadow-color);
+            cursor: crosshair;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
         }
 
-        /* --- 3. Toolbar Elements --- */
+        /* --- 3. Toolbar Elements & Visual Style --- */
         .tool-group {
             display: flex;
             align-items: center;
             gap: 8px;
-            padding: 6px;
-            background-color: var(--light-grey);
-            border-radius: 12px;
+            padding: 4px;
+            background-color: rgba(0,0,0,0.04);
+            border-radius: var(--border-radius-medium);
+            transition: background-color 0.3s ease;
+        }
+        body.dark-mode .tool-group {
+            background-color: rgba(255,255,255,0.06);
         }
 
         .tool-button {
-            width: 44px; height: 44px; border-radius: 10px; border: none;
-            background: transparent; cursor: pointer; transition: all 0.2s ease;
-            font-size: 1.1rem; color: #555; display: grid; place-items: center;
+            width: 42px; height: 42px;
+            border-radius: 10px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+            font-size: 1.1rem;
+            color: #555;
+            display: grid;
+            place-items: center;
+        }
+        body.dark-mode .tool-button {
+            color: var(--dark-font);
         }
         
-        .tool-button:hover { background: rgba(0,0,0,0.1); }
-        .tool-button.active { background: var(--primary-color); color: white; box-shadow: 0 2px 8px rgba(91, 33, 182, 0.4); }
+        .tool-button:hover { background: rgba(0,0,0,0.08); }
+        body.dark-mode .tool-button:hover { background: rgba(255,255,255,0.1); }
+
+        .tool-button.active {
+            background: var(--primary-color);
+            color: var(--white-color);
+            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.4);
+        }
+         body.dark-mode .tool-button.active {
+             color: #1e293b; /* Dark text on light blue */
+             box-shadow: 0 2px 8px rgba(96, 165, 250, 0.4);
+        }
         
         #color-picker {
-            width: 42px; height: 42px; border: none; padding: 0;
-            border-radius: 10px; background-color: transparent; cursor: pointer;
+            width: 40px; height: 40px;
+            border: none;
+            padding: 0;
+            border-radius: 10px;
+            background-color: transparent;
+            cursor: pointer;
         }
-        #color-picker::-webkit-color-swatch { border: 2px solid rgba(0,0,0,0.1); border-radius: 8px; }
+        #color-picker::-webkit-color-swatch {
+            border-radius: 8px;
+            border: 2px solid rgba(0,0,0,0.05);
+        }
 
-        .pen-size-group { align-items: center; gap: 8px; }
+        .pen-controls { display: flex; align-items: center; gap: 8px; }
         #pen-size { width: 100px; cursor: pointer; }
-        .pen-size-group i { color: #888; }
+        .pen-controls i { color: #999; }
+        body.dark-mode .pen-controls i { color: #cbd5e1; }
+
 
         .page-controls { font-weight: 500; color: var(--primary-color); }
         #page-indicator { min-width: 60px; text-align: center; }
 
-        /* --- 4. Modals (for Text and Stickers) --- */
+        /* Modal for adding text */
         .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.4); z-index: 1000;
-            display: flex; justify-content: center; align-items: center;
-            opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+            position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 1000;
+            display: flex;
+            justify-content: center; align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
         }
         .modal-overlay.visible { opacity: 1; pointer-events: all; }
 
         .modal-content {
-            background: white; padding: 24px; border-radius: 16px; 
+            background: var(--paper-color); padding: 24px;
+            border-radius: var(--border-radius-large);
             box-shadow: 0 10px 30px var(--shadow-color);
-            display: flex; flex-direction: column; gap: 12px; min-width: 300px;
-            max-width: 90vw; max-height: 80vh;
+            display: flex; flex-direction: column; gap: 12px;
+            min-width: 300px;
+            max-width: 90vw;
         }
         .modal-content h3 { margin-bottom: 10px; color: var(--primary-color); }
-        .modal-content input[type="text"] {
-            padding: 12px; border: 1px solid var(--light-grey); border-radius: 8px; font-size: 16px;
+        .modal-content input {
+            padding: 12px; 
+            border: 1px solid var(--light-grey);
+            background: var(--background-color);
+            color: var(--font-color);
+            border-radius: 8px; font-size: 16px;
         }
-        .modal-content button.action-btn {
+        .modal-content button {
             padding: 12px; border-radius: 8px; border: none; font-weight: 600; cursor: pointer;
-            background: var(--primary-color); color: white; transition: background 0.2s;
+            background: var(--primary-color); color: var(--white-color);
+            transition: background 0.2s;
         }
-        .modal-content button.action-btn:hover { background: var(--secondary-color); }
+        body.dark-mode .modal-content button { color: #1e293b; }
+        .modal-content button:hover { background: #60a5fa; }
 
-        /* Sticker Modal Specifics */
-        .sticker-modal-body { overflow-y: auto; padding-right: 10px; }
-        .sticker-category { margin-bottom: 15px; }
-        .sticker-category h4 { margin-bottom: 10px; border-bottom: 1px solid var(--light-grey); padding-bottom: 5px; }
-        .sticker-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(40px, 1fr)); gap: 15px; }
-        .sticker-option { font-size: 32px; cursor: pointer; transition: transform 0.2s; text-align: center; }
-        .sticker-option:hover { transform: scale(1.3); }
 
-        /* --- 5. Mobile Responsiveness --- */
+        /* --- 4. Mobile Responsiveness --- */
         @media (max-width: 768px) {
-            .toolbar {
-                padding: 8px;
-                gap: 8px;
-            }
-            .tool-group {
-                padding: 4px;
-            }
-            .tool-button {
-                width: 40px; height: 40px;
-            }
-            .pen-size-group {
-                display: none; /* Hide slider on small screens for cleaner UI */
-            }
+            .toolbar { padding: 8px; gap: 8px; justify-content: space-around; }
+            .tool-group { padding: 4px; flex-shrink: 0;}
+            .tool-button { width: 40px; height: 40px; }
         }
+         @media (max-width: 600px) {
+            .pen-controls { display: none; }
+         }
     </style>
 </head>
 <body>
-
     <div class="app-container">
         <!-- Main Toolbar -->
         <div class="toolbar">
+            <!-- Drawing Tools -->
             <div class="tool-group">
-                <button class="tool-button active" data-tool="pen" title="Pen"><i class="fas fa-pen"></i></button>
-                <button class="tool-button" data-tool="auto-draw" title="Magic Pen (Shape Correction)"><i class="fas fa-magic"></i></button>
+                <button class="tool-button active" data-tool="pen" title="Pen"><i class="fas fa-pen-alt"></i></button>
+                <button class="tool-button" data-tool="highlighter" title="Highlighter"><i class="fas fa-highlighter"></i></button>
+                <button class="tool-button" data-tool="calligraphy" title="Calligraphy"><i class="fas fa-feather-alt"></i></button>
+                <button class="tool-button" data-tool="spray" title="Spray Paint"><i class="fas fa-spray-can"></i></button>
                 <button class="tool-button" data-tool="eraser" title="Eraser"><i class="fas fa-eraser"></i></button>
-                <button class="tool-button" data-tool="text" title="Add Text"><i class="fas fa-font"></i></button>
-                <button class="tool-button" data-tool="sticker" title="Add Sticker"><i class="fas fa-smile"></i></button>
             </div>
-
+            
+             <!-- Tool Modifiers -->
+            <div class="tool-group pen-controls">
+                <input type="color" id="color-picker" value="#1e293b" title="Select Color">
+                 <i class="fas fa-circle" style="font-size: 8px;"></i>
+                <input type="range" id="pen-size" min="1" max="50" value="3" title="Pen Size">
+                <i class="fas fa-circle" style="font-size: 16px;"></i>
+            </div>
+            
+             <!-- Object & Action Tools -->
             <div class="tool-group">
-                <input type="color" id="color-picker" value="#000000" title="Select Color">
+                <button class="tool-button" data-tool="move" title="Move & Resize Image"><i class="fas fa-arrows-alt"></i></button>
+                <button class="tool-button" data-tool="text" title="Add Text"><i class="fas fa-font"></i></button>
+                <button class="tool-button" data-tool="shape" title="Auto Shape Correction"><i class="far fa-star"></i></button>
+                 <button class="tool-button" id="undo-btn" title="Undo"><i class="fas fa-undo"></i></button>
             </div>
 
-            <div class="tool-group pen-size-group">
-                <i class="fas fa-circle" style="font-size: 8px;"></i>
-                <input type="range" id="pen-size" min="1" max="100" value="5" title="Pen Size">
-                <i class="fas fa-circle" style="font-size: 18px;"></i>
-            </div>
-
+            <!-- Page Navigation -->
             <div class="tool-group page-controls">
                 <button class="tool-button" id="prev-page" title="Previous Page"><i class="fas fa-chevron-left"></i></button>
                 <span id="page-indicator">1 / 1</span>
                 <button class="tool-button" id="next-page" title="Next Page"><i class="fas fa-chevron-right"></i></button>
             </div>
             
+            <!-- File & Actions -->
             <div class="tool-group">
+                <button class="tool-button" id="theme-toggle-btn" title="Toggle Dark Mode"><i class="fas fa-moon"></i></button>
+                <button class="tool-button" id="add-image-btn" title="Add Image/Sticker"><i class="fas fa-image"></i></button>
+                <input type="file" id="image-upload" accept="image/*" style="display: none;">
                 <button class="tool-button" id="download-png" title="Download as PNG"><i class="fas fa-file-image"></i></button>
-                <button class="tool-button" id="download-pdf" title="Download Text as PDF"><i class="fas fa-file-pdf"></i></button>
                 <button class="tool-button" id="clear-btn" title="Clear Canvas"><i class="fas fa-trash-alt"></i></button>
             </div>
         </div>
         
-        <div class="whiteboard">
-            <canvas id="canvas"></canvas>
+        <div class="writing-area">
+            <canvas id="notebook-canvas"></canvas>
         </div>
     </div>
     
-    <!-- Modals -->
+    <!-- Modal for Text Input -->
     <div id="text-modal" class="modal-overlay">
         <div class="modal-content">
             <h3>Add Text</h3>
-            <input type="text" id="text-input" placeholder="Type here...">
-            <button id="add-text-btn" class="action-btn">Add Text</button>
-        </div>
-    </div>
-    
-    <div id="sticker-modal" class="modal-overlay">
-        <div class="modal-content">
-            <h3>Add a Sticker</h3>
-            <div class="sticker-modal-body">
-                <div class="sticker-category">
-                    <h4>Reactions</h4>
-                    <div class="sticker-grid">
-                        <span class="sticker-option" data-sticker="⭐">⭐</span>
-                        <span class="sticker-option" data-sticker="❤️">❤️</span>
-                        <span class="sticker-option" data-sticker="💡">💡</span>
-                        <span class="sticker-option" data-sticker="👍">👍</span>
-                        <span class="sticker-option" data-sticker="✔️">✔️</span>
-                        <span class="sticker-option" data-sticker="❓">❓</span>
-                        <span class="sticker-option" data-sticker="❗">❗</span>
-                        <span class="sticker-option" data-sticker="🔥">🔥</span>
-                    </div>
-                </div>
-                <div class="sticker-category">
-                    <h4>Shapes</h4>
-                    <div class="sticker-grid">
-                        <span class="sticker-option" data-sticker="➡️">➡️</span>
-                        <span class="sticker-option" data-sticker="⬅️">⬅️</span>
-                        <span class="sticker-option" data-sticker="⬆️">⬆️</span>
-                        <span class="sticker-option" data-sticker="⬇️">⬇️</span>
-                        <span class="sticker-option" data-sticker="⭕">⭕</span>
-                        <span class="sticker-option" data-sticker="❌">❌</span>
-                        <span class="sticker-option" data-sticker="🔺">🔺</span>
-                        <span class="sticker-option" data-sticker="⬛">⬛</span>
-                    </div>
-                </div>
-            </div>
+            <input type="text" id="text-input" placeholder="Your text here...">
+            <button id="add-text-btn">Add to Page</button>
         </div>
     </div>
 
     <script>
-        const { jsPDF } = window.jspdf;
-        
         document.addEventListener('DOMContentLoaded', () => {
-            class AdvancedWhiteboard {
+            class DigitalNotebook {
                 constructor(canvasId) {
                     this.canvas = document.getElementById(canvasId);
-                    this.ctx = this.canvas.getContext('2d');
-                    this.isDrawing = false;
-                    this.currentTool = 'pen';
-                    this.currentColor = '#000000';
-                    this.penSize = 5;
-                    this.lastX = 0; this.lastY = 0;
-                    this.pages = [this.createBlankPage()];
-                    this.currentPageIndex = 0;
-                    this.textCoords = { x: 0, y: 0 };
+                    this.ctx = this.canvas.getContext('2d', { willReadFrequently: true });
                     
-                    // State specifically for Auto-Draw tool
-                    this.currentStrokePoints = [];
-                    this.canvasStateBeforeStroke = null;
+                    this.isDrawing = false;
+                    this.isMoving = false;
+                    this.currentTool = 'pen';
+                    this.currentColor = '#1e293b';
+                    this.penSize = 3;
+                    this.highlighterOpacity = 0.3;
+                    
+                    this.lastX = 0;
+                    this.lastY = 0;
+                    this.textCoords = { x: 0, y: 0 };
+                    this.currentPath = [];
+                    this.selectedImage = null;
 
+                    this.pages = []; 
+                    this.currentPageIndex = 0;
+                    this.undoStack = []; 
+                    
                     this.init();
                 }
 
-                createBlankPage() { return { drawing: null, texts: [] }; }
-
                 init() {
+                    this.applyInitialTheme();
+                    this.loadStateFromLocalStorage();
                     this.resizeCanvas();
-                    window.addEventListener('resize', () => this.resizeCanvas());
-
-                    this.canvas.addEventListener('mousedown', (e) => this.handleStart(e));
-                    this.canvas.addEventListener('mousemove', (e) => this.handleMove(e));
-                    this.canvas.addEventListener('mouseup', () => this.handleEnd());
-                    this.canvas.addEventListener('mouseout', () => this.handleEnd());
-                    this.canvas.addEventListener('touchstart', (e) => this.handleStart(e), { passive: false });
-                    this.canvas.addEventListener('touchmove', (e) => this.handleMove(e), { passive: false });
-                    this.canvas.addEventListener('touchend', () => this.handleEnd());
-
+                    this.setupEventListeners();
                     this.setupUI();
                     this.updatePageIndicator();
+                    this.redrawCanvas();
                 }
-
+                
                 resizeCanvas() {
-                    this.saveCurrentPage();
-                    this.canvas.width = this.canvas.parentElement.offsetWidth;
-                    this.canvas.height = this.canvas.parentElement.offsetHeight;
-                    this.loadPage(this.currentPageIndex);
-                }
-
-                loadPage(index) {
-                    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-                    const page = this.pages[index];
-                    if (page && page.drawing) {
-                        const img = new Image();
-                        img.src = page.drawing;
-                        img.onload = () => { this.ctx.drawImage(img, 0, 0); };
-                    }
-                }
-                
-                saveCurrentPage() {
-                    if (this.pages[this.currentPageIndex]) {
-                        this.pages[this.currentPageIndex].drawing = this.canvas.toDataURL();
-                    }
-                }
-
-                changePage(direction) {
-                    this.saveCurrentPage();
-                    if (direction === 'next') {
-                        this.currentPageIndex++;
-                        if (this.currentPageIndex === this.pages.length) this.pages.push(this.createBlankPage());
-                    } else if (direction === 'prev' && this.currentPageIndex > 0) {
-                        this.currentPageIndex--;
-                    }
-                    this.loadPage(this.currentPageIndex);
-                    this.updatePageIndicator();
-                }
-                
-                updatePageIndicator() {
-                    document.getElementById('page-indicator').textContent = `${this.currentPageIndex + 1} / ${this.pages.length}`;
-                }
-
-                getCoordinates(event) {
-                    event.preventDefault();
+                    const dpr = window.devicePixelRatio || 1;
                     const rect = this.canvas.getBoundingClientRect();
-                    if (event.touches && event.touches.length > 0) {
-                        return [event.touches[0].clientX - rect.left, event.touches[0].clientY - rect.top];
-                    }
-                    return [event.clientX - rect.left, event.clientY - rect.top];
-                }
-
-                handleStart(e) {
-                    const [x, y] = this.getCoordinates(e);
-
-                    switch (this.currentTool) {
-                        case 'pen':
-                        case 'eraser':
-                            this.isDrawing = true;
-                            [this.lastX, this.lastY] = [x, y];
-                            break;
-                        case 'auto-draw':
-                            this.isDrawing = true;
-                            [this.lastX, this.lastY] = [x, y];
-                            this.canvasStateBeforeStroke = this.canvas.toDataURL();
-                            this.currentStrokePoints = [[x, y]]; // Initialize only for auto-draw
-                            break;
-                        case 'text':
-                            this.textCoords = { x, y };
-                            this.showTextModal(true);
-                            break;
-                        case 'sticker':
-                            this.showStickerModal(true);
-                            break;
-                    }
+                    this.canvas.width = rect.width * dpr;
+                    this.canvas.height = rect.height * dpr;
+                    this.ctx.scale(dpr, dpr);
+                    this.redrawCanvas();
                 }
                 
-                handleMove(e) {
-                    if (!this.isDrawing) return;
-                    
-                    const [x, y] = this.getCoordinates(e);
-                    
-                    // Only track stroke points if using the auto-draw tool
-                    if (this.currentTool === 'auto-draw') {
-                        this.currentStrokePoints.push([x, y]);
-                    }
-                    
-                    this.draw(x, y);
-                }
+                setupEventListeners() {
+                    window.addEventListener('resize', () => this.resizeCanvas());
 
-                handleEnd() {
-                    if (!this.isDrawing) return;
-                    this.isDrawing = false;
-                    
-                    if (this.currentTool === 'auto-draw') {
-                        this.processAutoDraw();
-                        this.currentStrokePoints = []; // Clear points for the next shape
-                    } else {
-                        // For regular pen and eraser, save the drawing immediately
-                        this.saveCurrentPage();
-                    }
-                }
-                
-                draw(x, y) {
-                    this.ctx.globalCompositeOperation = this.currentTool === 'eraser' ? 'destination-out' : 'source-over';
-                    this.ctx.strokeStyle = this.currentColor;
-                    this.ctx.lineWidth = this.penSize;
-                    this.ctx.lineCap = 'round';
-                    this.ctx.lineJoin = 'round';
-                    this.ctx.beginPath();
-                    this.ctx.moveTo(this.lastX, this.lastY);
-                    this.ctx.lineTo(x, y);
-                    this.ctx.stroke();
-                    [this.lastX, this.lastY] = [x, y];
-                }
+                    this.canvas.addEventListener('mousedown', (e) => this.startAction(e));
+                    this.canvas.addEventListener('mousemove', (e) => this.moveAction(e));
+                    this.canvas.addEventListener('mouseup', () => this.endAction());
+                    this.canvas.addEventListener('mouseout', () => this.endAction());
 
-                addText(text) {
-                    const { x, y } = this.textCoords;
-                    const size = Math.max(20, this.penSize * 2);
-                    this.ctx.globalCompositeOperation = 'source-over';
-                    this.ctx.fillStyle = this.currentColor;
-                    this.ctx.font = `bold ${size}px sans-serif`;
-                    this.ctx.fillText(text, x, y);
-                    this.pages[this.currentPageIndex].texts.push({ text, x, y, color: this.currentColor, size });
-                    this.saveCurrentPage();
-                }
-                
-                addSticker(sticker, x, y) {
-                    const size = Math.max(50, this.penSize * 4);
-                    this.ctx.font = `${size}px sans-serif`;
-                    // Adjust placement to center the sticker on the click point
-                    this.ctx.fillText(sticker, x - size / 2, y + size / 3);
-                    this.saveCurrentPage();
+                    this.canvas.addEventListener('touchstart', (e) => this.startAction(e), { passive: false });
+                    this.canvas.addEventListener('touchmove', (e) => this.moveAction(e), { passive: false });
+                    this.canvas.addEventListener('touchend', () => this.endAction());
                 }
 
                 setupUI() {
-                    const toolButtons = document.querySelectorAll('.tool-button');
-                    toolButtons.forEach(button => {
+                    document.querySelectorAll('.tool-button[data-tool]').forEach(button => {
                         button.addEventListener('click', () => {
-                            if (button.id.startsWith('download') || button.id === 'clear-btn' || button.id.includes('page')) return;
-                            document.querySelector('.tool-button.active').classList.remove('active');
+                            document.querySelector('.tool-button.active')?.classList.remove('active');
                             button.classList.add('active');
                             this.currentTool = button.dataset.tool;
-                            if (this.currentTool === 'sticker') this.showStickerModal(true);
+                            this.canvas.style.cursor = this.currentTool === 'move' ? 'move' : 'crosshair';
                         });
                     });
                     
                     document.getElementById('color-picker').addEventListener('input', e => this.currentColor = e.target.value);
                     document.getElementById('pen-size').addEventListener('input', e => this.penSize = e.target.value);
+                    document.getElementById('undo-btn').addEventListener('click', () => this.undoLast());
+                    
                     document.getElementById('prev-page').addEventListener('click', () => this.changePage('prev'));
                     document.getElementById('next-page').addEventListener('click', () => this.changePage('next'));
-                    document.getElementById('download-png').addEventListener('click', () => this.downloadAsPNG());
-                    document.getElementById('download-pdf').addEventListener('click', () => this.downloadTextAsPDF());
-                    document.getElementById('clear-btn').addEventListener('click', () => {
-                        if (confirm('Are you sure you want to clear this page?')) {
-                            this.pages[this.currentPageIndex] = this.createBlankPage();
-                            this.loadPage(this.currentPageIndex);
-                        }
-                    });
 
-                    // Modals
+                    document.getElementById('theme-toggle-btn').addEventListener('click', () => this.toggleTheme());
+                    document.getElementById('add-image-btn').addEventListener('click', () => document.getElementById('image-upload').click());
+                    document.getElementById('image-upload').addEventListener('change', (e) => this.addImage(e));
+                    document.getElementById('download-png').addEventListener('click', () => this.downloadAsPNG());
+                    document.getElementById('clear-btn').addEventListener('click', () => this.clearPage());
+
                     this.textModal = document.getElementById('text-modal');
                     this.textInput = document.getElementById('text-input');
                     document.getElementById('add-text-btn').addEventListener('click', () => {
-                        if (this.textInput.value) { this.addText(this.textInput.value); this.showTextModal(false); }
+                        if (this.textInput.value) {
+                            this.addText(this.textInput.value, this.textCoords);
+                            this.showTextModal(false);
+                        }
                     });
-                    this.textModal.addEventListener('click', e => { if (e.target === this.textModal) this.showTextModal(false); });
+                    this.textModal.addEventListener('click', e => {
+                        if (e.target === this.textModal) this.showTextModal(false);
+                    });
+                }
+                
+                // ---- THEME MANAGEMENT ----
+
+                applyInitialTheme() {
+                    const savedTheme = localStorage.getItem('notebookTheme');
+                    if (savedTheme === 'dark') {
+                        document.body.classList.add('dark-mode');
+                    }
+                }
+
+                toggleTheme() {
+                    document.body.classList.toggle('dark-mode');
+                    const isDarkMode = document.body.classList.contains('dark-mode');
+                    localStorage.setItem('notebookTheme', isDarkMode ? 'dark' : 'light');
+                }
+
+                // ---- STATE & PAGE MANAGEMENT ----
+                
+                createBlankPage() {
+                    return { strokes: [], texts: [], images: [] };
+                }
+
+                saveStateToLocalStorage() {
+                    try {
+                        localStorage.setItem('digitalNotebookPages', JSON.stringify(this.pages));
+                        localStorage.setItem('digitalNotebookPageIndex', this.currentPageIndex);
+                    } catch (e) {
+                        console.error("Error saving to local storage:", e);
+                        alert("Could not save your work. Your browser's storage might be full.");
+                    }
+                }
+                
+                loadStateFromLocalStorage() {
+                    const savedPages = localStorage.getItem('digitalNotebookPages');
+                    const savedIndex = localStorage.getItem('digitalNotebookPageIndex');
                     
-                    this.stickerModal = document.getElementById('sticker-modal');
-                    document.querySelectorAll('.sticker-option').forEach(sticker => {
-                        sticker.addEventListener('click', () => {
-                            // When a sticker is chosen, place it where the canvas was last clicked
-                            this.canvas.addEventListener('click', (e) => {
-                                const [x, y] = this.getCoordinates(e);
-                                this.addSticker(sticker.dataset.sticker, x, y);
-                            }, { once: true }); // Use the event listener only once
-                            this.showStickerModal(false);
+                    if (savedPages) {
+                        this.pages = JSON.parse(savedPages);
+                        this.currentPageIndex = savedIndex ? parseInt(savedIndex, 10) : 0;
+                    }
+
+                    if (!this.pages.length || !Array.isArray(this.pages)) {
+                       this.pages = [this.createBlankPage()];
+                       this.currentPageIndex = 0;
+                    }
+                    this.undoStack = [];
+                }
+                
+                saveToUndoStack() {
+                    const currentState = JSON.stringify(this.pages[this.currentPageIndex]);
+                    this.undoStack.push(currentState);
+                    if(this.undoStack.length > 30) this.undoStack.shift();
+                }
+
+                undoLast() {
+                    if (this.undoStack.length > 1) {
+                       this.undoStack.pop(); 
+                       const prevState = this.undoStack[this.undoStack.length-1];
+                       this.pages[this.currentPageIndex] = JSON.parse(prevState);
+                       this.redrawCanvas();
+                    } else if (this.undoStack.length === 1) {
+                         this.pages[this.currentPageIndex] = JSON.parse(this.undoStack[0]);
+                         this.redrawCanvas();
+                    }
+                }
+
+                changePage(direction) {
+                    if (direction === 'next') {
+                        this.currentPageIndex++;
+                        if (this.currentPageIndex === this.pages.length) {
+                            this.pages.push(this.createBlankPage());
+                        }
+                    } else if (direction === 'prev' && this.currentPageIndex > 0) {
+                        this.currentPageIndex--;
+                    }
+                    this.undoStack = []; 
+                    this.saveToUndoStack(); 
+                    this.updatePageIndicator();
+                    this.redrawCanvas();
+                }
+
+                 clearPage() {
+                    if (confirm('Are you sure you want to clear this page? This cannot be undone.')) {
+                        this.pages[this.currentPageIndex] = this.createBlankPage();
+                        this.undoStack = [];
+                        this.saveToUndoStack();
+                        this.redrawCanvas();
+                        this.saveStateToLocalStorage();
+                    }
+                }
+                
+                updatePageIndicator() {
+                    document.getElementById('page-indicator').textContent = `${this.currentPageIndex + 1} / ${this.pages.length}`;
+                }
+                
+                // ---- CANVAS DRAWING & REDRAWING ----
+                
+                async redrawCanvas() {
+                    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+                    
+                    const page = this.pages[this.currentPageIndex];
+                    if (!page) return;
+
+                    const imagePromises = page.images.map(imgData => {
+                        return new Promise(resolve => {
+                            const img = new Image();
+                            img.src = imgData.src;
+                            img.onload = () => {
+                                this.ctx.drawImage(img, imgData.x, imgData.y, imgData.width, imgData.height);
+                                resolve();
+                            };
+                            img.onerror = () => resolve(); 
                         });
                     });
-                    this.stickerModal.addEventListener('click', e => { if (e.target === this.stickerModal) this.showStickerModal(false); });
+                    await Promise.all(imagePromises);
+                    
+                    page.strokes.forEach(stroke => {
+                        this.ctx.beginPath();
+                        this.ctx.strokeStyle = stroke.color;
+                        this.ctx.lineWidth = stroke.size;
+                        this.ctx.globalAlpha = stroke.opacity;
+                        this.ctx.globalCompositeOperation = stroke.composite;
+                        this.ctx.lineCap = 'round';
+                        this.ctx.lineJoin = 'round';
+
+                        stroke.points.forEach((point, index) => {
+                            if(index === 0) this.ctx.moveTo(point.x, point.y);
+                            else this.ctx.lineTo(point.x, point.y);
+                        });
+                        this.ctx.stroke();
+                    });
+
+                    page.texts.forEach(text => {
+                        this.ctx.globalCompositeOperation = 'source-over';
+                        this.ctx.globalAlpha = 1.0;
+                        this.ctx.fillStyle = text.color;
+                        this.ctx.font = `${text.size}px sans-serif`;
+                        this.ctx.fillText(text.content, text.x, text.y);
+                    });
+
+                     this.ctx.globalAlpha = 1.0;
+                     this.ctx.globalCompositeOperation = 'source-over';
+                }
+
+                // ---- USER ACTIONS & TOOLS ----
+                
+                getCoordinates(event) {
+                    event.preventDefault();
+                    const rect = this.canvas.getBoundingClientRect();
+                    const clientX = event.touches ? event.touches[0].clientX : event.clientX;
+                    const clientY = event.touches ? event.touches[0].clientY : event.clientY;
+                    return [clientX - rect.left, clientY - rect.top];
+                }
+
+                startAction(e) {
+                    this.saveToUndoStack();
+                    [this.lastX, this.lastY] = this.getCoordinates(e);
+
+                    if (this.currentTool === 'text') {
+                        this.textCoords = { x: this.lastX, y: this.lastY };
+                        this.showTextModal(true);
+                        return;
+                    }
+                    
+                     if (this.currentTool === 'move') {
+                        this.selectedImage = this.findImageAt(this.lastX, this.lastY);
+                        if (this.selectedImage) {
+                           this.isMoving = true;
+                           this.selectedImage.offsetX = this.lastX - this.selectedImage.x;
+                           this.selectedImage.offsetY = this.lastY - this.selectedImage.y;
+                        }
+                        return;
+                    }
+
+                    this.isDrawing = true;
+                    this.currentPath = [{x: this.lastX, y: this.lastY}];
+                }
+                
+                moveAction(e) {
+                    if (!this.isDrawing && !this.isMoving) return;
+                    const [x, y] = this.getCoordinates(e);
+                    
+                    if(this.isMoving && this.selectedImage) {
+                        this.selectedImage.x = x - this.selectedImage.offsetX;
+                        this.selectedImage.y = y - this.selectedImage.offsetY;
+                        this.redrawCanvas();
+                        return;
+                    }
+
+                    if (this.isDrawing) {
+                        this.currentPath.push({x: x, y: y});
+                        this.drawSegment(x, y);
+                    }
+                }
+
+                endAction() {
+                    if (!this.isDrawing && !this.isMoving) return;
+                     
+                     if (this.isDrawing) {
+                        if (this.currentTool === 'shape' && this.currentPath.length > 2) {
+                             this.correctShape(this.currentPath);
+                        } else { 
+                             const page = this.pages[this.currentPageIndex];
+                             const newStroke = {
+                                points: this.currentPath,
+                                color: this.currentColor,
+                                size: this.currentTool === 'highlighter' ? this.penSize * 5 : this.penSize,
+                                opacity: this.currentTool === 'highlighter' ? this.highlighterOpacity : 1.0,
+                                composite: this.currentTool === 'eraser' ? 'destination-out' : 'source-over'
+                             };
+                             page.strokes.push(newStroke);
+                        }
+                    }
+
+                    this.isDrawing = false;
+                    this.isMoving = false;
+                    this.selectedImage = null;
+                    this.currentPath = [];
+
+                    this.redrawCanvas();
+                    this.saveStateToLocalStorage();
+                }
+                
+                drawSegment(x, y) {
+                     this.ctx.globalCompositeOperation = this.currentTool === 'eraser' ? 'destination-out' : 'source-over';
+                     this.ctx.strokeStyle = this.currentColor;
+                     this.ctx.lineWidth = this.currentTool === 'highlighter' ? this.penSize * 5 : this.penSize; 
+                     this.ctx.globalAlpha = this.currentTool === 'highlighter' ? this.highlighterOpacity : 1.0;
+                     this.ctx.lineCap = 'round';
+                     this.ctx.lineJoin = 'round';
+
+                     this.ctx.beginPath();
+                     this.ctx.moveTo(this.lastX, this.lastY);
+
+                     switch(this.currentTool){
+                        case 'calligraphy':
+                            const distance = Math.hypot(x - this.lastX, y - this.lastY);
+                            const speed = distance; 
+                            const minWidth = this.penSize;
+                            const maxWidth = this.penSize * 3;
+                            const newWidth = Math.max(maxWidth - speed, minWidth);
+                            this.ctx.lineWidth = newWidth;
+                            break;
+                        case 'spray':
+                            this.ctx.lineWidth = 1;
+                            for(let i = 0; i < 30; i++) {
+                                const angle = Math.random() * 2 * Math.PI;
+                                const radius = Math.random() * this.penSize * 2;
+                                const sprayX = x + radius * Math.cos(angle);
+                                const sprayY = y + radius * Math.sin(angle);
+                                this.ctx.globalAlpha = Math.random() * 0.5; 
+                                this.ctx.fillRect(sprayX, sprayY, 1, 1);
+                            }
+                             break;
+                        default: 
+                            this.ctx.lineTo(x, y);
+                            this.ctx.stroke();
+                            break;
+                     }
+                    
+                     [this.lastX, this.lastY] = [x, y];
+                }
+                
+                 addText(text, coords) {
+                     const fontSize = Math.max(16, this.penSize * 4);
+                     this.pages[this.currentPageIndex].texts.push({
+                        content: text, x: coords.x, y: coords.y, size: fontSize, color: this.currentColor
+                     });
+                     this.saveToUndoStack();
+                     this.redrawCanvas();
+                     this.saveStateToLocalStorage();
+                 }
+
+                 addImage(event) {
+                     const file = event.target.files[0];
+                     if (!file) return;
+
+                     const reader = new FileReader();
+                     reader.onload = (e) => {
+                         const img = new Image();
+                         img.onload = () => {
+                             const maxWidth = this.canvas.clientWidth * 0.5;
+                             const scale = Math.min(1, maxWidth / img.width);
+                             const imgWidth = img.width * scale;
+                             const imgHeight = img.height * scale;
+                             const imgX = (this.canvas.clientWidth - imgWidth) / 2;
+                             const imgY = (this.canvas.clientHeight - imgHeight) / 2;
+                            
+                             this.pages[this.currentPageIndex].images.push({
+                                src: e.target.result, x: imgX, y: imgY, width: imgWidth, height: imgHeight
+                             });
+                             this.saveToUndoStack();
+                             this.redrawCanvas();
+                             this.saveStateToLocalStorage();
+                         }
+                         img.src = e.target.result;
+                     };
+                     reader.readAsDataURL(file);
+                 }
+
+                 findImageAt(x, y) {
+                    const images = this.pages[this.currentPageIndex].images;
+                    for (let i = images.length - 1; i >= 0; i--) {
+                        const img = images[i];
+                        if (x > img.x && x < img.x + img.width && y > img.y && y < img.y + img.height) {
+                           return img;
+                        }
+                    }
+                    return null;
+                }
+
+                 correctShape(points) {
+                    const start = points[0];
+                    const end = points[points.length - 1];
+                    const dist = Math.hypot(end.x - start.x, end.y - start.y);
+                    
+                    const minX = Math.min(...points.map(p => p.x));
+                    const minY = Math.min(...points.map(p => p.y));
+                    const maxX = Math.max(...points.map(p => p.x));
+                    const maxY = Math.max(...points.map(p => p.y));
+                    const width = maxX - minX;
+                    const height = maxY - minY;
+
+                    let newStroke;
+                    const baseStroke = {
+                        color: this.currentColor, size: this.penSize, opacity: 1.0, composite: 'source-over'
+                    };
+
+                    if (dist < Math.max(width, height) * 0.4 && width > 10 && height > 10) { 
+                        const centerX = minX + width / 2;
+                        const centerY = minY + height / 2;
+                        const radiusX = width / 2;
+                        const radiusY = height / 2;
+                        const ellipsePoints = [];
+                        for(let i=0; i < 2 * Math.PI; i += 0.1) {
+                            ellipsePoints.push({ x: centerX + radiusX * Math.cos(i), y: centerY + radiusY * Math.sin(i) });
+                        }
+                        ellipsePoints.push({ x: centerX + radiusX * Math.cos(0), y: centerY + radiusY * Math.sin(0) });
+                        newStroke = {...baseStroke, points: ellipsePoints};
+                    } else if (dist > 10) {
+                        newStroke = {...baseStroke, points: [start, end]};
+                    }
+
+                    if (newStroke) {
+                        this.pages[this.currentPageIndex].strokes.push(newStroke);
+                    }
                 }
                 
                 showTextModal(visible) {
                     this.textModal.classList.toggle('visible', visible);
-                    if (visible) { this.textInput.value = ''; this.textInput.focus(); }
+                    if (visible) {
+                        this.textInput.value = '';
+                        this.textInput.focus();
+                    }
                 }
-
-                showStickerModal(visible) { this.stickerModal.classList.toggle('visible', visible); }
                 
                 downloadAsPNG() {
                     const link = document.createElement('a');
-                    link.download = `whiteboard-page-${this.currentPageIndex + 1}.png`;
+                    link.download = `notebook-page-${this.currentPageIndex + 1}.png`;
                     link.href = this.canvas.toDataURL('image/png');
                     link.click();
                 }
-
-                downloadTextAsPDF() { /* Unchanged */ }
-                
-                // --- AUTO-DRAW SHAPE RECOGNITION ---
-                processAutoDraw() {
-                    if (this.currentStrokePoints.length < 10) {
-                        this.saveCurrentPage();
-                        return;
-                    }
-                    
-                    const img = new Image();
-                    img.src = this.canvasStateBeforeStroke;
-                    img.onload = () => {
-                        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-                        this.ctx.drawImage(img, 0, 0); // Restore canvas to pre-stroke state
-                        this.recognizeAndDrawPerfectShape(); // Draw the new shape
-                    };
-                }
-
-                recognizeAndDrawPerfectShape() {
-                    const points = this.currentStrokePoints;
-                    const startPoint = points[0];
-                    const endPoint = points[points.length - 1];
-                    const bounds = this.getBoundingBox(points);
-
-                    if (this.isLine(points)) return this.drawPerfectLine(startPoint, endPoint);
-                    if (this.isRectangle(points, bounds)) return this.drawPerfectRectangle(bounds);
-                    if (this.isCircle(points, bounds)) return this.drawPerfectCircle(bounds);
-
-                    this.saveCurrentPage(); // If no shape recognized, save the original stroke anyway
-                }
-
-                getBoundingBox(points) {
-                    let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
-                    points.forEach(([x, y]) => {
-                        minX = Math.min(minX, x); minY = Math.min(minY, y);
-                        maxX = Math.max(maxX, x); maxY = Math.max(maxY, y);
-                    });
-                    return { minX, minY, maxX, maxY, width: maxX - minX, height: maxY - minY };
-                }
-
-                isLine(points, threshold = 0.98) {
-                    const dist = (p1, p2) => Math.sqrt((p1[0] - p2[0]) ** 2 + (p1[1] - p2[1]) ** 2);
-                    const pathLength = points.reduce((len, p, i) => i > 0 ? len + dist(p, points[i - 1]) : 0, 0);
-                    const straightDist = dist(points[0], points[points.length - 1]);
-                    return pathLength > 0 && (straightDist / pathLength) > threshold;
-                }
-
-                isRectangle(points, bounds) {
-                    const cornerRegions = [[bounds.minX, bounds.minY], [bounds.maxX, bounds.minY], [bounds.maxX, bounds.maxY], [bounds.minX, bounds.maxY]];
-                    const cornerThreshold = Math.min(bounds.width, bounds.height) * 0.3;
-                    let cornersFound = 0;
-                    for (const corner of cornerRegions) {
-                        if (points.some(p => Math.abs(p[0] - corner[0]) < cornerThreshold && Math.abs(p[1] - corner[1]) < cornerThreshold)) {
-                            cornersFound++;
-                        }
-                    }
-                    return cornersFound >= 3;
-                }
-
-                isCircle(points, bounds) {
-                    const center = { x: bounds.minX + bounds.width / 2, y: bounds.minY + bounds.height / 2 };
-                    const radius = (bounds.width + bounds.height) / 4;
-                    const totalDistance = points.reduce((dist, p) => dist + Math.sqrt((p[0] - center.x) ** 2 + (p[1] - center.y) ** 2), 0);
-                    const avgRadius = totalDistance / points.length;
-                    const aspectRatio = bounds.width / bounds.height;
-                    const radiusConsistency = Math.abs(avgRadius - radius) / radius;
-                    return aspectRatio > 0.8 && aspectRatio < 1.2 && radiusConsistency < 0.3;
-                }
-
-                drawPerfectLine(start, end) {
-                    this.ctx.beginPath();
-                    this.ctx.moveTo(start[0], start[1]);
-                    this.ctx.lineTo(end[0], end[1]);
-                    this.ctx.stroke();
-                    this.saveCurrentPage();
-                }
-
-                drawPerfectRectangle({minX, minY, width, height}) {
-                    this.ctx.strokeRect(minX, minY, width, height);
-                    this.saveCurrentPage();
-                }
-
-                drawPerfectCircle(bounds) {
-                    const center = { x: bounds.minX + bounds.width / 2, y: bounds.minY + bounds.height / 2 };
-                    const radius = (bounds.width + bounds.height) / 4;
-                    this.ctx.beginPath();
-                    this.ctx.arc(center.x, center.y, radius, 0, 2 * Math.PI);
-                    this.ctx.stroke();
-                    this.saveCurrentPage();
-                }
             }
             
-            new AdvancedWhiteboard('canvas');
+            new DigitalNotebook('notebook-canvas');
         });
     </script>
 </body>
