@@ -12,15 +12,15 @@
   <!-- Internal CSS -->
   <style>
     :root {
-      /* Light Mode Palette - Calmer & Cleaner */
+      /* Liquid Glass Theme - Light Mode */
       --bg-gradient-start: #E9F1F8;
       --bg-gradient-end: #DDEBF7;
       --text-primary: #1F2937;
       --text-secondary: #4B5563;
       --text-on-accent: #FFFFFF;
       --header-text: #111827;
-      --glass-bg: rgba(255, 255, 255, 0.5);
-      --glass-border: rgba(200, 215, 230, 0.7);
+      --glass-bg: rgba(255, 255, 255, 0.25);
+      --glass-border: rgba(200, 215, 230, 0.5);
       --shadow-color: rgba(100, 116, 139, 0.15);
       --button-focus: rgba(59, 130, 246, 0.4);
       --accent-gradient: linear-gradient(135deg, #3B82F6, #1D4ED8);
@@ -28,18 +28,21 @@
       --icon-bg: #E0E7FF;
       --icon-fg: #3730A3;
       --loader-color: #3B82F6;
+      --liquid-effect: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+      --liquid-border: 1px solid rgba(255, 255, 255, 0.2);
+      --liquid-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
     }
 
     @media (prefers-color-scheme: dark) {
       :root {
-        /* Dark Mode Palette - Modern & Sophisticated */
+        /* Liquid Glass Theme - Dark Mode */
         --bg-gradient-start: #0f172a;
         --bg-gradient-end: #1e293b;
         --text-primary: #E2E8F0;
         --text-secondary: #94A3B8;
         --text-on-accent: #FFFFFF;
         --header-text: #FFFFFF;
-        --glass-bg: rgba(30, 41, 59, 0.6);
+        --glass-bg: rgba(30, 41, 59, 0.3);
         --glass-border: rgba(71, 85, 105, 0.2);
         --shadow-color: rgba(0, 0, 0, 0.3);
         --button-focus: rgba(96, 165, 250, 0.5);
@@ -48,6 +51,9 @@
         --icon-bg: #1E293B;
         --icon-fg: #7DD3FC;
         --loader-color: #38BDF8;
+        --liquid-effect: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+        --liquid-border: 1px solid rgba(255, 255, 255, 0.1);
+        --liquid-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
       }
     }
 
@@ -66,6 +72,41 @@
       place-items: center;
       padding: 1rem;
       overflow-y: auto;
+      position: relative;
+    }
+
+    /* Liquid Glass Background Elements */
+    .liquid-bg-element {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(40px);
+      opacity: 0.4;
+      z-index: 0;
+      animation: float 15s ease-in-out infinite;
+    }
+    .liquid-bg-element:nth-child(1) {
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(59, 130, 246, 0.3) 0%, rgba(59, 130, 246, 0) 70%);
+      top: 10%;
+      left: 10%;
+      animation-delay: 0s;
+    }
+    .liquid-bg-element:nth-child(2) {
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(139, 92, 246, 0.3) 0%, rgba(139, 92, 246, 0) 70%);
+      bottom: 10%;
+      right: 10%;
+      animation-delay: -5s;
+    }
+    .liquid-bg-element:nth-child(3) {
+      width: 250px;
+      height: 250px;
+      background: radial-gradient(circle, rgba(14, 165, 233, 0.3) 0%, rgba(14, 165, 233, 0) 70%);
+      top: 50%;
+      left: 80%;
+      animation-delay: -10s;
     }
 
     /* --- Animations --- */
@@ -88,10 +129,18 @@
       to { opacity: 0; transform: translateY(-20px) scale(0.98); }
     }
     @keyframes float {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-10px); }
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-20px) rotate(5deg); }
     }
     @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes liquidPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.02); }
+    }
+    @keyframes liquidBorder {
+      0%, 100% { border-color: rgba(255, 255, 255, 0.2); }
+      50% { border-color: rgba(255, 255, 255, 0.4); }
+    }
 
     /* --- Base Container & Modules --- */
     .container {
@@ -99,10 +148,10 @@
       padding: 40px;
       background: var(--glass-bg);
       border-radius: 28px;
-      box-shadow: 0 16px 40px var(--shadow-color);
+      box-shadow: var(--liquid-shadow);
       backdrop-filter: blur(25px) saturate(150%);
       -webkit-backdrop-filter: blur(25px) saturate(150%);
-      border: 1px solid var(--glass-border);
+      border: var(--liquid-border);
       text-align: center;
       z-index: 2;
       opacity: 0;
@@ -110,13 +159,24 @@
       visibility: hidden;
       transition: opacity 0.5s cubic-bezier(0.25, 1, 0.5, 1), transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
       position: absolute;
-      animation: float 6s ease-in-out infinite;
+      animation: liquidPulse 8s ease-in-out infinite;
+    }
+    .container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: var(--liquid-effect);
+      border-radius: 28px;
+      z-index: -1;
     }
     .container.active {
       opacity: 1;
       transform: translateY(0) scale(1);
       visibility: visible;
-      animation: fadeIn 0.5s cubic-bezier(0.25, 1, 0.5, 1) forwards, float 6s ease-in-out infinite;
+      animation: fadeIn 0.5s cubic-bezier(0.25, 1, 0.5, 1) forwards, liquidPulse 8s ease-in-out infinite;
       position: relative;
     }
     .hidden { display: none; }
@@ -130,6 +190,9 @@
       margin-bottom: 20px; font-size: 30px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
       transition: transform 0.3s ease-in-out;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: var(--liquid-border);
     }
     .logo:hover { transform: scale(1.1) rotate(5deg); }
     h1 { font-size: 26px; margin: 0; font-weight: 700; color: var(--header-text); }
@@ -142,18 +205,21 @@
     .form-control, .region-select {
       appearance: none; -webkit-appearance: none;
       width: 100%;
-      border: 1px solid var(--glass-border);
+      border: var(--liquid-border);
       border-radius: 12px;
       padding: 15px; font-size: 16px; font-weight: 500; color: var(--text-primary);
-      background: transparent;
+      background: rgba(255, 255, 255, 0.1);
       transition: all 0.2s ease-in-out;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
     }
     .form-control::placeholder { color: var(--text-secondary); }
     .form-control:focus, .region-select:focus {
       outline: none;
       box-shadow: 0 0 0 4px var(--button-focus);
-      border-color: var(--glass-border);
-      background-color: rgba(255,255,255,0.1);
+      border-color: rgba(255, 255, 255, 0.4);
+      background-color: rgba(255,255,255,0.15);
+      animation: liquidBorder 2s infinite;
     }
     
     /* --- Buttons --- */
@@ -163,6 +229,21 @@
       background: var(--accent-gradient);
       box-shadow: 0 5px 15px rgba(0,0,0,0.1), 0 2px 5px rgba(0,0,0,0.05);
       transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.2s cubic-bezier(0.25, 1, 0.5, 1);
+      position: relative;
+      overflow: hidden;
+    }
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: left 0.5s;
+    }
+    .btn:hover::before {
+      left: 100%;
     }
     .btn:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0,0,0,0.15), 0 4px 10px rgba(0,0,0,0.08); }
     .btn:active { transform: translateY(-1px); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
@@ -183,8 +264,9 @@
 
     /* --- Registration Specifics --- */
     .profile-pic-group { display: flex; flex-direction: column; align-items: center; gap: 12px; margin-bottom: 24px; }
-    #pfp-preview { width: 88px; height: 88px; border-radius: 50%; background: var(--glass-bg); color: var(--text-secondary); display: grid; place-items:center; font-size: 40px; background-size: cover; background-position: center; border: 2px solid var(--glass-border); transition: transform 0.3s ease; }
-    #pfp-upload-label { cursor: pointer; color: #3B82F6; font-weight: 500; font-size: 15px; }
+    #pfp-preview { width: 88px; height: 88px; border-radius: 50%; background: var(--glass-bg); color: var(--text-secondary); display: grid; place-items:center; font-size: 40px; background-size: cover; background-position: center; border: 2px solid var(--glass-border); transition: transform 0.3s ease; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+    #pfp-upload-label { cursor: pointer; color: #3B82F6; font-weight: 500; font-size: 15px; padding: 8px 16px; border-radius: 8px; background: rgba(59, 130, 246, 0.1); transition: all 0.2s; }
+    #pfp-upload-label:hover { background: rgba(59, 130, 246, 0.2); transform: translateY(-2px); }
     #pfp-upload:focus + #pfp-upload-label { outline: 2px solid var(--button-focus); border-radius: 4px; }
 
     /* --- PIN Lock Screen --- */
@@ -195,16 +277,18 @@
 
     .pin-keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; max-width: 280px; margin: 0 auto; }
     .pin-keypad button {
-      width: 75px; height: 75px; border-radius: 50%; border: none; background: transparent; color: var(--header-text);
+      width: 75px; height: 75px; border-radius: 50%; border: var(--liquid-border); background: rgba(255, 255, 255, 0.1); color: var(--header-text);
       font-size: 28px; font-weight: 400; cursor: pointer; transition: all 0.2s;
       display: grid; place-items: center; /* Ensures content is centered perfectly */
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
     }
-    .pin-keypad button:hover { background: var(--glass-bg); }
+    .pin-keypad button:hover { background: rgba(255, 255, 255, 0.2); transform: translateY(-3px); }
     .pin-keypad button:active { transform: scale(0.9); background: var(--glass-border); }
 
     /* --- Main App Screen --- */
     .user-profile-header { display: flex; flex-direction: column; align-items: center; gap: 16px; margin-bottom: 28px; }
-    #user-pfp { width: 80px; height: 80px; border-radius: 50%; background-size: cover; background-position: center; border: 3px solid var(--glass-border); }
+    #user-pfp { width: 80px; height: 80px; border-radius: 50%; background-size: cover; background-position: center; border: 3px solid var(--glass-border); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
     #user-greeting { font-size: 24px; font-weight: 600; color: var(--header-text); }
 
     .select-container { position: relative; width: 100%; }
@@ -217,6 +301,8 @@
       position: absolute; top: 16px; right: 16px; background: none; border: none; cursor: pointer;
       color: var(--text-secondary); font-size: 28px; padding: 8px; border-radius: 50%;
       transition: background-color 0.2s, color 0.2s, transform 0.2s;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
     }
     .settings-button:hover { background-color: var(--glass-bg); color: var(--text-primary); transform: rotate(15deg); }
     
@@ -229,8 +315,20 @@
         display: flex;
         align-items: center;
         gap: 10px;
+        z-index: 10;
     }
     #loader.hidden { opacity: 0; pointer-events: none; }
+
+    /* --- Version Badge --- */
+    .version-badge {
+      position: absolute;
+      bottom: 16px;
+      left: 16px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      opacity: 0.7;
+      z-index: 1;
+    }
 
     /* --- ⭐ RESPONSIVE IMPROVEMENTS FOR MOBILE ⭐ --- */
     @media (max-width: 480px) {
@@ -264,10 +362,22 @@
         font-size: 26px;
       }
       #user-greeting { font-size: 21px; }
+      
+      .liquid-bg-element {
+        display: none; /* Hide liquid elements on very small screens */
+      }
     }
   </style>
 </head>
 <body>
+    <!-- Liquid Glass Background Elements -->
+    <div class="liquid-bg-element"></div>
+    <div class="liquid-bg-element"></div>
+    <div class="liquid-bg-element"></div>
+    
+    <!-- Version Badge -->
+    <div class="version-badge">Zenith 1 · Beta 7</div>
+    
     <div id="loader">Loading...</div>
 
 <div id="registration-container" class="container">
@@ -319,6 +429,7 @@
       const USER_DATA_KEY = 'chronoFocus-userData';
       const USER_PIN_KEY = 'chronoFocus-userPin';
       const SAVED_REGION_KEY = 'chronoFocus-userRegion';
+      const VERSION = 'Zenith 1 · Beta 7';
 
       // Global reference to keypad event handler to allow proper removal
       let pinKeypadHandler = null;
@@ -328,6 +439,15 @@
       function initialize() {
         document.getElementById('year').textContent = new Date().getFullYear();
         setTimeout(checkUserState, 200); // Brief delay for smooth rendering
+        
+        // Add keyboard support for password field
+        document.getElementById('password').addEventListener('keydown', function(e) {
+          // Allow normal typing but prevent form submission on Enter
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            document.getElementById('registration-form').requestSubmit();
+          }
+        });
       }
       
       function checkUserState() {
@@ -366,6 +486,7 @@
           const pfpPreview = document.getElementById('pfp-preview');
           const nameInput = document.getElementById('name');
           const emailInput = document.getElementById('email');
+          const passwordInput = document.getElementById('password');
           const genderInput = document.getElementById('gender');
           const ageInput = document.getElementById('age');
           const registerBtn = document.getElementById('registerBtn');
@@ -498,6 +619,20 @@
           };
           
           keypad.addEventListener('click', pinKeypadHandler);
+          
+          // Add keyboard support for PIN entry
+          document.addEventListener('keydown', function(e) {
+            if (e.key >= '0' && e.key <= '9' && currentPin.length < 4) {
+              currentPin += e.key;
+              updatePinDisplay();
+              if (currentPin.length === 4) {
+                setTimeout(() => modes[mode].next(currentPin), 250);
+              }
+            } else if (e.key === 'Backspace') {
+              currentPin = currentPin.slice(0, -1);
+              updatePinDisplay();
+            }
+          });
       }
       
       function showMainApp(userData) {
@@ -505,7 +640,6 @@
           setupMainApp(userData);
       }
       
-      // --- REVISED AND FIXED ---
       function setupMainApp(userData) {
         const regionSelect = document.getElementById('region-select');
         const enterBtn = document.getElementById('enterBtn');
