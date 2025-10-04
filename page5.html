@@ -1,2797 +1,866 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="apple-notes">
+<html lang="en" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <link rel="icon" href="Chronofocus.png" type="image/x-icon">
     <title>Gridora - AI Document Assistant</title>
+    <link rel="icon" href="https://raw.githubusercontent.com/workwithasa/Gridora/main/Chronofocus.png" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <!-- PDF & Download Libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
     <style>
-        /* --- Enhanced Variables & Base Styles --- */
+        /* --- Themes & Variables --- */
         :root {
             --sidebar-width: min(90vw, 400px);
-            --header-height: 65px;
+            --header-height: 80px;
             --border-radius: 24px;
-            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            --border-radius-pill: 50px;
+            --transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
             --font-family: 'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif;
             --z-overlay: 1000;
             --z-sidebar: 1001;
             --z-modal: 2000;
-            --dynamic-island-height: 40px;
-            --dynamic-island-expanded-height: 80px;
+            --z-island: 3000;
         }
 
-        /* --- Enhanced APPLE NOTES THEME --- */
-        [data-theme="apple-notes"] {
-            --theme-bg-gradient: linear-gradient(135deg, #f5f5f0 0%, #e8e8e0 100%);
-            --theme-bg-color: #f7f7f0;
-            --theme-bg-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="4" height="4" viewBox="0 0 4 4"><path fill="%239C92AC" fill-opacity="0.06" d="M1 3h1v1H1V3zm2-2h1v1H3V1z"></path></svg>');
-            --theme-surface-bg: #ffffff;
-            --theme-text-primary: #1c1c1e;
-            --theme-text-secondary: #6b6b6b;
-            --theme-border-color: #e5e5e0;
-            --theme-accent-primary: #FFCC00;
-            --theme-accent-secondary: #e6b800;
-            --theme-accent-translucent: rgba(255, 204, 0, 0.2);
-            --theme-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
-            --theme-card-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            --theme-sidebar-bg: #fdfdfa;
-            --dynamic-island-bg: #1c1c1e;
-        }
-
-        /* --- Other themes remain the same as in original code --- */
-        [data-theme="grammarly"] {
-            --theme-bg-gradient: linear-gradient(135deg, #f9f9f9 0%, #e8e8e8 100%);
-            --theme-bg-color: #f5f5f5;
-            --theme-bg-image: none;
-            --theme-surface-bg: #ffffff;
-            --theme-text-primary: #1a1a1a;
-            --theme-text-secondary: #666666;
-            --theme-border-color: #e0e0e0;
-            --theme-accent-primary: #15C39A;
-            --theme-accent-secondary: #12a785;
-            --theme-accent-translucent: rgba(21, 195, 154, 0.2);
-            --theme-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-            --theme-card-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            --theme-sidebar-bg: #fafafa;
-            --dynamic-island-bg: #15C39A;
-        }
+        /* Light Theme */
         [data-theme="light"] {
-            --theme-bg-gradient: linear-gradient(135deg, #ffffff 0%, #f5f5f5 100%);
-            --theme-bg-color: #ffffff;
-            --theme-bg-image: none;
-            --theme-surface-bg: #f9f9f9;
-            --theme-text-primary: #1a1a1a;
-            --theme-text-secondary: #666666;
-            --theme-border-color: #e0e0e0;
-            --theme-accent-primary: #007AFF;
-            --theme-accent-secondary: #0056CC;
-            --theme-accent-translucent: rgba(0, 122, 255, 0.2);
-            --theme-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-            --theme-card-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            --theme-sidebar-bg: #f5f5f5;
-            --dynamic-island-bg: #007AFF;
-        }
-        [data-theme="dark"] {
-            --theme-bg-gradient: linear-gradient(135deg, #1c1c1e 0%, #2c2c2e 100%);
-            --theme-bg-color: #1c1c1e;
-            --theme-bg-image: none;
-            --theme-surface-bg: #2c2c2e;
-            --theme-text-primary: #ffffff;
-            --theme-text-secondary: #a0a0a0;
-            --theme-border-color: #3a3a3c;
-            --theme-accent-primary: #0A84FF;
-            --theme-accent-secondary: #0066CC;
-            --theme-accent-translucent: rgba(10, 132, 255, 0.2);
-            --theme-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-            --theme-card-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-            --theme-sidebar-bg: #2c2c2e;
-            --dynamic-island-bg: #0A84FF;
-        }
-        [data-theme="sepia"] {
-            --theme-bg-gradient: linear-gradient(135deg, #f5f0e6 0%, #e8e0d0 100%);
-            --theme-bg-color: #f5f0e6;
-            --theme-bg-image: none;
-            --theme-surface-bg: #f9f5ed;
-            --theme-text-primary: #3c2f2f;
-            --theme-text-secondary: #7a6a5a;
-            --theme-border-color: #d9c7a7;
-            --theme-accent-primary: #8B4513;
-            --theme-accent-secondary: #654321;
-            --theme-accent-translucent: rgba(139, 69, 19, 0.2);
-            --theme-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-            --theme-card-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            --theme-sidebar-bg: #f9f5ed;
-            --dynamic-island-bg: #8B4513;
-        }
-        [data-theme="midnight"] {
-            --theme-bg-gradient: linear-gradient(135deg, #0d0d0d 0%, #1a1a1a 100%);
-            --theme-bg-color: #0d0d0d;
-            --theme-bg-image: none;
-            --theme-surface-bg: #1a1a1a;
-            --theme-text-primary: #ffffff;
-            --theme-text-secondary: #a0a0a0;
-            --theme-border-color: #2a2a2a;
-            --theme-accent-primary: #BB86FC;
-            --theme-accent-secondary: #9b5fe0;
-            --theme-accent-translucent: rgba(187, 134, 252, 0.2);
-            --theme-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
-            --theme-card-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-            --theme-sidebar-bg: #1a1a1a;
-            --dynamic-island-bg: #BB86FC;
-        }
-        [data-theme="ocean"] {
-            --theme-bg-gradient: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
-            --theme-bg-color: #e3f2fd;
-            --theme-bg-image: none;
-            --theme-surface-bg: #ffffff;
-            --theme-text-primary: #0d47a1;
-            --theme-text-secondary: #546e7a;
-            --theme-border-color: #bbdefb;
-            --theme-accent-primary: #2196F3;
-            --theme-accent-secondary: #1976D2;
-            --theme-accent-translucent: rgba(33, 150, 243, 0.2);
-            --theme-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-            --theme-card-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            --theme-sidebar-bg: #f5fbff;
-            --dynamic-island-bg: #2196F3;
-        }
-        [data-theme="slate"] {
-            --theme-bg-gradient: linear-gradient(135deg, #37474f 0%, #263238 100%);
-            --theme-bg-color: #37474f;
-            --theme-bg-image: none;
-            --theme-surface-bg: #455a64;
-            --theme-text-primary: #ffffff;
-            --theme-text-secondary: #b0bec5;
-            --theme-border-color: #546e7a;
-            --theme-accent-primary: #78909C;
-            --theme-accent-secondary: #607D8B;
-            --theme-accent-translucent: rgba(120, 144, 156, 0.2);
-            --theme-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-            --theme-card-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-            --theme-sidebar-bg: #455a64;
-            --dynamic-island-bg: #78909C;
+            --theme-bg-gradient: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+            --theme-bg-color: #f6f6f3;
+            --theme-surface-bg: rgba(255, 255, 255, 0.6);
+            --theme-text-primary: #1d1d1f;
+            --theme-text-secondary: #5a5a5f;
+            --theme-border-color: rgba(0, 0, 0, 0.08);
+            --theme-accent-primary: #007aff;
+            --theme-accent-secondary: #0056b3;
+            --theme-accent-translucent: rgba(0, 122, 255, 0.1);
+            --theme-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
         }
 
-        /* --- Enhanced Base Styles --- */
+        /* Dark Theme */
+        [data-theme="dark"] {
+            --theme-bg-gradient: linear-gradient(135deg, #2c3e50 0%, #171c23 100%);
+            --theme-bg-color: #171c23;
+            --theme-surface-bg: rgba(28, 33, 39, 0.8);
+            --theme-text-primary: #e5e5ea;
+            --theme-text-secondary: #a3a3a3;
+            --theme-border-color: rgba(80, 80, 80, 0.6);
+            --theme-accent-primary: #0a84ff;
+            --theme-accent-secondary: #3b9bff;
+            --theme-accent-translucent: rgba(10, 132, 255, 0.15);
+            --theme-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Midnight Theme */
+        [data-theme="midnight"] {
+            --theme-bg-gradient: linear-gradient(135deg, #0d1117 0%, #010409 100%);
+            --theme-bg-color: #010409;
+            --theme-surface-bg: rgba(13, 17, 23, 0.8);
+            --theme-text-primary: #c9d1d9;
+            --theme-text-secondary: #8b949e;
+            --theme-border-color: rgba(48, 54, 61, 0.6);
+            --theme-accent-primary: #58a6ff;
+            --theme-accent-secondary: #3081f7;
+            --theme-accent-translucent: rgba(88, 166, 255, 0.15);
+            --theme-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* NEW: Ultra Dark Theme */
+        [data-theme="ultra-dark"] {
+            --theme-bg-gradient: linear-gradient(135deg, #000000 0%, #080808 100%);
+            --theme-bg-color: #000000;
+            --theme-surface-bg: rgba(18, 18, 18, 0.8);
+            --theme-text-primary: #e0e0e0;
+            --theme-text-secondary: #a0a0a0;
+            --theme-border-color: rgba(60, 60, 60, 0.7);
+            --theme-accent-primary: #1DB954; /* Spotify Green */
+            --theme-accent-secondary: #1ed760;
+            --theme-accent-translucent: rgba(29, 185, 84, 0.15);
+            --theme-shadow: 0 10px 35px rgba(0, 0, 0, 0.4);
+        }
+
+        /* NEW: Cotton Candy Theme */
+        [data-theme="cotton-candy"] {
+            --theme-bg-gradient: linear-gradient(135deg, #ffdde1 0%, #ee9ca7 100%);
+            --theme-bg-color: #fce4ec;
+            --theme-surface-bg: rgba(255, 255, 255, 0.7);
+            --theme-text-primary: #6d4c41;
+            --theme-text-secondary: #8d6e63;
+            --theme-border-color: rgba(239, 154, 154, 0.5);
+            --theme-accent-primary: #f06292; /* Sweet Pink */
+            --theme-accent-secondary: #ec407a;
+            --theme-accent-translucent: rgba(240, 98, 146, 0.15);
+            --theme-shadow: 0 10px 30px rgba(236, 64, 122, 0.15);
+        }
+        
+        /* NEW: Golden Theme */
+        [data-theme="golden"] {
+            --theme-bg-gradient: linear-gradient(135deg, #FFD700 0%, #FDBB2D 100%);
+            --theme-bg-color: #fff8e1;
+            --theme-surface-bg: rgba(255, 236, 179, 0.7);
+            --theme-text-primary: #4e342e;
+            --theme-text-secondary: #6d4c41;
+            --theme-border-color: rgba(255, 202, 40, 0.6);
+            --theme-accent-primary: #ffa000; /* Amber */
+            --theme-accent-secondary: #ff8f00;
+            --theme-accent-translucent: rgba(255, 160, 0, 0.15);
+            --theme-shadow: 0 10px 30px rgba(255, 143, 0, 0.2);
+        }
+        
+        /* Ocean Theme */
+        [data-theme="ocean"] {
+            --theme-bg-gradient: linear-gradient(135deg, #00C9FF 0%, #92FE9D 100%);
+            --theme-bg-color: #e0f7fa;
+            --theme-surface-bg: rgba(255, 255, 255, 0.7);
+            --theme-text-primary: #0b2d48;
+            --theme-text-secondary: #4a6a84;
+            --theme-border-color: rgba(100, 150, 200, 0.5);
+            --theme-accent-primary: #0077c2;
+            --theme-accent-secondary: #005082;
+            --theme-accent-translucent: rgba(0, 119, 194, 0.15);
+            --theme-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+        }
+
+
+        /* --- Base Styles --- */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: var(--font-family);
-            -webkit-touch-callout: text;
-            -webkit-user-select: text;
-            -khtml-user-select: text;
-            -moz-user-select: text;
-            -ms-user-select: text;
-            user-select: text;
         }
-
-        html {
-            -webkit-tap-highlight-color: transparent;
-        }
-
+        html { -webkit-tap-highlight-color: transparent; }
         body {
             background-color: var(--theme-bg-color);
-            background-image: var(--theme-bg-image), var(--theme-bg-gradient);
+            background-image: var(--theme-bg-gradient);
             color: var(--theme-text-primary);
-            display: flex;
-            flex-direction: column;
             min-height: 100vh;
-            overflow-x: hidden;
+            overflow: hidden;
             -webkit-text-size-adjust: 100%;
             text-size-adjust: 100%;
             touch-action: manipulation;
+            transition: background 0.8s ease;
         }
 
-        .app-container {
-            display: flex;
-            flex: 1;
-            overflow: hidden;
-            position: relative;
+        /* Dynamic Motion Background */
+        body::before {
+            content: '';
+            position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-image: radial-gradient(circle at top left, var(--theme-accent-translucent) 0%, transparent 25%),
+                              radial-gradient(circle at bottom right, var(--theme-accent-translucent) 0%, transparent 25%);
+            z-index: -1;
+            animation: drift 40s ease-in-out infinite alternate;
+            transition: background-image 0.8s ease;
+        }
+        @keyframes drift {
+            from { transform: translate(-15%, -15%) rotate(0deg); }
+            to { transform: translate(15%, 15%) rotate(15deg); }
         }
 
+        .app-container { display: flex; height: 100vh; overflow: hidden; position: relative; }
         .glass {
             background: var(--theme-surface-bg);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
             border-radius: var(--border-radius);
             border: 1px solid var(--theme-border-color);
             box-shadow: var(--theme-shadow);
+            transition: var(--transition);
         }
 
-        /* --- Enhanced Dynamic Island --- */
-        .dynamic-island {
-            position: fixed;
-            top: 10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 120px;
-            height: var(--dynamic-island-height);
-            background-color: var(--dynamic-island-bg);
-            border-radius: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        /* --- Entry Page --- */
+        #entry-page {
+            position: fixed; inset: 0; display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            background-color: var(--theme-bg-color);
+            background-image: var(--theme-bg-gradient);
             z-index: 9999;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            transition: var(--transition);
-            overflow: hidden;
-            animation: island-appear 0.5s ease-out;
-            cursor: pointer;
-        }
-
-        .dynamic-island-content {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: var(--theme-surface-bg);
-            font-size: 0.8rem;
-            font-weight: 600;
-            transition: var(--transition);
-        }
-
-        .dynamic-island.expanded {
-            width: 280px;
-            height: var(--dynamic-island-expanded-height);
-            animation: island-expand 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        .dynamic-island.hidden {
-            transform: translateX(-50%) translateY(-100px);
-            opacity: 0;
-        }
-
-        .dynamic-island-tools {
-            display: none;
-            flex-wrap: wrap;
-            justify-content: center;
-            align-items: center;
-            gap: 8px;
-            padding: 8px;
-            width: 100%;
-            height: 100%;
-        }
-
-        .dynamic-island.expanded .dynamic-island-tools {
-            display: flex;
-            animation: tools-appear 0.3s ease-out 0.2s both;
-        }
-
-        .dynamic-island.expanded .dynamic-island-content {
-            display: none;
-        }
-
-        .dynamic-tool {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background-color: rgba(255, 255, 255, 0.15);
-            color: white;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: var(--transition);
-            border: none;
-        }
-
-        .dynamic-tool:hover {
-            background-color: rgba(255, 255, 255, 0.25);
-            transform: scale(1.1);
-        }
-
-        @keyframes island-appear {
-            0% { transform: translateX(-50%) translateY(-100px); opacity: 0; }
-            100% { transform: translateX(-50%) translateY(0); opacity: 1; }
-        }
-
-        @keyframes island-expand {
-            0% { width: 120px; height: var(--dynamic-island-height); }
-            70% { width: 300px; height: var(--dynamic-island-expanded-height); }
-            100% { width: 280px; height: var(--dynamic-island-expanded-height); }
-        }
-
-        @keyframes island-hide {
-            0% { transform: translateX(-50%) translateY(0); opacity: 1; }
-            100% { transform: translateX(-50%) translateY(-100px); opacity: 0; }
-        }
-
-        @keyframes tools-appear {
-            0% { opacity: 0; transform: scale(0.8); }
-            100% { opacity: 1; transform: scale(1); }
-        }
-
-        /* --- Enhanced Welcome Screen --- */
-        .welcome-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: var(--theme-bg-gradient);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 10000;
-            padding: 20px;
-            text-align: center;
-            animation: welcome-fade-in 0.6s ease-out;
-        }
-
-        .welcome-logo {
-            font-size: 3rem;
-            margin-bottom: 20px;
-            color: var(--theme-accent-primary);
-            animation: logo-bounce 1s ease-out;
-        }
-
-        .welcome-title {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 10px;
-            color: var(--theme-text-primary);
-            animation: title-slide-up 0.8s ease-out;
-        }
-
-        .welcome-subtitle {
-            font-size: 1.2rem;
-            color: var(--theme-text-secondary);
-            margin-bottom: 40px;
-            max-width: 500px;
-            animation: subtitle-fade-in 1s ease-out 0.3s both;
-        }
-
-        .welcome-options {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            width: 100%;
-            max-width: 400px;
-            animation: options-appear 0.8s ease-out 0.5s both;
-        }
-
-        .welcome-option {
-            padding: 20px;
-            background: var(--theme-surface-bg);
-            border-radius: var(--border-radius);
-            border: 1px solid var(--theme-border-color);
-            box-shadow: var(--theme-shadow);
-            cursor: pointer;
-            transition: var(--transition);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 15px;
-            animation: option-float 3s ease-in-out infinite;
-        }
-
-        .welcome-option:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
-            animation-play-state: paused;
-        }
-
-        .welcome-option:nth-child(1) {
-            animation-delay: 0s;
-        }
-
-        .welcome-option:nth-child(2) {
-            animation-delay: 0.2s;
-        }
-
-        .welcome-option i {
-            font-size: 2.5rem;
-            color: var(--theme-accent-primary);
-        }
-
-        .welcome-option h3 {
-            font-size: 1.5rem;
-            font-weight: 600;
-        }
-
-        .welcome-option p {
-            color: var(--theme-text-secondary);
+            transition: opacity 0.8s ease, visibility 0.8s;
+            animation: fadeIn 1s ease-in-out;
+            padding: 1rem;
             text-align: center;
         }
-
-        @keyframes welcome-fade-in {
-            0% { opacity: 0; }
-            100% { opacity: 1; }
+        #entry-page.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+        .entry-title { font-size: clamp(2.5rem, 8vw, 4rem); margin-bottom: 1rem; font-weight: 700; color: var(--theme-text-primary); }
+        .entry-subtitle { font-size: clamp(1rem, 4vw, 1.25rem); max-width: 600px; color: var(--theme-text-secondary); margin-bottom: 3rem; }
+        .entry-button {
+            background: var(--theme-surface-bg); border: 1px solid var(--theme-border-color);
+            border-radius: var(--border-radius-pill); padding: 1.2rem 2.5rem; font-size: 1.1rem;
+            font-weight: 600; color: var(--theme-text-primary); cursor: pointer; margin: 0.75rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: all 0.3s ease;
+            animation: float 4s ease-in-out infinite;
         }
-
-        @keyframes logo-bounce {
-            0% { transform: scale(0.5); opacity: 0; }
-            70% { transform: scale(1.1); }
-            100% { transform: scale(1); opacity: 1; }
+        .entry-button i { margin-right: 12px; }
+        .entry-button:nth-child(3) { animation-delay: 0.2s; }
+        .entry-button:hover {
+            transform: translateY(-8px) scale(1.05); box-shadow: 0 12px 30px rgba(0,0,0,0.1);
+            background: var(--theme-accent-translucent); border-color: var(--theme-accent-primary);
+            color: var(--theme-accent-primary);
         }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
 
-        @keyframes title-slide-up {
-            0% { transform: translateY(30px); opacity: 0; }
-            100% { transform: translateY(0); opacity: 1; }
-        }
-
-        @keyframes subtitle-fade-in {
-            0% { opacity: 0; }
-            100% { opacity: 1; }
-        }
-
-        @keyframes options-appear {
-            0% { opacity: 0; transform: translateY(20px); }
-            100% { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes option-float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-            100% { transform: translateY(0px); }
-        }
-
-        /* --- Enhanced Header --- */
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 24px;
-            height: var(--header-height);
-            flex-shrink: 0;
-            position: relative;
-            z-index: 10;
-            border-bottom: 1px solid var(--theme-border-color);
-            animation: header-slide-down 0.5s ease-out;
-        }
-
-        .header-title {
-            font-weight: 700;
-            font-size: 1.6rem;
-            color: var(--theme-text-primary);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        @keyframes header-slide-down {
-            0% { transform: translateY(-100%); opacity: 0; }
-            100% { transform: translateY(0); opacity: 1; }
-        }
-
-        /* --- Enhanced Main Content Area --- */
+        /* --- Main Layout --- */
         .main-content {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            padding: 24px 12px;
-            transition: var(--transition);
-            position: relative;
-            animation: content-fade-in 0.6s ease-out;
+            flex-grow: 1; display: flex; flex-direction: column;
+            overflow: hidden; padding-top: calc(var(--header-height) - 10px); position: relative;
         }
 
-        .main-content.sidebar-open {
-            filter: brightness(0.95);
-            transform: scale(0.98);
-            border-radius: var(--border-radius);
+        /* --- Dynamic Island --- */
+        .dynamic-island {
+            position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+            z-index: var(--z-island); background: rgba(20, 20, 20, 0.85);
+            backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
+            border: 1px solid rgba(255,255,255,0.1); display: flex;
+            align-items: center; justify-content: center; color: white; padding: 0 20px;
+            border-radius: var(--border-radius-pill); cursor: pointer; transition: var(--transition);
+            height: 50px; min-width: 250px; box-shadow: 0 10px 40px rgba(0,0,0,0.25);
         }
+        .dynamic-island:not(.expanded) { animation: breath 3s infinite ease-in-out; }
+        @keyframes breath {
+            0%, 100% { transform: translateX(-50%) scale(1); box-shadow: 0 10px 40px rgba(0,0,0,0.25);}
+            50% { transform: translateX(-50%) scale(1.03); box-shadow: 0 15px 50px rgba(0,0,0,0.3);}
+        }
+        .island-idle-content { display: flex; align-items: center; gap: 10px; transition: opacity 0.3s ease, transform 0.3s ease; }
+        .dynamic-island.expanded .island-idle-content { opacity: 0; transform: scale(0.8); pointer-events: none; }
+        .island-controls {
+            display: flex; gap: 10px; align-items: center; opacity: 0;
+            pointer-events: none; position: absolute;
+            transition: opacity 0.4s 0.2s ease, transform 0.4s 0.2s ease;
+            transform: translateY(10px);
+        }
+        .island-btn {
+            background: rgba(255, 255, 255, 0.1); color: white;
+            width: 48px; height: 48px; border-radius: 50%; border: none;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; font-size: 1.1rem; transition: all 0.3s ease;
+        }
+        .island-btn:hover { background: var(--theme-accent-primary); transform: scale(1.1); }
+        .island-btn:active { transform: scale(0.95); } /* Better Touch Feedback */
+        /* Expanded State */
+        .dynamic-island.expanded {
+            height: 80px; width: auto; padding: 0 40px;
+            min-width: 450px; border-radius: 40px;
+        }
+        .dynamic-island.expanded .island-controls { opacity: 1; pointer-events: auto; transform: translateY(0); }
 
         .content-area {
-            flex-grow: 1;
-            overflow-y: auto;
-            padding: clamp(2rem, 5vw, 4rem);
-            border-radius: var(--border-radius);
-            position: relative;
+            flex-grow: 1; overflow-y: auto;
+            padding: clamp(12px, 3vw, 20px); margin: 20px;
+            border-radius: var(--border-radius); position: relative;
             -webkit-overflow-scrolling: touch;
-            background: var(--theme-surface-bg);
-            box-shadow: var(--theme-shadow);
-            margin: 0 auto;
-            width: 100%;
-            max-width: 900px;
-            animation: content-area-appear 0.7s ease-out;
         }
 
         .empty-state {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100%;
-            text-align: center;
-            padding: 2rem;
-            animation: empty-state-fade 0.8s ease-out;
+            display: flex; flex-direction: column; align-items: center;
+            justify-content: center; height: 100%; text-align: center;
+            padding: 2rem; color: var(--theme-text-secondary);
         }
-
         .empty-state i {
             font-size: clamp(3rem, 8vw, 5rem);
             color: var(--theme-accent-primary);
-            opacity: 0.6;
-            margin-bottom: 1.5rem;
-            animation: empty-icon-pulse 2s ease-in-out infinite;
+            opacity: 0.6; margin-bottom: 1.5rem;
         }
 
-        .empty-state h2 {
-            font-size: clamp(1.2rem, 4vw, 1.8rem);
-            margin-bottom: 1rem;
-        }
-
-        .empty-state p {
-            font-size: clamp(0.9rem, 3vw, 1rem);
-            color: var(--theme-text-secondary);
-            max-width: 300px;
-            line-height: 1.5;
-        }
-
-        @keyframes content-fade-in {
-            0% { opacity: 0; }
-            100% { opacity: 1; }
-        }
-
-        @keyframes content-area-appear {
-            0% { transform: scale(0.95); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
-        }
-
-        @keyframes empty-state-fade {
-            0% { opacity: 0; transform: translateY(20px); }
-            100% { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes empty-icon-pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
-
-        /* --- Enhanced Document Title --- */
-        #document-title {
-            width: 100%;
-            padding: 0 10px 10px;
-            margin-bottom: 2rem;
-            border-radius: 0;
-            border: none;
-            border-bottom: 1px solid var(--theme-border-color);
-            background-color: transparent;
-            color: var(--theme-text-primary);
-            font-size: 2.2rem;
-            font-weight: 700;
-            transition: var(--transition);
-            box-shadow: none;
-            animation: title-appear 0.5s ease-out;
-        }
-
-        #document-title:focus {
-            outline: none;
-            border-color: var(--theme-accent-primary);
-            box-shadow: none;
-        }
-
-        @keyframes title-appear {
-            0% { opacity: 0; transform: translateY(-10px); }
-            100% { opacity: 1; transform: translateY(0); }
-        }
-
-        /* --- Enhanced Drag & Drop Overlay --- */
+        /* --- PDF & Text Editor Styles --- */
         #drag-drop-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.7);
-            border: 3px dashed var(--theme-accent-primary);
-            border-radius: var(--border-radius);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            font-size: clamp(1.2rem, 4vw, 1.5rem);
-            font-weight: 600;
-            color: white;
-            z-index: var(--z-overlay);
-            text-align: center;
-            padding: 2rem;
-            animation: drag-drop-pulse 2s infinite;
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7); border: 3px dashed var(--theme-accent-primary);
+            border-radius: var(--border-radius); display: none; align-items: center;
+            justify-content: center; font-size: clamp(1.2rem, 4vw, 1.5rem);
+            font-weight: 600; color: white; z-index: var(--z-overlay);
+            text-align: center; padding: 2rem;
         }
+        #drag-drop-overlay.visible { display: flex; }
+        #pdf-viewer { display: none; position: relative; }
+        #pdf-viewer .page-container { margin: 0 auto 20px auto; box-shadow: var(--theme-shadow); max-width: 100%; overflow: hidden; border-radius: 12px; }
+        #pdf-viewer canvas { display: block; width: 100%; height: auto; max-width: 100%; }
+        #text-editor { display: none; min-height: 70vh; width: 100%; padding: clamp(1rem, 4vw, 2rem); font-size: clamp(1rem, 3vw, 1.15rem); line-height: 1.8; color: var(--theme-text-primary); border: none; outline: none; background: transparent; white-space: pre-wrap; word-wrap: break-word; overflow-wrap: break-word; -webkit-user-select: text; user-select: text; }
+        #text-editor:empty:before { content: attr(data-placeholder); color: var(--theme-text-secondary); opacity: 0.7; pointer-events: none; }
 
-        #drag-drop-overlay.visible {
-            display: flex;
-        }
-
-        @keyframes drag-drop-pulse {
-            0% { border-color: var(--theme-accent-primary); }
-            50% { border-color: rgba(255, 204, 0, 0.5); }
-            100% { border-color: var(--theme-accent-primary); }
-        }
-
-        /* --- Enhanced PDF Viewer & Text Editor --- */
-        #pdf-viewer {
-            position: relative;
-        }
-
-        #pdf-viewer .page-container {
-            margin: 0 auto 20px auto;
-            box-shadow: var(--theme-shadow);
-            max-width: 100%;
-            overflow: hidden;
-            border-radius: 12px;
-            animation: page-appear 0.5s ease-out;
-        }
-
-        #pdf-viewer canvas {
-            display: block;
-            width: 100%;
-            height: auto;
-            max-width: 100%;
-            border-radius: 8px;
-        }
-
-        #text-editor {
-            display: none;
-            min-height: 70vh;
-            width: 100%;
-            padding: 1rem;
-            font-size: 1.1rem;
-            line-height: 1.8;
-            letter-spacing: 0.2px;
-            color: var(--theme-text-primary);
-            border: none;
-            outline: none;
-            background: transparent;
-            white-space: pre-wrap;
-            word-wrap: break-word;
-            overflow-wrap: break-word;
-            -webkit-user-select: text;
-            -moz-user-select: text;
-            -ms-user-select: text;
-            user-select: text;
-            border-radius: 12px;
-            animation: editor-appear 0.5s ease-out;
-        }
-
-        #text-editor:empty:before {
-            content: attr(data-placeholder);
-            color: var(--theme-text-secondary);
-            opacity: 0.7;
-            pointer-events: none;
-        }
-
-        /* Image container styles */
-        .image-container {
-            position: relative;
-            display: inline-block;
-            margin: 10px;
-            max-width: 100%;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: var(--theme-shadow);
-            animation: image-appear 0.5s ease-out;
-        }
-
-        .image-container img {
-            max-width: 100%;
-            height: auto;
-            display: block;
-        }
-
-        .image-remove-btn {
-            position: absolute;
-            top: 8px;
-            right: 8px;
-            background: rgba(0, 0, 0, 0.6);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .image-container:hover .image-remove-btn {
-            opacity: 1;
-        }
-
-        @keyframes page-appear {
-            0% { transform: translateY(20px); opacity: 0; }
-            100% { transform: translateY(0); opacity: 1; }
-        }
-
-        @keyframes editor-appear {
-            0% { opacity: 0; }
-            100% { opacity: 1; }
-        }
-
-        @keyframes image-appear {
-            0% { transform: scale(0.8); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
-        }
-
-        /* --- Enhanced PDF Text Overlay --- */
-        .pdf-text-layer {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            overflow: hidden;
-            opacity: 0.2;
-            line-height: 1;
-            border-radius: 8px;
-        }
-
-        .pdf-text-layer::selection {
-            background: var(--theme-accent-translucent);
-        }
-
-        .pdf-text-layer span {
-            color: transparent;
-            position: absolute;
-            white-space: pre;
-            cursor: text;
-        }
-
-        /* --- Enhanced AI Sidebar --- */
+        .pdf-text-layer { position: absolute; top: 0; left: 0; right: 0; bottom: 0; overflow: hidden; opacity: 0.2; line-height: 1; user-select: text; }
+        .pdf-text-layer::selection { background: var(--theme-accent-translucent); }
+        .pdf-text-layer span { color: transparent; position: absolute; white-space: pre; cursor: text; transform-origin: 0% 0%; }
+        
+        /* --- AI Sidebar --- */
         .ai-sidebar {
-            position: fixed;
-            top: 0;
-            right: 0;
-            width: var(--sidebar-width);
-            height: 100vh;
-            transform: translateX(100%);
-            transition: transform var(--transition);
-            z-index: var(--z-sidebar);
-            display: flex;
-            flex-direction: column;
-            padding: 20px;
-            box-shadow: -10px 0 40px rgba(0, 0, 0, 0.1);
-            overflow-y: auto;
-            -webkit-overflow-scrolling: touch;
-            background: var(--theme-sidebar-bg);
-            border-left: 1px solid var(--theme-border-color);
-            border-radius: 24px 0 0 24px;
+            position: fixed; top: 0; right: 0; width: var(--sidebar-width); height: 100vh;
+            transform: translateX(100%); transition: transform var(--transition);
+            z-index: var(--z-sidebar); display: flex; flex-direction: column;
+            padding: 20px; box-shadow: -10px 0 40px rgba(0, 0, 0, 0.2); overflow-y: auto;
+            border-radius: var(--border-radius) 0 0 var(--border-radius);
         }
-
-        .ai-sidebar.open {
-            transform: translateX(0);
-            animation: sidebar-slide-in 0.3s ease-out;
-        }
-
+        .ai-sidebar.open { transform: translateX(0); }
         .sidebar-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-bottom: 15px;
-            margin-bottom: 20px;
-            border-bottom: 1px solid var(--theme-border-color);
+            display: flex; justify-content: space-between; align-items: center; padding-bottom: 15px; margin-bottom: 20px; border-bottom: 1px solid var(--theme-border-color);
+            position: sticky; top: -20px; background: var(--theme-surface-bg); backdrop-filter: blur(12px); z-index: 10; margin: -20px -20px 20px -20px; padding: 20px 20px 15px 20px;
         }
-
-        .sidebar-content { 
-            flex-grow: 1; 
+        .sidebar-title { font-size: 1.25rem; font-weight: 700; }
+        .header-btn {
+            background: transparent; color: var(--theme-text-secondary); width: 44px;
+            height: 44px; border-radius: 50%; display: flex; align-items: center;
+            justify-content: center; cursor: pointer; border: none; font-size: 1.2rem;
+            transition: var(--transition); touch-action: manipulation; -webkit-tap-highlight-color: transparent;
         }
-
-        .ai-section {
-            margin-bottom: 25px;
-            background: var(--theme-surface-bg);
-            border-radius: 18px;
-            padding: 18px;
-            border: 1px solid var(--theme-border-color);
-            box-shadow: var(--theme-card-shadow);
-            animation: ai-section-appear 0.5s ease-out;
-            transition: var(--transition);
+        .header-btn:hover, .header-btn:active { background-color: var(--theme-accent-translucent); color: var(--theme-accent-primary); transform: scale(1.05); }
+        .sidebar-content { flex-grow: 1; overflow-y: auto; padding-top: 10px;}
+        .ai-section { margin-bottom: 25px; }
+        .ai-section h4 { display: flex; align-items: center; gap: 10px; font-size: 1.1rem; font-weight: 600; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid var(--theme-border-color); color: var(--theme-text-primary); }
+        .ai-section i { color: var(--theme-accent-primary); }
+        .ai-output { background: rgba(0,0,0,0.03); border: 1px solid var(--theme-border-color); padding: 15px; border-radius: 18px; min-height: 80px; font-size: 0.95rem; line-height: 1.6; color: var(--theme-text-secondary); white-space: pre-wrap; word-wrap: break-word; user-select: text; transition: var(--transition); }
+        .ai-output mark { background-color: var(--theme-accent-translucent); border-radius: 4px; padding: 2px 4px; color: var(--theme-text-primary); font-weight: 600; }
+        .ai-input { width: 100%; padding: 14px; background: var(--theme-surface-bg); border: 1px solid var(--theme-border-color); border-radius: 18px; color: var(--theme-text-primary); font-size: 1rem; margin-bottom: 10px; outline: none; transition: var(--transition); }
+        .ai-input:focus { border-color: var(--theme-accent-primary); box-shadow: 0 0 0 3px var(--theme-accent-translucent); }
+        .ai-button, .summary-option-btn {
+            width: 100%; padding: 14px; background-color: var(--theme-accent-primary);
+            color: white; border: none; border-radius: var(--border-radius-pill); cursor: pointer;
+            font-weight: 600; transition: var(--transition); display: flex; align-items: center;
+            justify-content: center; gap: 8px; margin-top: 10px; font-size: 1rem;
+            touch-action: manipulation;
         }
+        .ai-button:hover, .summary-option-btn:hover { background-color: var(--theme-accent-secondary); transform: scale(1.02); }
+        .ai-button:active, .summary-option-btn:active { transform: scale(0.98); }
+        .ai-button:disabled, .summary-option-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; background-color: var(--theme-accent-secondary); }
+        .summary-options { display: flex; gap: 8px; margin-top: 10px; }
+        .summary-option-btn { flex: 1; margin-top: 0; padding: 10px; font-size: 0.85rem; border-radius: var(--border-radius-pill); }
 
-        .ai-section:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-        }
-
-        .ai-section h4 {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            margin-bottom: 15px;
-            color: var(--theme-text-primary);
-        }
-
-        .ai-section i {
-            color: var(--theme-accent-primary);
-        }
-
-        .ai-output {
-            background: var(--theme-bg-color);
-            padding: 15px;
-            border-radius: 14px;
-            min-height: 80px;
-            font-size: 0.95rem;
-            line-height: 1.6;
-            color: var(--theme-text-secondary);
-            white-space: pre-wrap;
-            word-wrap: break-word;
-            margin-bottom: 12px;
-            border: 1px solid var(--theme-border-color);
-            position: relative;
-            animation: ai-output-appear 0.4s ease-out;
-        }
-
-        .ai-output mark {
-            background-color: var(--theme-accent-translucent);
-            border-radius: 3px;
-            padding: 2px 4px;
-            color: var(--theme-text-primary);
-        }
-
-        .copy-btn {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: var(--theme-accent-primary);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            padding: 6px 10px;
-            font-size: 0.8rem;
-            cursor: pointer;
-            transition: var(--transition);
-            animation: copy-btn-appear 0.3s ease-out;
-        }
-
-        .copy-btn:hover {
-            background: var(--theme-accent-secondary);
-            transform: scale(1.05);
-        }
-
-        .ai-input {
-            width: 100%;
-            padding: 12px;
-            background: var(--theme-surface-bg);
-            border: 1px solid var(--theme-border-color);
-            border-radius: 14px;
-            color: var(--theme-text-primary);
-            font-size: 1rem;
-            margin-bottom: 10px;
-            transition: var(--transition);
-        }
-
-        .ai-input:focus {
-            outline: none;
-            border-color: var(--theme-accent-primary);
-            box-shadow: 0 0 0 3px var(--theme-accent-translucent);
-            transform: scale(1.02);
-        }
-
-        .ai-button, .summary-option-btn, .external-link-btn {
-            width: 100%;
-            padding: 12px;
-            background-color: var(--theme-text-secondary);
-            color: white;
-            border: none;
-            border-radius: 14px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            font-size: 1rem;
-            text-decoration: none;
-            animation: button-appear 0.4s ease-out;
-        }
-
-        .ai-button:hover, .summary-option-btn:hover, .external-link-btn:hover {
-            background-color: var(--theme-text-primary);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .ai-button:disabled, .summary-option-btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .summary-options {
-            display: flex;
-            gap: 8px;
-        }
-
-        .summary-option-btn { 
-            flex: 1; 
-            margin-top: 0; 
-        }
-
-        .writing-actions {
-            display: flex;
-            gap: 8px;
-        }
-
-        .writing-actions .ai-button {
-            flex: 1;
-        }
-
-        @keyframes sidebar-slide-in {
-            0% { transform: translateX(100%); }
-            100% { transform: translateX(0); }
-        }
-
-        @keyframes ai-section-appear {
-            0% { opacity: 0; transform: translateY(20px); }
-            100% { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes ai-output-appear {
-            0% { opacity: 0; transform: scale(0.95); }
-            100% { opacity: 1; transform: scale(1); }
-        }
-
-        @keyframes copy-btn-appear {
-            0% { opacity: 0; transform: scale(0.8); }
-            100% { opacity: 1; transform: scale(1); }
-        }
-
-        @keyframes button-appear {
-            0% { opacity: 0; transform: translateY(10px); }
-            100% { opacity: 1; transform: translateY(0); }
-        }
-
-        /* --- Enhanced Settings Panel --- */
+        /* --- Settings Panel --- */
         .panel-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.5);
-            backdrop-filter: blur(5px);
-            z-index: var(--z-modal);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            animation: overlay-fade-in 0.3s ease-out;
+            position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(8px);
+            z-index: var(--z-modal); display: none; align-items: center; justify-content: center; padding: 1rem;
         }
-
-        .panel-overlay.visible {
-            display: flex;
-        }
-
-        .settings-panel {
-            padding: 30px;
-            width: 100%;
-            max-width: 450px;
-            border-radius: var(--border-radius);
-            animation: panel-slide-up 0.3s ease-out;
-        }
-
-        .theme-options {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            gap: 12px;
-        }
-
-        .theme-options input { 
-            display: none; 
-        }
-
-        .theme-options label {
-            padding: 12px;
-            border-radius: 14px;
-            cursor: pointer;
-            border: 2px solid var(--theme-border-color);
-            transition: var(--transition);
-            text-align: center;
-            background: var(--theme-surface-bg);
-            animation: theme-option-appear 0.4s ease-out;
-        }
-
+        .panel-overlay.visible { display: flex; animation: fadeIn 0.5s ease; }
+        .settings-panel { padding: 30px; width: 100%; max-width: 480px; max-height: 90vh; overflow-y: auto; }
+        .setting-group { margin-bottom: 25px; }
+        .setting-group > label:first-child { display: block; font-weight: 600; margin-bottom: 15px; color: var(--theme-text-primary); font-size: 1.1rem; }
+        .theme-options { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; }
+        .theme-options input { display: none; }
+        .theme-options label { padding: 14px 20px; border-radius: 18px; cursor: pointer; border: 2px solid var(--theme-border-color); transition: var(--transition); text-align: center; font-size: 0.9rem; }
         .theme-options input:checked + label {
-            border-color: var(--theme-accent-primary);
-            background-color: var(--theme-accent-translucent);
-            font-weight: 600;
-            color: var(--theme-accent-primary);
-            transform: scale(1.05);
+            border-color: var(--theme-accent-primary); background-color: var(--theme-accent-translucent);
+            transform: translateY(-2px) scale(1.02); font-weight: 600; color: var(--theme-accent-primary);
         }
 
-        @keyframes overlay-fade-in {
-            0% { opacity: 0; }
-            100% { opacity: 1; }
-        }
+        .spinner { animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        @keyframes panel-slide-up {
-            0% { transform: translateY(30px); opacity: 0; }
-            100% { transform: translateY(0); opacity: 1; }
-        }
-
-        @keyframes theme-option-appear {
-            0% { opacity: 0; transform: scale(0.9); }
-            100% { opacity: 1; transform: scale(1); }
-        }
-
-        /* --- Enhanced Dropdown Menu --- */
-        .dropdown-menu {
-            position: absolute;
-            top: 100%;
-            right: 0;
-            background: var(--theme-surface-bg);
-            border-radius: 14px;
-            box-shadow: var(--theme-shadow);
-            padding: 10px;
-            min-width: 200px;
-            z-index: 100;
-            display: none;
-            animation: dropdown-appear 0.3s ease-out;
-            border: 1px solid var(--theme-border-color);
-        }
-
-        .dropdown-menu.show {
-            display: block;
-        }
-
-        .dropdown-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 12px 15px;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: var(--transition);
-            color: var(--theme-text-primary);
-            text-decoration: none;
-        }
-
-        .dropdown-item:hover {
-            background-color: var(--theme-accent-translucent);
-            transform: translateX(5px);
-        }
-
-        .dropdown-divider {
-            height: 1px;
-            background-color: var(--theme-border-color);
-            margin: 8px 0;
-        }
-
-        @keyframes dropdown-appear {
-            0% { opacity: 0; transform: translateY(-10px); }
-            100% { opacity: 1; transform: translateY(0); }
-        }
-
-        /* --- Enhanced Misc & Responsive --- */
-        .spinner { 
-            animation: spin 1s linear infinite; 
-        }
-
-        @keyframes spin { 
-            100% { 
-                transform: rotate(360deg); 
-            } 
-        }
-
-        .toast {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 12px 20px;
-            border-radius: 14px;
-            z-index: 9999;
-            font-weight: 500;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            transform: translateX(150%);
-            transition: transform 0.3s ease;
-            animation: toast-slide-in 0.3s ease-out;
-        }
-
-        .toast.show { 
-            transform: translateX(0); 
-        }
-
-        .toast.success { 
-            background-color: #15C39A; 
-            color: white; 
-        }
-
-        .toast.error { 
-            background-color: #d32f2f; 
-            color: white; 
-        }
-
-        @keyframes toast-slide-in {
-            0% { transform: translateX(150%); }
-            100% { transform: translateX(0); }
-        }
-
-        /* --- Enhanced AI Processing Animation --- */
-        .ai-processing {
-            position: relative;
-            overflow: hidden;
-        }
-
-        .ai-processing::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-            animation: shimmer 1.5s infinite;
-        }
-
-        @keyframes shimmer {
-            0% { left: -100%; }
-            100% { left: 100%; }
-        }
-
-        /* --- Enhanced AI Response Animation --- */
-        .ai-response {
-            animation: ai-response-pulse 0.5s ease-out;
-        }
-
-        @keyframes ai-response-pulse {
-            0% { transform: scale(0.95); opacity: 0; }
-            70% { transform: scale(1.02); }
-            100% { transform: scale(1); opacity: 1; }
-        }
-
-        /* IMPROVED: Mobile Layout Enhancements */
         @media (max-width: 768px) {
-            body { 
-                font-size: 16px; 
-            }
-
-            .main-content {
-                padding: 8px;
-            }
-
-            .main-content.sidebar-open {
-                transform: scale(0.95) translateX(-10px);
-                border-radius: var(--border-radius);
-                overflow: hidden;
-            }
-
-            header { 
-                padding: 0 12px; 
-                height: 60px;
-            }
-
-            .header-title {
-                font-size: 1.4rem;
-            }
-
-            #document-title { 
-                font-size: 1.8rem; 
-                margin-bottom: 1.5rem;
-            }
-
-            #text-editor { 
-                font-size: 1rem; 
-                padding: 0.8rem;
-            }
-
+            .dynamic-island { min-width: 180px; height: 45px; }
+            .dynamic-island.expanded { width: 95%; min-width: 95%; height: auto; padding: 15px; flex-direction: column; gap: 15px; border-radius: 32px; }
+            .dynamic-island.expanded .island-controls { position: static; transform: none; opacity: 1; pointer-events: auto; flex-wrap: wrap; justify-content: center;}
+            .island-btn { width: 44px; height: 44px; }
             .ai-sidebar {
-                width: 95vw;
-                border-radius: 24px 0 0 24px;
-                padding: 15px;
+                border-radius: var(--border-radius) var(--border-radius) 0 0;
+                width: 100vw; height: 90vh; bottom: 0; top: auto;
+                transform: translateY(100%);
             }
-
-            .content-area {
-                padding: 1.5rem;
-            }
-
-            .writing-actions {
-                flex-direction: column;
-            }
-
-            .welcome-options {
-                flex-direction: column;
-            }
-
-            .welcome-title {
-                font-size: 2rem;
-            }
-
-            .welcome-subtitle {
-                font-size: 1rem;
-            }
-
-            /* IMPROVED: Dynamic Island for Mobile */
-            .dynamic-island {
-                width: 100px;
-                height: 35px;
-                top: 15px;
-            }
-
-            .dynamic-island.expanded {
-                width: 95vw;
-                height: 70px;
-                max-width: 400px;
-            }
-
-            .dynamic-island-tools {
-                gap: 6px;
-                padding: 6px;
-            }
-
-            .dynamic-tool {
-                width: 32px;
-                height: 32px;
-                font-size: 0.8rem;
-            }
-
-            .dropdown-menu {
-                right: -10px;
-                min-width: 180px;
-            }
-
-            /* IMPROVED: Better spacing for mobile */
-            .ai-section {
-                padding: 15px;
-                margin-bottom: 20px;
-            }
-
-            .ai-output {
-                padding: 12px;
-                font-size: 0.9rem;
-            }
-
-            .summary-options {
-                flex-direction: column;
-            }
-
-            .summary-option-btn {
-                padding: 10px;
-                font-size: 0.9rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .header-title {
-                font-size: 1.3rem;
-            }
-
-            .content-area {
-                padding: 1rem;
-            }
-
-            .ai-section {
-                padding: 12px;
-            }
-
-            .summary-options {
-                flex-direction: column;
-            }
-
-            .theme-options {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            /* IMPROVED: Dynamic Island for Small Mobile */
-            .dynamic-island {
-                width: 90px;
-                height: 32px;
-                top: 10px;
-            }
-
-            .dynamic-island.expanded {
-                width: 95vw;
-                height: 65px;
-                max-width: 350px;
-            }
-
-            .dynamic-island-content {
-                font-size: 0.7rem;
-            }
-
-            .dynamic-tool {
-                width: 30px;
-                height: 30px;
-                font-size: 0.7rem;
-            }
-
-            .dropdown-menu {
-                min-width: 160px;
-            }
-
-            /* IMPROVED: Better mobile spacing */
-            #document-title {
-                font-size: 1.6rem;
-                padding-bottom: 8px;
-                margin-bottom: 1.2rem;
-            }
-
-            .ai-button, .summary-option-btn, .external-link-btn {
-                padding: 10px;
-                font-size: 0.9rem;
-            }
-        }
-
-        /* IMPROVED: Better key points styling */
-        .key-points-list {
-            padding-left: 0;
-            margin: 0;
-            list-style: none; /* Changed from list-style-type */
-        }
-
-        .key-points-list li {
-            margin-bottom: 12px; /* Increased margin */
-            padding-left: 25px; /* Increased padding */
-            list-style-type: none;
-            position: relative;
-            line-height: 1.5; /* Added for readability */
-        }
-
-        .key-points-list li:before {
-            content: "\f058"; /* Font Awesome check-circle icon */
-            font-family: 'Font Awesome 6 Free';
-            font-weight: 900;
-            position: absolute;
-            left: 0;
-            top: 0;
-            color: var(--theme-accent-primary);
-            font-size: 1.1em; /* Adjusted icon size */
-        }
-
-        .key-points-container {
-             /* removed counter-reset */
+            .ai-sidebar.open { transform: translateY(0); }
         }
     </style>
 </head>
 <body>
+    <!-- Entry Page -->
+    <div id="entry-page">
+        <h1 class="entry-title">Welcome to Gridora</h1>
+        <p class="entry-subtitle">Your AI-Powered Assistant for reading, summarizing, and understanding any document.</p>
+        <button id="entry-read-pdf" class="entry-button"><i class="fas fa-file-pdf"></i> Analyze PDF</button>
+        <button id="entry-use-ai" class="entry-button"><i class="fas fa-keyboard"></i> Use Text Editor</button>
+    </div>
+
+    <!-- Main App -->
     <div id="drag-drop-overlay">
         <div>
-            <i class="fas fa-file-pdf fa-3x"></i>
-            <br><br>
-            Drop PDF Here to Analyze
+            <i class="fas fa-file-pdf fa-3x"></i><br><br>Drop PDF Here to Analyze
         </div>
     </div>
-
-    <div class="dynamic-island" id="dynamicIsland">
-        <div class="dynamic-island-content">
-            <i class="fas fa-robot"></i>
-            <span>Gridora AI</span>
-        </div>
-        <div class="dynamic-island-tools">
-            <button class="dynamic-tool" id="dynamic-ai-toggle" title="AI Assistant">
-                <i class="fas fa-robot"></i>
-            </button>
-            <button class="dynamic-tool" id="dynamic-mode-toggle" title="Switch Mode">
-                <i class="fas fa-file-alt"></i>
-            </button>
-            <label for="pdf-upload" class="dynamic-tool" title="Upload PDF" id="dynamic-upload-label">
-                <i class="fas fa-upload"></i>
-            </label>
-            <label for="image-upload" class="dynamic-tool" title="Upload Image" id="dynamic-image-label">
-                <i class="fas fa-image"></i>
-            </label>
-            <button class="dynamic-tool" id="dynamic-copy-paste" title="Paste Text">
-                <i class="fas fa-paste"></i>
-            </button>
-            <button class="dynamic-tool" id="dynamic-menu-toggle" title="Menu">
-                <i class="fas fa-ellipsis-h"></i>
-            </button>
-        </div>
-    </div>
-
-    <div class="welcome-screen" id="welcomeScreen">
-        <div class="welcome-logo">
-            <i class="fas fa-magic"></i>
-        </div>
-        <h1 class="welcome-title">Gridora</h1>
-        <p class="welcome-subtitle">Your AI-powered document assistant for reading, research, and writing</p>
-        <div class="welcome-options">
-            <div class="welcome-option" id="readingOption">
-                <i class="fas fa-book-reader"></i>
-                <h3>Reading Assistant</h3>
-                <p>Upload documents, extract text, and get AI-powered summaries and insights</p>
-            </div>
-            <div class="welcome-option" id="researchOption">
-                <i class="fas fa-search"></i>
-                <h3>Research Assistant</h3>
-                <p>Analyze content, find related information, and generate study materials</p>
-            </div>
-        </div>
-    </div>
-
     <div class="app-container">
         <!-- Main Content Area -->
         <main class="main-content" id="mainContent">
-            <header>
-                <h1 class="header-title"><i class="fas fa-magic"></i> Gridora</h1>
-            </header>
 
-            <div id="content-area" class="content-area">
-                <input type="text" id="document-title" placeholder="Untitled Document">
+            <!-- Dynamic Island -->
+            <div class="dynamic-island" id="dynamic-island">
+                <div class="island-idle-content">
+                    <i class="fas fa-brain"></i>&nbsp;
+                    <strong>Optichain AI</strong>
+                </div>
+                <div class="island-controls">
+                     <button class="island-btn" id="island-ai-btn" title="Access Optichain AI"><i class="fas fa-robot"></i></button>
+                     <label for="pdf-upload" class="island-btn" title="Upload PDF or Image" id="upload-label"><i class="fas fa-upload"></i></label>
+                     <button class="island-btn" id="island-paste-btn" title="Paste from Clipboard"><i class="fas fa-paste"></i></button>
+                     <button class="island-btn" id="island-text-mode-btn" title="Switch to Text Editor"><i class="fas fa-keyboard"></i></button>
+                     <button class="island-btn" id="island-settings-btn" title="Settings"><i class="fas fa-cog"></i></button>
+                </div>
+            </div>
+
+            <input type="file" id="pdf-upload" accept=".pdf,image/*" style="display: none;" aria-label="PDF file input">
+
+            <div id="content-area" class="content-area glass">
+                <input type="text" id="document-title" placeholder="Enter document title here..." style="width: 100%; padding: 15px; margin-bottom: 15px; border-radius: 18px; border: 1px solid var(--theme-border-color); background-color: var(--theme-surface-bg); color: var(--theme-text-primary); font-size: 1.1rem;">
                 <div id="pdf-viewer"></div>
-                <div id="text-editor"
-                     contenteditable="true"
-                     spellcheck="true"
-                     data-placeholder="Type or paste your text here..."></div>
+                <div id="text-editor" contenteditable="true" spellcheck="true" data-placeholder="Type, paste, or start with an AI prompt here..."></div>
                 <div class="empty-state" id="emptyState">
                     <i class="fas fa-search"></i>
-                    <h2>Welcome to Gridora</h2>
-                    <p>Upload a PDF document or switch to Text Mode to start analyzing and get AI-powered insights.</p>
+                    <h2>Welcome to Your Workspace</h2>
+                    <p>Upload a PDF or switch to the text editor to begin.</p>
                 </div>
             </div>
         </main>
 
         <!-- AI Assistant Sidebar -->
-        <aside class="ai-sidebar" id="aiSidebar" role="complementary">
+        <aside class="ai-sidebar glass" id="aiSidebar" role="complementary">
             <div class="sidebar-header">
-                <h2 class="sidebar-title">AI Assistant</h2>
+                <h2 class="sidebar-title">Gridora AI</h2>
                 <button class="header-btn" id="ai-close-btn" aria-label="Close AI assistant">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
             <div class="sidebar-content">
-                <!-- Smart Summary Section -->
+                 <!-- Smart Summary Section -->
                 <div class="ai-section">
                     <h4><i class="fas fa-file-alt"></i>Smart Summary</h4>
-                    <div id="summary-output" class="ai-output">
-                        Click a size to generate an intelligent summary of your document.
-                        <button class="copy-btn" id="copy-summary-btn" style="display: none;">
-                            <i class="fas fa-copy"></i> Copy
-                        </button>
-                    </div>
+                    <div id="summary-output" class="ai-output">Click a size to generate an intelligent summary of your document.</div>
                     <div class="summary-options">
                         <button id="summarize-btn-small" class="summary-option-btn" data-size="small">Small</button>
                         <button id="summarize-btn-medium" class="summary-option-btn" data-size="medium">Medium</button>
                         <button id="summarize-btn-large" class="summary-option-btn" data-size="large">Large</button>
                     </div>
-                    <button id="key-insights-btn" class="ai-button" style="margin-top: 10px;">
-                        <i class="fas fa-lightbulb"></i>Key Insights
-                    </button>
                 </div>
 
                 <!-- Writing Assistant Section -->
                 <div class="ai-section">
                     <h4><i class="fas fa-pen-ruler"></i>Writing Assistant</h4>
-                    <div id="writing-output" class="ai-output">
-                        Get suggestions to improve your writing clarity, style, and impact.
-                        <button class="copy-btn" id="copy-writing-btn" style="display: none;">
-                            <i class="fas fa-copy"></i> Copy
-                        </button>
-                    </div>
-                    <div class="writing-actions">
-                         <button id="writing-btn" class="ai-button">
-                            <i class="fas fa-magic"></i>Analyze
-                        </button>
-                        <button id="fix-grammar-btn" class="ai-button">
-                            <i class="fas fa-check"></i>Fix Grammar
-                        </button>
-                    </div>
+                    <div id="writing-output" class="ai-output">Get suggestions to improve your writing clarity, style, and impact.</div>
+                    <button id="writing-btn" class="ai-button"><i class="fas fa-magic"></i>Analyze Writing</button>
+                </div>
+
+                <!-- NEW: Grammar Fixer Section -->
+                <div class="ai-section">
+                    <h4><i class="fas fa-spell-check"></i>Fix Grammar</h4>
+                    <div id="grammar-output" class="ai-output">Find and correct grammatical errors in your text.</div>
+                    <button id="grammar-btn" class="ai-button"><i class="fas fa-wrench"></i>Suggest Fixes</button>
                 </div>
                 
                 <!-- Ask Anything Section -->
                 <div class="ai-section">
                     <h4><i class="fas fa-question-circle"></i>Ask Anything</h4>
-                    <input type="text"
-                           id="qa-input"
-                           class="ai-input"
-                           placeholder="Ask a question about the content..."
-                           aria-label="Question input">
-                    <div id="qa-answer" class="ai-output">
-                        Get intelligent answers based on the content.
-                        <button class="copy-btn" id="copy-qa-btn" style="display: none;">
-                            <i class="fas fa-copy"></i> Copy
-                        </button>
-                    </div>
-                    <button id="qa-btn" class="ai-button">
-                        <i class="fas fa-search"></i>Get Answer
-                    </button>
+                    <input type="text" id="qa-input" class="ai-input" placeholder="Ask a question about the content...">
+                    <div id="qa-answer" class="ai-output">Get intelligent answers based on the content.</div>
+                    <button id="qa-btn" class="ai-button"><i class="fas fa-search"></i>Get Answer</button>
                 </div>
                 
                 <!-- Key Points Section -->
                 <div class="ai-section">
                     <h4><i class="fas fa-list-ul"></i>Key Points</h4>
-                    <div id="keypoints-output" class="ai-output">
-                        Extract the most important points from your document.
-                        <button class="copy-btn" id="copy-keypoints-btn" style="display: none;">
-                            <i class="fas fa-copy"></i> Copy
-                        </button>
-                    </div>
-                    <button id="keypoints-btn" class="ai-button">
-                        <i class="fas fa-lightbulb"></i>Extract Key Points
-                    </button>
+                    <div id="keypoints-output" class="ai-output">Extract the most important points from your document.</div>
+                    <button id="keypoints-btn" class="ai-button"><i class="fas fa-lightbulb"></i>Extract Points</button>
+                </div>
+
+                <!-- NEW: Key Words Section -->
+                 <div class="ai-section">
+                    <h4><i class="fas fa-tags"></i>Key Words</h4>
+                    <div id="keywords-output" class="ai-output">Find the most frequent and important keywords.</div>
+                    <button id="keywords-btn" class="ai-button"><i class="fas fa-search-dollar"></i>Find Keywords</button>
                 </div>
                 
                 <!-- Study Quiz Section -->
                 <div class="ai-section">
                     <h4><i class="fas fa-graduation-cap"></i>Study Quiz</h4>
-                    <div id="quiz-output" class="ai-output">
-                        Generate a quiz to test your knowledge of the document.
-                        <button class="copy-btn" id="copy-quiz-btn" style="display: none;">
-                            <i class="fas fa-copy"></i> Copy
-                        </button>
-                    </div>
-                    <button id="quiz-btn" class="ai-button">
-                        <i class="fas fa-question"></i>Generate Quiz
-                    </button>
+                    <div id="quiz-output" class="ai-output">Generate a quiz to test your knowledge of the document.</div>
+                    <button id="quiz-btn" class="ai-button"><i class="fas fa-question"></i>Generate Quiz</button>
                 </div>
-
                 <!-- Content Analysis Section -->
                 <div class="ai-section">
                     <h4><i class="fas fa-chart-pie"></i>Content Analysis</h4>
-                    <div id="analysis-output" class="ai-output">
-                        Analyze the sentiment, readability, and word count of your document.
-                        <button class="copy-btn" id="copy-analysis-btn" style="display: none;">
-                            <i class="fas fa-copy"></i> Copy
-                        </button>
-                    </div>
-                    <button id="analysis-btn" class="ai-button">
-                        <i class="fas fa-magnifying-glass-chart"></i>Analyze Content
-                    </button>
-                </div>
-                
-                <!-- NEW: Web Search Section -->
-                <div class="ai-section">
-                    <h4><i class="fas fa-globe"></i>Web Search</h4>
-                    <input type="text"
-                           id="search-input"
-                           class="ai-input"
-                           placeholder="Search for related information..."
-                           aria-label="Search input">
-                    <div id="search-results" class="ai-output">Find relevant information from the web to enhance your document. This will open in a new tab.</div>
-                    <button id="search-btn" class="ai-button">
-                        <i class="fas fa-search"></i>Search Web
-                    </button>
-                </div>
-
-                 <!-- NEW: OptiChain Full Version Link -->
-                 <div class="ai-section">
-                    <h4><i class="fas fa-rocket"></i>Go Further</h4>
-                     <a href="https://talk.shapes.inc/optichain/dm" 
-                        target="_blank" 
-                        class="external-link-btn">
-                        <i class="fas fa-external-link-alt"></i>Try OptiChain Full
-                     </a>
+                    <div id="analysis-output" class="ai-output">Analyze the sentiment and tone of your document.</div>
+                    <button id="analysis-btn" class="ai-button"><i class="fas fa-magnifying-glass-chart"></i>Analyze Content</button>
                 </div>
             </div>
         </aside>
     </div>
 
     <!-- Settings Panel -->
-    <div class="panel-overlay" id="settingsOverlay" role="dialog" aria-labelledby="settings-title">
+    <div class="panel-overlay" id="settings-overlay">
         <div class="settings-panel glass">
-            <div class="sidebar-header">
-                <h3 id="settings-title">Appearance Settings</h3>
+             <div class="sidebar-header" style="border-bottom: 1px solid var(--theme-border-color); margin: -30px -30px 20px -30px; padding: 20px 30px;">
+                <h2 class="sidebar-title">Settings</h2>
                 <button class="header-btn" id="settings-close-btn" aria-label="Close settings">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
             <div class="setting-group">
-                <label>Theme</label>
-                <div class="theme-options" id="themeOptions" role="radiogroup" aria-labelledby="settings-title">
-                    <input type="radio" id="theme-apple-notes" name="theme" value="apple-notes" checked>
-                    <label for="theme-apple-notes">Apple Notes</label>
-                    <input type="radio" id="theme-grammarly" name="theme" value="grammarly">
-                    <label for="theme-grammarly">Grammarly</label>
+                <label>Appearance</label>
+                <div class="theme-options">
                     <input type="radio" id="theme-light" name="theme" value="light">
                     <label for="theme-light">Light</label>
                     <input type="radio" id="theme-dark" name="theme" value="dark">
                     <label for="theme-dark">Dark</label>
-                    <input type="radio" id="theme-sepia" name="theme" value="sepia">
-                    <label for="theme-sepia">Sepia</label>
                     <input type="radio" id="theme-midnight" name="theme" value="midnight">
                     <label for="theme-midnight">Midnight</label>
+                    <input type="radio" id="theme-ultra-dark" name="theme" value="ultra-dark">
+                    <label for="theme-ultra-dark">Ultra Dark</label>
                     <input type="radio" id="theme-ocean" name="theme" value="ocean">
                     <label for="theme-ocean">Ocean</label>
-                    <input type="radio" id="theme-slate" name="theme" value="slate">
-                    <label for="theme-slate">Slate</label>
+                    <input type="radio" id="theme-cotton-candy" name="theme" value="cotton-candy">
+                    <label for="theme-cotton-candy">Cotton Candy</label>
+                    <input type="radio" id="theme-golden" name="theme" value="golden">
+                    <label for="theme-golden">Golden</label>
                 </div>
             </div>
         </div>
     </div>
+    
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    'use strict';
 
-    <!-- Hidden file inputs -->
-    <input type="file" id="pdf-upload" accept=".pdf" style="display: none;" aria-label="PDF file input">
-    <input type="file" id="image-upload" accept="image/*" style="display: none;" aria-label="Image file input">
+    // --- State and DOM Elements ---
+    let state = {
+        pdfDoc: null,
+        extractedText: '',
+        currentMode: 'empty', // can be 'pdf', 'text', 'empty'
+        isAiProcessing: false,
+        isPdfLoading: false,
+    };
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            'use strict';
-
-            let state = {
-                pdfDoc: null,
-                extractedText: '',
-                currentMode: 'pdf',
-                isAiProcessing: false,
-                isPdfLoading: false,
-                currentAppMode: 'reading', // 'reading' or 'research'
-                dynamicIslandExpanded: false,
-                dropdownOpen: false,
-                lastScrollY: 0,
-                dynamicIslandVisible: true
+    class OptiChainAI {
+        constructor() { this.stopWords = new Set(['a', 'about', 'above', 'after', 'again', 'against', 'all', 'am', 'an', 'and', 'any', 'are', 'as', 'at', 'be', 'because', 'been', 'before', 'being', 'below', 'between', 'both', 'but', 'by', 'can', 'cannot', 'could', 'did', 'do', 'does', 'doing', 'down', 'during', 'each', 'few', 'for', 'from', 'further', 'had', 'has', 'have', 'having', 'he', 'her', 'here', 'hers', 'herself', 'him', 'himself', 'his', 'how', 'i', 'if', 'in', 'into', 'is', 'it', 'its', 'itself', 'me', 'more', 'most', 'my', 'myself', 'no', 'nor', 'not', 'of', 'off', 'on', 'once', 'only', 'or', 'other', 'our', 'ours', 'ourselves', 'out', 'over', 'own', 'same', 'she', 'should', 'so', 'some', 'such', 'than', 'that', 'the', 'their', 'theirs', 'them', 'themselves', 'then', 'there', 'these', 'they', 'this', 'those', 'through', 'to', 'too', 'under', 'until', 'up', 'very', 'was', 'we', 'were', 'what', 'when', 'where', 'which', 'while', 'who', 'whom', 'why', 'with', 'you', 'your', 'yours', 'yourself', 'yourselves']); }
+        preprocessText(text) { if (!text || typeof text !== 'string') return ''; let processed = text; processed = processed.replace(/ﬁ/g, 'fi').replace(/ﬂ/g, 'fl'); processed = processed.replace(/\s+/g, ' ').trim(); processed = processed.replace(/([a-z])-\s+([a-z])/g, '$1$2'); return processed; }
+        tokenizeSentences(text) { if (!text) return []; return text.match(/[^.!?]+[.!?]\s*(?=[A-Z]|\d|"|“|‘|$)/g)?.map(s => s.trim()).filter(s => s.length > 15 && s.length < 1500) || []; }
+        generateSummary(text, size = 'medium') { let targetSentenceCount; switch (size) { case 'small': targetSentenceCount = 3; break; case 'large': targetSentenceCount = 8; break; default: targetSentenceCount = 5; } const sentences = this.tokenizeSentences(this.preprocessText(text)); if (sentences.length <= targetSentenceCount) { return sentences.join(' '); } const keywords = this.extractKeyWords(text, 20); const scoredSentences = sentences.map((sentence, i) => { const sentenceLower = sentence.toLowerCase(); let score = 0; const positionRatio = i / sentences.length; if (positionRatio < 0.2) score += 2.0; if (positionRatio > 0.8) score += 1.5; keywords.forEach(kw => { if (sentenceLower.includes(kw.word)) { score += kw.score; } }); if (sentence.length < 20 || sentence.length > 800) score *= 0.5; const cuePhrases = ['in conclusion', 'in summary', 'the main point', 'importantly', 'essentially']; if (cuePhrases.some(phrase => sentenceLower.startsWith(phrase))) score *= 2.0; return { sentence, score, index: i }; }); const topSentences = scoredSentences.sort((a, b) => b.score - a.score).slice(0, targetSentenceCount).sort((a, b) => a.index - b.index); return topSentences.map(item => item.sentence).join(' '); }
+        answerQuestion(text, question) { const sentences = this.tokenizeSentences(this.preprocessText(text)); const questionWords = new Set(question.toLowerCase().replace('?', '').split(/\s+/).filter(w => !this.stopWords.has(w) && w.length > 2)); if (questionWords.size === 0) return "Please ask a more specific question."; let bestSentence = { text: "", score: -1 }; sentences.forEach(sentence => { const sentenceLower = sentence.toLowerCase(); let score = 0; let matchedWords = 0; questionWords.forEach(qWord => { if (sentenceLower.includes(qWord)) { score += 2; matchedWords++; } }); if (matchedWords > 1) score += matchedWords * 3; if (/\b(is|are|was|were)\b/i.test(sentence) && sentence.length < 250) score *= 1.5; if (score > bestSentence.score) bestSentence = { text: sentence, score: score }; }); if (bestSentence.score <= 1) return "I could not find a confident answer. Try rephrasing your question."; let answerText = bestSentence.text; questionWords.forEach(word => { const regex = new RegExp(`\\b(${word})\\b`, 'gi'); answerText = answerText.replace(regex, `<mark>$1</mark>`); }); return answerText; }
+        extractKeyWords(text, count = 15) { const words = this.preprocessText(text).toLowerCase().replace(/[^\w\s]/g, ' ').split(/\s+/).filter(word => word.length > 3 && !this.stopWords.has(word)); const wordFreq = {}; words.forEach(word => { wordFreq[word] = (wordFreq[word] || 0) + 1; }); const scores = Object.entries(wordFreq).map(([word, freq]) => ({ word, score: freq * Math.log(words.length / (wordFreq[word] || 1)) })); return scores.sort((a, b) => b.score - a.score).slice(0, count); }
+        extractKeyPoints(text) { const summary = this.generateSummary(text, 'large'); const points = summary.split('. ').filter(p => p.trim().length > 0).map(p => p.trim() + '.'); return points.map((point, index) => `${index + 1}. ${point}`).join('\n\n') || "No key points could be extracted."; }
+        analyzeWriting(text) { const sentences = this.tokenizeSentences(this.preprocessText(text)); let results = { passive: [], fillers: [], weasels: [] }; const passiveRegex = /\b(am|is|are|was|were|be|being|been)\b\s\w+ed\b/i; sentences.forEach(s => { if(passiveRegex.test(s)) results.passive.push(s); }); const fillerRegex = /\b(basically|actually|literally|like|just|really|very|stuff|things|you know|sort of|kind of)\b/gi; const fillerMatches = text.match(fillerRegex); if (fillerMatches) results.fillers = [...new Set(fillerMatches)]; const weaselRegex = /\b(many|various|several|some|few|most|often|sometimes|arguably|perhaps|could|might)\b/gi; const weaselMatches = text.match(weaselRegex); if (weaselMatches) results.weasels = [...new Set(weaselMatches)]; let report = "✍️ **Writing Analysis**\n\n"; if (results.passive.length > 0) { report += `**Passive Voice:** ${results.passive.length} sentence(s) might be in passive voice. Consider making them more active.\n*Example: "${results.passive[0]}"*\n\n`; } if (results.fillers.length > 0) { report += `**Filler Words:** Found common filler words. Your writing might be stronger without them.\n*Examples: ${results.fillers.slice(0, 5).join(', ')}*\n\n`; } if (results.weasels.length > 0) { report += `**Vague Language:** These words can make your writing less direct.\n*Examples: ${results.weasels.slice(0, 5).join(', ')}*\n\n`; } if (report.length < 50) return "✅ Your writing looks clear and direct! No major issues found."; return report; }
+        generateQuiz(text) { const sentences = this.tokenizeSentences(this.preprocessText(text)); const keywords = this.extractKeyWords(text, 10); let quiz = []; keywords.forEach(kw => { const keywordSentences = sentences.filter(s => s.toLowerCase().includes(kw.word)); if(keywordSentences.length > 0) { const questionSentence = keywordSentences[0]; const question = questionSentence.replace(new RegExp(kw.word, 'ig'), '_____'); quiz.push({question: question, answer: kw.word}); } }); if (quiz.length === 0) return "Could not generate a quiz from this text."; return quiz.slice(0, 5).map((item, index) => `${index + 1}. ${item.question}\n   <mark>Answer: ${item.answer}</mark>`).join('\n\n'); }
+        analyzeContent(text) { const positiveWords = ['good', 'great', 'excellent', 'amazing', 'awesome', 'love', 'like', 'happy', 'beautiful', 'wonderful']; const negativeWords = ['bad', 'terrible', 'horrible', 'awful', 'hate', 'dislike', 'sad', 'ugly', 'boring']; let positiveScore = 0; let negativeScore = 0; const words = this.preprocessText(text).toLowerCase().split(/\s+/); words.forEach(word => { if(positiveWords.includes(word)) positiveScore++; if(negativeWords.includes(word)) negativeScore++; }); let sentiment = "Neutral"; if (positiveScore > negativeScore * 1.5) sentiment = "Positive"; else if (negativeScore > positiveScore * 1.5) sentiment = "Negative"; return `**Sentiment Analysis:** ${sentiment}\n\n**Positive Keywords:** ${positiveScore}\n**Negative Keywords:** ${negativeScore}`; }
+        fixGrammar(text) {
+            let correctedText = text;
+            const corrections = {
+                ' their is ': ' there is ', ' their are ': ' there are ', ' theyre ': ' they\'re ', ' its ': ' it\'s ', // Common confusables
+                ' alot ': ' a lot ', 'definately': 'definitely', 'seperate': 'separate',
+                ' i ': ' I ' // Capitalization
             };
-
-            class OptiChainAI {
-                constructor() {
-                    this.stopWords = new Set(['a', 'about', 'above', 'after', 'again', 'against', 'all', 'am', 'an', 'and', 'any', 'are', 'as', 'at', 'be', 'because', 'been', 'before', 'being', 'below', 'between', 'both', 'but', 'by', 'can', 'cannot', 'could', 'did', 'do', 'does', 'doing', 'down', 'during', 'each', 'few', 'for', 'from', 'further', 'had', 'has', 'have', 'having', 'he', 'her', 'here', 'hers', 'herself', 'him', 'himself', 'his', 'how', 'i', 'if', 'in', 'into', 'is', 'it', 'its', 'itself', 'me', 'more', 'most', 'my', 'myself', 'no', 'nor', 'not', 'of', 'off', 'on', 'once', 'only', 'or', 'other', 'our', 'ours', 'ourselves', 'out', 'over', 'own', 'same', 'she', 'should', 'so', 'some', 'such', 'than', 'that', 'the', 'their', 'theirs', 'them', 'themselves', 'then', 'there', 'these', 'they', 'this', 'those', 'through', 'to', 'too', 'under', 'until', 'up', 'very', 'was', 'we', 'were', 'what', 'when', 'where', 'which', 'while', 'who', 'whom', 'why', 'with', 'you', 'your', 'yours', 'yourself', 'yourselves']);
-                    this.advancedModels = {
-                        grammar: {
-                            basic: (text) => this.basicGrammarFix(text),
-                            advanced: (text) => this.advancedGrammarFix(text),
-                            contextual: (text) => this.contextualGrammarFix(text)
-                        },
-                        analysis: {
-                            sentiment: (text) => this.advancedSentimentAnalysis(text),
-                            readability: (text) => this.enhancedReadability(text),
-                            complexity: (text) => this.contentComplexity(text),
-                            structure: (text) => this.documentStructure(text)
-                        }
-                    };
-                }
-
-                preprocessText(text) {
-                    if (!text || typeof text !== 'string') return '';
-                    let processed = text;
-                    processed = processed.replace(/ﬁ/g, 'fi').replace(/ﬂ/g, 'fl');
-                    processed = processed.replace(/\s+/g, ' ').trim();
-                    processed = processed.replace(/([a-z])-\s+([a-z])/g, '$1$2');
-                    processed = processed.replace(/\b(\w+)n't\b/g, '$1 not');
-                    processed = processed.replace(/\b(\w+)'s\b/g, '$1 is');
-                    processed = processed.replace(/\b(\w+)'re\b/g, '$1 are');
-                    processed = processed.replace(/\b(\w+)'ve\b/g, '$1 have');
-                    processed = processed.replace(/\b(\w+)'ll\b/g, '$1 will');
-                    processed = processed.replace(/\b(\w+)'d\b/g, '$1 would');
-                    return processed;
-                }
-
-                tokenizeSentences(text) {
-                    if (!text) return [];
-                    return text.match(/[^.!?]+[.!?]\s*(?=[A-Z]|\d|"|"|'|$)/g)
-                        ?.map(s => s.trim())
-                        .filter(s => s.length > 15 && s.length < 1500) || [];
-                }
-                
-                getSentenceWords(sentence) {
-                    return sentence.toLowerCase().replace(/[^\w\s]/g, '').split(/\s+/).filter(word => word.length > 1 && !this.stopWords.has(word));
-                }
-
-                extractKeyWords(text, count = 20) {
-                    const words = this.preprocessText(text).toLowerCase().replace(/[^\w\s]/g, ' ').split(/\s+/).filter(word => word.length > 3 && !this.stopWords.has(word));
-                    const wordFreq = {};
-                    words.forEach(word => { wordFreq[word] = (wordFreq[word] || 0) + 1; });
-                    const scores = Object.entries(wordFreq).map(([word, freq]) => ({
-                        word,
-                        score: freq * Math.log(words.length / (wordFreq[word] || 1))
-                    }));
-                    return scores.sort((a, b) => b.score - a.score).slice(0, count).map(kw => kw.word);
-                }
-                
-                /**************************************************************
-                 * START: ENHANCED "REAL AI" SUMMARY & KEY POINTS LOGIC
-                 **************************************************************/
-
-                /**
-                 * NEW: Calculates the similarity between two sentences based on shared words.
-                 */
-                sentencesHaveCommonWords(sent1, sent2) {
-                    const words1 = new Set(this.getSentenceWords(sent1));
-                    const words2 = new Set(this.getSentenceWords(sent2));
-                    const intersection = new Set([...words1].filter(word => words2.has(word)));
-                    return intersection.size / ((words1.size + words2.size) / 2);
-                }
-                
-                /**
-                 * ADVANCED SUMMARY: Generates a high-quality summary using thematic clustering and intelligent sentence scoring.
-                 */
-                generateSummary(text, size = 'medium') {
-                    const sentences = this.tokenizeSentences(this.preprocessText(text));
-                    if (sentences.length <= 5) return sentences.join(' ');
-                    
-                    const keywords = this.extractKeyWords(text, 25);
-                    
-                    // Step 1: Score each sentence based on multiple intelligent criteria
-                    const scoredSentences = sentences.map((sentence, index) => {
-                        const sentenceLower = sentence.toLowerCase();
-                        let score = 0;
-                        const wordsInSentence = new Set(this.getSentenceWords(sentence));
-                        
-                        // Keyword Density Bonus
-                        keywords.forEach(kw => {
-                            if (sentenceLower.includes(kw)) {
-                                score += 2.5;
-                            }
-                        });
-                        
-                        // Title Position Bonus (first 15% and last 15% of doc are important)
-                        const positionRatio = index / sentences.length;
-                        if (positionRatio < 0.15) score *= 1.4;
-                        if (positionRatio > 0.85) score *= 1.3;
-                        
-                        // Length Normalization (ideal sentences are not too short or too long)
-                        if (sentence.length < 40 || sentence.length > 400) score *= 0.6;
-                        
-                        // Numeric Data Bonus (sentences with numbers are often factual)
-                        if (/\d/.test(sentence)) score *= 1.2;
-                        
-                        // Proper Noun Bonus (likely to contain important entities)
-                        sentence.split(/\s+/).forEach(word => {
-                            if (word.length > 2 && word.charAt(0) === word.charAt(0).toUpperCase() && sentence.indexOf(word) > 0) {
-                                score *= 1.1;
-                            }
-                        });
-
-                        return { sentence, score, index, clusterId: null };
-                    });
-
-                    // Step 2: Group sentences into thematic clusters to ensure topic diversity
-                    let clusterId = 0;
-                    scoredSentences.forEach((s1) => {
-                        if (s1.clusterId === null) {
-                            clusterId++;
-                            s1.clusterId = clusterId;
-                            scoredSentences.forEach((s2) => {
-                                if (s1 !== s2 && s2.clusterId === null) {
-                                    if (this.sentencesHaveCommonWords(s1.sentence, s2.sentence) > 0.25) {
-                                        s2.clusterId = clusterId;
-                                    }
-                                }
-                            });
-                        }
-                    });
-
-                    // Step 3: Select the highest-scoring sentence from each major cluster
-                    const summarySentences = [];
-                    const usedClusters = new Set();
-                    scoredSentences.sort((a, b) => b.score - a.score);
-
-                    scoredSentences.forEach(item => {
-                        if (!usedClusters.has(item.clusterId)) {
-                            summarySentences.push(item);
-                            usedClusters.add(item.clusterId);
-                        }
-                    });
-                    
-                    // Step 4: Determine summary length and compile the final summary
-                    let numSentences;
-                    switch (size) {
-                        case 'small': numSentences = Math.max(2, Math.floor(summarySentences.length * 0.25)); break;
-                        case 'large': numSentences = Math.max(6, Math.floor(summarySentences.length * 0.75)); break;
-                        default: numSentences = Math.max(4, Math.floor(summarySentences.length * 0.5));
-                    }
-                    
-                    // Final assembly: Sort by original order and join.
-                    const finalSummary = summarySentences
-                        .slice(0, numSentences)
-                        .sort((a, b) => a.index - b.index)
-                        .map(item => item.sentence)
-                        .join(' ');
-
-                    return finalSummary || "Could not generate a summary from the provided text.";
-                }
-
-                /**
-                 * ADVANCED KEY POINTS: Extracts the most relevant, distinct points from the document by identifying core topics.
-                 */
-                extractKeyPoints(text) {
-                    const sentences = this.tokenizeSentences(this.preprocessText(text));
-                    if (sentences.length < 5) return "Not enough content to extract key points.";
-                    
-                    const topics = this.extractKeyWords(text, 10);
-                    const keyPoints = new Map();
-                    
-                    // For each major topic, find the single BEST sentence in the text that represents it
-                    topics.forEach(topic => {
-                        let bestSentence = null;
-                        let maxScore = -1;
-                        
-                        sentences.forEach(sentence => {
-                            if (sentence.toLowerCase().includes(topic)) {
-                                let score = 1;
-                                // Simple scoring: Shorter sentences focused on the topic are better.
-                                score = 1000 / sentence.length; 
-                                
-                                if (score > maxScore) {
-                                    maxScore = score;
-                                    bestSentence = sentence;
-                                }
-                            }
-                        });
-                        
-                        if (bestSentence) {
-                           // Use the topic as the key to prevent adding multiple sentences for the same core idea
-                           if(!keyPoints.has(topic)) keyPoints.set(topic, bestSentence);
-                        }
-                    });
-
-                    if (keyPoints.size === 0) return "No distinct key points could be identified.";
-                    
-                    // Format into a clean, readable list using HTML.
-                    let keyPointsHTML = '<div class="key-points-container"><ul class="key-points-list">';
-                    
-                    // Filter out points that are too similar to each other before displaying
-                    const uniquePoints = [];
-                    const pointValues = Array.from(keyPoints.values());
-
-                    pointValues.forEach(point => {
-                        let isUnique = true;
-                        for(const uniquePoint of uniquePoints){
-                            if(this.sentencesHaveCommonWords(point, uniquePoint) > 0.6){
-                                isUnique = false;
-                                break;
-                            }
-                        }
-                        if(isUnique) uniquePoints.push(point);
-                    });
-
-                    uniquePoints.slice(0, 8).forEach(point => {
-                        keyPointsHTML += `<li>${point}</li>`;
-                    });
-                    
-                    keyPointsHTML += '</ul></div>';
-                    
-                    return keyPointsHTML;
-                }
-                
-                /**************************************************************
-                 * END: ENHANCED "REAL AI" SUMMARY & KEY POINTS LOGIC
-                 **************************************************************/
-                 
-                generateKeyInsights(text) {
-                    const summary = this.generateSummary(text, 'small');
-                    const keywords = this.extractKeyWords(text, 5);
-                    const analysis = this.advancedModels.analysis;
-                    
-                    let insights = `**Key Insights:**\n\n`;
-                    insights += `**Main Topic:** ${summary.split('.')[0]}.\n\n`;
-                    insights += `**Key Concepts:** ${keywords.join(', ')}.\n\n`;
-                    
-                    const sentiment = analysis.sentiment(text);
-                    insights += `**Overall Tone:** ${sentiment}.\n\n`;
-                    
-                    const readability = analysis.readability(text);
-                    insights += `**Readability:** ${readability >= 70 ? 'Easy to understand' : readability >= 50 ? 'Moderate difficulty' : 'Complex content'}.\n\n`;
-                    
-                    const complexity = analysis.complexity(text);
-                    insights += `**Content Complexity:** ${complexity}.\n\n`;
-                    
-                    return insights;
-                }
-
-                advancedSentimentAnalysis(text) {
-                    const positiveWords = ['good', 'great', 'excellent', 'amazing', 'awesome', 'love', 'like', 'happy', 'beautiful', 'wonderful', 'positive', 'success', 'benefit', 'advantage', 'brilliant', 'fantastic', 'perfect', 'outstanding', 'remarkable', 'impressive'];
-                    const negativeWords = ['bad', 'terrible', 'horrible', 'awful', 'hate', 'dislike', 'sad', 'ugly', 'boring', 'negative', 'problem', 'issue', 'difficulty', 'challenge', 'failure', 'poor', 'weak', 'flawed', 'inadequate', 'disappointing'];
-                    const intensifiers = ['very', 'extremely', 'incredibly', 'absolutely', 'completely', 'totally', 'utterly'];
-                    
-                    let positiveScore = 0;
-                    let negativeScore = 0;
-                    const words = this.preprocessText(text).toLowerCase().split(/\s+/);
-                    
-                    for (let i = 0; i < words.length; i++) {
-                        const word = words[i];
-                        const prevWord = i > 0 ? words[i-1] : '';
-                        const multiplier = intensifiers.includes(prevWord) ? 1.5 : 1;
-                        
-                        if(positiveWords.includes(word)) positiveScore += multiplier;
-                        if(negativeWords.includes(word)) negativeScore += multiplier;
-                    }
-
-                    const totalScore = positiveScore + negativeScore;
-                    if (totalScore === 0) return "Neutral";
-                    
-                    const ratio = positiveScore / totalScore;
-                    
-                    if (ratio > 0.7) return "Very Positive";
-                    if (ratio > 0.6) return "Positive";
-                    if (ratio > 0.4) return "Neutral";
-                    if (ratio > 0.3) return "Negative";
-                    return "Very Negative";
-                }
-
-                enhancedReadability(text) {
-                    const sentences = this.tokenizeSentences(text);
-                    const words = this.preprocessText(text).split(/\s+/);
-                    const syllables = this.countSyllables(text);
-                    
-                    if (sentences.length === 0 || words.length === 0) return 0;
-                    
-                    const avgSentenceLength = words.length / sentences.length;
-                    const avgSyllablesPerWord = syllables / words.length;
-                    
-                    // Flesch Reading Ease Score
-                    const score = 206.835 - (1.015 * avgSentenceLength) - (84.6 * avgSyllablesPerWord);
-                    
-                    return Math.max(0, Math.min(100, Math.round(score)));
-                }
-
-                contentComplexity(text) {
-                    const sentences = this.tokenizeSentences(text);
-                    const words = this.preprocessText(text).split(/\s+/);
-                    const longWords = words.filter(word => word.length > 6).length;
-                    const complexRatio = longWords / words.length;
-                    
-                    if (complexRatio > 0.2) return "High";
-                    if (complexRatio > 0.1) return "Medium";
-                    return "Low";
-                }
-
-                documentStructure(text) {
-                    const sentences = this.tokenizeSentences(text);
-                    const paragraphs = text.split(/\n\s*\n/).filter(p => p.trim().length > 0);
-                    
-                    return {
-                        sentences: sentences.length,
-                        paragraphs: paragraphs.length,
-                        avgSentencesPerParagraph: paragraphs.length > 0 ? sentences.length / paragraphs.length : 0
-                    };
-                }
-
-                answerQuestion(text, question) {
-                    const sentences = this.tokenizeSentences(this.preprocessText(text));
-                    const questionWords = new Set(question.toLowerCase().replace('?','').split(/\s+/).filter(w => !this.stopWords.has(w) && w.length > 2));
-                    if (questionWords.size === 0) return "Please ask a more specific question.";
-                    
-                    let bestMatches = [];
-                    sentences.forEach(sentence => {
-                        const sentenceLower = sentence.toLowerCase();
-                        let score = 0;
-                        let matchedWords = 0;
-                        questionWords.forEach(qWord => {
-                            if (sentenceLower.includes(qWord)) {
-                                score += 2;
-                                matchedWords++;
-                            }
-                        });
-                        if (matchedWords > 1) score += matchedWords * 3;
-                        if (/\b(is|are|was|were)\b/i.test(sentence) && sentence.length < 250) score *= 1.5;
-                        if (score > 0) bestMatches.push({ text: sentence, score: score });
-                    });
-                    
-                    if (bestMatches.length === 0) return "I could not find a confident answer. Try rephrasing your question.";
-                    
-                    bestMatches.sort((a, b) => b.score - a.score);
-                    const topMatches = bestMatches.slice(0, 3);
-                    
-                    let answerText = topMatches.map(match => match.text).join(' ');
-                    
-                    questionWords.forEach(word => {
-                        const regex = new RegExp(`\\b(${word})\\b`, 'gi');
-                        answerText = answerText.replace(regex, `<mark>$1</mark>`);
-                    });
-                    
-                    return answerText;
-                }
-                
-                analyzeWriting(text) {
-                    const sentences = this.tokenizeSentences(this.preprocessText(text));
-                    let results = { 
-                        passive: [], 
-                        fillers: [], 
-                        weasels: [], 
-                        longSentences: [],
-                        repetitive: [],
-                        vague: []
-                    };
-                    
-                    const passiveRegex = /\b(am|is|are|was|were|be|being|been)\b\s\w+ed\b/i;
-                    sentences.forEach(s => { if(passiveRegex.test(s)) results.passive.push(s); });
-                    
-                    const fillerRegex = /\b(basically|actually|literally|like|just|really|very|stuff|things|you know|sort of|kind of|I mean|um|uh)\b/gi;
-                    const fillerMatches = text.match(fillerRegex);
-                    if (fillerMatches) results.fillers = [...new Set(fillerMatches)];
-                    
-                    const weaselRegex = /\b(many|various|several|some|few|most|often|sometimes|arguably|perhaps|could|might|may|possibly|probably)\b/gi;
-                    const weaselMatches = text.match(weaselRegex);
-                    if (weaselMatches) results.weasels = [...new Set(weaselMatches)];
-                    
-                    sentences.forEach(s => { if(s.split(/\s+/).length > 25) results.longSentences.push(s); });
-                    
-                    const words = text.toLowerCase().split(/\s+/);
-                    const wordFreq = {};
-                    words.forEach(word => { 
-                        if (word.length > 4 && !this.stopWords.has(word)) {
-                            wordFreq[word] = (wordFreq[word] || 0) + 1; 
-                        }
-                    });
-                    results.repetitive = Object.entries(wordFreq)
-                        .filter(([word, freq]) => freq > 3)
-                        .map(([word, freq]) => `${word} (${freq} times)`);
-                    
-                    const vagueRegex = /\b(thing|stuff|aspect|factor|element|area)\b/gi;
-                    const vagueMatches = text.match(vagueRegex);
-                    if (vagueMatches) results.vague = [...new Set(vagueMatches)];
-                    
-                    let report = "✍️ **Writing Analysis**\n\n";
-                    if (results.passive.length > 0) {
-                        report += `**Passive Voice:** ${results.passive.length} sentence(s) might be in passive voice. Consider making them more active.\n*Example: "${results.passive[0]}"*\n\n`;
-                    }
-                    if (results.fillers.length > 0) {
-                        report += `**Filler Words:** Found common filler words. Your writing might be stronger without them.\n*Examples: ${results.fillers.slice(0, 5).join(', ')}*\n\n`;
-                    }
-                    if (results.weasels.length > 0) {
-                        report += `**Vague Language:** These words can make your writing less direct.\n*Examples: ${results.weasels.slice(0, 5).join(', ')}*\n\n`;
-                    }
-                    if (results.longSentences.length > 0) {
-                        report += `**Long Sentences:** ${results.longSentences.length} sentences might be too long. Consider breaking them up for better readability.\n\n`;
-                    }
-                    if (results.repetitive.length > 0) {
-                        report += `**Repetitive Words:** You might be overusing these words:\n*${results.repetitive.slice(0, 3).join(', ')}*\n\n`;
-                    }
-                    if (results.vague.length > 0) {
-                        report += `**Vague Terms:** Consider replacing these vague terms with more specific language:\n*${results.vague.slice(0, 3).join(', ')}*\n\n`;
-                    }
-                    if (report.length < 50) return "✅ Your writing looks clear and direct! No major issues found.";
-
-                    return report;
-                }
-
-                basicGrammarFix(text) {
-                    let correctedText = text;
-                    const fillerWords = /\b(basically|actually|literally|like|just|really|very|sort of|kind of)\b/gi;
-                    correctedText = correctedText.replace(fillerWords, '');
-                    correctedText = correctedText.replace(/\b(can)not\b/gi, '$1 not');
-                    correctedText = correctedText.replace(/\b(will)not\b/gi, '$1 not');
-                    correctedText = correctedText.replace(/\b(do)not\b/gi, '$1 not');
-                    correctedText = correctedText.replace(/\s+/g, ' ').trim();
-                    return correctedText;
-                }
-
-                advancedGrammarFix(text) {
-                    let correctedText = this.basicGrammarFix(text);
-                    const commonMistakes = { 'teh': 'the', 'adn': 'and', 'thier': 'their', 'theyre': "they're", 'recieve': 'receive', 'seperate': 'separate', 'definately': 'definitely', 'occured': 'occurred', 'alot': 'a lot', 'accomodate': 'accommodate', 'goverment': 'government' };
-                    Object.keys(commonMistakes).forEach(mistake => {
-                        const regex = new RegExp(`\\b${mistake}\\b`, 'gi');
-                        correctedText = correctedText.replace(regex, commonMistakes[mistake]);
-                    });
-                    return correctedText;
-                }
-
-                contextualGrammarFix(text) {
-                    let correctedText = this.advancedGrammarFix(text);
-                    const sentences = this.tokenizeSentences(correctedText);
-                    correctedText = sentences.map(sentence => {
-                        if (sentence.length === 0) return sentence;
-                        return sentence.charAt(0).toUpperCase() + sentence.slice(1);
-                    }).join(' ');
-                    return correctedText;
-                }
-
-                fixGrammar(text) {
-                    return this.advancedModels.grammar.contextual(text);
-                }
-
-                generateQuiz(text) {
-                    const sentences = this.tokenizeSentences(this.preprocessText(text));
-                    const keywords = this.extractKeyWords(text, 15).map(kw => ({ word: kw })); // Adapt to expected format
-                    let quiz = [];
-                    
-                    keywords.forEach(kw => {
-                        const keywordSentences = sentences.filter(s => s.toLowerCase().includes(kw.word));
-                        if(keywordSentences.length > 0) {
-                            const questionSentence = keywordSentences[0];
-                            const question = questionSentence.replace(new RegExp(kw.word, 'ig'), '_____');
-                            const wrongAnswers = this.generateWrongAnswers(kw.word, keywords);
-                            quiz.push({ question: question, answer: kw.word, options: this.shuffleArray([kw.word, ...wrongAnswers.slice(0, 3)]) });
-                        }
-                    });
-
-                    if (quiz.length === 0) return "Could not generate a quiz from this text.";
-                    
-                    let quizText = "**Study Quiz**\n\n";
-                    quiz.slice(0, 5).forEach((item, index) => {
-                        quizText += `${index + 1}. ${item.question}\n`;
-                        item.options.forEach((option, optIndex) => {
-                            const letter = String.fromCharCode(97 + optIndex);
-                            quizText += `   ${letter}) ${option}\n`;
-                        });
-                        quizText += `   <mark>Answer: ${item.answer}</mark>\n\n`;
-                    });
-                    
-                    return quizText;
-                }
-
-                generateWrongAnswers(correctAnswer, keywords) {
-                    const similarWords = keywords
-                        .filter(kw => kw.word !== correctAnswer && kw.word.length === correctAnswer.length)
-                        .map(kw => kw.word);
-                    
-                    if (similarWords.length < 3) {
-                        const variations = [ correctAnswer + 's', correctAnswer + 'ed', correctAnswer.substring(0, correctAnswer.length - 1), correctAnswer + 'ing' ];
-                        return [...new Set([...similarWords, ...variations])].slice(0, 3);
-                    }
-                    
-                    return similarWords.slice(0, 3);
-                }
-
-                shuffleArray(array) {
-                    for (let i = array.length - 1; i > 0; i--) {
-                        const j = Math.floor(Math.random() * (i + 1));
-                        [array[i], array[j]] = [array[j], array[i]];
-                    }
-                    return array;
-                }
-
-                countWords(text) {
-                    if (!text || typeof text.trim() !== 'string') return 0;
-                    const words = text.trim().split(/\s+/);
-                    return words.filter(word => word !== '').length;
-                }
-
-                analyzeContent(text) {
-                    const analysis = this.advancedModels.analysis;
-                    const sentiment = analysis.sentiment(text);
-                    const readability = analysis.readability(text);
-                    const complexity = analysis.complexity(text);
-                    const structure = analysis.structure(text);
-                    
-                    let analysisText = `**Document Analysis**\n\n`;
-                    analysisText += `**Word Count:** ${this.countWords(text)}\n`;
-                    analysisText += `**Sentence Count:** ${structure.sentences}\n`;
-                    analysisText += `**Paragraph Count:** ${structure.paragraphs}\n\n`;
-                    analysisText += `**Sentiment Analysis:** ${sentiment}\n`;
-                    analysisText += `**Readability Score (Flesch):** ${readability}/100\n`;
-                    analysisText += `**Content Complexity:** ${complexity}\n\n`;
-                    analysisText += `**Document Structure:**\n`;
-                    analysisText += `- Avg. sentences per paragraph: ${structure.avgSentencesPerParagraph.toFixed(1)}\n`;
-                    
-                    return analysisText;
-                }
-
-                countSyllables(text) {
-                    if (!text) return 0;
-                    text = text.toLowerCase();
-                    const words = this.preprocessText(text).split(/\s+/);
-                    let syllableCount = 0;
-                    
-                    words.forEach(word => {
-                        if (word.length <= 3) {
-                            syllableCount += 1;
-                            return;
-                        }
-                        word = word.replace(/(?:[^laeiouy]es|ed|[^laeiouy]e)$/, '');
-                        word = word.replace(/^y/, '');
-                        const matches = word.match(/[aeiouy]{1,2}/g);
-                        syllableCount += matches ? matches.length : 0;
-                    });
-                    
-                    return syllableCount;
+            let suggestions = [];
+            for (const [error, fix] of Object.entries(corrections)) {
+                const regex = new RegExp(error, 'gi');
+                if (regex.test(correctedText)) {
+                    suggestions.push(`Replaced "<mark>${error.trim()}</mark>" with "<mark>${fix.trim()}</mark>"`);
+                    correctedText = correctedText.replace(regex, fix);
                 }
             }
-
-            const AI = new OptiChainAI();
-
-            const DOMElements = {
-                mainContent: document.getElementById('mainContent'),
-                pdfUpload: document.getElementById('pdf-upload'),
-                imageUpload: document.getElementById('image-upload'),
-                contentArea: document.getElementById('content-area'),
-                emptyState: document.getElementById('emptyState'),
-                pdfViewer: document.getElementById('pdf-viewer'),
-                textEditor: document.getElementById('text-editor'),
-                aiSidebar: document.getElementById('aiSidebar'),
-                dragDropOverlay: document.getElementById('drag-drop-overlay'),
-                settingsOverlay: document.getElementById('settingsOverlay'),
-                themeOptions: document.getElementById('themeOptions'),
-                documentTitle: document.getElementById('document-title'),
-                welcomeScreen: document.getElementById('welcomeScreen'),
-                readingOption: document.getElementById('readingOption'),
-                researchOption: document.getElementById('researchOption'),
-                dynamicIsland: document.getElementById('dynamicIsland'),
-                dynamicTools: document.querySelector('.dynamic-island-tools')
-            };
-
-            function initialize() {
-                pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.worker.min.js';
-                setupEventListeners();
-                loadSettings();
-                updateUIMode();
-                resetAiOutputs();
-                DOMElements.welcomeScreen.style.display = 'flex';
-            }
-
-            function setupEventListeners() {
-                DOMElements.pdfUpload.addEventListener('change', handleFileSelect, false);
-                DOMElements.imageUpload.addEventListener('change', handleImageUpload, false);
-                document.getElementById('ai-close-btn').addEventListener('click', toggleAiSidebar);
-                document.getElementById('dynamic-ai-toggle').addEventListener('click', toggleAiSidebar);
-                document.getElementById('dynamic-mode-toggle').addEventListener('click', toggleMode);
-                document.getElementById('dynamic-upload-label').addEventListener('click', () => DOMElements.pdfUpload.click());
-                document.getElementById('dynamic-image-label').addEventListener('click', () => DOMElements.imageUpload.click());
-                document.getElementById('dynamic-copy-paste').addEventListener('click', pasteFromClipboard);
-                document.getElementById('dynamic-menu-toggle').addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    toggleDropdown();
-                });
-
-                DOMElements.readingOption.addEventListener('click', () => selectMode('reading'));
-                DOMElements.researchOption.addEventListener('click', () => selectMode('research'));
-
-                DOMElements.dynamicIsland.addEventListener('click', toggleDynamicIsland);
-                DOMElements.dynamicIsland.addEventListener('touchstart', (e) => {
-                    e.preventDefault();
-                    toggleDynamicIsland();
-                });
-
-                document.getElementById('settings-close-btn').addEventListener('click', () => DOMElements.settingsOverlay.classList.remove('visible'));
-                DOMElements.settingsOverlay.addEventListener('click', e => { if (e.target === DOMElements.settingsOverlay) DOMElements.settingsOverlay.classList.remove('visible'); });
-                DOMElements.themeOptions.addEventListener('change', handleThemeChange);
-                
-                document.addEventListener('click', (e) => {
-                    const dropdown = document.getElementById('dynamic-dropdown');
-                    if (state.dropdownOpen && !e.target.closest('.dynamic-island') && dropdown && !dropdown.contains(e.target)) {
-                        toggleDropdown(false);
-                    }
-                });
-
-                document.getElementById('summarize-btn-small').addEventListener('click', (e) => handleAIAction('summarize', { size: e.target.dataset.size }));
-                document.getElementById('summarize-btn-medium').addEventListener('click', (e) => handleAIAction('summarize', { size: e.target.dataset.size }));
-                document.getElementById('summarize-btn-large').addEventListener('click', (e) => handleAIAction('summarize', { size: e.target.dataset.size }));
-                document.getElementById('writing-btn').addEventListener('click', () => handleAIAction('writing'));
-                document.getElementById('fix-grammar-btn').addEventListener('click', () => handleAIAction('fix-grammar'));
-                document.getElementById('qa-btn').addEventListener('click', () => handleAIAction('qa'));
-                document.getElementById('keypoints-btn').addEventListener('click', () => handleAIAction('keypoints'));
-                document.getElementById('quiz-btn').addEventListener('click', () => handleAIAction('quiz'));
-                document.getElementById('analysis-btn').addEventListener('click', () => handleAIAction('analysis'));
-                document.getElementById('search-btn').addEventListener('click', () => handleAIAction('search'));
-                document.getElementById('key-insights-btn').addEventListener('click', () => handleAIAction('key-insights'));
-
-                document.getElementById('copy-summary-btn').addEventListener('click', () => copyToClipboard('summary-output'));
-                document.getElementById('copy-writing-btn').addEventListener('click', () => copyToClipboard('writing-output'));
-                document.getElementById('copy-qa-btn').addEventListener('click', () => copyToClipboard('qa-answer'));
-                document.getElementById('copy-keypoints-btn').addEventListener('click', () => copyToClipboard('keypoints-output'));
-                document.getElementById('copy-quiz-btn').addEventListener('click', () => copyToClipboard('quiz-output'));
-                document.getElementById('copy-analysis-btn').addEventListener('click', () => copyToClipboard('analysis-output'));
-
-                document.getElementById('qa-input').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); handleAIAction('qa'); } });
-                document.getElementById('search-input').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); handleAIAction('search'); } });
-                DOMElements.textEditor.addEventListener('paste', handlePaste);
-                
-                ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(evt => document.body.addEventListener(evt, preventDefaults, false));
-                ['dragenter', 'dragover'].forEach(evt => DOMElements.mainContent.addEventListener(evt, showDropOverlay, false));
-                ['dragleave', 'drop'].forEach(evt => DOMElements.mainContent.addEventListener(evt, hideDropOverlay, false));
-                DOMElements.mainContent.addEventListener('drop', handleDrop, false);
-            }
-
-            function toggleDropdown(show) {
-                state.dropdownOpen = show !== undefined ? show : !state.dropdownOpen;
-                
-                let dropdown = document.getElementById('dynamic-dropdown');
-                if (!dropdown) {
-                    dropdown = document.createElement('div');
-                    dropdown.id = 'dynamic-dropdown';
-                    dropdown.className = 'dropdown-menu';
-                    document.body.appendChild(dropdown);
-                    
-                    dropdown.innerHTML = `
-                        <a href="#" class="dropdown-item" id="dropdown-download-pdf">
-                            <i class="fas fa-file-pdf"></i>
-                            <span>Download as PDF</span>
-                        </a>
-                        <a href="#" class="dropdown-item" id="dropdown-export-text">
-                            <i class="fas fa-file-export"></i>
-                            <span>Export as Text</span>
-                        </a>
-                         <a href="#" class="dropdown-item" id="dropdown-ai-assistant">
-                            <i class="fas fa-robot"></i>
-                            <span>AI Assistant</span>
-                        </a>
-                        <div class="dropdown-divider"></div>
-                        <a href="#" class="dropdown-item" id="dropdown-settings">
-                            <i class="fas fa-cog"></i>
-                            <span>Settings</span>
-                        </a>
-                        <a href="#" class="dropdown-item" id="dropdown-clear-document">
-                            <i class="fas fa-trash"></i>
-                            <span>Clear Document</span>
-                        </a>
-                    `;
-                    
-                    document.getElementById('dropdown-download-pdf').addEventListener('click', downloadTextAsPDF);
-                    document.getElementById('dropdown-ai-assistant').addEventListener('click', toggleAiSidebar);
-                    document.getElementById('dropdown-settings').addEventListener('click', () => {
-                        DOMElements.settingsOverlay.classList.add('visible');
-                        toggleDropdown(false);
-                    });
-                    document.getElementById('dropdown-export-text').addEventListener('click', exportAsText);
-                    document.getElementById('dropdown-clear-document').addEventListener('click', clearDocument);
-                }
-                
-                if (state.dropdownOpen) {
-                    const islandRect = DOMElements.dynamicIsland.getBoundingClientRect();
-                    dropdown.style.top = (islandRect.bottom + 10) + 'px';
-                    dropdown.style.left = islandRect.left + (islandRect.width / 2) + 'px';
-                    dropdown.style.transform = 'translateX(-50%)';
-                    dropdown.classList.add('show');
-                } else {
-                    dropdown.classList.remove('show');
-                }
-            }
-
-            function toggleDynamicIsland() {
-                if (state.dropdownOpen) {
-                    toggleDropdown(false);
-                }
-                state.dynamicIslandExpanded = !state.dynamicIslandExpanded;
-                DOMElements.dynamicIsland.classList.toggle('expanded', state.dynamicIslandExpanded);
-            }
-            
-            function selectMode(mode) {
-                state.currentAppMode = mode;
-                DOMElements.welcomeScreen.style.animation = 'welcome-fade-out 0.5s ease-out forwards';
-                setTimeout(() => {
-                    DOMElements.welcomeScreen.style.display = 'none';
-                }, 500);
-
-                if (mode === 'research') {
-                    toggleMode('text');
-                }
-
-                showToast(`Welcome to ${mode === 'reading' ? 'Reading' : 'Research'} Mode!`, 'success');
-            }
-
-
-            function copyToClipboard(outputId) {
-                const outputElement = document.getElementById(outputId);
-                const textToCopy = outputElement.textContent || outputElement.innerText;
-                
-                navigator.clipboard.writeText(textToCopy).then(() => {
-                    showToast('Copied to clipboard!', 'success');
-                }).catch(err => {
-                    console.error('Failed to copy text: ', err);
-                    showToast('Failed to copy text', 'error');
-                });
-            }
-
-            function handlePaste(e) {
-                e.preventDefault();
-                const text = (e.clipboardData || window.clipboardData).getData('text/plain');
-                document.execCommand('insertText', false, text);
-            }
-
-            async function pasteFromClipboard() {
-                try {
-                    const text = await navigator.clipboard.readText();
-                    if (state.currentMode !== 'text') {
-                         toggleMode('text');
-                    }
-                    DOMElements.textEditor.textContent += text;
-                    showToast('Text pasted successfully!', 'success');
-                } catch (err) {
-                    console.error('Failed to read clipboard contents: ', err);
-                    showToast("Could not paste from clipboard. Please try again.", 'error');
-                }
-            }
-
-            function toggleMode(mode = null) {
-                state.currentMode = mode ? mode : (state.currentMode === 'pdf') ? 'text' : 'pdf';
-                if (state.currentMode === 'text' && state.extractedText) {
-                    DOMElements.textEditor.textContent = state.extractedText;
-                }
-                updateUIMode();
-                resetAiOutputs();
-            }
-
-            function updateUIMode() {
-                const isPdfMode = state.currentMode === 'pdf';
-                const hasContent = state.pdfDoc || (DOMElements.textEditor.textContent || state.extractedText).trim().length > 0;
-
-                DOMElements.pdfViewer.style.display = isPdfMode ? 'block' : 'none';
-                DOMElements.textEditor.style.display = isPdfMode ? 'none' : 'block';
-                DOMElements.emptyState.style.display = hasContent ? 'none' : 'flex';
-            }
-
-
-            function toggleAiSidebar() {
-                const isOpen = DOMElements.aiSidebar.classList.toggle('open');
-                DOMElements.mainContent.classList.toggle('sidebar-open', isOpen);
-                
-                if (state.dropdownOpen) {
-                    toggleDropdown(false);
-                }
-            }
-
-            function loadSettings() {
-                const theme = localStorage.getItem('gridora_theme') || 'apple-notes';
-                document.documentElement.setAttribute('data-theme', theme);
-                const themeInput = document.querySelector(`#themeOptions input[value="${theme}"]`);
-                if (themeInput) themeInput.checked = true;
-            }
-
-            function handleThemeChange(e) {
-                document.documentElement.setAttribute('data-theme', e.target.value);
-                localStorage.setItem('gridora_theme', e.target.value);
-            }
-
-            function handleFileSelect(event) {
-                const file = event.target.files[0];
-                if (file && file.type === 'application/pdf') {
-                    DOMElements.documentTitle.value = file.name.replace('.pdf', '');
-                    loadPdfFromFile(file);
-                } else {
-                    showToast('Please select a valid PDF file.', 'error');
-                }
-            }
-
-            function handleImageUpload(event) {
-                const file = event.target.files[0];
-                if (file && file.type.startsWith('image/')) {
-                     if (state.currentMode !== 'text') {
-                        toggleMode('text');
-                    }
-                    insertImage(file);
-                } else {
-                    showToast('Please select a valid image file.', 'error');
-                }
-            }
-
-            function insertImage(file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const imageContainer = document.createElement('div');
-                    imageContainer.className = 'image-container';
-                    imageContainer.contentEditable = false;
-                    
-                    const img = document.createElement('img');
-                    img.src = e.target.result;
-                    img.alt = 'Uploaded image';
-                    
-                    const removeBtn = document.createElement('button');
-                    removeBtn.className = 'image-remove-btn';
-                    removeBtn.innerHTML = '<i class="fas fa-times"></i>';
-                    removeBtn.addEventListener('click', function() {
-                        imageContainer.remove();
-                    });
-                    
-                    imageContainer.appendChild(img);
-                    imageContainer.appendChild(removeBtn);
-                    
-                    const space = document.createTextNode('\u00A0');
-
-                    DOMElements.textEditor.appendChild(imageContainer);
-                    DOMElements.textEditor.appendChild(space);
-
-                    imageContainer.scrollIntoView({ behavior: 'smooth' });
-                    
-                    showToast('Image uploaded successfully!', 'success');
-                };
-                reader.readAsDataURL(file);
-            }
-
-            function handleDrop(e) {
-                const file = e.dataTransfer.files[0];
-                if (file && file.type === 'application/pdf') {
-                    DOMElements.documentTitle.value = file.name.replace('.pdf', '');
-                    loadPdfFromFile(file);
-                } else if (file && file.type.startsWith('image/')) {
-                    if (state.currentMode !== 'text') {
-                        toggleMode('text');
-                    }
-                    insertImage(file);
-                } else {
-                    showToast('Dropped file is not a valid PDF or image.', 'error');
-                }
-            }
-
-            function loadPdfFromFile(file) {
-                const fileReader = new FileReader();
-                fileReader.onload = (e) => loadPdf(new Uint8Array(e.target.result));
-                fileReader.readAsArrayBuffer(file);
-            }
-
-            async function loadPdf(typedarray) {
-                if (state.isPdfLoading) return;
-                state.isPdfLoading = true;
-                setLoadingState(true, 'Loading PDF...');
-
-                try {
-                    state.pdfDoc = await pdfjsLib.getDocument(typedarray).promise;
-                    DOMElements.pdfViewer.innerHTML = '';
-                    
-                    let textPromises = [];
-                    for (let i = 1; i <= state.pdfDoc.numPages; i++) {
-                        textPromises.push(state.pdfDoc.getPage(i).then(page => page.getTextContent()));
-                    }
-                    const allTextContents = await Promise.all(textPromises);
-                    state.extractedText = allTextContents.map(tc => tc.items.map(item => item.str).join(' ')).join('\n\n');
-
-                    for (let pageNum = 1; pageNum <= state.pdfDoc.numPages; pageNum++) {
-                        await renderPage(pageNum, allTextContents[pageNum - 1]);
-                    }
-                    toggleMode('pdf');
-                    showToast('PDF loaded successfully!', 'success');
-                } catch (error) {
-                    console.error('Error loading PDF:', error);
-                    showToast('Failed to load PDF. It may be corrupt or protected.', 'error');
-                } finally {
-                    state.isPdfLoading = false;
-                    setLoadingState(false);
-                    updateUIMode();
-                }
-            }
-
-            async function renderPage(pageNum, textContent) {
-                const page = await state.pdfDoc.getPage(pageNum);
-                const viewport = page.getViewport({ scale: 1.5 });
-                const pageContainer = document.createElement('div');
-                pageContainer.className = 'page-container';
-                pageContainer.style.position = 'relative';
-                const canvas = document.createElement('canvas');
-                canvas.height = viewport.height;
-                canvas.width = viewport.width;
-                const textLayerDiv = document.createElement('div');
-                textLayerDiv.className = 'pdf-text-layer';
-                pageContainer.append(canvas, textLayerDiv);
-                DOMElements.pdfViewer.appendChild(pageContainer);
-                await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
-                textLayerDiv.style.width = viewport.width + 'px';
-                textLayerDiv.style.height = viewport.height + 'px';
-                pdfjsLib.renderTextLayer({ textContent, container: textLayerDiv, viewport, textDivs: [] });
-            }
-
-            function getDocumentText() {
-                 return (state.currentMode === 'pdf' ? state.extractedText : DOMElements.textEditor.innerText).trim();
-            }
-
-            function resetAiOutputs() {
-                document.getElementById('summary-output').textContent = 'Generate an intelligent summary of your document.';
-                document.getElementById('qa-answer').textContent = 'Ask a question to get answers based on the content.';
-                document.getElementById('writing-output').textContent = 'Get suggestions to improve your writing.';
-                document.getElementById('keypoints-output').textContent = 'Extract the most important points and concepts.';
-                document.getElementById('quiz-output').textContent = 'Generate a quiz to test your knowledge of the document.';
-                document.getElementById('analysis-output').textContent = 'Analyze the sentiment and tone of the document.';
-                document.getElementById('search-results').textContent = 'Find relevant information from the web. This will open in a new tab.';
-                
-                document.querySelectorAll('.copy-btn').forEach(btn => btn.style.display = 'none');
-            }
-
-            async function handleAIAction(action, options = {}) {
-                if (state.isAiProcessing && action !== 'search') return;
-
-                if(action === 'search'){
-                    const searchQuery = document.getElementById('search-input').value.trim();
-                    if (!searchQuery) { showToast('Please enter a search query.', 'error'); return; }
-                    const keywords = AI.extractKeyWords(getDocumentText(), 3);
-                    const fullQuery = encodeURIComponent(searchQuery + " " + keywords.join(" "));
-                    window.open(`https://www.google.com/search?q=${fullQuery}`, '_blank');
-                    return;
-                }
-                
-                const text = getDocumentText();
-                if (text.length < 50 && action !== 'fix-grammar' && action !== 'writing') {
-                    showToast('Please provide at least 50 characters of text for AI analysis.', 'error');
-                    return;
-                }
-
-                const buttonIdMap = {
-                    summarize: options.size ? `summarize-btn-${options.size}` : 'summarize-btn-medium',
-                    qa: 'qa-btn',
-                    writing: 'writing-btn',
-                    'fix-grammar': 'fix-grammar-btn',
-                    keypoints: 'keypoints-btn',
-                    quiz: 'quiz-btn',
-                    analysis: 'analysis-btn',
-                    'key-insights': 'key-insights-btn'
-                };
-
-                const outputIdMap = {
-                    summarize: 'summary-output',
-                    qa: 'qa-answer',
-                    writing: 'writing-output',
-                    'fix-grammar': 'writing-output',
-                    keypoints: 'keypoints-output',
-                    quiz: 'quiz-output',
-                    analysis: 'analysis-output',
-                    'key-insights': 'summary-output'
-                };
-
-                const button = document.getElementById(buttonIdMap[action]);
-                const outputEl = document.getElementById(outputIdMap[action]);
-                const copyBtn = document.getElementById(`copy-${outputIdMap[action].replace('-output','').replace('-answer','-qa')}-btn`);
-                const originalHTML = button ? button.innerHTML : '';
-                
-                setAIProcessing(true, button);
-               
-                await new Promise(resolve => setTimeout(resolve, 50));
-
-                try {
-                    let result = '';
-                    let formatAsHTML = false;
-
-                    switch (action) {
-                        case 'summarize': 
-                            result = AI.generateSummary(text, options.size);
-                            break;
-                        case 'key-insights':
-                            result = AI.generateKeyInsights(text);
-                            formatAsHTML = true;
-                            break;
-                        case 'writing':
-                            result = AI.analyzeWriting(text);
-                             formatAsHTML = true;
-                            break;
-                        case 'fix-grammar':
-                            if (state.currentMode !== 'text') {
-                                 showToast('Grammar correction is only available in Text Mode.', 'error');
-                                 throw new Error('Wrong mode');
-                            }
-                            result = AI.fixGrammar(text);
-                            DOMElements.textEditor.textContent = result;
-                            outputEl.textContent = 'Grammar fixes have been applied to the text editor.';
-                            showToast('Grammar has been corrected!', 'success');
-                            break;
-                        case 'qa':
-                            const question = document.getElementById('qa-input').value.trim();
-                            if (!question) { showToast('Please enter a question.', 'error'); throw new Error('No Question'); }
-                            result = AI.answerQuestion(text, question);
-                             formatAsHTML = true;
-                            break;
-                        case 'keypoints': 
-                            result = AI.extractKeyPoints(text);
-                            formatAsHTML = true;
-                            break;
-                        case 'quiz':
-                            result = AI.generateQuiz(text);
-                            formatAsHTML = true;
-                            break;
-                        case 'analysis':
-                            result = AI.analyzeContent(text);
-                             formatAsHTML = true;
-                            break;
-                        default: throw new Error('Unknown action.');
-                    }
-                    
-                    if (action !== 'fix-grammar') {
-                         if (formatAsHTML) {
-                            outputEl.innerHTML = result.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
-                        } else {
-                            await typeEffect(outputEl, result);
-                        }
-                    }
-
-                    if (result && copyBtn) {
-                        copyBtn.style.display = 'block';
-                    }
-
-                    outputEl.classList.add('ai-response');
-                    setTimeout(() => outputEl.classList.remove('ai-response'), 500);
-
-                } catch (error) {
-                    if (error.message !== 'No Question' && error.message !== 'Wrong mode') {
-                        console.error(`AI action '${action}' failed:`, error);
-                        outputEl.textContent = `An error occurred. Please try again.`;
-                    }
-                } finally {
-                    setAIProcessing(false, button, originalHTML);
-                }
-            }
-            
-            function setAIProcessing(isProcessing, button, originalHTML = '') {
-                 state.isAiProcessing = isProcessing;
-                 document.querySelectorAll('.ai-button, .summary-option-btn').forEach(btn => btn.disabled = isProcessing);
-                 if (button) {
-                     button.innerHTML = isProcessing ? '<i class="fas fa-spinner fa-spin"></i> Thinking...' : originalHTML;
-                 }
-                 if (!isProcessing) {
-                    document.getElementById('summarize-btn-small').innerHTML = "Small";
-                    document.getElementById('summarize-btn-medium').innerHTML = "Medium";
-                    document.getElementById('summarize-btn-large').innerHTML = "Large";
-                 }
-            }
-
-
-            async function typeEffect(element, text, speed = 10) {
-                element.innerHTML = '';
-                for (let i = 0; i < text.length; i++) {
-                    element.innerHTML += text.charAt(i);
-                    await new Promise(resolve => setTimeout(resolve, speed));
-                }
-            }
-
-            function preventDefaults(e) { 
-                e.preventDefault(); 
-                e.stopPropagation(); 
-            }
-
-            function showDropOverlay() { 
-                DOMElements.dragDropOverlay.classList.add('visible'); 
-            }
-
-            function hideDropOverlay() { 
-                DOMElements.dragDropOverlay.classList.remove('visible'); 
-            }
-
-            function setLoadingState(isLoading, message = '') {
-                const targetElement = state.currentMode === 'pdf' ? DOMElements.pdfViewer : DOMElements.textEditor;
-                if (isLoading) {
-                    const loaderHTML = `<div style="text-align: center; padding: 2rem;"><i class="fas fa-spinner fa-spin fa-2x"></i><br><br>${message}</div>`;
-                    if (state.currentMode === 'pdf') {
-                         DOMElements.pdfViewer.innerHTML = loaderHTML;
-                    }
-                } else {
-                    if (state.currentMode === 'pdf' && DOMElements.pdfViewer.querySelector('.fa-spinner')) {
-                         DOMElements.pdfViewer.innerHTML = '';
-                    }
-                }
-                updateUIMode();
-            }
-
-            function showToast(message, type = 'success') {
-                const toast = document.createElement('div');
-                toast.textContent = message;
-                toast.className = `toast ${type}`;
-                document.body.appendChild(toast);
-
-                setTimeout(() => toast.classList.add('show'), 10);
-
-                setTimeout(() => {
-                    toast.classList.remove('show');
-                    setTimeout(() => toast.remove(), 300);
-                }, 4000);
-            }
-
-            async function downloadTextAsPDF() {
-                const { jsPDF } = window.jspdf;
-                const title = DOMElements.documentTitle.value.trim() || 'Untitled_Document';
-                const textToExport = getDocumentText();
-                
-                if (!textToExport) {
-                    showToast("There's no text to download.", 'error');
-                    return;
-                }
-
-                setLoadingState(true, "Generating PDF...");
-                await new Promise(resolve => setTimeout(resolve, 50));
-                
-                try {
-                    const doc = new jsPDF();
-                    doc.setFont("Helvetica", "normal");
-                    doc.setFontSize(18);
-                    doc.text(title, 10, 20);
-                    doc.setFontSize(12);
-                    const splitText = doc.splitTextToSize(textToExport, 180); 
-                    doc.text(splitText, 10, 30);
-                    doc.save(`${title.replace(/ /g, '_')}.pdf`);
-                    showToast('PDF downloaded successfully!', 'success');
-                } catch (error) {
-                    console.error('Error generating PDF:', error);
-                    showToast('Failed to generate PDF. Please try again.', 'error');
-                } finally {
-                   setLoadingState(false);
-                }
-            }
-
-            function exportAsText() {
-                const textToExport = getDocumentText();
-                const title = DOMElements.documentTitle.value.trim() || 'Untitled_Document';
-
-                if (!textToExport) {
-                    showToast("There's no text to export.", 'error');
-                    return;
-                }
-
-                const blob = new Blob([textToExport], { type: 'text/plain;charset=utf-8' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `${title.replace(/ /g, '_')}.txt`;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-                showToast('Text exported successfully!', 'success');
-            }
-
-            function clearDocument() {
-                if (confirm('Are you sure you want to clear the document? This action cannot be undone.')) {
-                    DOMElements.textEditor.innerHTML = '';
-                    DOMElements.pdfViewer.innerHTML = '';
-                    DOMElements.documentTitle.value = 'Untitled Document';
-                    state.extractedText = '';
-                    state.pdfDoc = null;
-                    updateUIMode();
-                    resetAiOutputs();
-                    showToast('Document cleared', 'success');
-                }
-            }
-
-            initialize();
+            if (suggestions.length === 0) return "✅ No common grammatical errors found.";
+            return `**Grammar Suggestions:**\n\n${suggestions.join('\n')}\n\n*Note: These are automated suggestions. Please review them carefully.*`;
+        }
+    }
+    const AI = new OptiChainAI();
+
+    // Simplified DOM Elements object
+    const DOMElements = {
+        mainContent: document.getElementById('mainContent'),
+        pdfUpload: document.getElementById('pdf-upload'),
+        emptyState: document.getElementById('emptyState'),
+        pdfViewer: document.getElementById('pdf-viewer'),
+        textEditor: document.getElementById('text-editor'),
+        aiSidebar: document.getElementById('aiSidebar'),
+        dragDropOverlay: document.getElementById('drag-drop-overlay'),
+        documentTitle: document.getElementById('document-title'),
+        entryPage: document.getElementById('entry-page'),
+        dynamicIsland: document.getElementById('dynamic-island'),
+        settingsOverlay: document.getElementById('settings-overlay'),
+    };
+    
+    function initialize() {
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.worker.min.js';
+        setupEventListeners();
+        loadSettings();
+        resetAiOutputs();
+    }
+    
+    function setMode(mode) {
+        state.currentMode = mode;
+        DOMElements.pdfViewer.style.display = 'none';
+        DOMElements.textEditor.style.display = 'none';
+        DOMElements.emptyState.style.display = 'none';
+
+        if (mode === 'pdf') {
+            DOMElements.pdfViewer.style.display = 'block';
+        } else if (mode === 'text') {
+            DOMElements.textEditor.style.display = 'block';
+        } else {
+            DOMElements.emptyState.style.display = 'flex';
+        }
+    }
+
+    function setupEventListeners() {
+        // Entry Page
+        document.getElementById('entry-read-pdf').addEventListener('click', () => { hideEntryPage(); setTimeout(() => DOMElements.pdfUpload.click(), 500); });
+        document.getElementById('entry-use-ai').addEventListener('click', () => { hideEntryPage(); setMode('text'); });
+
+        // Dynamic Island
+        DOMElements.dynamicIsland.addEventListener('click', (e) => { if (!e.target.closest('.island-btn') && !e.target.closest('label')) DOMElements.dynamicIsland.classList.toggle('expanded'); });
+        document.addEventListener('click', (e) => { if (!DOMElements.dynamicIsland.contains(e.target) && DOMElements.dynamicIsland.classList.contains('expanded')) DOMElements.dynamicIsland.classList.remove('expanded'); });
+        document.getElementById('island-ai-btn').addEventListener('click', toggleAiSidebar);
+        document.getElementById('island-paste-btn').addEventListener('click', pasteFromClipboard);
+        document.getElementById('island-text-mode-btn').addEventListener('click', () => setMode('text'));
+        document.getElementById('island-settings-btn').addEventListener('click', toggleSettings);
+
+        // File Handling
+        DOMElements.pdfUpload.addEventListener('change', handleFileSelect, false);
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(evt => document.body.addEventListener(evt, preventDefaults, false));
+        ['dragenter', 'dragover'].forEach(evt => DOMElements.mainContent.addEventListener(evt, showDropOverlay, false));
+        ['dragleave', 'drop'].forEach(evt => DOMElements.mainContent.addEventListener(evt, hideDropOverlay, false));
+        DOMElements.mainContent.addEventListener('drop', handleDrop, false);
+
+        // Sidebar and Settings
+        document.getElementById('ai-close-btn').addEventListener('click', toggleAiSidebar);
+        document.getElementById('settings-close-btn').addEventListener('click', toggleSettings);
+        DOMElements.settingsOverlay.addEventListener('click', (e) => { if (e.target === DOMElements.settingsOverlay) toggleSettings(); });
+
+        // AI Buttons
+        document.querySelectorAll('[id^="summarize-btn-"]').forEach(btn => btn.addEventListener('click', (e) => handleAIAction('summarize', { size: e.target.dataset.size })));
+        const aiActions = ['writing', 'grammar', 'qa', 'keypoints', 'keywords', 'quiz', 'analysis'];
+        aiActions.forEach(action => { document.getElementById(`${action}-btn`)?.addEventListener('click', () => handleAIAction(action)); });
+
+        document.getElementById('qa-input').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); handleAIAction('qa'); } });
+        DOMElements.textEditor.addEventListener('paste', handlePaste);
+        
+        // Theme selection
+        document.querySelectorAll('.theme-options input').forEach(input => {
+            input.addEventListener('change', (e) => setTheme(e.target.value));
         });
-    </script>
+    }
+
+    // --- Core Functions (UI, File Handling, AI) ---
+
+    function hideEntryPage() {
+        DOMElements.entryPage.classList.add('hidden');
+        document.body.style.overflow = 'auto'; 
+    }
+
+    function toggleAiSidebar() { DOMElements.aiSidebar.classList.toggle('open'); }
+    function toggleSettings() { DOMElements.settingsOverlay.classList.toggle('visible'); }
+
+    function setTheme(themeName) {
+        document.documentElement.setAttribute('data-theme', themeName);
+        localStorage.setItem('gridora_theme', themeName);
+        document.querySelector(`input[value="${themeName}"]`).checked = true;
+    }
+
+    function loadSettings() {
+        const theme = localStorage.getItem('gridora_theme') || 'light';
+        setTheme(theme);
+    }
+
+    function handleFileSelect(event) {
+        const file = event.target.files[0];
+        if (file && file.type === 'application/pdf') {
+            DOMElements.documentTitle.value = file.name.replace(/\.pdf$/i, '');
+            loadPdfFromFile(file);
+        } else {
+            showError('Please select a valid PDF file.');
+        }
+    }
+    
+    function handleDrop(e) {
+        const file = e.dataTransfer.files[0];
+        if (file && file.type === 'application/pdf') {
+            DOMElements.documentTitle.value = file.name.replace(/\.pdf$/i, '');
+            loadPdfFromFile(file);
+        } else {
+            showError('Dropped file is not a valid PDF.');
+        }
+    }
+    
+    function loadPdfFromFile(file) {
+        const fileReader = new FileReader();
+        fileReader.onload = (e) => loadPdf(new Uint8Array(e.target.result));
+        fileReader.readAsArrayBuffer(file);
+    }
+    
+    async function loadPdf(typedarray) {
+        if (state.isPdfLoading) return;
+        state.isPdfLoading = true;
+        setLoadingState(true, 'Loading PDF...');
+        setMode('pdf');
+
+        try {
+            state.pdfDoc = await pdfjsLib.getDocument(typedarray).promise;
+            DOMElements.pdfViewer.innerHTML = '';
+            
+            let textPromises = [];
+            for (let i = 1; i <= state.pdfDoc.numPages; i++) {
+                textPromises.push(state.pdfDoc.getPage(i).then(page => page.getTextContent()));
+            }
+            const allTextContents = await Promise.all(textPromises);
+            state.extractedText = allTextContents.map(tc => tc.items.map(item => item.str).join(' ')).join('\n\n');
+            
+            for (let pageNum = 1; pageNum <= state.pdfDoc.numPages; pageNum++) {
+                await renderPage(pageNum, allTextContents[pageNum - 1]);
+            }
+            resetAiOutputs();
+        } catch (error) {
+            console.error('Error loading PDF:', error);
+            showError('Failed to load PDF. It may be corrupt or protected.');
+            setMode('empty');
+        } finally {
+            state.isPdfLoading = false;
+            setLoadingState(false);
+        }
+    }
+
+    async function renderPage(pageNum, textContent) {
+        const page = await state.pdfDoc.getPage(pageNum);
+        const viewport = page.getViewport({ scale: 1.5 });
+        const pageContainer = document.createElement('div');
+        pageContainer.className = 'page-container';
+        pageContainer.style.position = 'relative';
+        const canvas = document.createElement('canvas');
+        canvas.height = viewport.height;
+        canvas.width = viewport.width;
+        const textLayerDiv = document.createElement('div');
+        textLayerDiv.className = 'pdf-text-layer';
+        pageContainer.append(canvas, textLayerDiv);
+        DOMElements.pdfViewer.appendChild(pageContainer);
+        
+        await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
+        textLayerDiv.style.width = viewport.width + 'px';
+        textLayerDiv.style.height = viewport.height + 'px';
+        pdfjsLib.renderTextLayer({ textContent, container: textLayerDiv, viewport, textDivs: [] });
+    }
+
+    async function handleAIAction(action, options = {}) {
+        if (state.isAiProcessing) return;
+        const title = DOMElements.documentTitle.value.trim();
+        if (!title) { showError('Please provide a title for the document before using AI features.'); return; }
+        
+        const text = (state.currentMode === 'pdf') ? state.extractedText : DOMElements.textEditor.textContent;
+        if (text.trim().length < 50) { showError('Please provide at least 50 characters of text for AI analysis.'); return; }
+        
+        const buttonMap = {
+            summarize: 'summarize-btn-medium', qa: 'qa-btn', writing: 'writing-btn', 
+            grammar: 'grammar-btn', keypoints: 'keypoints-btn', keywords: 'keywords-btn', 
+            quiz: 'quiz-btn', analysis: 'analysis-btn'
+        };
+        const outputMap = {
+            summarize: 'summary-output', qa: 'qa-answer', writing: 'writing-output',
+            grammar: 'grammar-output', keypoints: 'keypoints-output', keywords: 'keywords-output',
+            quiz: 'quiz-output', analysis: 'analysis-output'
+        };
+
+        const button = document.getElementById(buttonMap[action]);
+        const outputEl = document.getElementById(outputMap[action]);
+        if (!button || !outputEl) { console.error(`Invalid AI action or element mapping: ${action}`); return; }
+
+        state.isAiProcessing = true;
+        document.querySelectorAll('.ai-button, .summary-option-btn').forEach(btn => btn.disabled = true);
+        
+        const originalHTML = button.innerHTML;
+        const thinkingHTML = '<i class="fas fa-spinner fa-spin"></i> Thinking...';
+        if (action === 'summarize') {
+            document.querySelectorAll('.summary-option-btn').forEach(b => b.innerHTML = '<i class="fas fa-spinner fa-spin"></i>');
+        } else {
+            button.innerHTML = thinkingHTML;
+        }
+        
+        await new Promise(resolve => setTimeout(resolve, 50)); // Allow UI to update
+        
+        try {
+            let result;
+            switch (action) {
+                case 'summarize':
+                    result = AI.generateSummary(text, options.size);
+                    await typeEffect(outputEl, result);
+                    break;
+                case 'writing':
+                    result = AI.analyzeWriting(text);
+                    outputEl.innerHTML = result.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
+                    break;
+                case 'grammar':
+                    result = AI.fixGrammar(text);
+                    outputEl.innerHTML = result.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
+                    break;
+                case 'qa':
+                    const question = document.getElementById('qa-input').value.trim();
+                    if (!question) { showError('Please enter a question.'); throw new Error('No Question'); }
+                    result = AI.answerQuestion(text, question);
+                    outputEl.innerHTML = result;
+                    break;
+                case 'keypoints':
+                    result = AI.extractKeyPoints(text);
+                    await typeEffect(outputEl, result);
+                    break;
+                 case 'keywords':
+                    const keywords = AI.extractKeyWords(text, 15);
+                    result = keywords.map(kw => `<mark style="display: inline-block; margin: 2px 4px; padding: 3px 8px; border-radius: 8px;">${kw.word}</mark>`).join('');
+                    if (!result) result = "No significant keywords found.";
+                    outputEl.innerHTML = result;
+                    break;
+                case 'quiz':
+                    result = AI.generateQuiz(text);
+                    outputEl.innerHTML = result.replace(/\n/g, '<br>');
+                    break;
+                case 'analysis':
+                    result = AI.analyzeContent(text);
+                    outputEl.innerHTML = result.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
+                    break;
+                default: throw new Error('Unknown action.');
+            }
+        } catch (error) {
+            if (error.message !== 'No Question') {
+                console.error(`AI action '${action}' failed:`, error);
+                outputEl.textContent = `An error occurred. Please try again.`;
+            }
+        } finally {
+            state.isAiProcessing = false;
+            document.querySelectorAll('.ai-button, .summary-option-btn').forEach(btn => btn.disabled = false);
+            if (action === 'summarize') {
+                document.getElementById('summarize-btn-small').innerHTML = "Small";
+                document.getElementById('summarize-btn-medium').innerHTML = "Medium";
+                document.getElementById('summarize-btn-large').innerHTML = "Large";
+            } else {
+                button.innerHTML = originalHTML;
+            }
+        }
+    }
+
+    // --- Helper Functions ---
+    async function typeEffect(element, text, speed = 10) { element.innerHTML = ''; for (let i = 0; i < text.length; i++) { element.innerHTML += text.charAt(i); await new Promise(resolve => setTimeout(resolve, speed)); } }
+    function preventDefaults(e) { e.preventDefault(); e.stopPropagation(); }
+    function showDropOverlay() { DOMElements.dragDropOverlay.classList.add('visible'); }
+    function hideDropOverlay() { DOMElements.dragDropOverlay.classList.remove('visible'); }
+    function setLoadingState(isLoading, message = '') { if (isLoading) { DOMElements.pdfViewer.innerHTML = `<div class="empty-state" style="height: 50vh;"><i class="fas fa-spinner fa-spin fa-2x"></i><p style="margin-top: 1.5rem;">${message}</p></div>`; } else { if (!DOMElements.pdfViewer.hasChildNodes()) setMode('empty'); } }
+    function showError(message) { const toast = document.createElement('div'); toast.textContent = message; toast.style.cssText = 'position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background-color: #d32f2f; color:white; padding:12px 20px; border-radius:18px; z-index:9999; font-weight:500; box-shadow: 0 5px 15px rgba(0,0,0,0.2);'; document.body.appendChild(toast); setTimeout(() => { toast.style.opacity = '0'; toast.remove(); }, 4000); }
+    function handlePaste(e) { e.preventDefault(); const text = (e.clipboardData || window.clipboardData).getData('text/plain'); document.execCommand('insertText', false, text); }
+    async function pasteFromClipboard() {
+        setMode('text');
+        try {
+            const text = await navigator.clipboard.readText();
+            DOMElements.textEditor.focus();
+            document.execCommand('insertText', false, text);
+        } catch (err) {
+            console.error('Failed to read clipboard contents: ', err);
+            showError("Could not paste from clipboard. Your browser might require permissions.");
+        }
+    }
+
+    function resetAiOutputs() {
+        document.getElementById('summary-output').innerHTML = 'Click a size to generate an intelligent summary of your document.';
+        document.getElementById('writing-output').innerHTML = 'Get suggestions to improve your writing.';
+        document.getElementById('grammar-output').innerHTML = 'Find and correct grammatical errors in your text.';
+        document.getElementById('qa-answer').innerHTML = 'Ask a question to get answers based on the content.';
+        document.getElementById('keypoints-output').innerHTML = 'Extract the most important points and concepts.';
+        document.getElementById('keywords-output').innerHTML = 'Find the most frequent and important keywords.';
+        document.getElementById('quiz-output').innerHTML = 'Generate a quiz to test your knowledge.';
+        document.getElementById('analysis-output').innerHTML = 'Analyze the sentiment and tone of the document.';
+    }
+
+    initialize();
+});
+</script>
 </body>
-</html>
+</html>. 
