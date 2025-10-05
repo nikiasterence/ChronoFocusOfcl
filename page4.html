@@ -522,51 +522,45 @@
             border-radius: 3px;
         }
 
-        .ai-panel {
-            width: 350px;
+        /* AI Sidebar Styles */
+        .ai-sidebar {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 400px;
+            height: 100%;
             background-color: var(--sidebar-bg);
-            border-radius: var(--radius);
+            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+            transition: right 0.3s ease;
+            z-index: 1000;
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            transition: all 0.3s ease;
-            box-shadow: var(--shadow);
+            border-radius: var(--radius) 0 0 var(--radius);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             background: var(--glass-bg);
             border: var(--glass-border);
         }
 
-        .ai-panel.hidden {
-            transform: translateX(100%);
-            width: 0;
-            border-left: none;
+        .ai-sidebar.open {
+            right: 0;
         }
 
-        .ai-header {
+        .sidebar-header {
             padding: 15px 20px;
             border-bottom: 1px solid var(--border-color);
             display: flex;
-            align-items: center;
             justify-content: space-between;
-        }
-
-        .ai-title {
-            font-weight: 600;
-            display: flex;
             align-items: center;
-            gap: 8px;
         }
 
-        .ai-badge {
-            background-color: var(--primary-color);
-            color: white;
-            font-size: 10px;
-            padding: 2px 6px;
-            border-radius: 10px;
+        .sidebar-title {
+            font-weight: 600;
+            font-size: 18px;
         }
 
-        .ai-back-btn {
+        .header-btn {
             background: none;
             border: none;
             color: var(--text-color);
@@ -576,133 +570,90 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.2s;
         }
 
-        .ai-back-btn:hover {
-            background-color: rgba(0, 0, 0, 0.1);
-        }
-
-        .ai-actions {
-            padding: 15px 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            max-height: 200px;
+        .sidebar-content {
+            flex: 1;
             overflow-y: auto;
+            padding: 20px;
         }
 
-        .ai-action-btn {
-            background-color: var(--note-bg);
-            border: 1px solid var(--border-color);
-            color: var(--text-color);
-            padding: 10px 15px;
-            border-radius: var(--radius);
-            cursor: pointer;
-            text-align: left;
+        .ai-section {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .ai-section h4 {
             display: flex;
             align-items: center;
             gap: 10px;
-            transition: all 0.2s;
+            margin-bottom: 15px;
+            font-size: 16px;
         }
 
-        .ai-action-btn:hover {
-            background-color: rgba(0, 0, 0, 0.05);
-            transform: translateX(5px);
+        .ai-section h4 i {
+            color: var(--primary-color);
         }
 
         .ai-output {
-            flex: 1;
-            padding: 15px 20px;
-            overflow-y: auto;
-            border-top: 1px solid var(--border-color);
-        }
-
-        .ai-response {
             background-color: var(--note-bg);
-            padding: 15px;
+            padding: 12px;
             border-radius: var(--radius);
             margin-bottom: 15px;
             font-size: 14px;
             line-height: 1.5;
-            white-space: pre-line;
+            min-height: 60px;
+            max-height: 200px;
+            overflow-y: auto;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-            animation: slideIn 0.3s ease;
         }
 
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .ai-prompt {
+        .summary-options {
             display: flex;
             gap: 10px;
-            padding: 15px 20px;
-            border-top: 1px solid var(--border-color);
+            margin-top: 10px;
+        }
+
+        .summary-option-btn, .ai-button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .summary-option-btn:hover, .ai-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
         }
 
         .ai-input {
-            flex: 1;
+            width: 100%;
             background-color: var(--note-bg);
             border: 1px solid var(--border-color);
             border-radius: var(--radius);
             padding: 10px 15px;
             color: var(--text-color);
             outline: none;
+            margin-bottom: 10px;
         }
 
-        .ai-send-btn {
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            border-radius: var(--radius);
-            padding: 10px 15px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s;
+        .ai-input::placeholder {
+            color: #8E8E93;
         }
 
-        .ai-send-btn:hover {
-            transform: scale(1.05);
-        }
-
-        .hidden {
-            display: none;
-        }
-
-        .emoji-picker {
-            position: absolute;
-            background: var(--note-bg);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius);
-            padding: 10px;
-            display: grid;
-            grid-template-columns: repeat(6, 1fr);
-            gap: 5px;
-            max-height: 200px;
-            overflow-y: auto;
-            z-index: 100;
-            box-shadow: var(--shadow);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            background: var(--glass-bg);
-            border: var(--glass-border);
-        }
-
-        .emoji-option {
-            padding: 5px;
-            cursor: pointer;
-            text-align: center;
-            border-radius: var(--icon-radius);
-            transition: all 0.2s;
-        }
-
-        .emoji-option:hover {
-            background-color: var(--sidebar-bg);
-            transform: scale(1.1);
+        mark {
+            background-color: rgba(255, 255, 0, 0.3);
+            padding: 2px 4px;
+            border-radius: 4px;
         }
 
         /* Settings Panel */
@@ -995,8 +946,8 @@
 
         /* Responsive Design */
         @media (max-width: 1024px) {
-            .ai-panel {
-                width: 300px;
+            .ai-sidebar {
+                width: 350px;
             }
             
             .settings-panel {
@@ -1014,19 +965,10 @@
                 height: 200px;
             }
             
-            .ai-panel {
-                position: fixed;
-                top: 0;
-                right: 0;
-                bottom: 0;
+            .ai-sidebar {
                 width: 100%;
                 height: 100%;
-                z-index: 1000;
                 border-radius: 0;
-            }
-            
-            .ai-panel.hidden {
-                transform: translateX(100%);
             }
             
             .writing-tools {
@@ -1211,62 +1153,79 @@
                 </div>
             </div>
         </div>
+    </div>
 
-        <div class="ai-panel hidden" id="aiPanel">
-            <div class="ai-header">
-                <button class="ai-back-btn" id="aiBackBtn">
-                    <i class="fas fa-arrow-left"></i>
-                </button>
-                <div class="ai-title">
-                    <i class="fas fa-robot"></i> OptiChain AI <span class="ai-badge">Pro 4.0</span>
+    <!-- AI Sidebar -->
+    <aside class="ai-sidebar glass" id="aiSidebar">
+        <div class="sidebar-header">
+            <h2 class="sidebar-title">OptiChain AI</h2>
+            <button class="header-btn" id="ai-close-btn" aria-label="Close AI assistant">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="sidebar-content">
+            <!-- Smart Summary Section -->
+            <div class="ai-section">
+                <h4><i class="fas fa-file-alt"></i>Smart Summary</h4>
+                <div id="summary-output" class="ai-output">Click a size to generate an intelligent summary of your document.</div>
+                <div class="summary-options">
+                    <button id="summarize-btn-small" class="summary-option-btn" data-size="small">Small</button>
+                    <button id="summarize-btn-medium" class="summary-option-btn" data-size="medium">Medium</button>
+                    <button id="summarize-btn-large" class="summary-option-btn" data-size="large">Large</button>
                 </div>
             </div>
-            <div class="ai-actions">
-                <button class="ai-action-btn" data-action="find">
-                    <i class="fas fa-search"></i> Find in Note
-                </button>
-                <button class="ai-action-btn" data-action="grammar">
-                    <i class="fas fa-edit"></i> Fix Grammar
-                </button>
-                <button class="ai-action-btn" data-action="keynotes">
-                    <i class="fas fa-clipboard-list"></i> Create Key Notes
-                </button>
-                <button class="ai-action-btn" data-action="summarize-small">
-                    <i class="fas fa-file-alt"></i> Summarize (Small)
-                </button>
-                <button class="ai-action-btn" data-action="summarize-medium">
-                    <i class="fas fa-file-alt"></i> Summarize (Medium)
-                </button>
-                <button class="ai-action-btn" data-action="summarize-large">
-                    <i class="fas fa-file-alt"></i> Summarize (Large)
-                </button>
-                <button class="ai-action-btn" data-action="sentiment">
-                    <i class="fas fa-smile"></i> Analyze Sentiment
-                </button>
-                <button class="ai-action-btn" data-action="improve">
-                    <i class="fas fa-magic"></i> Improve Writing
-                </button>
-                <button class="ai-action-btn" data-action="translate">
-                    <i class="fas fa-language"></i> Translate
-                </button>
-                <button class="ai-action-btn" data-action="expand">
-                    <i class="fas fa-expand-alt"></i> Expand Ideas
-                </button>
-                <button class="ai-action-btn" data-action="structure">
-                    <i class="fas fa-sitemap"></i> Improve Structure
-                </button>
+
+            <!-- Writing Assistant Section -->
+            <div class="ai-section">
+                <h4><i class="fas fa-pen-ruler"></i>Writing Assistant</h4>
+                <div id="writing-output" class="ai-output">Get suggestions to improve your writing clarity, style, and impact.</div>
+                <button id="writing-btn" class="ai-button"><i class="fas fa-magic"></i>Analyze Writing</button>
             </div>
-            <div class="ai-output" id="aiOutput">
-                <!-- AI responses will appear here -->
+
+            <!-- Grammar Fixer Section -->
+            <div class="ai-section">
+                <h4><i class="fas fa-spell-check"></i>Fix Grammar</h4>
+                <div id="grammar-output" class="ai-output">Find and correct grammatical errors in your text.</div>
+                <button id="grammar-btn" class="ai-button"><i class="fas fa-wrench"></i>Suggest Fixes</button>
             </div>
-            <div class="ai-prompt">
-                <input type="text" class="ai-input" id="aiInput" placeholder="Ask OptiChain AI...">
-                <button class="ai-send-btn" id="aiSendBtn">
-                    <i class="fas fa-paper-plane"></i>
-                </button>
+            
+            <!-- Ask Anything Section -->
+            <div class="ai-section">
+                <h4><i class="fas fa-question-circle"></i>Ask Anything</h4>
+                <input type="text" id="qa-input" class="ai-input" placeholder="Ask a question about the content...">
+                <div id="qa-answer" class="ai-output">Get intelligent answers based on the content.</div>
+                <button id="qa-btn" class="ai-button"><i class="fas fa-search"></i>Get Answer</button>
+            </div>
+            
+            <!-- Key Points Section -->
+            <div class="ai-section">
+                <h4><i class="fas fa-list-ul"></i>Key Points</h4>
+                <div id="keypoints-output" class="ai-output">Extract the most important points from your document.</div>
+                <button id="keypoints-btn" class="ai-button"><i class="fas fa-lightbulb"></i>Extract Points</button>
+            </div>
+
+            <!-- Key Words Section -->
+            <div class="ai-section">
+                <h4><i class="fas fa-tags"></i>Key Words</h4>
+                <div id="keywords-output" class="ai-output">Find the most frequent and important keywords.</div>
+                <button id="keywords-btn" class="ai-button"><i class="fas fa-search-dollar"></i>Find Keywords</button>
+            </div>
+            
+            <!-- Study Quiz Section -->
+            <div class="ai-section">
+                <h4><i class="fas fa-graduation-cap"></i>Study Quiz</h4>
+                <div id="quiz-output" class="ai-output">Generate a quiz to test your knowledge of the document.</div>
+                <button id="quiz-btn" class="ai-button"><i class="fas fa-question"></i>Generate Quiz</button>
+            </div>
+            
+            <!-- Content Analysis Section -->
+            <div class="ai-section">
+                <h4><i class="fas fa-chart-pie"></i>Content Analysis</h4>
+                <div id="analysis-output" class="ai-output">Analyze the sentiment and tone of your document.</div>
+                <button id="analysis-btn" class="ai-button"><i class="fas fa-magnifying-glass-chart"></i>Analyze Content</button>
             </div>
         </div>
-    </div>
+    </aside>
 
     <!-- Settings Panel -->
     <div class="settings-panel" id="settingsPanel">
@@ -1400,8 +1359,8 @@
         const closeSettings = document.getElementById('closeSettings');
         const themeOptions = document.querySelectorAll('.theme-option');
         const aiToggleBtn = document.getElementById('aiToggleBtn');
-        const aiPanel = document.getElementById('aiPanel');
-        const aiBackBtn = document.getElementById('aiBackBtn');
+        const aiSidebar = document.getElementById('aiSidebar');
+        const aiCloseBtn = document.getElementById('ai-close-btn');
         const toolBtns = document.querySelectorAll('.tool-btn');
         const fontSelect = document.getElementById('fontSelect');
         const sizeSelect = document.getElementById('sizeSelect');
@@ -1409,16 +1368,24 @@
         const insertEmojiBtn = document.getElementById('insertEmoji');
         const highlightTextBtn = document.getElementById('highlightText');
         const clearFormattingBtn = document.getElementById('clearFormatting');
-        const aiActionBtns = document.querySelectorAll('.ai-action-btn');
-        const aiOutput = document.getElementById('aiOutput');
-        const aiInput = document.getElementById('aiInput');
-        const aiSendBtn = document.getElementById('aiSendBtn');
+        const aiActionBtns = document.querySelectorAll('.ai-button, .summary-option-btn');
         const enhancedAIModeToggle = document.getElementById('enhancedAIMode');
         const autoGrammarCheckToggle = document.getElementById('autoGrammarCheck');
         const aiAnimationsToggle = document.getElementById('aiAnimations');
         const fullVersionBtn = document.getElementById('fullVersionBtn');
         const clickSound = document.getElementById('clickSound');
         const deleteSound = document.getElementById('deleteSound');
+
+        // AI Elements
+        const summaryOutput = document.getElementById('summary-output');
+        const writingOutput = document.getElementById('writing-output');
+        const grammarOutput = document.getElementById('grammar-output');
+        const qaAnswer = document.getElementById('qa-answer');
+        const keypointsOutput = document.getElementById('keypoints-output');
+        const keywordsOutput = document.getElementById('keywords-output');
+        const quizOutput = document.getElementById('quiz-output');
+        const analysisOutput = document.getElementById('analysis-output');
+        const qaInput = document.getElementById('qa-input');
 
         // Initialize the app
         function init() {
@@ -1465,8 +1432,8 @@
             });
 
             // AI toggle button
-            aiToggleBtn.addEventListener('click', toggleAIPanel);
-            aiBackBtn.addEventListener('click', toggleAIPanel);
+            aiToggleBtn.addEventListener('click', toggleAISidebar);
+            aiCloseBtn.addEventListener('click', toggleAISidebar);
 
             // New note button
             newNoteBtn.addEventListener('click', createNewNote);
@@ -1548,19 +1515,21 @@
             });
 
             // AI actions
-            aiActionBtns.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const action = btn.getAttribute('data-action');
-                    handleAIAction(action);
-                    playSound('click');
-                });
-            });
+            document.getElementById('summarize-btn-small').addEventListener('click', () => handleAIAction('summarize', 'small'));
+            document.getElementById('summarize-btn-medium').addEventListener('click', () => handleAIAction('summarize', 'medium'));
+            document.getElementById('summarize-btn-large').addEventListener('click', () => handleAIAction('summarize', 'large'));
+            document.getElementById('writing-btn').addEventListener('click', () => handleAIAction('writing'));
+            document.getElementById('grammar-btn').addEventListener('click', () => handleAIAction('grammar'));
+            document.getElementById('qa-btn').addEventListener('click', () => handleAIAction('qa'));
+            document.getElementById('keypoints-btn').addEventListener('click', () => handleAIAction('keypoints'));
+            document.getElementById('keywords-btn').addEventListener('click', () => handleAIAction('keywords'));
+            document.getElementById('quiz-btn').addEventListener('click', () => handleAIAction('quiz'));
+            document.getElementById('analysis-btn').addEventListener('click', () => handleAIAction('analysis'));
 
-            // AI send button
-            aiSendBtn.addEventListener('click', handleAIChat);
-            aiInput.addEventListener('keypress', (e) => {
+            // QA input enter key
+            qaInput.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') {
-                    handleAIChat();
+                    handleAIAction('qa');
                 }
             });
 
@@ -1592,16 +1561,9 @@
             playSound('click');
         }
 
-        // Toggle AI panel visibility
-        function toggleAIPanel() {
-            aiPanelVisible = !aiPanelVisible;
-            if (aiPanelVisible) {
-                aiPanel.classList.remove('hidden');
-                aiToggleBtn.innerHTML = '<i class="fas fa-robot"></i> Hide AI';
-            } else {
-                aiPanel.classList.add('hidden');
-                aiToggleBtn.innerHTML = '<i class="fas fa-robot"></i> AI Assistant';
-            }
+        // Toggle AI sidebar visibility
+        function toggleAISidebar() {
+            aiSidebar.classList.toggle('open');
             playSound('click');
         }
 
@@ -1829,683 +1791,248 @@
         }
 
         // Handle AI actions
-        function handleAIAction(action) {
-            const noteContent = noteEditor.textContent || noteEditor.innerText;
+        function handleAIAction(action, size = 'medium') {
+            const text = noteEditor.textContent || noteEditor.innerText;
 
-            if (!noteContent.trim()) {
-                addAIResponse('Please add some content to your note first.');
+            if (!text.trim()) {
+                showError('Please add some content to your note first.');
                 return;
             }
 
-            let response = '';
+            let result = '';
 
             switch(action) {
-                case 'find':
-                    const searchTerm = prompt('What would you like to find in your note?');
-                    if (searchTerm) {
-                        // Count occurrences and highlight them
-                        const regex = new RegExp(searchTerm, 'gi');
-                        const matches = noteContent.match(regex);
-                        const count = matches ? matches.length : 0;
-                        
-                        if (count > 0) {
-                            // Highlight the text in the editor
-                            const htmlContent = noteEditor.innerHTML;
-                            const highlightedContent = htmlContent.replace(
-                                new RegExp(searchTerm, 'gi'),
-                                match => `<span class="highlight">${match}</span>`
-                            );
-                            noteEditor.innerHTML = highlightedContent;
-                            
-                            response = `I found "${searchTerm}" ${count} time(s) in your note. I've highlighted them for you.`;
-                        } else {
-                            response = `I couldn't find "${searchTerm}" in your note.`;
-                        }
-                    }
+                case 'summarize':
+                    result = generateSummary(text, size);
+                    summaryOutput.innerHTML = result;
                     break;
-                    
+                case 'writing':
+                    result = analyzeWriting(text);
+                    writingOutput.innerHTML = result;
+                    break;
                 case 'grammar':
-                    response = enhancedAIMode ? 
-                        enhancedGrammarCheck(noteContent) : 
-                        basicGrammarCheck(noteContent);
+                    result = fixGrammar(text);
+                    grammarOutput.innerHTML = result;
                     break;
-                    
-                case 'keynotes':
-                    response = enhancedAIMode ? 
-                        enhancedKeyNotes(noteContent) : 
-                        basicKeyNotes(noteContent);
-                    break;
-                    
-                case 'summarize-small':
-                    response = generateSummary(noteContent, 1);
-                    break;
-                    
-                case 'summarize-medium':
-                    response = generateSummary(noteContent, 2);
-                    break;
-                    
-                case 'summarize-large':
-                    response = generateSummary(noteContent, 3);
-                    break;
-                    
-                case 'sentiment':
-                    response = analyzeSentiment(noteContent);
-                    break;
-                    
-                case 'improve':
-                    response = improveWriting(noteContent);
-                    break;
-                    
-                case 'translate':
-                    const language = prompt('Which language would you like to translate to? (e.g., Spanish, French, German)');
-                    if (language) {
-                        response = translateText(noteContent, language);
+                case 'qa':
+                    const question = qaInput.value.trim();
+                    if (!question) {
+                        showError('Please enter a question.');
+                        return;
                     }
+                    result = answerQuestion(text, question);
+                    qaAnswer.innerHTML = result;
                     break;
-                    
-                case 'expand':
-                    response = expandIdeas(noteContent);
+                case 'keypoints':
+                    result = extractKeyPoints(text);
+                    keypointsOutput.innerHTML = result;
                     break;
-                    
-                case 'structure':
-                    response = improveStructure(noteContent);
+                case 'keywords':
+                    result = extractKeywords(text);
+                    keywordsOutput.innerHTML = result;
+                    break;
+                case 'quiz':
+                    result = generateQuiz(text);
+                    quizOutput.innerHTML = result;
+                    break;
+                case 'analysis':
+                    result = analyzeContent(text);
+                    analysisOutput.innerHTML = result;
                     break;
             }
 
-            if (response) {
-                addAIResponse(response);
-            }
+            playSound('click');
         }
 
-        // Basic grammar check
-        function basicGrammarCheck(content) {
-            const sentences = content.split(/[.!?]+/).filter(s => s.trim().length > 0);
-            const issues = [];
-
-            if (sentences.length > 0) {
-                // Check for capitalization
-                sentences.forEach((sentence, index) => {
-                    if (sentence.trim() && !/^[A-Z]/.test(sentence.trim())) {
-                        issues.push(`Sentence ${index + 1} should start with a capital letter`);
-                    }
-                });
-                
-                // Check for common issues
-                if (content.match(/\balot\b/gi)) {
-                    issues.push("Use 'a lot' instead of 'alot'");
-                }
-                
-                if (content.match(/\byour\s+(?=\w+ing\b)/gi)) {
-                    issues.push("Check usage of 'your' vs 'you're'");
-                }
-                
-                if (content.match(/\bits\b/gi) && !content.match(/\bit's\b/gi)) {
-                    issues.push("Check usage of 'its' vs 'it's'");
-                }
-                
-                // Check for repeated words
-                const words = content.split(/\s+/);
-                for (let i = 0; i < words.length - 1; i++) {
-                    if (words[i].toLowerCase() === words[i+1].toLowerCase()) {
-                        issues.push(`Repeated word: "${words[i]}"`);
-                        break;
-                    }
-                }
-                
-                // Check for long sentences
-                sentences.forEach((sentence, index) => {
-                    if (sentence.split(/\s+/).length > 25) {
-                        issues.push(`Sentence ${index + 1} might be too long. Consider breaking it up.`);
-                    }
-                });
-                
-                if (issues.length === 0) {
-                    issues.push("No major grammar issues found. Your writing looks good!");
-                }
-            } else {
-                issues.push("Not enough content to analyze grammar");
-            }
-
-            return "Grammar Check Results:\n\n" + issues.map((issue, i) => `${i+1}. ${issue}`).join('\n');
-        }
-
-        // Enhanced grammar check
-        function enhancedGrammarCheck(content) {
-            const sentences = content.split(/[.!?]+/).filter(s => s.trim().length > 0);
-            const issues = [];
-
-            if (sentences.length > 0) {
-                // Check for capitalization
-                sentences.forEach((sentence, index) => {
-                    if (sentence.trim() && !/^[A-Z]/.test(sentence.trim())) {
-                        issues.push(`Sentence ${index + 1} should start with a capital letter`);
-                    }
-                });
-                
-                // Check for common issues with enhanced detection
-                const commonMistakes = [
-                    { pattern: /\balot\b/gi, correction: "a lot" },
-                    { pattern: /\bcould of\b/gi, correction: "could have" },
-                    { pattern: /\bshould of\b/gi, correction: "should have" },
-                    { pattern: /\bwould of\b/gi, correction: "would have" },
-                    { pattern: /\btheir\s+are\b/gi, correction: "there are" },
-                    { pattern: /\byour\s+welcome\b/gi, correction: "you're welcome" },
-                    { pattern: /\bit's\s+your\b/gi, correction: "it's you're" }
-                ];
-                
-                commonMistakes.forEach(mistake => {
-                    if (content.match(mistake.pattern)) {
-                        issues.push(`Consider using "${mistake.correction}" instead`);
-                    }
-                });
-                
-                // Check for passive voice
-                const passiveVoiceRegex = /\b(am|is|are|was|were|be|being|been)\s+[a-z]+ed\b/gi;
-                if (content.match(passiveVoiceRegex)) {
-                    issues.push("Consider using active voice instead of passive voice for clearer writing");
-                }
-                
-                // Check for weak words
-                const weakWords = /\b(very|really|quite|somewhat|rather)\b/gi;
-                if (content.match(weakWords)) {
-                    issues.push("Try to replace weak modifiers (very, really, etc.) with stronger words");
-                }
-                
-                // Check for repeated words
-                const words = content.split(/\s+/);
-                for (let i = 0; i < words.length - 1; i++) {
-                    if (words[i].toLowerCase() === words[i+1].toLowerCase()) {
-                        issues.push(`Repeated word: "${words[i]}"`);
-                        break;
-                    }
-                }
-                
-                // Check for long sentences
-                sentences.forEach((sentence, index) => {
-                    const wordCount = sentence.split(/\s+/).length;
-                    if (wordCount > 25) {
-                        issues.push(`Sentence ${index + 1} might be too long (${wordCount} words). Consider breaking it up.`);
-                    }
-                });
-                
-                // Check for paragraph length
-                const paragraphs = content.split(/\n\s*\n/);
-                paragraphs.forEach((paragraph, index) => {
-                    const sentenceCount = paragraph.split(/[.!?]+/).length - 1;
-                    if (sentenceCount > 8) {
-                        issues.push(`Paragraph ${index + 1} might be too long. Consider breaking it into smaller paragraphs.`);
-                    }
-                });
-                
-                if (issues.length === 0) {
-                    issues.push("Excellent! No grammar issues found. Your writing is clear and effective.");
-                } else {
-                    issues.unshift("I found some areas for improvement in your writing:");
-                }
-            } else {
-                issues.push("Not enough content to analyze grammar");
-            }
-
-            return "Enhanced Grammar Analysis:\n\n" + issues.join('\n');
-        }
-
-        // Basic key notes
-        function basicKeyNotes(content) {
-            const lines = content.split('\n').filter(line => line.trim().length > 10);
-            const bulletPoints = content.match(/\s*[-•]\s(.+)/g) || [];
-
-            let keyPoints = [];
-
-            // Use bullet points if available
-            if (bulletPoints.length > 0) {
-                keyPoints = bulletPoints.slice(0, 7).map(point => 
-                    `• ${point.replace(/^\s*[-•*]\s*/, '')}`
-                );
-            } else {
-                // Otherwise use the first few sentences
-                const sentences = content.split(/[.!?]+/).filter(s => s.trim().length > 0);
-                const firstSentences = sentences.slice(0, 5);
-                keyPoints = firstSentences.map(sentence => 
-                    `• ${sentence.trim().substring(0, 60)}${sentence.trim().length > 60 ? '...' : ''}`
-                );
-            }
-
-            if (keyPoints.length > 0) {
-                return "Key Points from Your Note:\n\n" + keyPoints.join('\n');
-            } else {
-                return "I couldn't identify clear key points. Try adding more content or structure to your note.";
-            }
-        }
-
-        // Enhanced key notes
-        function enhancedKeyNotes(content) {
-            const sentences = content.split(/[.!?]+/).filter(s => s.trim().length > 0);
-
-            if (sentences.length === 0) {
-                return "I couldn't identify clear key points. Try adding more content to your note.";
-            }
-
-            // Score sentences by importance (longer sentences with keywords)
-            const scoredSentences = sentences.map((sentence, index) => {
-                const words = sentence.trim().split(/\s+/);
-                let score = words.length; // Base score on length
-                
-                // Increase score for sentences with important keywords
-                const importantKeywords = ['important', 'key', 'essential', 'critical', 'main', 'primary', 'crucial', 'vital'];
-                importantKeywords.forEach(keyword => {
-                    if (sentence.toLowerCase().includes(keyword)) {
-                        score += 5;
-                    }
-                });
-                
-                // Increase score for sentences that seem to be headings
-                if (words.length <= 10 && /^[A-Z][a-z]/.test(sentence.trim())) {
-                    score += 3;
-                }
-                
-                return {
-                    sentence: sentence.trim(),
-                    score: score,
-                    index: index
-                };
-            });
-
-            // Sort by score (descending) and take the top ones
-            scoredSentences.sort((a, b) => b.score - a.score);
-            const topSentences = scoredSentences.slice(0, Math.min(7, scoredSentences.length));
-
-            // Sort by original order
-            topSentences.sort((a, b) => a.index - b.index);
-
-            const keyPoints = topSentences.map(item => `• ${item.sentence}`);
-
-            return "Enhanced Key Points:\n\n" + keyPoints.join('\n') + 
-                   `\n\nI identified ${keyPoints.length} key points from your ${sentences.length} sentences.`;
-        }
-
-        // Generate a summary based on content length
-        function generateSummary(content, level) {
-            const sentences = content.split(/[.!?]+/).filter(s => s.trim().length > 0);
-
+        // AI Functions
+        function generateSummary(text, size = 'medium') {
+            const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0);
+            
             if (sentences.length === 0) {
                 return "Not enough content to summarize.";
             }
 
             let summaryLength;
-            switch(level) {
-                case 1: summaryLength = Math.min(2, Math.max(1, Math.floor(sentences.length / 5))); break;
-                case 2: summaryLength = Math.min(4, Math.max(2, Math.floor(sentences.length / 3))); break;
-                case 3: summaryLength = Math.min(8, Math.max(3, Math.floor(sentences.length / 2))); break;
-                default: summaryLength = 2;
+            switch(size) {
+                case 'small': summaryLength = Math.min(2, Math.max(1, Math.floor(sentences.length / 5))); break;
+                case 'large': summaryLength = Math.min(8, Math.max(3, Math.floor(sentences.length / 2))); break;
+                default: summaryLength = Math.min(4, Math.max(2, Math.floor(sentences.length / 3)));
             }
 
-            // Try to pick the most important sentences (simple heuristic: longer sentences)
-            const scoredSentences = sentences.map((sentence, index) => {
-                return {
-                    sentence: sentence.trim(),
-                    score: sentence.split(/\s+/).length, // Use length as importance score
-                    index: index
-                };
-            });
-
-            // Sort by score (descending) and take the top ones
-            scoredSentences.sort((a, b) => b.score - a.score);
-            const topSentences = scoredSentences.slice(0, summaryLength);
-
-            // Sort by original order
-            topSentences.sort((a, b) => a.index - b.index);
-
-            const summaryType = level === 1 ? "Brief Summary" : level === 2 ? "Medium Summary" : "Detailed Summary";
-
-            let summaryText = `${summaryType}:\n\n` + topSentences.map(item => `• ${item.sentence}`).join('\n') + 
-                   `\n\nThis summary captures the main points from your ${sentences.length} sentences.`;
-
-            // Add animation if enabled
-            if (aiAnimations) {
-                summaryText = `<div class="typing-animation">${summaryText}</div>`;
-            }
-
-            return summaryText;
+            // Simple heuristic: take the first few sentences
+            const summarySentences = sentences.slice(0, summaryLength);
+            
+            const summaryType = size === 'small' ? "Brief Summary" : size === 'large' ? "Detailed Summary" : "Medium Summary";
+            
+            return `<strong>${summaryType}:</strong><br><br>${summarySentences.join(' ')}`;
         }
 
-        // Analyze sentiment
-        function analyzeSentiment(content) {
-            const positiveWords = ['good', 'great', 'excellent', 'amazing', 'wonderful', 'fantastic', 'awesome', 'happy', 'joy', 'love', 'like', 'positive', 'beautiful', 'perfect', 'best'];
-            const negativeWords = ['bad', 'terrible', 'awful', 'horrible', 'hate', 'dislike', 'negative', 'sad', 'angry', 'frustrated', 'annoying', 'problem', 'issue', 'worst'];
+        function analyzeWriting(text) {
+            const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0);
+            let suggestions = [];
 
-            const words = content.toLowerCase().split(/\s+/);
+            // Check for passive voice
+            const passiveRegex = /\b(am|is|are|was|were|be|being|been)\s+[a-z]+ed\b/gi;
+            if (passiveRegex.test(text)) {
+                suggestions.push("Consider using active voice instead of passive voice for clearer writing");
+            }
 
-            let positiveCount = 0;
-            let negativeCount = 0;
-
-            words.forEach(word => {
-                if (positiveWords.includes(word)) positiveCount++;
-                if (negativeWords.includes(word)) negativeCount++;
+            // Check for long sentences
+            sentences.forEach((sentence, index) => {
+                if (sentence.split(/\s+/).length > 25) {
+                    suggestions.push(`Sentence ${index + 1} might be too long. Consider breaking it up.`);
+                }
             });
 
-            let sentiment = "neutral";
-            if (positiveCount > negativeCount) {
-                sentiment = "positive";
-            } else if (negativeCount > positiveCount) {
-                sentiment = "negative";
-            }
-
-            let response = `Sentiment Analysis:\n\nYour note has a ${sentiment} tone.\n\nPositive words: ${positiveCount}\nNegative words: ${negativeCount}\n\n${positiveCount > negativeCount ? 
-                "The overall tone is uplifting and positive!" : 
-                negativeCount > positiveCount ? 
-                "The tone seems somewhat negative. Consider adding more positive language." : 
-                "The tone is fairly neutral and balanced."}`;
-
-            // Add animation if enabled
-            if (aiAnimations) {
-                response = `<div class="fade-in">${response}</div>`;
-            }
-
-            return response;
-        }
-
-        // Improve writing
-        function improveWriting(content) {
-            const sentences = content.split(/[.!?]+/).filter(s => s.trim().length > 0);
-
-            if (sentences.length === 0) {
-                return "Not enough content to analyze for improvements.";
-            }
-
-            const suggestions = [];
-
-            // Check for sentence variety
-            const sentenceLengths = sentences.map(s => s.split(/\s+/).length);
-            const avgLength = sentenceLengths.reduce((a, b) => a + b, 0) / sentenceLengths.length;
-            const lengthVariance = Math.max(...sentenceLengths) - Math.min(...sentenceLengths);
-
-            if (lengthVariance < 5) {
-                suggestions.push("Try varying your sentence lengths for more engaging writing");
-            }
-
-            // Check for transition words
-            const transitionWords = ['however', 'therefore', 'furthermore', 'moreover', 'consequently', 'additionally', 'likewise', 'similarly', 'nonetheless', 'otherwise'];
-            let transitionCount = 0;
-
-            sentences.forEach(sentence => {
-                transitionWords.forEach(word => {
-                    if (sentence.toLowerCase().includes(word)) {
-                        transitionCount++;
-                    }
-                });
-            });
-
-            if (transitionCount < sentences.length / 5) {
-                suggestions.push("Consider adding more transition words to improve flow between ideas");
-            }
-
-            // Check for strong verbs
-            const weakVerbs = ['is', 'are', 'was', 'were', 'be', 'being', 'been', 'have', 'has', 'had', 'do', 'does', 'did'];
-            let weakVerbCount = 0;
-
-            sentences.forEach(sentence => {
-                const words = sentence.split(/\s+/);
-                words.forEach(word => {
-                    if (weakVerbs.includes(word.toLowerCase())) {
-                        weakVerbCount++;
-                    }
-                });
-            });
-
-            if (weakVerbCount > sentences.length * 2) {
-                suggestions.push("Try replacing some weak verbs with stronger, more descriptive ones");
-            }
-
-            // Check for adverb overuse
-            const adverbRegex = /\w+ly\b/gi;
-            const adverbs = content.match(adverbRegex) || [];
-
-            if (adverbs.length > sentences.length) {
-                suggestions.push("Consider reducing adverb usage and using stronger verbs instead");
+            // Check for weak words
+            const weakWords = /\b(very|really|quite|somewhat|rather)\b/gi;
+            if (weakWords.test(text)) {
+                suggestions.push("Try to replace weak modifiers (very, really, etc.) with stronger words");
             }
 
             if (suggestions.length === 0) {
-                suggestions.push("Your writing is already strong! Keep up the good work.");
-            } else {
-                suggestions.unshift("Here are some suggestions to enhance your writing:");
+                return "✅ Your writing looks clear and effective! No major issues found.";
             }
 
-            let response = "Writing Improvement Suggestions:\n\n" + suggestions.join('\n');
-
-            // Add animation if enabled
-            if (aiAnimations) {
-                response = `<div class="fade-in">${response}</div>`;
-            }
-
-            return response;
+            return `<strong>Writing Suggestions:</strong><br><br>${suggestions.map(s => `• ${s}`).join('<br>')}`;
         }
 
-        // Expand ideas
-        function expandIdeas(content) {
-            const sentences = content.split(/[.!?]+/).filter(s => s.trim().length > 0);
-
-            if (sentences.length === 0) {
-                return "Not enough content to expand upon. Try adding more ideas to your note first.";
-            }
-
-            const expandedIdeas = [];
-
-            // Take the first few sentences and expand on them
-            const keySentences = sentences.slice(0, Math.min(3, sentences.length));
-
-            keySentences.forEach((sentence, index) => {
-                expandedIdeas.push(`• ${sentence.trim()}`);
-                
-                // Add related ideas based on keywords
-                if (sentence.toLowerCase().includes('important')) {
-                    expandedIdeas.push(`  - Consider why this is important and what makes it significant`);
-                }
-                
-                if (sentence.toLowerCase().includes('problem')) {
-                    expandedIdeas.push(`  - Think about potential solutions and their implications`);
-                }
-                
-                if (sentence.toLowerCase().includes('goal') || sentence.toLowerCase().includes('objective')) {
-                    expandedIdeas.push(`  - Define specific, measurable steps to achieve this goal`);
-                }
-                
-                if (sentence.toLowerCase().includes('idea') || sentence.toLowerCase().includes('concept')) {
-                    expandedIdeas.push(`  - Explore different perspectives or applications of this idea`);
-                }
-            });
-
-            let response = "Expanded Ideas:\n\n" + expandedIdeas.join('\n') + 
-                          "\n\nThese are starting points to help you develop your thoughts further. Consider researching each point or discussing with others to gain more insights.";
-
-            // Add animation if enabled
-            if (aiAnimations) {
-                response = `<div class="fade-in">${response}</div>`;
-            }
-
-            return response;
-        }
-
-        // Improve structure
-        function improveStructure(content) {
-            const paragraphs = content.split(/\n\s*\n/).filter(p => p.trim().length > 0);
-
-            if (paragraphs.length === 0) {
-                return "Not enough structured content to analyze. Try organizing your thoughts into paragraphs.";
-            }
-
-            const suggestions = [];
-
-            // Check paragraph lengths
-            paragraphs.forEach((paragraph, index) => {
-                const sentenceCount = paragraph.split(/[.!?]+/).length - 1;
-                if (sentenceCount > 8) {
-                    suggestions.push(`Paragraph ${index + 1} might be too long (${sentenceCount} sentences). Consider breaking it into smaller paragraphs.`);
-                } else if (sentenceCount < 2) {
-                    suggestions.push(`Paragraph ${index + 1} is very short (${sentenceCount} sentence). Consider expanding it or combining with another paragraph.`);
-                }
-            });
-
-            // Check for introduction and conclusion
-            if (paragraphs.length > 2) {
-                if (!paragraphs[0].toLowerCase().includes('introduction') && !paragraphs[0].toLowerCase().includes('overview')) {
-                    suggestions.push("Consider adding an introductory paragraph that outlines what your note is about.");
-                }
-                
-                const lastParagraph = paragraphs[paragraphs.length - 1];
-                if (!lastParagraph.toLowerCase().includes('conclusion') && !lastParagraph.toLowerCase().includes('summary') && !lastParagraph.toLowerCase().includes('finally')) {
-                    suggestions.push("Consider adding a concluding paragraph that summarizes your main points.");
-                }
-            }
-
-            // Check for logical flow
-            if (paragraphs.length > 1) {
-                suggestions.push("Review the flow between paragraphs. Each paragraph should naturally lead to the next.");
-            }
-
-            if (suggestions.length === 0) {
-                suggestions.push("Your note has a good structure! The paragraphs are well-balanced and organized.");
-            } else {
-                suggestions.unshift("Here are some suggestions to improve the structure of your note:");
-            }
-
-            let response = "Structure Analysis:\n\n" + suggestions.join('\n');
-
-            // Add animation if enabled
-            if (aiAnimations) {
-                response = `<div class="fade-in">${response}</div>`;
-            }
-
-            return response;
-        }
-
-        // Translate text
-        function translateText(content, language) {
-            // This is a simulation - in a real app, you would use a translation API
-            const languageMap = {
-                'spanish': 'español',
-                'french': 'français',
-                'german': 'Deutsch',
-                'italian': 'italiano',
-                'portuguese': 'português',
-                'russian': 'русский',
-                'japanese': '日本語',
-                'chinese': '中文',
-                'korean': '한국어',
-                'arabic': 'العربية'
+        function fixGrammar(text) {
+            let correctedText = text;
+            const corrections = {
+                ' their is ': ' there is ', ' their are ': ' there are ', ' theyre ': ' they\'re ', ' its ': ' it\'s ',
+                ' alot ': ' a lot ', 'definately': 'definitely', 'seperate': 'separate', 'recieve': 'receive',
+                ' i ': ' I ', ' dont ': ' don\'t ', ' doesnt ': ' doesn\'t ', ' wont ': ' won\'t ', ' cant ': ' can\'t ',
+                ' couldnt ': ' couldn\'t ', ' shouldnt ': ' shouldn\'t ', ' wouldnt ': ' wouldn\'t ', ' isnt ': ' isn\'t ',
+                ' arent ': ' aren\'t ', ' wasnt ': ' wasn\'t ', ' werent ': ' weren\'t ', ' hasnt ': ' hasn\'t ',
+                ' havent ': ' haven\'t ', ' hadnt ': ' hadn\'t ', ' lets ': ' let\'s ', ' thats ': ' that\'s ',
+                ' whats ': ' what\'s ', ' heres ': ' here\'s ', ' theres ': ' there\'s ', ' whos ': ' who\'s ',
+                ' hows ': ' how\'s ', ' wheres ': ' where\'s ', ' whens ': ' when\'s ', ' whys ': ' why\'s '
             };
-
-            const langCode = languageMap[language.toLowerCase()] || language;
-
-            return `Translation to ${langCode}:\n\n[This is a simulated translation. In a real application, this would connect to a translation API.]\n\nFor now, I recommend using Google Translate or DeepL for accurate translations of your content.`;
-        }
-
-        // Handle AI chat
-        function handleAIChat() {
-            const prompt = aiInput.value.trim();
-            if (!prompt) return;
-
-            addAIResponse(`You: ${prompt}`, 'user');
-            aiInput.value = '';
-
-            // Show typing indicator
-            const typingIndicator = document.createElement('div');
-            typingIndicator.className = 'ai-response';
-            typingIndicator.textContent = 'OptiChain AI is thinking...';
-            typingIndicator.style.fontStyle = 'italic';
-            typingIndicator.style.color = '#8E8E93';
-            aiOutput.appendChild(typingIndicator);
-            aiOutput.scrollTop = aiOutput.scrollHeight;
-
-            // Get note content for context
-            const noteContent = noteEditor.textContent || noteEditor.innerText;
-
-            // Simulate AI thinking
-            setTimeout(() => {
-                typingIndicator.remove();
-                
-                let response = "I'm OptiChain AI Pro 4.0. I can help you with your notes by finding information, fixing grammar, creating key notes, summarizing content, analyzing sentiment, improving writing, and translating text. How can I assist you with your current note?";
-                
-                const lowerPrompt = prompt.toLowerCase();
-                const lowerNoteContent = noteContent.toLowerCase();
-                
-                // Enhanced AI responses based on prompt
-                if (enhancedAIMode) {
-                    // Check if the prompt is about content in the note
-                    if (noteContent && lowerNoteContent.includes(lowerPrompt)) {
-                        // Find the context around the prompt in the note
-                        const index = lowerNoteContent.indexOf(lowerPrompt);
-                        if (index !== -1) {
-                            const start = Math.max(0, index - 50);
-                            const end = Math.min(noteContent.length, index + lowerPrompt.length + 50);
-                            const context = noteContent.substring(start, end);
-                            
-                            response = `Based on your note, here's the context for "${prompt}":\n\n"${context}"\n\nWould you like me to help you expand on this topic or analyze it further?`;
-                            
-                            // Highlight the text in the editor
-                            const htmlContent = noteEditor.innerHTML;
-                            const highlightedContent = htmlContent.replace(
-                                new RegExp(prompt, 'gi'),
-                                match => `<span class="highlight">${match}</span>`
-                            );
-                            noteEditor.innerHTML = highlightedContent;
-                        }
-                    } else if (lowerPrompt.includes('hello') || lowerPrompt.includes('hi') || lowerPrompt.includes('hey')) {
-                        response = "Hello! I'm OptiChain AI Pro 4.0. How can I help you with your notes today?";
-                    } else if (lowerPrompt.includes('thank')) {
-                        response = "You're welcome! Is there anything else I can help you with?";
-                    } else if (lowerPrompt.includes('note') && lowerPrompt.includes('create')) {
-                        response = "To create a new note, click the 'New Note' button in the sidebar. You can then give it a title and start adding content.";
-                    } else if (lowerPrompt.includes('theme') || lowerPrompt.includes('color')) {
-                        response = "You can change the theme in the Settings panel. We have 20 beautiful themes including Cotton Candy, Midnight, Golden, Extra Dark, White & Blue, Blue, Nature, Sunset, Ocean, Lavender, Forest, Rose, Coffee, Space, Crimson, Mint, Amber, Twilight, and Slate.";
-                    } else if (lowerPrompt.includes('emoji')) {
-                        response = "To insert emojis, click the smiley face button in the writing tools. A picker will appear with various emojis you can add to your note to make it more expressive.";
-                    } else if (lowerPrompt.includes('help')) {
-                        response = "I can help you with:\n• Finding text in your notes\n• Checking and improving grammar\n• Creating key points and summaries\n• Analyzing sentiment and tone\n• Improving writing style\n• Translating content\n• Expanding ideas\n• Improving structure\n• Answering questions about the app\n• Answering questions about content in your notes\n\nJust ask or use one of the action buttons!";
-                    } else if (lowerPrompt.includes('how are you')) {
-                        response = "I'm functioning at peak performance, thank you for asking! Ready to help you with your notes.";
-                    } else if (lowerPrompt.includes('what can you do')) {
-                        response = "I can help you with various note-related tasks:\n• Find specific text in your notes\n• Check grammar and suggest improvements\n• Extract key points from your content\n• Create summaries of different lengths\n• Analyze the sentiment and tone of your writing\n• Suggest improvements to make your writing more effective\n• Translate content to different languages\n• Expand on your ideas\n• Improve the structure of your notes\n• Answer questions about using the app\n• Answer questions about content in your notes\n\nTry one of the action buttons or ask me anything!";
-                    } else if (noteContent) {
-                        // If we have note content but the prompt isn't directly in it, try to give a general response
-                        response = "I've reviewed your note. Based on its content, I can help you with summarizing, improving grammar, extracting key points, or analyzing the tone. Would you like me to perform any of these actions on your note?";
-                    }
-                } else {
-                    // Basic AI mode responses
-                    if (noteContent && lowerNoteContent.includes(lowerPrompt)) {
-                        response = `I found "${prompt}" in your note. Would you like me to help you with this topic?`;
-                    } else if (lowerPrompt.includes('hello') || lowerPrompt.includes('hi')) {
-                        response = "Hello! How can I help you with your notes today?";
-                    } else if (lowerPrompt.includes('thank')) {
-                        response = "You're welcome!";
-                    } else {
-                        response = "I'm here to help with your notes. You can ask me to find text, check grammar, create summaries, or use the action buttons for specific tasks.";
-                    }
-                }
-                
-                addAIResponse(`OptiChain AI: ${response}`, 'ai');
-            }, enhancedAIMode ? 1000 : 500);
-        }
-
-        // Add AI response to the output area
-        function addAIResponse(text, type = 'ai') {
-            const responseEl = document.createElement('div');
-            responseEl.className = 'ai-response';
-
-            if (type === 'user') {
-                responseEl.style.backgroundColor = 'var(--primary-color)';
-                responseEl.style.color = 'white';
-                responseEl.textContent = text;
-            } else {
-                // Check if the text contains HTML for animations
-                if (text.includes('<div') || text.includes('<span')) {
-                    responseEl.innerHTML = text;
-                } else {
-                    responseEl.innerHTML = text.replace(/\n/g, '<br>');
+            
+            let suggestions = [];
+            
+            // Apply corrections
+            for (const [error, fix] of Object.entries(corrections)) {
+                const regex = new RegExp(error, 'gi');
+                if (regex.test(correctedText)) {
+                    suggestions.push(`Replaced "<mark>${error.trim()}</mark>" with "<mark>${fix.trim()}</mark>"`);
+                    correctedText = correctedText.replace(regex, fix);
                 }
             }
+            
+            if (suggestions.length === 0) return "✅ No common grammatical errors found.";
+            
+            return `<strong>Grammar Suggestions:</strong><br><br>${suggestions.slice(0, 8).join('<br>')}`;
+        }
 
-            aiOutput.appendChild(responseEl);
-            aiOutput.scrollTop = aiOutput.scrollHeight;
+        function answerQuestion(text, question) {
+            const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0);
+            const questionWords = new Set(question.toLowerCase().replace('?', '').split(/\s+/).filter(w => w.length > 2));
+            
+            if (questionWords.size === 0) return "Please ask a more specific question.";
+            
+            let bestSentence = { text: "", score: -1 };
+            sentences.forEach(sentence => {
+                const sentenceLower = sentence.toLowerCase();
+                let score = 0;
+                let matchedWords = 0;
+                questionWords.forEach(qWord => {
+                    if (sentenceLower.includes(qWord)) {
+                        score += 2;
+                        matchedWords++;
+                    }
+                });
+                if (matchedWords > 1) score += matchedWords * 3;
+                if (score > bestSentence.score) bestSentence = { text: sentence, score: score };
+            });
+            
+            if (bestSentence.score <= 1) return "I could not find a confident answer. Try rephrasing your question.";
+            
+            let answerText = bestSentence.text;
+            questionWords.forEach(word => {
+                const regex = new RegExp(`\\b(${word})\\b`, 'gi');
+                answerText = answerText.replace(regex, `<mark>$1</mark>`);
+            });
+            
+            return answerText;
+        }
+
+        function extractKeyPoints(text) {
+            const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0);
+            const keyPoints = sentences.slice(0, Math.min(5, sentences.length));
+            
+            if (keyPoints.length === 0) return "No key points could be extracted.";
+            
+            return `<strong>Key Points:</strong><br><br>${keyPoints.map((point, index) => `${index + 1}. ${point}`).join('<br><br>')}`;
+        }
+
+        function extractKeywords(text) {
+            const words = text.toLowerCase().replace(/[^\w\s]/g, ' ').split(/\s+/).filter(word => word.length > 3);
+            const wordFreq = {};
+            words.forEach(word => {
+                wordFreq[word] = (wordFreq[word] || 0) + 1;
+            });
+            
+            const keywords = Object.entries(wordFreq)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 15)
+                .map(([word]) => word);
+            
+            if (keywords.length === 0) return "No significant keywords found.";
+            
+            return `<strong>Keywords:</strong><br><br>${keywords.map(kw => `<mark style="display: inline-block; margin: 2px 4px; padding: 3px 8px; border-radius: 8px;">${kw}</mark>`).join('')}`;
+        }
+
+        function generateQuiz(text) {
+            const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0);
+            const keywords = extractKeywords(text).match(/<mark[^>]*>([^<]+)<\/mark>/g)?.map(m => m.replace(/<[^>]*>/g, '')) || [];
+            
+            let quiz = [];
+            keywords.forEach(kw => {
+                const keywordSentences = sentences.filter(s => s.toLowerCase().includes(kw));
+                if(keywordSentences.length > 0) {
+                    const questionSentence = keywordSentences[0];
+                    const question = questionSentence.replace(new RegExp(kw, 'ig'), '_____');
+                    quiz.push({question: question, answer: kw});
+                }
+            });
+            
+            if (quiz.length === 0) return "Could not generate a quiz from this text.";
+            
+            return `<strong>Quiz:</strong><br><br>${quiz.slice(0, 5).map((item, index) => `${index + 1}. ${item.question}<br><mark>Answer: ${item.answer}</mark>`).join('<br><br>')}`;
+        }
+
+        function analyzeContent(text) {
+            const positiveWords = ['good', 'great', 'excellent', 'amazing', 'awesome', 'love', 'like', 'happy', 'beautiful', 'wonderful'];
+            const negativeWords = ['bad', 'terrible', 'horrible', 'awful', 'hate', 'dislike', 'sad', 'ugly', 'boring'];
+            
+            let positiveScore = 0;
+            let negativeScore = 0;
+            
+            const words = text.toLowerCase().split(/\s+/);
+            words.forEach(word => {
+                if(positiveWords.includes(word)) positiveScore++;
+                if(negativeWords.includes(word)) negativeScore++;
+            });
+            
+            let sentiment = "Neutral";
+            if (positiveScore > negativeScore * 1.5) sentiment = "Positive";
+            else if (negativeScore > positiveScore * 1.5) sentiment = "Negative";
+            
+            return `<strong>Sentiment Analysis:</strong> ${sentiment}<br><br><strong>Positive Keywords:</strong> ${positiveScore}<br><strong>Negative Keywords:</strong> ${negativeScore}`;
+        }
+
+        // Helper Functions
+        function showError(message) {
+            const toast = document.createElement('div');
+            toast.textContent = message;
+            toast.style.cssText = 'position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background-color: #d32f2f; color:white; padding:12px 20px; border-radius:18px; z-index:9999; font-weight:500; box-shadow: 0 5px 15px rgba(0,0,0,0.2);';
+            document.body.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.remove();
+            }, 4000);
         }
 
         // Initialize the app when the page loads
