@@ -20,77 +20,121 @@
             line-height: 1.6;
             min-height: 100vh;
             padding: 20px;
+            overflow-x: hidden;
         }
         
         .container {
-            max-width: 1100px;
+            max-width: 1200px;
             margin: 0 auto;
-            background: rgba(255, 255, 255, 0.85);
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 30px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
             overflow: hidden;
-            padding: 20px;
+            padding: 25px;
             border: 1px solid rgba(255, 255, 255, 0.5);
+            animation: fadeIn 0.8s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         
         header {
             text-align: center;
-            padding: 30px 20px;
+            padding: 40px 20px;
             background: linear-gradient(135deg, #957dad 0%, #d291bc 100%);
-            border-radius: 15px;
+            border-radius: 25px;
             color: white;
-            margin-bottom: 25px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: float 15s infinite linear;
+        }
+        
+        @keyframes float {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            100% { transform: translate(-50px, -50px) rotate(360deg); }
         }
         
         h1 {
-            font-size: 2.8rem;
-            margin-bottom: 10px;
+            font-size: 3rem;
+            margin-bottom: 15px;
             font-weight: 700;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+            position: relative;
         }
         
         .subtitle {
-            font-size: 1.2rem;
-            opacity: 0.9;
-            max-width: 600px;
+            font-size: 1.3rem;
+            opacity: 0.95;
+            max-width: 700px;
             margin: 0 auto;
+            position: relative;
         }
         
         .intro {
-            padding: 25px;
+            padding: 30px;
             text-align: center;
-            font-size: 1.1rem;
-            background: rgba(255, 248, 248, 0.7);
-            border-radius: 15px;
-            margin-bottom: 25px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            font-size: 1.2rem;
+            background: rgba(255, 248, 248, 0.8);
+            border-radius: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
             border: 1px solid rgba(255, 200, 216, 0.5);
+            animation: slideUp 0.6s ease-out 0.2s both;
+        }
+        
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         
         .exercise-container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 25px;
-            padding: 10px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 30px;
+            padding: 15px;
         }
         
         .exercise {
             background: linear-gradient(135deg, #fff 0%, #f9f5ff 100%);
-            border-radius: 18px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
-            width: 320px;
-            padding: 25px;
-            transition: all 0.3s ease;
+            border-radius: 25px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            transition: all 0.4s ease;
             position: relative;
             overflow: hidden;
             border: 1px solid rgba(210, 145, 188, 0.3);
+            animation: cardAppear 0.6s ease-out both;
         }
         
+        @keyframes cardAppear {
+            0% { opacity: 0; transform: scale(0.9); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        
+        .exercise:nth-child(1) { animation-delay: 0.1s; }
+        .exercise:nth-child(2) { animation-delay: 0.2s; }
+        .exercise:nth-child(3) { animation-delay: 0.3s; }
+        .exercise:nth-child(4) { animation-delay: 0.4s; }
+        .exercise:nth-child(5) { animation-delay: 0.5s; }
+        .exercise:nth-child(6) { animation-delay: 0.6s; }
+        
         .exercise:hover {
-            transform: translateY(-7px);
-            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
         }
         
         .exercise::before {
@@ -99,64 +143,91 @@
             top: 0;
             left: 0;
             width: 100%;
-            height: 5px;
+            height: 6px;
             background: linear-gradient(90deg, #d291bc, #957dad);
+            border-radius: 25px 25px 0 0;
         }
         
         .exercise h3 {
             color: #957dad;
-            margin-bottom: 18px;
-            padding-bottom: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
             border-bottom: 2px solid rgba(210, 145, 188, 0.3);
-            font-size: 1.5rem;
+            font-size: 1.6rem;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
         }
         
         .exercise h3 i {
             color: #d291bc;
+            font-size: 1.4rem;
         }
         
         .exercise-content {
-            min-height: 200px;
+            min-height: 220px;
         }
         
         .timer {
-            font-size: 2.2rem;
+            font-size: 2.5rem;
             text-align: center;
             margin: 20px 0;
             color: #957dad;
             font-weight: bold;
             font-family: 'Courier New', monospace;
             background: rgba(249, 245, 255, 0.7);
-            padding: 10px;
-            border-radius: 10px;
+            padding: 15px;
+            border-radius: 15px;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.05);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+            100% { transform: scale(1); }
         }
         
         .btn {
             display: block;
             width: 100%;
-            padding: 14px;
+            padding: 16px;
             background: linear-gradient(135deg, #957dad 0%, #d291bc 100%);
             color: white;
             border: none;
-            border-radius: 10px;
+            border-radius: 15px;
             cursor: pointer;
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             margin-top: 20px;
             transition: all 0.3s;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: 0.5s;
         }
         
         .btn:hover {
             background: linear-gradient(135deg, #d291bc 0%, #957dad 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn:hover::before {
+            left: 100%;
         }
         
         .math-problem {
-            font-size: 1.7rem;
+            font-size: 1.9rem;
             text-align: center;
             margin: 20px 0;
             color: #7c5295;
@@ -165,67 +236,76 @@
         
         .answer-input {
             width: 100%;
-            padding: 12px;
+            padding: 15px;
             border: 2px solid #e0d0e6;
-            border-radius: 10px;
-            font-size: 1.1rem;
+            border-radius: 15px;
+            font-size: 1.2rem;
             text-align: center;
-            transition: border 0.3s;
-            background: rgba(255, 253, 252, 0.8);
+            transition: all 0.3s;
+            background: rgba(255, 253, 252, 0.9);
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.05);
         }
         
         .answer-input:focus {
             outline: none;
             border: 2px solid #d291bc;
-            box-shadow: 0 0 0 3px rgba(210, 145, 188, 0.3);
+            box-shadow: 0 0 0 4px rgba(210, 145, 188, 0.3);
+            transform: scale(1.02);
         }
         
         .stretch-demo {
             width: 100%;
-            height: 150px;
+            height: 160px;
             margin: 15px auto;
             background: linear-gradient(135deg, #f8e6ee 0%, #e9e2f4 100%);
-            border-radius: 12px;
+            border-radius: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: bold;
             color: #7c5295;
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             text-align: center;
-            padding: 15px;
-            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.05);
+            padding: 20px;
+            box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.08);
             border: 1px solid rgba(210, 145, 188, 0.2);
+            transition: all 0.3s;
+        }
+        
+        .stretch-demo:hover {
+            transform: scale(1.02);
         }
         
         .result {
             text-align: center;
             margin-top: 15px;
             font-weight: bold;
-            min-height: 30px;
-            padding: 8px;
-            border-radius: 8px;
+            min-height: 35px;
+            padding: 10px;
+            border-radius: 10px;
+            transition: all 0.3s;
         }
         
         .cozy-element {
             background: linear-gradient(135deg, #f8e6ee 0%, #e9e2f4 100%);
-            border-radius: 12px;
-            padding: 20px;
+            border-radius: 20px;
+            padding: 25px;
             margin: 15px 0;
             text-align: center;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
             border: 1px solid rgba(210, 145, 188, 0.2);
         }
         
         .cozy-timer {
-            font-size: 2.5rem;
+            font-size: 2.8rem;
             color: #957dad;
             margin: 15px 0;
             font-weight: bold;
+            animation: pulse 2s infinite;
         }
         
         .cozy-instructions {
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             line-height: 1.6;
             margin-bottom: 15px;
         }
@@ -240,50 +320,186 @@
         
         .visualization {
             text-align: center;
-            padding: 15px;
+            padding: 20px;
         }
         
         .visualization img {
             max-width: 100%;
-            border-radius: 10px;
+            border-radius: 15px;
             margin-bottom: 15px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        .progress-container {
+            width: 100%;
+            height: 10px;
+            background: rgba(210, 145, 188, 0.2);
+            border-radius: 5px;
+            margin: 15px 0;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #957dad, #d291bc);
+            border-radius: 5px;
+            width: 0%;
+            transition: width 1s linear;
         }
         
         footer {
             text-align: center;
-            padding: 25px;
-            background: rgba(255, 248, 248, 0.7);
-            border-radius: 15px;
+            padding: 30px;
+            background: rgba(255, 248, 248, 0.8);
+            border-radius: 25px;
             color: #7c5295;
-            font-size: 0.95rem;
-            margin-top: 30px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            font-size: 1.1rem;
+            margin-top: 40px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
             border: 1px solid rgba(255, 200, 216, 0.5);
+            animation: slideUp 0.6s ease-out 0.8s both;
         }
         
         .heart {
             color: #e6739f;
+            animation: heartbeat 1.5s infinite;
+        }
+        
+        @keyframes heartbeat {
+            0% { transform: scale(1); }
+            5% { transform: scale(1.3); }
+            10% { transform: scale(1); }
+            15% { transform: scale(1.3); }
+            20% { transform: scale(1); }
+            100% { transform: scale(1); }
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #957dad 0%, #d291bc 100%);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            transform: translateX(150%);
+            transition: transform 0.5s ease;
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+        
+        .settings-panel {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+            transform: translateX(-100%);
+            transition: transform 0.4s ease;
+            width: 280px;
+        }
+        
+        .settings-panel.show {
+            transform: translateX(0);
+        }
+        
+        .settings-toggle {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: linear-gradient(135deg, #957dad 0%, #d291bc 100%);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 1001;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s;
+        }
+        
+        .settings-toggle:hover {
+            transform: scale(1.1);
+        }
+        
+        .break-reminder {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+            color: #5d4954;
+            padding: 15px 25px;
+            border-radius: 20px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            transform: translateY(150%);
+            transition: transform 0.5s ease;
+            cursor: pointer;
+        }
+        
+        .break-reminder.show {
+            transform: translateY(0);
         }
         
         @media (max-width: 768px) {
             .exercise-container {
-                flex-direction: column;
-                align-items: center;
+                grid-template-columns: 1fr;
             }
             
             .exercise {
                 width: 100%;
-                max-width: 400px;
             }
             
             h1 {
-                font-size: 2.2rem;
+                font-size: 2.5rem;
+            }
+            
+            .settings-panel {
+                width: 85%;
             }
         }
     </style>
 </head>
 <body>
+    <div class="settings-toggle" id="settings-toggle">
+        <i class="fas fa-cog"></i>
+    </div>
+    
+    <div class="settings-panel" id="settings-panel">
+        <h3><i class="fas fa-sliders-h"></i> Settings</h3>
+        <div class="setting-item">
+            <label for="break-interval">Break Interval (minutes):</label>
+            <input type="number" id="break-interval" min="5" max="60" value="25">
+        </div>
+        <div class="setting-item">
+            <label for="auto-break">Auto-start breaks:</label>
+            <input type="checkbox" id="auto-break">
+        </div>
+        <div class="setting-item">
+            <label for="sound-enabled">Enable sounds:</label>
+            <input type="checkbox" id="sound-enabled" checked>
+        </div>
+        <button class="btn" id="save-settings">Save Settings</button>
+    </div>
+    
+    <div class="notification" id="notification">
+        <i class="fas fa-bell"></i> Time for a study break!
+    </div>
+    
+    <div class="break-reminder" id="break-reminder">
+        <i class="fas fa-coffee"></i> Ready for a break? Click here!
+    </div>
+    
     <div class="container">
         <header>
             <h1><i class="fas fa-book-open"></i> Cozy Study Break Companion</h1>
@@ -311,6 +527,9 @@
                 <div class="exercise-content">
                     <p>Follow along with this gentle stretch to relieve tension:</p>
                     <div class="stretch-demo" id="stretch-demo">Neck Rolls</div>
+                    <div class="progress-container">
+                        <div class="progress-bar" id="stretch-progress"></div>
+                    </div>
                     <div class="timer" id="stretch-timer">15</div>
                     <button class="btn" id="start-stretch">Start Stretching</button>
                 </div>
@@ -321,6 +540,9 @@
                 <div class="exercise-content">
                     <div class="cozy-element">
                         <p class="cozy-instructions">Imagine enjoying a warm cup of tea. Notice the aroma, warmth, and flavor.</p>
+                        <div class="progress-container">
+                            <div class="progress-bar" id="tea-progress"></div>
+                        </div>
                         <div class="cozy-timer" id="tea-timer">1:00</div>
                         <button class="btn cozy-btn" id="start-tea">Begin Tea Meditation</button>
                     </div>
@@ -333,6 +555,9 @@
                     <div class="visualization">
                         <p>Close your eyes and picture yourself in a peaceful place:</p>
                         <div class="stretch-demo">A cozy library • A quiet forest • A serene beach</div>
+                        <div class="progress-container">
+                            <div class="progress-bar" id="visualization-progress"></div>
+                        </div>
                         <div class="timer" id="visualization-timer">1:00</div>
                         <button class="btn" id="start-visualization">Start Visualization</button>
                     </div>
@@ -344,6 +569,9 @@
                 <div class="exercise-content">
                     <div class="cozy-element">
                         <p class="cozy-instructions">Listen to calming sounds. Focus on the gentle tones.</p>
+                        <div class="progress-container">
+                            <div class="progress-bar" id="sound-progress"></div>
+                        </div>
                         <div class="cozy-timer" id="sound-timer">2:00</div>
                         <button class="btn cozy-btn" id="start-sound">Play Nature Sounds</button>
                     </div>
@@ -356,6 +584,9 @@
                     <div class="cozy-element">
                         <p class="cozy-instructions">Repeat to yourself:</p>
                         <div class="stretch-demo" style="font-style: italic;">"I am capable and focused. My mind absorbs information easily."</div>
+                        <div class="progress-container">
+                            <div class="progress-bar" id="affirmation-progress"></div>
+                        </div>
                         <div class="timer" id="affirmation-timer">0:30</div>
                         <button class="btn" id="start-affirmation">Begin Affirmation</button>
                     </div>
@@ -370,6 +601,79 @@
     </div>
 
     <script>
+        // Settings Panel
+        const settingsToggle = document.getElementById('settings-toggle');
+        const settingsPanel = document.getElementById('settings-panel');
+        
+        settingsToggle.addEventListener('click', function() {
+            settingsPanel.classList.toggle('show');
+        });
+        
+        // Save Settings
+        const saveSettingsBtn = document.getElementById('save-settings');
+        
+        saveSettingsBtn.addEventListener('click', function() {
+            const breakInterval = document.getElementById('break-interval').value;
+            const autoBreak = document.getElementById('auto-break').checked;
+            const soundEnabled = document.getElementById('sound-enabled').checked;
+            
+            // In a real app, you would save these to localStorage
+            localStorage.setItem('breakInterval', breakInterval);
+            localStorage.setItem('autoBreak', autoBreak);
+            localStorage.setItem('soundEnabled', soundEnabled);
+            
+            showNotification('Settings saved successfully!');
+            settingsPanel.classList.remove('show');
+            
+            // Update break reminder interval
+            if (breakReminderInterval) {
+                clearInterval(breakReminderInterval);
+            }
+            startBreakReminder(breakInterval);
+        });
+        
+        // Load saved settings
+        window.addEventListener('DOMContentLoaded', function() {
+            const savedBreakInterval = localStorage.getItem('breakInterval') || 25;
+            const savedAutoBreak = localStorage.getItem('autoBreak') === 'true';
+            const savedSoundEnabled = localStorage.getItem('soundEnabled') !== 'false';
+            
+            document.getElementById('break-interval').value = savedBreakInterval;
+            document.getElementById('auto-break').checked = savedAutoBreak;
+            document.getElementById('sound-enabled').checked = savedSoundEnabled;
+            
+            startBreakReminder(savedBreakInterval);
+        });
+        
+        // Notification System
+        const notification = document.getElementById('notification');
+        
+        function showNotification(message) {
+            notification.textContent = message;
+            notification.classList.add('show');
+            
+            setTimeout(function() {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+        
+        // Break Reminder
+        const breakReminder = document.getElementById('break-reminder');
+        let breakReminderInterval;
+        
+        function startBreakReminder(minutes) {
+            const intervalMs = minutes * 60 * 1000;
+            
+            breakReminderInterval = setInterval(function() {
+                breakReminder.classList.add('show');
+            }, intervalMs);
+        }
+        
+        breakReminder.addEventListener('click', function() {
+            breakReminder.classList.remove('show');
+            showNotification('Enjoy your study break!');
+        });
+        
         // Math Challenge
         const mathProblem = document.getElementById('math-problem');
         const mathAnswer = document.getElementById('math-answer');
@@ -412,6 +716,7 @@
         // Stretch Exercise
         const stretchDemo = document.getElementById('stretch-demo');
         const stretchTimer = document.getElementById('stretch-timer');
+        const stretchProgress = document.getElementById('stretch-progress');
         const startStretchBtn = document.getElementById('start-stretch');
         
         const stretches = [
@@ -434,6 +739,7 @@
                 startStretchBtn.textContent = 'Start Stretching';
                 stretchCount = 15;
                 stretchTimer.textContent = stretchCount;
+                stretchProgress.style.width = '0%';
             } else {
                 isStretching = true;
                 startStretchBtn.textContent = 'Stop Stretching';
@@ -442,10 +748,14 @@
                 stretchInterval = setInterval(function() {
                     stretchCount--;
                     
+                    // Update progress bar
+                    stretchProgress.style.width = `${(15 - stretchCount) / 15 * 100}%`;
+                    
                     if (stretchCount === 0) {
                         stretchCount = 15;
                         currentStretch = (currentStretch + 1) % stretches.length;
                         stretchDemo.textContent = stretches[currentStretch];
+                        stretchProgress.style.width = '0%';
                     }
                     
                     stretchTimer.textContent = stretchCount;
@@ -455,6 +765,7 @@
         
         // Tea Meditation
         const teaTimer = document.getElementById('tea-timer');
+        const teaProgress = document.getElementById('tea-progress');
         const startTeaBtn = document.getElementById('start-tea');
         
         let teaInterval;
@@ -468,12 +779,16 @@
                 startTeaBtn.textContent = 'Begin Tea Meditation';
                 teaCount = 60;
                 teaTimer.textContent = '1:00';
+                teaProgress.style.width = '0%';
             } else {
                 isTeaTime = true;
                 startTeaBtn.textContent = 'Stop Meditation';
                 
                 teaInterval = setInterval(function() {
                     teaCount--;
+                    
+                    // Update progress bar
+                    teaProgress.style.width = `${(60 - teaCount) / 60 * 100}%`;
                     
                     const minutes = Math.floor(teaCount / 60);
                     const seconds = teaCount % 60;
@@ -486,6 +801,7 @@
                         startTeaBtn.textContent = 'Begin Tea Meditation';
                         teaCount = 60;
                         teaTimer.textContent = '1:00';
+                        teaProgress.style.width = '0%';
                     }
                 }, 1000);
             }
@@ -493,6 +809,7 @@
         
         // Visualization
         const visualizationTimer = document.getElementById('visualization-timer');
+        const visualizationProgress = document.getElementById('visualization-progress');
         const startVisualizationBtn = document.getElementById('start-visualization');
         
         let visualizationInterval;
@@ -506,12 +823,16 @@
                 startVisualizationBtn.textContent = 'Start Visualization';
                 visualizationCount = 60;
                 visualizationTimer.textContent = '1:00';
+                visualizationProgress.style.width = '0%';
             } else {
                 isVisualizing = true;
                 startVisualizationBtn.textContent = 'Stop Visualization';
                 
                 visualizationInterval = setInterval(function() {
                     visualizationCount--;
+                    
+                    // Update progress bar
+                    visualizationProgress.style.width = `${(60 - visualizationCount) / 60 * 100}%`;
                     
                     const minutes = Math.floor(visualizationCount / 60);
                     const seconds = visualizationCount % 60;
@@ -524,6 +845,7 @@
                         startVisualizationBtn.textContent = 'Start Visualization';
                         visualizationCount = 60;
                         visualizationTimer.textContent = '1:00';
+                        visualizationProgress.style.width = '0%';
                     }
                 }, 1000);
             }
@@ -531,6 +853,7 @@
         
         // Sound Therapy
         const soundTimer = document.getElementById('sound-timer');
+        const soundProgress = document.getElementById('sound-progress');
         const startSoundBtn = document.getElementById('start-sound');
         
         let soundInterval;
@@ -544,12 +867,16 @@
                 startSoundBtn.textContent = 'Play Nature Sounds';
                 soundCount = 120;
                 soundTimer.textContent = '2:00';
+                soundProgress.style.width = '0%';
             } else {
                 isSoundPlaying = true;
                 startSoundBtn.textContent = 'Stop Sounds';
                 
                 soundInterval = setInterval(function() {
                     soundCount--;
+                    
+                    // Update progress bar
+                    soundProgress.style.width = `${(120 - soundCount) / 120 * 100}%`;
                     
                     const minutes = Math.floor(soundCount / 60);
                     const seconds = soundCount % 60;
@@ -562,6 +889,7 @@
                         startSoundBtn.textContent = 'Play Nature Sounds';
                         soundCount = 120;
                         soundTimer.textContent = '2:00';
+                        soundProgress.style.width = '0%';
                     }
                 }, 1000);
             }
@@ -569,6 +897,7 @@
         
         // Affirmation
         const affirmationTimer = document.getElementById('affirmation-timer');
+        const affirmationProgress = document.getElementById('affirmation-progress');
         const startAffirmationBtn = document.getElementById('start-affirmation');
         
         let affirmationInterval;
@@ -582,12 +911,16 @@
                 startAffirmationBtn.textContent = 'Begin Affirmation';
                 affirmationCount = 30;
                 affirmationTimer.textContent = '0:30';
+                affirmationProgress.style.width = '0%';
             } else {
                 isAffirming = true;
                 startAffirmationBtn.textContent = 'Stop Affirmation';
                 
                 affirmationInterval = setInterval(function() {
                     affirmationCount--;
+                    
+                    // Update progress bar
+                    affirmationProgress.style.width = `${(30 - affirmationCount) / 30 * 100}%`;
                     
                     const minutes = Math.floor(affirmationCount / 60);
                     const seconds = affirmationCount % 60;
@@ -600,6 +933,7 @@
                         startAffirmationBtn.textContent = 'Begin Affirmation';
                         affirmationCount = 30;
                         affirmationTimer.textContent = '0:30';
+                        affirmationProgress.style.width = '0%';
                     }
                 }, 1000);
             }
