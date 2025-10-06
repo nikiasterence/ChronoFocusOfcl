@@ -141,6 +141,20 @@
       0%, 100% { border-color: rgba(255, 255, 255, 0.2); }
       50% { border-color: rgba(255, 255, 255, 0.4); }
     }
+    @keyframes keyPress {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(0.95); }
+    }
+    @keyframes enterSlide {
+      0% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+      100% { transform: translateY(0); }
+    }
+    @keyframes pageTransition {
+      0% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.7; transform: scale(1.05); }
+      100% { opacity: 0; transform: scale(0.9); }
+    }
 
     /* --- Base Container & Modules --- */
     .container {
@@ -284,7 +298,11 @@
       -webkit-backdrop-filter: blur(10px);
     }
     .pin-keypad button:hover { background: rgba(255, 255, 255, 0.2); transform: translateY(-3px); }
-    .pin-keypad button:active { transform: scale(0.9); background: var(--glass-border); }
+    .pin-keypad button:active { 
+      transform: scale(0.9); 
+      background: var(--glass-border);
+      animation: keyPress 0.2s ease;
+    }
 
     /* --- Main App Screen --- */
     .user-profile-header { display: flex; flex-direction: column; align-items: center; gap: 16px; margin-bottom: 28px; }
@@ -328,6 +346,69 @@
       color: var(--text-secondary);
       opacity: 0.7;
       z-index: 1;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    }
+
+    /* --- Toggle Switch --- */
+    .toggle-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 20px 0;
+      padding: 12px 16px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      border: var(--liquid-border);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+    .toggle-label {
+      font-weight: 500;
+      color: var(--text-primary);
+      font-size: 15px;
+    }
+    .toggle-switch {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 26px;
+    }
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(255, 255, 255, 0.2);
+      transition: .4s;
+      border-radius: 34px;
+      border: var(--liquid-border);
+    }
+    .toggle-slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+    input:checked + .toggle-slider {
+      background: var(--accent-gradient);
+    }
+    input:checked + .toggle-slider:before {
+      transform: translateX(24px);
     }
 
     /* --- ⭐ RESPONSIVE IMPROVEMENTS FOR MOBILE ⭐ --- */
@@ -365,6 +446,10 @@
       
       .liquid-bg-element {
         display: none; /* Hide liquid elements on very small screens */
+      }
+      
+      .toggle-container {
+        padding: 10px 14px;
       }
     }
   </style>
@@ -406,6 +491,13 @@
         <button data-key="7">7</button><button data-key="8">8</button><button data-key="9">9</button>
         <span></span><button data-key="0">0</button><button data-key="del">⌫</button>
     </div>
+    <div class="toggle-container">
+      <span class="toggle-label">Enable Passcode</span>
+      <label class="toggle-switch">
+        <input type="checkbox" id="passcode-toggle" checked>
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
 </div>
 
 <main id="main-content" class="container">
@@ -429,6 +521,7 @@
       const USER_DATA_KEY = 'chronoFocus-userData';
       const USER_PIN_KEY = 'chronoFocus-userPin';
       const SAVED_REGION_KEY = 'chronoFocus-userRegion';
+      const PASSCODE_ENABLED_KEY = 'chronoFocus-passcodeEnabled';
       const VERSION = 'Zenith 1 · Beta 7';
 
       // Global reference to keypad event handler to allow proper removal
@@ -448,24 +541,43 @@
             document.getElementById('registration-form').requestSubmit();
           }
         });
+        
+        // Add Enter key support for region selection
+        document.getElementById('region-select').addEventListener('keydown', function(e) {
+          if (e.key === 'Enter' && !document.getElementById('enterBtn').disabled) {
+            document.getElementById('enterBtn').click();
+          }
+        });
+        
+        // Add Enter key support for Enter button
+        document.getElementById('enterBtn').addEventListener('keydown', function(e) {
+          if (e.key === 'Enter' && !this.disabled) {
+            this.click();
+          }
+        });
       }
       
       function checkUserState() {
         const storedData = localStorage.getItem(USER_DATA_KEY);
         const userData = storedData ? JSON.parse(storedData) : null;
         const userPin = localStorage.getItem(USER_PIN_KEY);
+        const passcodeEnabled = localStorage.getItem(PASSCODE_ENABLED_KEY) !== 'false';
         
         document.getElementById('loader').classList.add('hidden');
 
         if (!userData) {
           showModule('registration-container');
           setupRegistration();
-        } else if (!userPin) {
+        } else if (!userPin && passcodeEnabled) {
           showModule('pin-container');
           setupPinScreen('set', userData); 
         } else {
-          showModule('pin-container');
-          setupPinScreen('login', userData);
+          if (passcodeEnabled) {
+            showModule('pin-container');
+            setupPinScreen('login', userData);
+          } else {
+            showMainApp(userData);
+          }
         }
       }
 
@@ -555,8 +667,13 @@
                 alert('Profile updated successfully!');
                 showMainApp(newUserData);
               } else {
-                showModule('pin-container');
-                setupPinScreen('set', newUserData);
+                const passcodeEnabled = localStorage.getItem(PASSCODE_ENABLED_KEY) !== 'false';
+                if (passcodeEnabled) {
+                  showModule('pin-container');
+                  setupPinScreen('set', newUserData);
+                } else {
+                  showMainApp(newUserData);
+                }
               }
           };
       }
@@ -570,7 +687,20 @@
           const subtitle = document.getElementById('pin-subtitle');
           const logo = document.getElementById('pin-logo');
           const pinDisplay = document.getElementById('pin-display');
+          const passcodeToggle = document.getElementById('passcode-toggle');
           const savedPin = localStorage.getItem(USER_PIN_KEY);
+          const passcodeEnabled = localStorage.getItem(PASSCODE_ENABLED_KEY) !== 'false';
+
+          // Set initial toggle state
+          passcodeToggle.checked = passcodeEnabled;
+
+          // Handle passcode toggle
+          passcodeToggle.addEventListener('change', function() {
+            localStorage.setItem(PASSCODE_ENABLED_KEY, this.checked);
+            if (!this.checked && mode === 'login') {
+              showMainApp(userData);
+            }
+          });
 
           const updatePinDisplay = () => pinDisplayDots.forEach((dot, i) => dot.classList.toggle('filled', i < currentPin.length));
           const resetPinDisplay = () => { currentPin = ""; updatePinDisplay(); };
@@ -684,17 +814,23 @@
             enterBtn.disabled = true;
             enterBtn.classList.add('loading'); 
             
+            // Add enter animation
+            enterBtn.style.animation = 'enterSlide 0.5s ease';
+            
             // Save the newly selected region to localStorage
             localStorage.setItem(SAVED_REGION_KEY, selectedRegion);
             
             successMsg.textContent = `✓ Preparing your sanctuary in ${selectedRegion}…`;
             successMsg.style.display = 'block';
             
+            // Add page transition animation
+            document.querySelector('.container.active').style.animation = 'pageTransition 0.8s ease forwards';
+            
             setTimeout(() => {
                 // Here you would redirect to the main part of the app
                 console.log(`Redirecting to app for region: ${selectedRegion}`);
-                 window.location.href = 'page1.html'; // Example redirection
-            }, 1800);
+                window.location.href = 'page1.html'; // Example redirection
+            }, 800);
         };
         
         const handleSettings = () => {
