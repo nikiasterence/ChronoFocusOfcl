@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Notes App with OptiChain AI</title>
-      <link rel="icon" href="Chronofocus.png" type="image/x-icon">
+    <link rel="icon" href="Chronofocus.png" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -14,11 +14,14 @@
             --sidebar-bg: #f2f2f7;
             --note-bg: #ffffff;
             --border-color: #c6c6c8;
-            --radius: 16px;
+            --radius: 20px;
             --shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
             --glass-bg: rgba(255, 255, 255, 0.25);
             --glass-border: 1px solid rgba(255, 255, 255, 0.18);
             --icon-radius: 50%;
+            --z-island: 1000;
+            --transition: all 0.3s ease;
+            --border-radius-pill: 50px;
         }
 
         /* Theme Variables */
@@ -212,6 +215,87 @@
             --glass-bg: rgba(255, 255, 255, 0.7);
         }
 
+        /* New Themes */
+        .theme-neon {
+            --primary-color: #00FF9D;
+            --background-color: #0A0A0A;
+            --text-color: #FFFFFF;
+            --sidebar-bg: #1A1A1A;
+            --note-bg: #2A2A2A;
+            --border-color: #00FF9D;
+            --glass-bg: rgba(42, 42, 42, 0.8);
+        }
+
+        .theme-solar {
+            --primary-color: #FF9500;
+            --background-color: #FFF4E6;
+            --text-color: #5C3D00;
+            --sidebar-bg: #FFE4C2;
+            --note-bg: #FFFFFF;
+            --border-color: #FFB143;
+            --glass-bg: rgba(255, 255, 255, 0.7);
+        }
+
+        .theme-aurora {
+            --primary-color: #00D4FF;
+            --background-color: #001F2E;
+            --text-color: #E0F7FF;
+            --sidebar-bg: #003247;
+            --note-bg: #004A6A;
+            --border-color: #00A3CC;
+            --glass-bg: rgba(0, 74, 106, 0.8);
+        }
+
+        .theme-cherry {
+            --primary-color: #FF2E63;
+            --background-color: #FFF0F3;
+            --text-color: #7A0026;
+            --sidebar-bg: #FFD1DC;
+            --note-bg: #FFFFFF;
+            --border-color: #FF8FA3;
+            --glass-bg: rgba(255, 255, 255, 0.7);
+        }
+
+        .theme-grape {
+            --primary-color: #8A2BE2;
+            --background-color: #F8F0FF;
+            --text-color: #4B0082;
+            --sidebar-bg: #E6D6FF;
+            --note-bg: #FFFFFF;
+            --border-color: #B19CD9;
+            --glass-bg: rgba(255, 255, 255, 0.7);
+        }
+
+        .theme-sand {
+            --primary-color: #D2B48C;
+            --background-color: #FDF5E6;
+            --text-color: #8B7355;
+            --sidebar-bg: #FAEBD7;
+            --note-bg: #FFFFFF;
+            --border-color: #DEB887;
+            --glass-bg: rgba(255, 255, 255, 0.7);
+        }
+
+        .theme-cyber {
+            --primary-color: #00FFFF;
+            --background-color: #0A0A12;
+            --text-color: #E0E0FF;
+            --sidebar-bg: #1A1A2E;
+            --note-bg: #2A2A40;
+            --border-color: #00CCCC;
+            --glass-bg: rgba(42, 42, 64, 0.8);
+        }
+
+        .theme-pastel {
+            --primary-color: #FFB6C1;
+            --background-color: #FFF9FB;
+            --text-color: #8B5F65;
+            --sidebar-bg: #FFE4E9;
+            --note-bg: #FFFFFF;
+            --border-color: #FFC0CB;
+            --glass-bg: rgba(255, 255, 255, 0.7);
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -227,6 +311,125 @@
             flex-direction: column;
             transition: all 0.3s ease;
             overflow: hidden;
+        }
+
+        /* Dynamic Island */
+        .dynamic-island {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: var(--z-island);
+            background: rgba(20, 20, 20, 0.85);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            padding: 0 20px;
+            border-radius: var(--border-radius-pill);
+            cursor: pointer;
+            transition: var(--transition);
+            height: 50px;
+            min-width: 250px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.25);
+            animation: islandPulse 4s infinite ease-in-out;
+        }
+        
+        @keyframes islandPulse {
+            0%, 100% { transform: translateX(-50%) scale(1); box-shadow: 0 10px 40px rgba(0,0,0,0.25);}
+            50% { transform: translateX(-50%) scale(1.03); box-shadow: 0 15px 50px rgba(0,0,0,0.3);}
+        }
+        
+        .island-idle-content { 
+            display: flex; 
+            align-items: center; 
+            gap: 10px; 
+            transition: opacity 0.3s ease, transform 0.3s ease; 
+        }
+        
+        .dynamic-island.expanded .island-idle-content { 
+            opacity: 0; 
+            transform: scale(0.8); 
+            pointer-events: none; 
+        }
+        
+        .island-controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            position: absolute;
+            transition: opacity 0.4s 0.2s ease, transform 0.4s 0.2s ease;
+            transform: translateY(10px);
+        }
+        
+        .island-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .island-btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.3s, height 0.3s;
+        }
+        
+        .island-btn:hover::after {
+            width: 100%;
+            height: 100%;
+        }
+        
+        .island-btn:hover { 
+            background: var(--primary-color); 
+            transform: scale(1.1); 
+        }
+        
+        .island-btn:active { 
+            transform: scale(0.95); 
+        }
+        
+        /* Expanded State */
+        .dynamic-island.expanded {
+            height: 80px;
+            width: auto;
+            padding: 0 40px;
+            min-width: 450px;
+            border-radius: 40px;
+            animation: islandExpand 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+        
+        @keyframes islandExpand {
+            0% { min-width: 250px; height: 50px; border-radius: 25px; }
+            100% { min-width: 450px; height: 80px; border-radius: 40px; }
+        }
+        
+        .dynamic-island.expanded .island-controls { 
+            opacity: 1; 
+            pointer-events: auto; 
+            transform: translateY(0); 
         }
 
         .app-header {
@@ -260,26 +463,6 @@
             display: flex;
             gap: 15px;
             align-items: center;
-        }
-
-        .settings-btn, .ai-toggle-btn, .full-version-btn {
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: var(--radius);
-            cursor: pointer;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .settings-btn:hover, .ai-toggle-btn:hover, .full-version-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
         }
 
         .app-container {
@@ -523,6 +706,26 @@
             border-radius: 3px;
         }
 
+        /* Show/Hide Tools Button */
+        .toggle-tools-btn {
+            display: none;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-weight: 500;
+            margin: 10px auto;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .toggle-tools-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
         /* AI Sidebar Styles */
         .ai-sidebar {
             position: fixed;
@@ -533,7 +736,7 @@
             background-color: var(--sidebar-bg);
             box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
             transition: right 0.3s ease;
-            z-index: 1000;
+            z-index: 1001;
             display: flex;
             flex-direction: column;
             overflow: hidden;
@@ -841,6 +1044,39 @@
             background: linear-gradient(135deg, #607D8B, #455A64);
         }
 
+        /* New Theme Options */
+        .theme-neon-option {
+            background: linear-gradient(135deg, #00FF9D, #00CC7E);
+        }
+
+        .theme-solar-option {
+            background: linear-gradient(135deg, #FF9500, #FF7300);
+        }
+
+        .theme-aurora-option {
+            background: linear-gradient(135deg, #00D4FF, #00A3CC);
+        }
+
+        .theme-cherry-option {
+            background: linear-gradient(135deg, #FF2E63, #D4003D);
+        }
+
+        .theme-grape-option {
+            background: linear-gradient(135deg, #8A2BE2, #6A0DAD);
+        }
+
+        .theme-sand-option {
+            background: linear-gradient(135deg, #D2B48C, #B8860B);
+        }
+
+        .theme-cyber-option {
+            background: linear-gradient(135deg, #00FFFF, #00CCCC);
+        }
+
+        .theme-pastel-option {
+            background: linear-gradient(135deg, #FFB6C1, #FF8FA3);
+        }
+
         .setting-item {
             display: flex;
             justify-content: space-between;
@@ -945,6 +1181,83 @@
             100% { background-color: rgba(255, 255, 0, 0.3); }
         }
 
+        /* Emoji Picker */
+        .emoji-picker {
+            position: absolute;
+            background: var(--note-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 10px;
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 5px;
+            z-index: 1002;
+            max-width: 250px;
+            max-height: 200px;
+            overflow-y: auto;
+            border: var(--glass-border);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .emoji-option {
+            padding: 5px;
+            cursor: pointer;
+            text-align: center;
+            border-radius: 5px;
+            transition: background-color 0.2s;
+        }
+
+        .emoji-option:hover {
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+
+        /* Copy/Paste Toast */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 12px 20px;
+            border-radius: var(--radius);
+            z-index: 9999;
+            font-weight: 500;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            animation: toastSlideIn 0.3s ease, toastSlideOut 0.3s ease 2.7s forwards;
+        }
+
+        @keyframes toastSlideIn {
+            from { bottom: -50px; opacity: 0; }
+            to { bottom: 20px; opacity: 1; }
+        }
+
+        @keyframes toastSlideOut {
+            from { bottom: 20px; opacity: 1; }
+            to { bottom: -50px; opacity: 0; }
+        }
+
+        /* Mobile AI Sidebar Close Button */
+        .ai-close-btn {
+            display: none;
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 1002;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
         /* Responsive Design */
         @media (max-width: 1024px) {
             .ai-sidebar {
@@ -974,6 +1287,16 @@
             
             .writing-tools {
                 overflow-x: auto;
+                max-height: 60px;
+                transition: max-height 0.3s ease;
+            }
+            
+            .writing-tools.expanded {
+                max-height: 500px;
+            }
+            
+            .toggle-tools-btn {
+                display: block;
             }
             
             .settings-panel {
@@ -983,6 +1306,44 @@
             .theme-options {
                 grid-template-columns: repeat(2, 1fr);
             }
+            
+            .dynamic-island { 
+                min-width: 180px; 
+                height: 45px; 
+            }
+            
+            .dynamic-island.expanded { 
+                width: 95%; 
+                min-width: 95%; 
+                height: auto; 
+                padding: 15px; 
+                flex-direction: column; 
+                gap: 15px; 
+                border-radius: 32px; 
+            }
+            
+            .dynamic-island.expanded .island-controls { 
+                position: static; 
+                transform: none; 
+                opacity: 1; 
+                pointer-events: auto; 
+                flex-wrap: wrap; 
+                justify-content: center;
+            }
+            
+            .island-btn { 
+                width: 44px; 
+                height: 44px; 
+            }
+            
+            .app-title {
+                font-size: 18px;
+            }
+
+            /* Mobile AI Sidebar Close Button */
+            .ai-close-btn {
+                display: flex;
+            }
         }
 
         @media (max-width: 480px) {
@@ -991,12 +1352,7 @@
             }
             
             .app-title {
-                font-size: 18px;
-            }
-            
-            .settings-btn, .ai-toggle-btn, .full-version-btn {
-                padding: 6px 12px;
-                font-size: 14px;
+                font-size: 16px;
             }
             
             .note-header {
@@ -1029,20 +1385,28 @@
     </style>
 </head>
 <body class="theme-cotton-candy">
+    <!-- Dynamic Island -->
+    <div class="dynamic-island" id="dynamic-island">
+        <div class="island-idle-content">
+            <i class="fas fa-brain"></i>&nbsp;
+            <strong>Optichain AI</strong>
+        </div>
+        <div class="island-controls">
+            <button class="island-btn" id="island-ai-btn" title="Access Optichain AI"><i class="fas fa-robot"></i></button>
+            <button class="island-btn" id="island-image-btn" title="Insert Image"><i class="fas fa-image"></i></button>
+            <button class="island-btn" id="island-emoji-btn" title="Insert Emoji"><i class="fas fa-smile"></i></button>
+            <button class="island-btn" id="island-copy-btn" title="Copy Content"><i class="fas fa-copy"></i></button>
+            <button class="island-btn" id="island-paste-btn" title="Paste Content"><i class="fas fa-paste"></i></button>
+            <button class="island-btn" id="island-settings-btn" title="Settings"><i class="fas fa-cog"></i></button>
+        </div>
+    </div>
+
     <div class="app-header">
         <div class="app-title">
-            <i class="fas fa-sticky-note"></i> Notes with OptiChain AI
+            <i class="fas fa-sticky-note"></i> 
         </div>
         <div class="header-controls">
-            <button class="settings-btn" id="settingsBtn">
-                <i class="fas fa-cog"></i> Settings
-            </button>
-            <button class="full-version-btn" id="fullVersionBtn">
-                <i class="fas fa-crown"></i> Full Version
-            </button>
-            <button class="ai-toggle-btn" id="aiToggleBtn">
-                <i class="fas fa-robot"></i> AI Assistant
-            </button>
+            <!-- Full Version Button Removed -->
         </div>
     </div>
 
@@ -1063,7 +1427,10 @@
             <div class="note-header">
                 <input type="text" class="note-title-input" id="noteTitle" placeholder="Note Title">
             </div>
-            <div class="writing-tools">
+            <button class="toggle-tools-btn" id="toggleToolsBtn">
+                <i class="fas fa-chevron-down"></i> Show All Tools
+            </button>
+            <div class="writing-tools" id="writingTools">
                 <div class="tool-group">
                     <select class="font-select" id="fontSelect">
                         <option value="Arial">Arial</option>
@@ -1158,6 +1525,9 @@
 
     <!-- AI Sidebar -->
     <aside class="ai-sidebar glass" id="aiSidebar">
+        <button class="ai-close-btn" id="mobile-ai-close-btn">
+            <i class="fas fa-times"></i>
+        </button>
         <div class="sidebar-header">
             <h2 class="sidebar-title">OptiChain AI</h2>
             <button class="header-btn" id="ai-close-btn" aria-label="Close AI assistant">
@@ -1299,6 +1669,30 @@
                     <div class="theme-option theme-slate-option" data-theme="slate">
                         <div class="theme-option-name">Slate</div>
                     </div>
+                    <div class="theme-option theme-neon-option" data-theme="neon">
+                        <div class="theme-option-name">Neon</div>
+                    </div>
+                    <div class="theme-option theme-solar-option" data-theme="solar">
+                        <div class="theme-option-name">Solar</div>
+                    </div>
+                    <div class="theme-option theme-aurora-option" data-theme="aurora">
+                        <div class="theme-option-name">Aurora</div>
+                    </div>
+                    <div class="theme-option theme-cherry-option" data-theme="cherry">
+                        <div class="theme-option-name">Cherry</div>
+                    </div>
+                    <div class="theme-option theme-grape-option" data-theme="grape">
+                        <div class="theme-option-name">Grape</div>
+                    </div>
+                    <div class="theme-option theme-sand-option" data-theme="sand">
+                        <div class="theme-option-name">Sand</div>
+                    </div>
+                    <div class="theme-option theme-cyber-option" data-theme="cyber">
+                        <div class="theme-option-name">Cyber</div>
+                    </div>
+                    <div class="theme-option theme-pastel-option" data-theme="pastel">
+                        <div class="theme-option-name">Pastel</div>
+                    </div>
                 </div>
             </div>
 
@@ -1349,19 +1743,19 @@
         let enhancedAIMode = localStorage.getItem('enhancedAIMode') !== 'false';
         let autoGrammarCheck = localStorage.getItem('autoGrammarCheck') === 'true';
         let aiAnimations = localStorage.getItem('aiAnimations') !== 'false';
+        let toolsExpanded = false;
 
         // DOM Elements
         const notesList = document.getElementById('notesList');
         const noteTitle = document.getElementById('noteTitle');
         const noteEditor = document.getElementById('noteEditor');
         const newNoteBtn = document.getElementById('newNoteBtn');
-        const settingsBtn = document.getElementById('settingsBtn');
         const settingsPanel = document.getElementById('settingsPanel');
         const closeSettings = document.getElementById('closeSettings');
         const themeOptions = document.querySelectorAll('.theme-option');
-        const aiToggleBtn = document.getElementById('aiToggleBtn');
         const aiSidebar = document.getElementById('aiSidebar');
         const aiCloseBtn = document.getElementById('ai-close-btn');
+        const mobileAiCloseBtn = document.getElementById('mobile-ai-close-btn');
         const toolBtns = document.querySelectorAll('.tool-btn');
         const fontSelect = document.getElementById('fontSelect');
         const sizeSelect = document.getElementById('sizeSelect');
@@ -1373,9 +1767,17 @@
         const enhancedAIModeToggle = document.getElementById('enhancedAIMode');
         const autoGrammarCheckToggle = document.getElementById('autoGrammarCheck');
         const aiAnimationsToggle = document.getElementById('aiAnimations');
-        const fullVersionBtn = document.getElementById('fullVersionBtn');
         const clickSound = document.getElementById('clickSound');
         const deleteSound = document.getElementById('deleteSound');
+        const dynamicIsland = document.getElementById('dynamic-island');
+        const islandAiBtn = document.getElementById('island-ai-btn');
+        const islandImageBtn = document.getElementById('island-image-btn');
+        const islandEmojiBtn = document.getElementById('island-emoji-btn');
+        const islandCopyBtn = document.getElementById('island-copy-btn');
+        const islandPasteBtn = document.getElementById('island-paste-btn');
+        const islandSettingsBtn = document.getElementById('island-settings-btn');
+        const toggleToolsBtn = document.getElementById('toggleToolsBtn');
+        const writingTools = document.getElementById('writingTools');
 
         // AI Elements
         const summaryOutput = document.getElementById('summary-output');
@@ -1408,15 +1810,31 @@
 
         // Set up event listeners
         function setupEventListeners() {
-            // Settings
-            settingsBtn.addEventListener('click', toggleSettings);
-            closeSettings.addEventListener('click', toggleSettings);
-
-            // Full version button
-            fullVersionBtn.addEventListener('click', () => {
-                window.open('https://shapes.inc/optichain', '_blank');
-                playSound('click');
+            // Dynamic Island
+            dynamicIsland.addEventListener('click', (e) => {
+                if (!e.target.closest('.island-btn')) {
+                    dynamicIsland.classList.toggle('expanded');
+                }
             });
+            
+            document.addEventListener('click', (e) => {
+                if (!dynamicIsland.contains(e.target) && dynamicIsland.classList.contains('expanded')) {
+                    dynamicIsland.classList.remove('expanded');
+                }
+            });
+            
+            islandAiBtn.addEventListener('click', toggleAISidebar);
+            islandImageBtn.addEventListener('click', insertImageFromIsland);
+            islandEmojiBtn.addEventListener('click', showEmojiPickerFromIsland);
+            islandCopyBtn.addEventListener('click', copyContent);
+            islandPasteBtn.addEventListener('click', pasteContent);
+            islandSettingsBtn.addEventListener('click', toggleSettings);
+
+            // Mobile AI close button
+            mobileAiCloseBtn.addEventListener('click', toggleAISidebar);
+
+            // Toggle tools button
+            toggleToolsBtn.addEventListener('click', toggleWritingTools);
 
             // Theme selection
             themeOptions.forEach(option => {
@@ -1431,10 +1849,6 @@
                     playSound('click');
                 });
             });
-
-            // AI toggle button
-            aiToggleBtn.addEventListener('click', toggleAISidebar);
-            aiCloseBtn.addEventListener('click', toggleAISidebar);
 
             // New note button
             newNoteBtn.addEventListener('click', createNewNote);
@@ -1490,13 +1904,7 @@
             });
 
             // Insert image
-            insertImageBtn.addEventListener('click', () => {
-                const url = prompt('Enter image URL:');
-                if (url) {
-                    document.execCommand('insertImage', false, url);
-                    playSound('click');
-                }
-            });
+            insertImageBtn.addEventListener('click', insertImage);
 
             // Insert emoji
             insertEmojiBtn.addEventListener('click', showEmojiPicker);
@@ -1540,6 +1948,19 @@
             aiAnimationsToggle.addEventListener('change', toggleAIAnimations);
         }
 
+        // Toggle writing tools visibility on mobile
+        function toggleWritingTools() {
+            toolsExpanded = !toolsExpanded;
+            if (toolsExpanded) {
+                writingTools.classList.add('expanded');
+                toggleToolsBtn.innerHTML = '<i class="fas fa-chevron-up"></i> Hide Tools';
+            } else {
+                writingTools.classList.remove('expanded');
+                toggleToolsBtn.innerHTML = '<i class="fas fa-chevron-down"></i> Show All Tools';
+            }
+            playSound('click');
+        }
+
         // Play sound effects
         function playSound(type) {
             if (type === 'click') {
@@ -1566,6 +1987,62 @@
         function toggleAISidebar() {
             aiSidebar.classList.toggle('open');
             playSound('click');
+        }
+
+        // Insert image from dynamic island
+        function insertImageFromIsland() {
+            insertImage();
+            dynamicIsland.classList.remove('expanded');
+        }
+
+        // Show emoji picker from dynamic island
+        function showEmojiPickerFromIsland() {
+            showEmojiPicker();
+            dynamicIsland.classList.remove('expanded');
+        }
+
+        // Copy content to clipboard
+        function copyContent() {
+            const text = noteEditor.textContent || noteEditor.innerText;
+            if (text.trim()) {
+                navigator.clipboard.writeText(text).then(() => {
+                    showToast('Content copied to clipboard!');
+                }).catch(err => {
+                    console.error('Failed to copy: ', err);
+                    showToast('Failed to copy content');
+                });
+            } else {
+                showToast('No content to copy');
+            }
+            dynamicIsland.classList.remove('expanded');
+        }
+
+        // Paste content from clipboard
+        function pasteContent() {
+            navigator.clipboard.readText().then(text => {
+                if (text.trim()) {
+                    document.execCommand('insertText', false, text);
+                    showToast('Content pasted!');
+                } else {
+                    showToast('No content to paste');
+                }
+            }).catch(err => {
+                console.error('Failed to paste: ', err);
+                showToast('Failed to paste content');
+            });
+            dynamicIsland.classList.remove('expanded');
+        }
+
+        // Show toast notification
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
         }
 
         // Show emoji picker
@@ -1607,11 +2084,20 @@
 
             // Close picker when clicking outside
             document.addEventListener('click', function closePicker(e) {
-                if (!emojiPicker.contains(e.target) && e.target !== insertEmojiBtn) {
+                if (!emojiPicker.contains(e.target) && e.target !== insertEmojiBtn && e.target !== islandEmojiBtn) {
                     emojiPicker.remove();
                     document.removeEventListener('click', closePicker);
                 }
             });
+        }
+
+        // Insert image
+        function insertImage() {
+            const url = prompt('Enter image URL:');
+            if (url) {
+                document.execCommand('insertImage', false, url);
+                playSound('click');
+            }
         }
 
         // Insert emoji at cursor position
