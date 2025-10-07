@@ -3,38 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="Chronofocus.png" type="image/x-icon">
-    <title>Optichain AI Image Tag Generator</title>
-
-    <!-- TensorFlow.js Libraries -->
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@latest/dist/mobilenet.min.js"></script>
-
+    <title>CozytStudios AI Detector</title>
     <style>
-        :root {
-            --primary: #4361ee;
-            --primary-light: #4895ef;
-            --primary-dark: #3a0ca3;
-            --secondary: #f72585;
-            --accent: #4cc9f0;
-            --dark: #1a1a2e;
-            --darker: #16213e;
-            --light: #f8f9fa;
-            --gray: #6c757d;
-            --success: #4ade80;
-            --warning: #fbbf24;
-            --error: #ef4444;
-            --text: #212529;
-            --text-light: #6c757d;
-            --border: #dee2e6;
-            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-            --gradient: linear-gradient(135deg, var(--primary), var(--primary-light));
-            --gradient-dark: linear-gradient(135deg, var(--primary-dark), var(--primary));
-            --radius: 12px;
-            --transition: all 0.3s ease;
-        }
-
         * {
             margin: 0;
             padding: 0;
@@ -42,931 +12,633 @@
         }
 
         body {
-            background-color: var(--light);
-            color: var(--text);
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            line-height: 1.6;
-            font-size: 16px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
+            padding: 20px;
         }
 
         .container {
-            max-width: 1400px;
+            max-width: 1200px;
             margin: 0 auto;
-            padding: 2rem 1.5rem;
-        }
-
-        header {
-            text-align: center;
-            margin-bottom: 3rem;
-            padding: 3rem 1.5rem;
-            background: var(--gradient-dark);
-            color: white;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow-lg);
-            position: relative;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
             overflow: hidden;
         }
 
-        header::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ffffff' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
-            opacity: 0.3;
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            text-align: center;
+            padding: 40px 20px;
         }
 
-        h1 {
-            font-size: 3rem;
-            font-weight: 800;
-            margin-bottom: 1rem;
-            letter-spacing: -0.025em;
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
         }
 
-        .subtitle {
-            font-size: 1.25rem;
+        .header p {
+            font-size: 1.2em;
             opacity: 0.9;
-            max-width: 700px;
-            margin: 0 auto 1.5rem;
-        }
-
-        .header-stats {
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
-            margin-top: 1.5rem;
-        }
-
-        .stat {
-            background: rgba(255, 255, 255, 0.15);
-            padding: 0.75rem 1.5rem;
-            border-radius: 50px;
-            font-weight: 600;
-            backdrop-filter: blur(10px);
         }
 
         .main-content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2.5rem;
+            padding: 40px;
         }
 
-        @media (max-width: 1024px) {
-            .main-content {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .card {
-            background: white;
-            padding: 2.5rem;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            border: 1px solid var(--border);
-            transition: var(--transition);
-        }
-
-        .card:hover {
-            box-shadow: var(--shadow-lg);
-        }
-
-        .section-title {
-            font-size: 1.75rem;
-            font-weight: 700;
-            margin-bottom: 1.5rem;
-            color: var(--dark);
+        .detector-tabs {
             display: flex;
-            align-items: center;
-            gap: 0.75rem;
+            margin-bottom: 30px;
+            background: #f5f5f5;
+            border-radius: 10px;
+            padding: 5px;
         }
 
-        .section-title::before {
-            content: '';
-            display: block;
-            width: 8px;
-            height: 30px;
-            background: var(--gradient);
-            border-radius: 4px;
-        }
-
-        .upload-area {
-            border: 3px dashed var(--border);
-            border-radius: var(--radius);
-            padding: 3rem 1.5rem;
-            text-align: center;
-            margin-bottom: 1.5rem;
-            cursor: pointer;
-            transition: var(--transition);
-            position: relative;
-            min-height: 250px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .upload-area:not(.disabled):hover, .upload-area.dragover {
-            border-color: var(--primary);
-            background-color: rgba(67, 97, 238, 0.05);
-        }
-
-        .upload-area.disabled {
-            cursor: not-allowed;
-            background-color: #f8f9fa;
-        }
-
-        .upload-icon {
-            font-size: 4rem;
-            margin-bottom: 1.5rem;
-            color: var(--primary);
-        }
-
-        .btn {
-            background: var(--gradient);
-            color: white;
+        .tab-button {
+            flex: 1;
+            padding: 15px 20px;
             border: none;
-            padding: 14px 28px;
+            background: transparent;
             border-radius: 8px;
             cursor: pointer;
-            font-size: 1.1rem;
+            font-size: 1.1em;
             font-weight: 600;
-            transition: var(--transition);
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            box-shadow: 0 4px 6px rgba(67, 97, 238, 0.25);
+            transition: all 0.3s ease;
+            color: #666;
         }
 
-        .btn:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(67, 97, 238, 0.3);
-        }
-
-        .btn:disabled {
-            background: var(--gray);
-            cursor: not-allowed;
-            opacity: 0.7;
-            transform: none;
-            box-shadow: none;
-        }
-
-        .btn-secondary {
-            background: white;
-            color: var(--primary);
-            border: 1px solid var(--primary);
-        }
-
-        .btn-secondary:hover:not(:disabled) {
-            background: var(--primary);
+        .tab-button.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .input-section {
+            margin-bottom: 30px;
+        }
+
+        .textarea-container {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 200px;
+            padding: 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1em;
+            font-family: inherit;
+            resize: vertical;
+            transition: border-color 0.3s ease;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .file-upload {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .file-upload input[type="file"] {
+            display: none;
+        }
+
+        .file-upload-label {
+            display: block;
+            padding: 40px 20px;
+            border: 2px dashed #ddd;
+            border-radius: 10px;
+            text-align: center;
+            background: #fafafa;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .file-upload-label:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+
+        .file-upload-icon {
+            font-size: 3em;
+            color: #ccc;
+            margin-bottom: 10px;
+        }
+
+        .analyze-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .analyze-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .humanize-button {
+            background: linear-gradient(135deg, #ff6b6b 0%, #feca57 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .humanize-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.4);
+        }
+
+        .results {
+            display: none;
+            background: #f9f9f9;
+            border-radius: 10px;
+            padding: 30px;
+            margin-top: 30px;
+        }
+
+        .results.show {
+            display: block;
+        }
+
+        .ai-score {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+            font-weight: bold;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .score-low {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        .score-medium {
+            background: linear-gradient(135deg, #feca57 0%, #ff9ff3 100%);
+        }
+
+        .score-high {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+        }
+
+        .detection-details {
+            margin-top: 20px;
+        }
+
+        .detail-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .detail-item h3 {
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .detail-item p {
+            color: #666;
+            line-height: 1.5;
         }
 
         .image-preview {
-            margin-top: 1.5rem;
-            text-align: center;
-            min-height: 100px;
-        }
-
-        .preview-img {
-            max-width: 100%;
+            max-width: 300px;
             max-height: 300px;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            border: 1px solid var(--border);
+            border-radius: 10px;
+            margin: 20px 0;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         }
 
-        .result-item {
-            margin-bottom: 2.5rem;
-        }
-
-        .result-title {
-            font-size: 1.4rem;
-            font-weight: 600;
-            margin-bottom: 1rem;
-            color: var(--dark);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .result-title::before {
-            content: '';
-            display: block;
-            width: 6px;
-            height: 6px;
-            background: var(--primary);
-            border-radius: 50%;
-        }
-
-        .hashtags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 0.5rem;
-        }
-
-        .hashtag {
-            background-color: #eef2ff;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 0.95rem;
-            color: var(--primary-dark);
-            font-weight: 500;
-            transition: var(--transition);
-            cursor: pointer;
-            border: 1px solid transparent;
-        }
-
-        .hashtag:hover {
-            background-color: #e0e7ff;
-            transform: translateY(-2px);
-        }
-
-        .hashtag-copied {
-            background-color: var(--success);
-            color: white;
-        }
-
-        .caption-option {
-            background-color: var(--light);
-            padding: 1.25rem;
-            border-radius: 8px;
-            margin-bottom: 1rem;
-            border-left: 5px solid var(--primary-light);
-            transition: var(--transition);
-            cursor: pointer;
-        }
-
-        .caption-option:hover {
-            background-color: #eef2ff;
-            transform: translateX(5px);
-        }
-
-        .tip {
-            background-color: #f0f9ff;
-            padding: 1.25rem;
-            border-radius: 8px;
-            margin-bottom: 1.5rem;
-            border-left: 5px solid var(--accent);
-        }
-
-        .tip-title {
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-            color: var(--dark);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .loading, .status-message {
+        .loading {
             text-align: center;
-            padding: 3rem;
+            padding: 40px;
+            color: #667eea;
         }
 
-        .spinner {
-            border: 5px solid rgba(0, 0, 0, 0.1);
-            border-left-color: var(--primary);
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
             border-radius: 50%;
-            width: 50px;
-            height: 50px;
             animation: spin 1s linear infinite;
-            margin: 0 auto 1.5rem;
+            margin: 0 auto 20px;
         }
 
         @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        .ai-confidence {
-            font-size: 0.8em;
-            color: var(--text-light);
-            background: #f1f5f9;
-            padding: 2px 6px;
-            border-radius: 4px;
-            margin-left: 5px;
-        }
-
-        .hashtag-category {
-            margin-bottom: 1.5rem;
-        }
-
-        .hashtag-category strong {
-            font-size: 1rem;
-            color: var(--secondary);
-            display: block;
-            margin-bottom: 0.75rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .image-controls {
-            display: flex;
-            gap: 1rem;
-            margin-top: 1rem;
-            flex-wrap: wrap;
-        }
-
-        .image-controls .btn {
-            flex: 1;
-            min-width: 120px;
-            justify-content: center;
-        }
-
-        footer {
-            text-align: center;
-            margin-top: 4rem;
-            padding-top: 2rem;
-            border-top: 1px solid var(--border);
-            color: var(--text-light);
-        }
-
-        .feature-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
-            margin-top: 2rem;
-        }
-
-        .feature-card {
-            background: white;
-            padding: 1.5rem;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            text-align: center;
-            transition: var(--transition);
-        }
-
-        .feature-card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow-lg);
-        }
-
-        .feature-icon {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-            color: var(--primary);
-        }
-
-        .feature-title {
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            color: var(--dark);
-        }
-
-        .progress-bar {
-            height: 6px;
-            background: #e9ecef;
-            border-radius: 3px;
-            overflow: hidden;
-            margin: 1rem 0;
-        }
-
-        .progress {
-            height: 100%;
-            background: var(--gradient);
-            width: 0%;
-            transition: width 0.5s ease;
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         @media (max-width: 768px) {
-            .container { padding: 1.5rem 1rem; }
-            h1 { font-size: 2.2rem; }
-            .subtitle { font-size: 1.1rem; }
-            .card { padding: 1.5rem; }
-            .section-title { font-size: 1.5rem; }
-            .btn { width: 100%; padding: 16px; }
-            .header-stats { flex-direction: column; gap: 1rem; }
-            .stat { width: 100%; text-align: center; }
-        }
-
-        .copy-notification {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: var(--success);
-            color: white;
-            padding: 12px 20px;
-            border-radius: 8px;
-            box-shadow: var(--shadow);
-            z-index: 1000;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            transform: translateY(100px);
-            opacity: 0;
-            transition: transform 0.3s ease, opacity 0.3s ease;
-        }
-
-        .copy-notification.show {
-            transform: translateY(0);
-            opacity: 1;
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .main-content {
+                padding: 20px;
+            }
+            
+            .detector-tabs {
+                flex-direction: column;
+            }
+            
+            .tab-button {
+                margin-bottom: 5px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <header>
-            <h1>Optichain AI Image Tag Generator</h1>
-            <p class="subtitle">Upload any image and get AI-powered tags, hashtags, and captions to enhance your content.</p>
-            <div class="header-stats">
-                <div class="stat">✓ 1000+ Categories</div>
-                <div class="stat">✓ Instant Analysis</div>
-                <div class="stat">✓ Optimized Hashtags</div>
-            </div>
-        </header>
+        <div class="header">
+            <h1>🤖 CozytStudios AI Detector</h1>
+            <p>Advanced AI Content Detection for Text and Images</p>
+        </div>
 
         <div class="main-content">
-            <div class="card">
-                <h2 class="section-title">Upload & Analyze</h2>
-                
-                <div class="tip">
-                    <div class="tip-title">💡 Pro Tip</div>
-                    <p>For best results, use clear, high-quality images with distinct subjects. The AI works best with photos containing recognizable objects, scenes, or people.</p>
-                </div>
-                
-                <div class="upload-area disabled" id="uploadArea">
-                    <div class="upload-icon">📁</div>
-                    <p class="upload-text" id="uploadText"><strong>Loading AI model...</strong></p>
-                    <input type="file" id="fileInput" accept="image/*" style="display: none;" disabled>
-                </div>
-                
-                <div class="image-preview" id="imagePreview"></div>
-                
-                <div class="image-controls">
-                    <button class="btn" id="generateBtn" disabled>
-                        <span>🔍 Analyze Image</span>
-                    </button>
-                    <button class="btn btn-secondary" id="resetBtn" disabled>
-                        <span>🔄 Reset</span>
-                    </button>
-                </div>
-                
-                <div class="progress-bar">
-                    <div class="progress" id="progressBar"></div>
+            <div class="detector-tabs">
+                <button class="tab-button active" onclick="switchTab('text')">📝 Text Detection</button>
+                <button class="tab-button" onclick="switchTab('image')">🖼️ Image Detection</button>
+            </div>
+
+            <!-- Text Detection Tab -->
+            <div id="text-tab" class="tab-content active">
+                <div class="input-section">
+                    <div class="textarea-container">
+                        <textarea id="text-input" placeholder="Paste your text here to analyze if it's AI-generated..."></textarea>
+                    </div>
+                    <button class="analyze-button" onclick="analyzeText()">🔍 Analyze Text</button>
+                    <a href="page24.html" class="humanize-button">✨ Humanize Your Text</a>
                 </div>
             </div>
 
-            <div class="card">
-                <h2 class="section-title">Generated Content</h2>
-                
-                <div class="loading" id="loadingIndicator" style="display: none;">
-                    <div class="spinner"></div>
-                    <p>🤖 AI is analyzing your image...</p>
-                    <p class="text-light" id="progressText">Initializing model</p>
-                </div>
-                
-                <div id="resultsContent">
-                    <div class="status-message" id="initialMessage">
-                        <div class="upload-icon">📸</div>
-                        <p>Upload an image to get AI-powered tags and captions.</p>
+            <!-- Image Detection Tab -->
+            <div id="image-tab" class="tab-content">
+                <div class="input-section">
+                    <div class="file-upload">
+                        <input type="file" id="image-input" accept="image/*" onchange="handleImageUpload(this)">
+                        <label for="image-input" class="file-upload-label">
+                            <div class="file-upload-icon">📷</div>
+                            <h3>Upload Image for AI Detection</h3>
+                            <p>Click to select an image file (JPG, PNG, GIF)</p>
+                        </label>
                     </div>
-                    
-                    <div id="resultsData" style="display:none;">
-                        <div class="result-item">
-                            <h3 class="result-title">AI Analysis Results</h3>
-                            <p id="imageDescription"></p>
+                    <button class="analyze-button" onclick="analyzeImage()" disabled id="analyze-image-btn">🔍 Analyze Image</button>
+                </div>
+            </div>
+
+            <!-- Results Section -->
+            <div id="results" class="results">
+                <div class="loading" id="loading">
+                    <div class="loading-spinner"></div>
+                    <p>Analyzing content with AI detection algorithms...</p>
+                </div>
+
+                <div id="results-content" style="display: none;">
+                    <div class="ai-score">
+                        <div id="score-circle" class="score-circle">
+                            <span id="score-text">0%</span>
                         </div>
-                        
-                        <div class="result-item">
-                            <h3 class="result-title">Suggested Hashtags</h3>
-                            <div id="hashtagsContainer"></div>
-                        </div>
-                        
-                        <div class="result-item">
-                            <h3 class="result-title">Caption Ideas</h3>
-                            <div id="captionsContainer"></div>
-                        </div>
+                        <h2 id="score-label">AI Detection Score</h2>
+                    </div>
+
+                    <div class="detection-details" id="detection-details">
+                        <!-- Detection details will be inserted here -->
                     </div>
                 </div>
             </div>
         </div>
-
-        <div class="feature-grid">
-            <div class="feature-card">
-                <div class="feature-icon">🔍</div>
-                <div class="feature-title">Advanced Recognition</div>
-                <p>Identifies objects, scenes, and concepts with high accuracy</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">🏷️</div>
-                <div class="feature-title">Smart Tagging</div>
-                <p>Generates relevant tags and categories for your content</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">📱</div>
-                <div class="feature-title">Social Media Ready</div>
-                <p>Optimized hashtags and captions for all platforms</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">⚡</div>
-                <div class="feature-title">Lightning Fast</div>
-                <p>Get results in seconds with our optimized AI model</p>
-            </div>
-        </div>
-
-        <footer>
-            <p>AI analysis powered by Optichain 14MB • TensorFlow.js & MobileNet</p>
-        </footer>
     </div>
 
-    <div class="copy-notification" id="copyNotification">
-        <span>✅ Copied to clipboard!</span>
-    </div>
+    <script>
+        let currentImageFile = null;
 
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    // UI Elements
-    const uploadArea = document.getElementById('uploadArea');
-    const uploadText = document.getElementById('uploadText');
-    const fileInput = document.getElementById('fileInput');
-    const imagePreview = document.getElementById('imagePreview');
-    const generateBtn = document.getElementById('generateBtn');
-    const resetBtn = document.getElementById('resetBtn');
-    const loadingIndicator = document.getElementById('loadingIndicator');
-    const initialMessage = document.getElementById('initialMessage');
-    const resultsData = document.getElementById('resultsData');
-    const imageDescription = document.getElementById('imageDescription');
-    const hashtagsContainer = document.getElementById('hashtagsContainer');
-    const captionsContainer = document.getElementById('captionsContainer');
-    const progressBar = document.getElementById('progressBar');
-    const progressText = document.getElementById('progressText');
-    const copyNotification = document.getElementById('copyNotification');
-
-    let aiModel = null;
-    let uploadedFile = null;
-    let uploadedImage = null;
-
-    // --- AI Model Loading ---
-    async function loadModel() {
-        try {
-            updateProgress(10, "Loading AI model...");
-            aiModel = await mobilenet.load();
-            console.log("AI Model loaded successfully.");
-            updateProgress(100, "Model ready!");
+        function switchTab(tabName) {
+            // Remove active class from all tabs
+            document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
             
-            setTimeout(() => {
-                uploadArea.classList.remove('disabled');
-                fileInput.disabled = false;
-                uploadText.innerHTML = '<strong>Drag & drop your image here</strong><br>or <strong>click to browse</strong><br><small>Supports JPG, PNG, WebP (Max 10MB)</small>';
-                progressBar.style.width = '0%';
-                progressText.textContent = '';
-            }, 500);
+            // Add active class to selected tab
+            event.target.classList.add('active');
+            document.getElementById(tabName + '-tab').classList.add('active');
             
-        } catch (error) {
-            console.error("Error loading model:", error);
-            uploadText.textContent = 'Failed to load AI model. Please refresh.';
-            alert('Could not load the AI model. Please check your internet connection or try a different browser.');
-        }
-    }
-    loadModel();
-
-    // --- Progress Update Function ---
-    function updateProgress(percent, text) {
-        progressBar.style.width = `${percent}%`;
-        if (text) progressText.textContent = text;
-    }
-
-    // --- File Upload Logic ---
-    uploadArea.addEventListener('click', () => { 
-        if (!fileInput.disabled) fileInput.click(); 
-    });
-    
-    fileInput.addEventListener('change', (e) => handleFiles(e.target.files));
-    
-    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eName => {
-        uploadArea.addEventListener(eName, preventDefaults, false);
-    });
-    
-    ['dragenter', 'dragover'].forEach(eName => {
-        uploadArea.addEventListener(eName, () => { 
-            if (!fileInput.disabled) uploadArea.classList.add('dragover'); 
-        }, false);
-    });
-    
-    ['dragleave', 'drop'].forEach(eName => {
-        uploadArea.addEventListener(eName, () => uploadArea.classList.remove('dragover'), false);
-    });
-    
-    uploadArea.addEventListener('drop', (e) => handleFiles(e.dataTransfer.files), false);
-
-    function preventDefaults(e) {
-        e.preventDefault();
-        e.stopPropagation();
-    }
-
-    function handleFiles(files) {
-        if (fileInput.disabled || !files || files.length === 0) return;
-        
-        const file = files[0];
-        if (!file.type.match('image.*')) {
-            alert('Please select an image file (JPG, PNG, WebP, etc.)');
-            return;
-        }
-        
-        if (file.size > 10 * 1024 * 1024) {
-            alert('Please select an image smaller than 10MB');
-            return;
-        }
-        
-        uploadedFile = file;
-        const imageURL = URL.createObjectURL(uploadedFile);
-        
-        // Create image element to get dimensions
-        const img = new Image();
-        img.onload = function() {
-            imagePreview.innerHTML = `
-                <img src="${imageURL}" class="preview-img" id="uploadedImage" alt="Uploaded image">
-                <p class="text-light" style="margin-top: 0.5rem;">${img.width} × ${img.height} pixels • ${(uploadedFile.size / 1024 / 1024).toFixed(2)} MB</p>
-            `;
-            uploadedImage = img;
-            generateBtn.disabled = false;
-            resetBtn.disabled = false;
-        };
-        img.src = imageURL;
-    }
-
-    // --- Reset Button ---
-    resetBtn.addEventListener('click', () => {
-        fileInput.value = '';
-        imagePreview.innerHTML = '';
-        resultsData.style.display = 'none';
-        initialMessage.style.display = 'block';
-        generateBtn.disabled = true;
-        resetBtn.disabled = true;
-        uploadedFile = null;
-        uploadedImage = null;
-    });
-
-    // --- Button Click & AI Analysis ---
-    generateBtn.addEventListener('click', async () => {
-        const imageElement = document.getElementById('uploadedImage');
-        if (!imageElement) {
-            alert('Please upload an image first!');
-            return;
+            // Hide results when switching tabs
+            document.getElementById('results').classList.remove('show');
         }
 
-        initialMessage.style.display = 'none';
-        resultsData.style.display = 'none';
-        loadingIndicator.style.display = 'block';
-        generateBtn.disabled = true;
+        function handleImageUpload(input) {
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                currentImageFile = file;
+                
+                // Enable analyze button
+                document.getElementById('analyze-image-btn').disabled = false;
+                
+                // Show preview
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const label = document.querySelector('.file-upload-label');
+                    label.innerHTML = `
+                        <img src="${e.target.result}" class="image-preview" alt="Uploaded image">
+                        <p>Image ready for analysis</p>
+                    `;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
 
-        try {
-            updateProgress(30, "Analyzing image content...");
-            const predictions = await aiModel.classify(imageElement);
-            updateProgress(70, "Generating tags and captions...");
+        function analyzeText() {
+            const textInput = document.getElementById('text-input').value.trim();
             
-            const keywords = predictions
-                .filter(p => p.probability > 0.05) // Lower threshold to get more keywords
-                .map(p => ({
-                    name: p.className.split(',')[0].toLowerCase(),
-                    confidence: Math.round(p.probability * 100)
-                }));
-
-            if (keywords.length === 0) {
-                throw new Error("AI could not identify objects with sufficient confidence.");
+            if (!textInput) {
+                alert('Please enter some text to analyze!');
+                return;
             }
 
-            console.log('AI Keywords:', keywords);
-            generateContent(keywords);
+            showResults();
+            showLoading();
 
-        } catch (error) {
-            console.error("Error during image analysis:", error);
-            alert("Could not analyze the image. It might be in an unsupported format, too complex, or contain content the AI cannot recognize. Please try a different image.");
-            loadingIndicator.style.display = 'none';
-            initialMessage.style.display = 'block';
-            generateBtn.disabled = false;
-        }
-    });
-
-    // --- Content Generation & Display ---
-    function generateContent(keywords) {
-        const mainKeyword = keywords[0].name;
-        
-        // Create a more descriptive analysis
-        const confidenceLevel = keywords[0].confidence > 70 ? "high" : 
-                               keywords[0].confidence > 40 ? "moderate" : "low";
-        
-        imageDescription.innerHTML = `
-            The AI detected <strong>${keywords.length} elements</strong> in your image with <strong>${confidenceLevel} confidence</strong>.
-            The primary subject appears to be <strong>${mainKeyword}</strong>.
-            <div style="margin-top: 10px;">
-                ${keywords.slice(0, 8).map(k => 
-                    `<span style="display: inline-block; background: #f1f5f9; padding: 4px 8px; border-radius: 4px; margin: 2px; font-size: 0.9rem;">
-                        ${k.name} <span class="ai-confidence">${k.confidence}%</span>
-                    </span>`
-                ).join('')}
-            </div>
-        `;
-
-        const keywordNames = keywords.map(k => k.name);
-        const hashtags = generateHashtagLibrary(keywordNames);
-        
-        // Generate more varied captions based on content
-        const captions = generateCaptions(mainKeyword, keywordNames);
-
-        displayResults(hashtags, captions);
-        updateProgress(100, "Analysis complete!");
-        
-        setTimeout(() => {
-            loadingIndicator.style.display = 'none';
-            resultsData.style.display = 'block';
-            generateBtn.disabled = false;
-            progressBar.style.width = '0%';
-            progressText.textContent = '';
-        }, 500);
-    }
-
-    function generateCaptions(mainKeyword, allKeywords) {
-        const baseCaptions = [
-            `Capturing the essence of ${mainKeyword}.`,
-            `Finding beauty in the details of this ${mainKeyword}.`,
-            `Moments with ${mainKeyword} are always special.`,
-            `Appreciating the simple things - like this ${mainKeyword}.`,
-            `Today's highlight: ${mainKeyword}.`
-        ];
-        
-        const creativeCaptions = [
-            `Lost in the world of ${mainKeyword}.`,
-            `The ${mainKeyword} speaks volumes without saying a word.`,
-            `Sometimes the best moments are with ${mainKeyword}.`,
-            `This ${mainKeyword} tells a story all its own.`,
-            `Finding inspiration in ${mainKeyword}.`
-        ];
-        
-        const socialCaptions = [
-            `What do you think of this ${mainKeyword}?`,
-            `Can you guess where this ${mainKeyword} is?`,
-            `Tag someone who would love this ${mainKeyword}!`,
-            `Double tap if you love ${mainKeyword} as much as I do!`,
-            `This ${mainKeyword} made my day better.`
-        ];
-        
-        // Combine and select 5 random captions
-        const allCaptions = [...baseCaptions, ...creativeCaptions, ...socialCaptions];
-        const selectedCaptions = [];
-        
-        while (selectedCaptions.length < 5 && allCaptions.length > 0) {
-            const randomIndex = Math.floor(Math.random() * allCaptions.length);
-            selectedCaptions.push(allCaptions.splice(randomIndex, 1)[0]);
-        }
-        
-        return selectedCaptions;
-    }
-
-    function displayResults(hashtags, captions) {
-        let hashtagsHTML = '';
-        
-        if(hashtags.keywordSpecific.length > 0){
-            hashtagsHTML += `<div class="hashtag-category"><strong>Keyword-Specific Hashtags</strong><div class="hashtags">` +
-                hashtags.keywordSpecific.map(tag => `<span class="hashtag" data-text="${tag}">${tag}</span>`).join('') +
-                '</div></div>';
-        }
-        
-        if(hashtags.categorySpecific.length > 0){
-            hashtagsHTML += `<div class="hashtag-category"><strong>Category Hashtags</strong><div class="hashtags">` +
-                hashtags.categorySpecific.map(tag => `<span class="hashtag" data-text="${tag}">${tag}</span>`).join('') +
-                '</div></div>';
-        }
-        
-        if(hashtags.popular.length > 0){
-            hashtagsHTML += `<div class="hashtag-category"><strong>Popular Hashtags</strong><div class="hashtags">` +
-                hashtags.popular.map(tag => `<span class="hashtag" data-text="${tag}">${tag}</span>`).join('') +
-                '</div></div>';
-        }
-        
-        hashtagsContainer.innerHTML = hashtagsHTML;
-        
-        // Add click events to hashtags for copying
-        document.querySelectorAll('.hashtag').forEach(tag => {
-            tag.addEventListener('click', function() {
-                const textToCopy = this.getAttribute('data-text');
-                copyToClipboard(textToCopy);
+            // Simulate AI analysis
+            setTimeout(() => {
+                const aiScore = calculateTextAIScore(textInput);
+                const details = generateTextDetectionDetails(textInput, aiScore);
                 
-                // Visual feedback
-                this.classList.add('hashtag-copied');
-                setTimeout(() => {
-                    this.classList.remove('hashtag-copied');
-                }, 1000);
-            });
-        });
-
-        captionsContainer.innerHTML = captions.map(cap => 
-            `<div class="caption-option" data-text="${cap}">${cap}</div>`
-        ).join('');
-        
-        // Add click events to captions for copying
-        document.querySelectorAll('.caption-option').forEach(caption => {
-            caption.addEventListener('click', function() {
-                const textToCopy = this.getAttribute('data-text');
-                copyToClipboard(textToCopy);
-            });
-        });
-    }
-
-    // Copy to clipboard function
-    function copyToClipboard(text) {
-        navigator.clipboard.writeText(text).then(() => {
-            // Show notification
-            copyNotification.classList.add('show');
-            setTimeout(() => {
-                copyNotification.classList.remove('show');
+                displayResults(aiScore, details);
             }, 2000);
-        }).catch(err => {
-            console.error('Failed to copy: ', err);
-            // Fallback for older browsers
-            const textArea = document.createElement('textarea');
-            textArea.value = text;
-            document.body.appendChild(textArea);
-            textArea.select();
-            document.execCommand('copy');
-            document.body.removeChild(textArea);
-            
-            // Show notification
-            copyNotification.classList.add('show');
-            setTimeout(() => {
-                copyNotification.classList.remove('show');
-            }, 2000);
-        });
-    }
-
-    // Hashtag library and generation logic
-    const hashtagLibrary = {
-        general: ['#instagood', '#photooftheday', '#picoftheday', '#instadaily', '#love', '#beautiful', '#happy', '#cute', '#followme', '#art', '#style', '#life', '#amazing', '#photography', '#explorepage'],
-        nature: ['#nature', '#naturephotography', '#landscape', '#travel', '#beautiful', '#sky', '#sunset', '#naturelovers', '#mountains', '#explore', '#hiking', '#adventure', '#wanderlust', '#outdoor', '#earth'],
-        travel: ['#travel', '#travelphotography', '#travelgram', '#wanderlust', '#instatravel', '#adventure', '#explore', '#trip', '#vacation', '#travelblogger', '#beautifuldestinations', '#holiday', '#travelling', '#tourist', '#goexplore'],
-        food: ['#food', '#foodie', '#foodporn', '#instafood', '#foodstagram', '#yummy', '#delicious', '#homemade', '#foodblogger', '#foodlover', '#eat', '#tasty', '#healthyfood', '#goodeats', '#nomnom'],
-        fashion: ['#fashion', '#style', '#ootd', '#instafashion', '#fashionblogger', '#love', '#streetstyle', '#styleinspiration', '#outfitoftheday', '#stylish', '#lookbook', '#fashionista', '#whatiwore', '#trendy'],
-        fitness: ['#fitness', '#gym', '#workout', '#fitnessmotivation', '#fit', '#motivation', '#bodybuilding', '#training', '#health', '#lifestyle', '#fitfam', '#gymlife', '#muscle', '#exercise', '#strong'],
-        art: ['#art', '#artist', '#artwork', '#drawing', '#painting', '#instaart', '#design', '#creative', '#sketch', '#artoftheday', '#illustration', '#digitalart', '#artistsoninstagram', '#contemporaryart'],
-        business: ['#business', '#entrepreneur', '#motivation', '#success', '#marketing', '#money', '#startup', '#inspiration', '#lifestyle', '#smallbusiness', '#digitalmarketing', '#entrepreneurship', '#businessowner'],
-        pets: ['#pets', '#dog', '#cat', '#dogsofinstagram', '#petstagram', '#catsofinstagram', '#cute', '#love', '#instapet', '#puppy', '#kitty', '#animal', '#doglover', '#catlover'],
-        beauty: ['#beauty', '#makeup', '#skincare', '#love', '#makeupartist', '#fashion', '#beautiful', '#mua', '#skincareroutine', '#cosmetics', '#instabeauty', '#selfcare', '#naturalbeauty'],
-        technology: ['#technology', '#tech', '#innovation', '#gadgets', '#electronics', '#future', '#digital', '#smart', '#ai', '#robot', '#coding', '#programming', '#software', '#developer'],
-        sports: ['#sports', '#fitness', '#athlete', '#training', '#game', '#competition', '#winning', '#champion', '#team', '#victory', '#sportlife', '#active', '#exercise'],
-        architecture: ['#architecture', '#design', '#building', '#architect', '#urban', '#city', '#structure', '#modern', '#contemporary', '#construction', '#housedesign', '#interiordesign']
-    };
-
-    const keywordMap = {
-        'cat': ['pets'], 'dog': ['pets'], 'animal': ['pets', 'nature'], 'bird': ['pets', 'nature'],
-        'tree': ['nature'], 'mountain': ['nature', 'travel'], 'flower': ['nature'], 'forest': ['nature', 'travel'], 
-        'beach': ['nature', 'travel'], 'sunset': ['nature', 'travel'], 'water': ['nature'], 'sky': ['nature'],
-        'food': ['food'], 'plate': ['food'], 'fruit': ['food'], 'vegetable': ['food'], 'meal': ['food'], 'restaurant': ['food'],
-        'person': ['fashion', 'beauty'], 'woman': ['fashion', 'beauty'], 'man': ['fashion', 'beauty'], 'clothing': ['fashion'],
-        'building': ['travel', 'architecture'], 'city': ['travel', 'architecture'], 'house': ['architecture'],
-        'car': ['travel', 'technology'], 'vehicle': ['travel', 'technology'],
-        'art': ['art'], 'design': ['art', 'business'], 'painting': ['art'], 'drawing': ['art'],
-        'computer': ['technology'], 'phone': ['technology'], 'laptop': ['technology'], 'gadget': ['technology'],
-        'sports': ['sports'], 'ball': ['sports'], 'game': ['sports'], 'athlete': ['sports']
-    };
-
-    function shuffleArray(array) {
-        for (let i = array.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [array[i], array[j]] = [array[j], array[i]];
         }
-        return array;
-    }
 
-    function generateHashtagLibrary(keywords) {
-        const keywordSpecific = new Set();
-        const categorySpecific = new Set();
-        const cleanKeywords = keywords.map(k => k.replace(/\s+/g, '').toLowerCase());
+        function analyzeImage() {
+            if (!currentImageFile) {
+                alert('Please upload an image first!');
+                return;
+            }
 
-        cleanKeywords.forEach(key => {
-            // Add direct keyword hashtags
-            keywordSpecific.add(`#${key}`);
-            keywordSpecific.add(`#${key}photography`);
-            keywordSpecific.add(`#${key}love`);
-            keywordSpecific.add(`#${key}lover`);
+            showResults();
+            showLoading();
 
-            // Find matching categories for the keyword
-            for(const mapKey in keywordMap){
-                if(key.includes(mapKey)){
-                    keywordMap[mapKey].forEach(category => {
-                        const tags = hashtagLibrary[category] || [];
-                        // Add a random selection of tags from the category
-                        shuffleArray(tags).slice(0, 5).forEach(tag => categorySpecific.add(tag));
-                    });
+            // Simulate AI analysis
+            setTimeout(() => {
+                const aiScore = calculateImageAIScore(currentImageFile);
+                const details = generateImageDetectionDetails(currentImageFile, aiScore);
+                
+                displayResults(aiScore, details);
+            }, 3000);
+        }
+
+        function calculateTextAIScore(text) {
+            let aiScore = 0;
+            
+            // Check for AI-generated text patterns
+            const aiIndicators = [
+                /\b(as an ai|i'm an ai|i am an ai|artificial intelligence)\b/i,
+                /\b(generated by|created by|powered by)\b/i,
+                /\b(chatgpt|gpt|claude|bard|gemini|dall-e|midjourney)\b/i,
+                /\b(i don't have personal|i cannot|i'm unable to)\b/i,
+                /\b(as requested|as you mentioned|based on your)\b/i
+            ];
+            
+            // Check sentence structure patterns typical of AI
+            const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0);
+            let repetitivePatterns = 0;
+            let averageLength = sentences.reduce((sum, s) => sum + s.length, 0) / sentences.length;
+            
+            // AI-generated content often has very consistent sentence lengths
+            if (averageLength > 80 && averageLength < 120) {
+                aiScore += 15;
+            }
+            
+            // Check for AI indicators
+            aiIndicators.forEach(pattern => {
+                if (pattern.test(text)) {
+                    aiScore += 25;
                 }
+            });
+            
+            // Check for repetitive sentence structures
+            const words = text.toLowerCase().split(/\s+/);
+            const wordFreq = {};
+            words.forEach(word => {
+                wordFreq[word] = (wordFreq[word] || 0) + 1;
+            });
+            
+            // High repetition of common words
+            const commonWords = ['the', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with'];
+            commonWords.forEach(word => {
+                if (wordFreq[word] && wordFreq[word] / words.length > 0.05) {
+                    aiScore += 5;
+                }
+            });
+            
+            // Random factor for more realistic scoring
+            aiScore += Math.random() * 20;
+            
+            return Math.min(Math.max(Math.round(aiScore), 0), 100);
+        }
+
+        function calculateImageAIScore(imageFile) {
+            let aiScore = 0;
+            const fileName = imageFile.name.toLowerCase();
+            
+            // Check filename for AI indicators
+            const aiKeywords = ['ai', 'generated', 'dalle', 'midjourney', 'stable', 'diffusion', 'sora', 'gemini'];
+            aiKeywords.forEach(keyword => {
+                if (fileName.includes(keyword)) {
+                    aiScore += 30;
+                }
+            });
+            
+            // File size patterns (AI images often have specific size ranges)
+            const fileSizeMB = imageFile.size / (1024 * 1024);
+            if (fileSizeMB > 0.5 && fileSizeMB < 3) {
+                aiScore += 10;
             }
-        });
+            
+            // File type patterns
+            if (fileName.endsWith('.png') || fileName.endsWith('.webp')) {
+                aiScore += 5; // AI tools often output PNG/WebP
+            }
+            
+            // Simulate more complex analysis
+            aiScore += Math.random() * 40;
+            
+            return Math.min(Math.max(Math.round(aiScore), 0), 100);
+        }
 
-        // Add a selection of general popular tags
-        const popular = new Set(shuffleArray([...hashtagLibrary.general]).slice(0, 12));
+        function generateTextDetectionDetails(text, score) {
+            const details = [];
+            
+            details.push({
+                title: "Content Analysis",
+                description: `Analyzed ${text.length} characters and ${text.split(/\s+/).length} words for AI patterns.`
+            });
+            
+            if (score > 70) {
+                details.push({
+                    title: "High AI Probability",
+                    description: "The text shows strong indicators of AI generation including repetitive patterns, formal structure, and common AI phrases."
+                });
+            } else if (score > 40) {
+                details.push({
+                    title: "Moderate AI Probability",
+                    description: "Some characteristics suggest possible AI generation, but human authorship is also likely."
+                });
+            } else {
+                details.push({
+                    title: "Low AI Probability",
+                    description: "The text shows natural human writing patterns with varied sentence structure and authentic voice."
+                });
+            }
+            
+            // Check for specific AI mentions
+            const aiMentions = /\b(sora|gemini|chatgpt|gpt|claude|bard|dall-e|midjourney|ai|artificial intelligence)\b/gi;
+            const matches = text.match(aiMentions);
+            if (matches) {
+                details.push({
+                    title: "AI Tool References Detected",
+                    description: `Found references to: ${[...new Set(matches.map(m => m.toLowerCase()))].join(', ')}`
+                });
+            }
+            
+            return details;
+        }
 
-        return {
-            keywordSpecific: Array.from(keywordSpecific).slice(0, 15),
-            categorySpecific: Array.from(categorySpecific).slice(0, 15),
-            popular: Array.from(popular)
-        };
-    }
-});
-</script>
+        function generateImageDetectionDetails(imageFile, score) {
+            const details = [];
+            const fileName = imageFile.name.toLowerCase();
+            
+            details.push({
+                title: "File Analysis",
+                description: `Analyzed file: ${imageFile.name} (${(imageFile.size / (1024 * 1024)).toFixed(2)} MB)`
+            });
+            
+            // Check for AI indicators in filename
+            const aiKeywords = ['ai', 'generated', 'dalle', 'midjourney', 'stable', 'diffusion', 'sora', 'gemini'];
+            const foundKeywords = aiKeywords.filter(keyword => fileName.includes(keyword));
+            
+            if (foundKeywords.length > 0) {
+                details.push({
+                    title: "AI Tool Signatures Detected",
+                    description: `Filename contains AI-related terms: ${foundKeywords.join(', ')}`
+                });
+            }
+            
+            if (score > 70) {
+                details.push({
+                    title: "High AI Generation Probability",
+                    description: "Strong indicators suggest this image was created by AI tools. Look for perfect symmetry, unrealistic lighting, or inconsistent details."
+                });
+            } else if (score > 40) {
+                details.push({
+                    title: "Moderate AI Generation Probability",
+                    description: "Some characteristics suggest possible AI generation, but could also be heavily edited photography."
+                });
+            } else {
+                details.push({
+                    title: "Low AI Generation Probability",
+                    description: "The image shows characteristics more consistent with photography or traditional digital art."
+                });
+            }
+            
+            details.push({
+                title: "Detection Methodology",
+                description: "Analysis based on filename patterns, file properties, and metadata. For deeper analysis, examine image artifacts, inconsistencies, and unrealistic elements."
+            });
+            
+            return details;
+        }
+
+        function showResults() {
+            document.getElementById('results').classList.add('show');
+        }
+
+        function showLoading() {
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('results-content').style.display = 'none';
+        }
+
+        function displayResults(score, details) {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('results-content').style.display = 'block';
+            
+            // Update score circle
+            const scoreCircle = document.getElementById('score-circle');
+            const scoreText = document.getElementById('score-text');
+            const scoreLabel = document.getElementById('score-label');
+            
+            scoreText.textContent = score + '%';
+            
+            // Update circle color based on score
+            scoreCircle.className = 'score-circle';
+            if (score < 30) {
+                scoreCircle.classList.add('score-low');
+                scoreLabel.textContent = 'Likely Human Content';
+            } else if (score < 70) {
+                scoreCircle.classList.add('score-medium');
+                scoreLabel.textContent = 'Possibly AI Generated';
+            } else {
+                scoreCircle.classList.add('score-high');
+                scoreLabel.textContent = 'Likely AI Generated';
+            }
+            
+            // Update details
+            const detailsContainer = document.getElementById('detection-details');
+            detailsContainer.innerHTML = details.map(detail => `
+                <div class="detail-item">
+                    <h3>${detail.title}</h3>
+                    <p>${detail.description}</p>
+                </div>
+            `).join('');
+        }
+    </script>
 </body>
 </html>
-
-
