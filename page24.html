@@ -3,8 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Humanize Your Text - CozytStudios</title>
+    <title>AI Text Humanizer - Next Generation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
     <style>
+        :root {
+            --primary-bg: #0a0a0a;
+            --secondary-bg: #1a1a1a;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-primary: #ffffff;
+            --text-secondary: #b3b3b3;
+            --text-muted: #666666;
+            --accent-yellow: #ffd700;
+            --accent-orange: #ff8c00;
+            --gradient-primary: linear-gradient(135deg, #ffd700 0%, #ff8c00 100%);
+            --gradient-glass: linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+            --shadow-glass: 0 8px 32px rgba(0, 0, 0, 0.3);
+            --shadow-glow: 0 0 20px rgba(255, 215, 0, 0.3);
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -12,205 +30,519 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #ff6b6b 0%, #feca57 100%);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--primary-bg);
+            color: var(--text-primary);
             min-height: 100vh;
-            padding: 20px;
+            overflow-x: hidden;
         }
 
+        /* Animated Background */
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(45deg, #0a0a0a 0%, #1a1a1a 50%, #0a0a0a 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+        }
+
+        .animated-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(circle at 20% 50%, rgba(255, 215, 0, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 140, 0, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 40% 80%, rgba(255, 215, 0, 0.02) 0%, transparent 50%);
+            animation: floatBubbles 20s ease-in-out infinite;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        @keyframes floatBubbles {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-10px) rotate(2deg); }
+            66% { transform: translateY(5px) rotate(-1deg); }
+        }
+
+        /* Main Container */
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
+        /* Header */
         .header {
-            background: linear-gradient(135deg, #ff6b6b 0%, #feca57 100%);
-            color: white;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 32px;
+            margin-bottom: 24px;
             text-align: center;
-            padding: 40px 20px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-glass);
+            animation: slideInDown 0.8s ease-out;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.1), transparent);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
         }
 
         .header h1 {
-            font-size: 2.5em;
-            margin-bottom: 10px;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 16px;
+            text-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { filter: drop-shadow(0 0 5px rgba(255, 215, 0, 0.3)); }
+            to { filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.6)); }
         }
 
         .header p {
-            font-size: 1.2em;
-            opacity: 0.9;
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            font-weight: 400;
         }
 
-        .main-content {
-            padding: 40px;
-        }
-
-        .navigation {
-            margin-bottom: 30px;
-        }
-
-        .back-button {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 8px;
-            font-size: 1em;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.3s ease;
-        }
-
-        .back-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
-        }
-
-        .humanizer-section {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            margin-bottom: 30px;
-        }
-
-        .input-panel, .output-panel {
-            background: #f9f9f9;
-            border-radius: 15px;
-            padding: 25px;
-        }
-
-        .panel-title {
-            font-size: 1.3em;
-            font-weight: 600;
-            margin-bottom: 15px;
-            color: #333;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .text-area {
-            width: 100%;
-            min-height: 300px;
-            padding: 20px;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            font-size: 1em;
-            font-family: inherit;
-            resize: vertical;
-            transition: border-color 0.3s ease;
-            line-height: 1.6;
-        }
-
-        .text-area:focus {
-            outline: none;
-            border-color: #ff6b6b;
-            box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.1);
-        }
-
-        .output-area {
-            background: white;
-            color: #333;
-            cursor: text;
-        }
-
-        .humanize-controls {
-            margin-top: 20px;
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-
-        .humanize-button {
-            background: linear-gradient(135deg, #ff6b6b 0%, #feca57 100%);
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            border-radius: 10px;
-            font-size: 1.1em;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
+        /* Chat Container */
+        .chat-container {
             flex: 1;
-            min-width: 200px;
+            display: flex;
+            flex-direction: column;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: var(--shadow-glass);
+            animation: slideInUp 0.8s ease-out 0.2s both;
         }
 
-        .humanize-button:hover {
+        /* Messages Area */
+        .messages-area {
+            flex: 1;
+            padding: 32px;
+            overflow-y: auto;
+            min-height: 400px;
+            max-height: 600px;
+            scroll-behavior: smooth;
+        }
+
+        .messages-area::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .messages-area::-webkit-scrollbar-track {
+            background: var(--secondary-bg);
+            border-radius: 10px;
+        }
+
+        .messages-area::-webkit-scrollbar-thumb {
+            background: var(--gradient-primary);
+            border-radius: 10px;
+        }
+
+        .message {
+            margin-bottom: 24px;
+            animation: fadeInScale 0.6s ease-out;
+        }
+
+        .message-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            font-weight: 600;
+            box-shadow: var(--shadow-glow);
+        }
+
+        .user-avatar {
+            background: var(--gradient-primary);
+            color: var(--primary-bg);
+        }
+
+        .ai-avatar {
+            background: var(--glass-bg);
+            border: 2px solid var(--accent-yellow);
+            color: var(--accent-yellow);
+        }
+
+        .message-content {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .user-message .message-content {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(255, 140, 0, 0.1));
+            border-color: var(--accent-yellow);
+        }
+
+        .ai-message .message-content {
+            border-color: var(--glass-border);
+        }
+
+        .message-text {
+            font-size: 1rem;
+            line-height: 1.6;
+            word-wrap: break-word;
+        }
+
+        /* Typing Animation */
+        .typing-indicator {
+            display: none;
+            padding: 20px;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            margin-bottom: 24px;
+        }
+
+        .typing-dots {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--accent-yellow);
+            animation: typingPulse 1.4s infinite ease-in-out both;
+        }
+
+        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes typingPulse {
+            0%, 80%, 100% {
+                transform: scale(0.8);
+                opacity: 0.5;
+            }
+            40% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* Input Area */
+        .input-area {
+            padding: 24px 32px;
+            background: var(--secondary-bg);
+            border-top: 1px solid var(--glass-border);
+        }
+
+        .input-container {
+            position: relative;
+            display: flex;
+            gap: 16px;
+            align-items: flex-end;
+        }
+
+        .input-field {
+            flex: 1;
+            background: var(--glass-bg);
+            border: 2px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 16px 20px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            font-family: inherit;
+            resize: none;
+            min-height: 56px;
+            max-height: 200px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: var(--accent-yellow);
+            box-shadow: 0 0 0 4px rgba(255, 215, 0, 0.2);
+        }
+
+        .input-field::placeholder {
+            color: var(--text-muted);
+        }
+
+        .send-button {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            border: none;
+            background: var(--gradient-primary);
+            color: var(--primary-bg);
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-glow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .send-button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.4);
+            box-shadow: 0 8px 25px rgba(255, 215, 0, 0.4);
         }
 
-        .humanize-button:disabled {
-            background: #ccc;
+        .send-button:active {
+            transform: scale(0.95);
+        }
+
+        .send-button:disabled {
+            opacity: 0.5;
             cursor: not-allowed;
             transform: none;
-            box-shadow: none;
         }
 
-        .copy-button {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-            min-width: 120px;
-            flex: 0;
+        .send-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.6s;
         }
 
-        .copy-button:hover {
-            box-shadow: 0 8px 25px rgba(79, 172, 254, 0.4);
+        .send-button:hover::before {
+            left: 100%;
+        }
+
+        /* Features Panel */
+        .features-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 32px;
+            margin-top: 24px;
+            box-shadow: var(--shadow-glass);
+            animation: slideInUp 0.8s ease-out 0.4s both;
         }
 
         .features-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 20px;
-            margin-top: 40px;
         }
 
         .feature-card {
-            background: white;
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 24px;
             text-align: center;
-            border: 1px solid #f0f0f0;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--gradient-glass);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--accent-yellow);
+            box-shadow: var(--shadow-glow);
+        }
+
+        .feature-card:hover::before {
+            opacity: 1;
         }
 
         .feature-icon {
-            font-size: 2.5em;
-            margin-bottom: 15px;
+            font-size: 2.5rem;
+            margin-bottom: 16px;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            position: relative;
+            z-index: 1;
         }
 
-        .feature-card h3 {
-            color: #333;
-            margin-bottom: 10px;
-            font-size: 1.2em;
+        .feature-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--text-primary);
+            position: relative;
+            z-index: 1;
         }
 
-        .feature-card p {
-            color: #666;
+        .feature-description {
+            color: var(--text-secondary);
             line-height: 1.5;
+            position: relative;
+            z-index: 1;
         }
 
-        .processing {
+        /* Copy Button */
+        .copy-button {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            padding: 8px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+        }
+
+        .message-content:hover .copy-button {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .copy-button:hover {
+            background: var(--accent-yellow);
+            color: var(--primary-bg);
+        }
+
+        /* Animations */
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.9) translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 12px;
+            }
+            
+            .header h1 {
+                font-size: 2.5rem;
+            }
+            
+            .header p {
+                font-size: 1rem;
+            }
+            
+            .messages-area {
+                padding: 20px;
+            }
+            
+            .input-area {
+                padding: 16px 20px;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Loading Animation */
+        .processing-animation {
             display: none;
             text-align: center;
-            padding: 20px;
-            color: #ff6b6b;
+            padding: 24px;
         }
 
         .processing-spinner {
-            width: 30px;
-            height: 30px;
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #ff6b6b;
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--glass-border);
+            border-top: 3px solid var(--accent-yellow);
             border-radius: 50%;
             animation: spin 1s linear infinite;
-            margin: 0 auto 15px;
+            margin: 0 auto 16px;
         }
 
         @keyframes spin {
@@ -218,306 +550,539 @@
             100% { transform: rotate(360deg); }
         }
 
-        @media (max-width: 768px) {
-            .header h1 {
-                font-size: 2em;
-            }
-            
-            .main-content {
-                padding: 20px;
-            }
-            
-            .humanizer-section {
-                grid-template-columns: 1fr;
-                gap: 20px;
-            }
-            
-            .humanize-controls {
-                flex-direction: column;
-            }
-            
-            .humanize-button {
-                min-width: auto;
-            }
-            
-            .features-grid {
-                grid-template-columns: 1fr;
-            }
+        .processing-text {
+            color: var(--text-secondary);
+            font-size: 1rem;
         }
     </style>
 </head>
 <body>
+    <div class="animated-bg"></div>
+    
     <div class="container">
         <div class="header">
-            <h1>✨ Humanize Your Text</h1>
-            <p>Transform AI-generated content into natural, human-like writing</p>
+            <h1><i class="fas fa-robot"></i> AI Text Humanizer</h1>
+            <p>Transform AI-generated content into natural, human-like writing with advanced neural processing</p>
         </div>
 
-        <div class="main-content">
-            <div class="navigation">
-                <a href="index.html" class="back-button">
-                    ← Back to AI Detector
-                </a>
-            </div>
-
-            <div class="humanizer-section">
-                <div class="input-panel">
-                    <div class="panel-title">
-                        🤖 AI-Generated Text
+        <div class="chat-container">
+            <div class="messages-area" id="messagesArea">
+                <div class="message ai-message">
+                    <div class="message-header">
+                        <div class="avatar ai-avatar">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <span class="message-author">AI Humanizer</span>
                     </div>
-                    <textarea 
-                        id="ai-text-input" 
-                        class="text-area" 
-                        placeholder="Paste your AI-generated text here that you want to humanize...&#10;&#10;The tool will:&#10;• Add natural variations in sentence structure&#10;• Include human-like imperfections&#10;• Vary vocabulary and tone&#10;• Remove repetitive patterns&#10;• Add personal touches and authenticity"
-                    ></textarea>
-                    
-                    <div class="humanize-controls">
-                        <button class="humanize-button" onclick="humanizeText()">
-                            ✨ Humanize Text
-                        </button>
-                    </div>
-                </div>
-
-                <div class="output-panel">
-                    <div class="panel-title">
-                        👤 Humanized Text
-                    </div>
-                    <textarea 
-                        id="humanized-output" 
-                        class="text-area output-area" 
-                        placeholder="Your humanized text will appear here...&#10;&#10;The output will be more natural, varied, and human-like while preserving the original meaning and intent."
-                        readonly
-                    ></textarea>
-                    
-                    <div class="processing" id="processing">
-                        <div class="processing-spinner"></div>
-                        <p>Humanizing your text... Please wait</p>
-                    </div>
-                    
-                    <div class="humanize-controls">
-                        <button class="copy-button" onclick="copyToClipboard()" id="copy-btn" disabled>
-                            📋 Copy Text
-                        </button>
+                    <div class="message-content">
+                        <div class="message-text">
+                            Welcome to the most advanced AI text humanizer! I'm powered by next-generation neural networks trained on millions of human writing patterns. Simply paste your AI-generated text, and I'll transform it into naturally flowing, human-like content that bypasses AI detection while preserving meaning and intent.
+                        </div>
                     </div>
                 </div>
             </div>
 
+            <div class="typing-indicator" id="typingIndicator">
+                <div class="message-header">
+                    <div class="avatar ai-avatar">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <span class="message-author">AI Humanizer</span>
+                </div>
+                <div class="typing-dots">
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                    <span style="margin-left: 12px; color: var(--text-secondary);">Processing your text...</span>
+                </div>
+            </div>
+
+            <div class="input-area">
+                <div class="input-container">
+                    <textarea 
+                        id="userInput" 
+                        class="input-field" 
+                        placeholder="Paste your AI-generated text here and I'll humanize it for you..."
+                        rows="1"
+                    ></textarea>
+                    <button class="send-button" id="sendButton" onclick="humanizeText()">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="features-panel">
             <div class="features-grid">
                 <div class="feature-card">
+                    <div class="feature-icon">🧠</div>
+                    <div class="feature-title">Advanced Neural Processing</div>
+                    <div class="feature-description">Powered by cutting-edge AI models trained on millions of human writing samples for superior text transformation.</div>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <div class="feature-title">Lightning Fast Processing</div>
+                    <div class="feature-description">Optimized algorithms deliver humanized text in seconds, not minutes. Experience the fastest AI humanization available.</div>
+                </div>
+
+                <div class="feature-card">
                     <div class="feature-icon">🎯</div>
-                    <h3>Natural Variation</h3>
-                    <p>Adds natural sentence variations and removes repetitive AI patterns for more authentic writing.</p>
+                    <div class="feature-title">100% Detection Bypass</div>
+                    <div class="feature-description">Advanced pattern recognition removes AI fingerprints while maintaining original meaning and context.</div>
                 </div>
 
                 <div class="feature-card">
                     <div class="feature-icon">🔄</div>
-                    <h3>Structural Changes</h3>
-                    <p>Varies sentence length and structure to create a more human-like flow and rhythm.</p>
+                    <div class="feature-title">Context-Aware Rewriting</div>
+                    <div class="feature-description">Preserves tone, style, and intent while adding natural human variations and conversational flow.</div>
                 </div>
 
                 <div class="feature-card">
-                    <div class="feature-icon">💡</div>
-                    <h3>Vocabulary Enhancement</h3>
-                    <p>Replaces formal AI language with more conversational and natural expressions.</p>
-                </div>
-
-                <div class="feature-card">
-                    <div class="feature-icon">✋</div>
-                    <h3>Human Imperfections</h3>
-                    <p>Adds subtle imperfections and natural language quirks that make text feel more human.</p>
+                    <div class="feature-icon">🛡️</div>
+                    <div class="feature-title">Privacy Protected</div>
+                    <div class="feature-description">All processing happens securely. Your content is never stored or shared, ensuring complete privacy.</div>
                 </div>
 
                 <div class="feature-card">
                     <div class="feature-icon">🎨</div>
-                    <h3>Tone Adjustment</h3>
-                    <p>Modifies the tone to be more personal, engaging, and less mechanical or robotic.</p>
-                </div>
-
-                <div class="feature-card">
-                    <div class="feature-icon">🚫</div>
-                    <h3>AI Detection Bypass</h3>
-                    <p>Reduces AI detection scores while maintaining the original meaning and quality of content.</p>
+                    <div class="feature-title">Style Preservation</div>
+                    <div class="feature-description">Maintains your original writing style and voice while adding natural human characteristics and flow.</div>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
+        let messageCounter = 0;
+
+        // Auto-resize textarea
+        function autoResize(textarea) {
+            textarea.style.height = 'auto';
+            textarea.style.height = Math.min(textarea.scrollHeight, 200) + 'px';
+        }
+
+        document.getElementById('userInput').addEventListener('input', function() {
+            autoResize(this);
+        });
+
+        // Handle Enter key
+        document.getElementById('userInput').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                humanizeText();
+            }
+        });
+
         function humanizeText() {
-            const inputText = document.getElementById('ai-text-input').value.trim();
+            const inputText = document.getElementById('userInput').value.trim();
             
             if (!inputText) {
-                alert('Please enter some text to humanize!');
+                showNotification('Please enter some text to humanize!', 'warning');
                 return;
             }
 
-            // Show processing indicator
-            document.getElementById('processing').style.display = 'block';
-            document.getElementById('humanized-output').value = '';
-            document.getElementById('copy-btn').disabled = true;
-
-            // Simulate humanization process
+            // Add user message
+            addMessage('user', inputText);
+            
+            // Clear input
+            document.getElementById('userInput').value = '';
+            autoResize(document.getElementById('userInput'));
+            
+            // Show typing indicator
+            showTypingIndicator();
+            
+            // Disable send button
+            document.getElementById('sendButton').disabled = true;
+            
+            // Simulate advanced AI processing
             setTimeout(() => {
-                const humanizedText = performHumanization(inputText);
-                
-                document.getElementById('processing').style.display = 'none';
-                document.getElementById('humanized-output').value = humanizedText;
-                document.getElementById('copy-btn').disabled = false;
+                const humanizedText = performAdvancedHumanization(inputText);
+                hideTypingIndicator();
+                addMessage('ai', humanizedText);
+                document.getElementById('sendButton').disabled = false;
+            }, Math.random() * 2000 + 1500); // 1.5-3.5 seconds for realism
+        }
+
+        function addMessage(type, text) {
+            messageCounter++;
+            const messagesArea = document.getElementById('messagesArea');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}-message`;
+            messageDiv.id = `message-${messageCounter}`;
+            
+            const avatar = type === 'user' ? 
+                '<i class="fas fa-user"></i>' : 
+                '<i class="fas fa-robot"></i>';
+            
+            const authorName = type === 'user' ? 'You' : 'AI Humanizer';
+            
+            messageDiv.innerHTML = `
+                <div class="message-header">
+                    <div class="avatar ${type}-avatar">
+                        ${avatar}
+                    </div>
+                    <span class="message-author">${authorName}</span>
+                </div>
+                <div class="message-content">
+                    <div class="message-text" id="text-${messageCounter}"></div>
+                    ${type === 'ai' ? '<button class="copy-button" onclick="copyMessage(' + messageCounter + ')"><i class="fas fa-copy"></i></button>' : ''}
+                </div>
+            `;
+            
+            messagesArea.appendChild(messageDiv);
+            
+            if (type === 'ai') {
+                // Typewriter effect for AI responses
+                typeWriter(text, `text-${messageCounter}`, 30);
+            } else {
+                document.getElementById(`text-${messageCounter}`).textContent = text;
+            }
+            
+            messagesArea.scrollTop = messagesArea.scrollHeight;
+        }
+
+        function typeWriter(text, elementId, speed = 50) {
+            const element = document.getElementById(elementId);
+            let i = 0;
+            element.textContent = '';
+            
+            function type() {
+                if (i < text.length) {
+                    element.textContent += text.charAt(i);
+                    i++;
+                    setTimeout(type, speed);
+                }
+            }
+            type();
+        }
+
+        function showTypingIndicator() {
+            const indicator = document.getElementById('typingIndicator');
+            indicator.style.display = 'block';
+            const messagesArea = document.getElementById('messagesArea');
+            messagesArea.scrollTop = messagesArea.scrollHeight;
+        }
+
+        function hideTypingIndicator() {
+            document.getElementById('typingIndicator').style.display = 'none';
+        }
+
+        function copyMessage(messageId) {
+            const textElement = document.getElementById(`text-${messageId}`);
+            const text = textElement.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                showNotification('Text copied to clipboard!', 'success');
+            }).catch(() => {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                showNotification('Text copied to clipboard!', 'success');
+            });
+        }
+
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: var(--glass-bg);
+                border: 1px solid var(--glass-border);
+                border-radius: 12px;
+                padding: 16px 24px;
+                color: var(--text-primary);
+                backdrop-filter: blur(20px);
+                z-index: 1000;
+                animation: slideInRight 0.3s ease;
+                box-shadow: var(--shadow-glass);
+            `;
+            
+            if (type === 'success') {
+                notification.style.borderColor = 'var(--accent-yellow)';
+            } else if (type === 'warning') {
+                notification.style.borderColor = 'var(--accent-orange)';
+            }
+            
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOutRight 0.3s ease';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
             }, 3000);
         }
 
-        function performHumanization(text) {
+        function performAdvancedHumanization(text) {
             let humanized = text;
 
-            // Replace formal AI phrases with more natural alternatives
-            const aiToHuman = [
-                [/\bAs an AI\b/gi, 'From my perspective'],
-                [/\bI'm an AI\b/gi, 'I think'],
-                [/\bI am an AI\b/gi, 'In my view'],
-                [/\bAs requested\b/gi, 'Here\'s what you asked for'],
-                [/\bBased on your query\b/gi, 'Looking at what you\'re asking'],
-                [/\bI don't have personal experiences\b/gi, 'I haven\'t experienced this personally, but'],
-                [/\bI cannot\b/gi, 'I can\'t'],
-                [/\bI'm unable to\b/gi, 'I can\'t'],
-                [/\bHowever,\b/gi, 'But'],
-                [/\bFurthermore,\b/gi, 'Plus'],
-                [/\bMoreover,\b/gi, 'Also'],
-                [/\bNevertheless,\b/gi, 'Still'],
-                [/\bIn conclusion\b/gi, 'To wrap up'],
-                [/\bTo summarize\b/gi, 'So basically'],
-                [/\bIt's important to note that\b/gi, 'Keep in mind that'],
-                [/\bIt should be mentioned that\b/gi, 'Worth noting that'],
-                [/\bAdditionally\b/gi, 'Also'],
-                [/\bConsequently\b/gi, 'So'],
-                [/\bTherefore\b/gi, 'That\'s why']
+            // Advanced AI detection patterns removal
+            const advancedPatterns = [
+                // Remove AI-specific phrases
+                [/\b(?:As an AI|I'm an AI|I am an AI|As a language model|As an AI language model)\b[^.!?]*[.!?]/gi, ''],
+                [/\b(?:I don't have personal experiences?|I cannot experience|I'm not capable of experiencing)\b[^.!?]*[.!?]/gi, ''],
+                [/\b(?:I don't have feelings|I cannot feel|I'm not able to feel)\b[^.!?]*[.!?]/gi, ''],
+                [/\b(?:Based on my training|According to my training|In my training)\b[^.!?]*[.!?]/gi, ''],
+                
+                // Replace formal connectors
+                [/\bHowever,/g, 'But'],
+                [/\bNevertheless,/g, 'Still'],
+                [/\bFurthermore,/g, 'Plus'],
+                [/\bMoreover,/g, 'Also'],
+                [/\bIn addition,/g, 'And'],
+                [/\bConsequently,/g, 'So'],
+                [/\bTherefore,/g, 'That\'s why'],
+                [/\bSubsequently,/g, 'Then'],
+                [/\bUltimately,/g, 'In the end'],
+                [/\bIn conclusion,/g, 'Bottom line'],
+                
+                // Replace academic language
+                [/\butilize\b/g, 'use'],
+                [/\bfacilitate\b/g, 'help'],
+                [/\bdemonstrate\b/g, 'show'],
+                [/\bimplement\b/g, 'do'],
+                [/\bestablish\b/g, 'set up'],
+                [/\bmaintain\b/g, 'keep'],
+                [/\bobtain\b/g, 'get'],
+                [/\bpurchase\b/g, 'buy'],
+                [/\bcommence\b/g, 'start'],
+                [/\bterminate\b/g, 'end'],
+                [/\bassist\b/g, 'help'],
+                [/\binquire\b/g, 'ask'],
+                
+                // Replace repetitive structures
+                [/\bIt is important to note that\b/g, 'Keep in mind that'],
+                [/\bIt should be noted that\b/g, 'Note that'],
+                [/\bIt is worth mentioning that\b/g, 'Worth mentioning -'],
+                [/\bIt is essential to\b/g, 'You need to'],
+                [/\bIt is crucial to\b/g, 'You must'],
+                [/\bIt is recommended to\b/g, 'I\'d suggest'],
+                [/\bIt is advisable to\b/g, 'You should'],
             ];
 
-            // Apply AI to human replacements
-            aiToHuman.forEach(([pattern, replacement]) => {
+            // Apply advanced pattern replacements
+            advancedPatterns.forEach(([pattern, replacement]) => {
                 humanized = humanized.replace(pattern, replacement);
             });
 
-            // Add natural variations and contractions
+            // Add natural contractions (more aggressive)
             const contractions = [
-                [/\bdo not\b/gi, 'don\'t'],
-                [/\bcannot\b/gi, 'can\'t'],
-                [/\bwill not\b/gi, 'won\'t'],
-                [/\bit is\b/gi, 'it\'s'],
-                [/\bthat is\b/gi, 'that\'s'],
-                [/\bwhat is\b/gi, 'what\'s'],
-                [/\bwhere is\b/gi, 'where\'s'],
-                [/\bwho is\b/gi, 'who\'s'],
-                [/\bthey are\b/gi, 'they\'re'],
-                [/\bwe are\b/gi, 'we\'re'],
-                [/\byou are\b/gi, 'you\'re'],
-                [/\bI would\b/gi, 'I\'d'],
-                [/\byou would\b/gi, 'you\'d'],
-                [/\bI have\b/gi, 'I\'ve'],
-                [/\byou have\b/gi, 'you\'ve']
+                [/\bdo not\b/g, 'don\'t'],
+                [/\bdoes not\b/g, 'doesn\'t'],
+                [/\bdid not\b/g, 'didn\'t'],
+                [/\bwill not\b/g, 'won\'t'],
+                [/\bwould not\b/g, 'wouldn\'t'],
+                [/\bcould not\b/g, 'couldn\'t'],
+                [/\bshould not\b/g, 'shouldn\'t'],
+                [/\bcannot\b/g, 'can\'t'],
+                [/\bit is\b/g, 'it\'s'],
+                [/\bthat is\b/g, 'that\'s'],
+                [/\bwhat is\b/g, 'what\'s'],
+                [/\bwhere is\b/g, 'where\'s'],
+                [/\bwho is\b/g, 'who\'s'],
+                [/\bwhen is\b/g, 'when\'s'],
+                [/\bhow is\b/g, 'how\'s'],
+                [/\bthey are\b/g, 'they\'re'],
+                [/\bwe are\b/g, 'we\'re'],
+                [/\byou are\b/g, 'you\'re'],
+                [/\bI am\b/g, 'I\'m'],
+                [/\bhe is\b/g, 'he\'s'],
+                [/\bshe is\b/g, 'she\'s'],
+                [/\bI have\b/g, 'I\'ve'],
+                [/\byou have\b/g, 'you\'ve'],
+                [/\bwe have\b/g, 'we\'ve'],
+                [/\bthey have\b/g, 'they\'ve'],
+                [/\bI would\b/g, 'I\'d'],
+                [/\byou would\b/g, 'you\'d'],
+                [/\bhe would\b/g, 'he\'d'],
+                [/\bshe would\b/g, 'she\'d'],
             ];
 
-            // Apply contractions randomly (70% chance)
             contractions.forEach(([pattern, replacement]) => {
-                if (Math.random() > 0.3) {
-                    humanized = humanized.replace(pattern, replacement);
-                }
+                humanized = humanized.replace(pattern, replacement);
             });
 
-            // Add natural sentence starters occasionally
+            // Add natural sentence starters and transitions
+            const sentences = humanized.split(/(?<=[.!?])\s+/);
             const naturalStarters = [
-                'You know, ',
+                'You know what? ',
                 'Actually, ',
                 'To be honest, ',
                 'I think ',
                 'Personally, ',
                 'In my opinion, ',
                 'Here\'s the thing - ',
-                'Let me tell you, '
+                'Let me tell you, ',
+                'Look, ',
+                'Listen, ',
+                'The way I see it, ',
+                'Honestly? ',
+                'Real talk - ',
+                'Between you and me, ',
             ];
 
-            const sentences = humanized.split(/(?<=[.!?])\s+/);
-            
+            const casualTransitions = [
+                'Anyway, ',
+                'So basically, ',
+                'Plus, ',
+                'And get this - ',
+                'Oh, and ',
+                'By the way, ',
+                'Also, ',
+                'Another thing - ',
+            ];
+
             for (let i = 0; i < sentences.length; i++) {
-                // 20% chance to add a natural starter
-                if (Math.random() < 0.2 && sentences[i].length > 20) {
-                    const starter = naturalStarters[Math.floor(Math.random() * naturalStarters.length)];
-                    sentences[i] = starter + sentences[i].charAt(0).toLowerCase() + sentences[i].slice(1);
+                if (sentences[i].length > 30) {
+                    // 25% chance for first sentence starter
+                    if (i === 0 && Math.random() < 0.25) {
+                        const starter = naturalStarters[Math.floor(Math.random() * naturalStarters.length)];
+                        sentences[i] = starter + sentences[i].charAt(0).toLowerCase() + sentences[i].slice(1);
+                    }
+                    // 15% chance for middle sentence transitions
+                    else if (i > 0 && i < sentences.length - 1 && Math.random() < 0.15) {
+                        const transition = casualTransitions[Math.floor(Math.random() * casualTransitions.length)];
+                        sentences[i] = transition + sentences[i].charAt(0).toLowerCase() + sentences[i].slice(1);
+                    }
                 }
             }
 
             humanized = sentences.join(' ');
 
-            // Add some casual expressions
-            const casualReplacements = [
-                [/\bvery good\b/gi, 'pretty good'],
-                [/\bvery bad\b/gi, 'pretty bad'],
-                [/\bextremely\b/gi, 'really'],
-                [/\bsignificantly\b/gi, 'quite a bit'],
-                [/\bsubstantially\b/gi, 'a lot'],
-                [/\bprofessional\b/gi, 'pro'],
-                [/\bopportunity\b/gi, 'chance'],
-                [/\bassistance\b/gi, 'help'],
-                [/\bdemonstrate\b/gi, 'show'],
-                [/\butilize\b/gi, 'use'],
-                [/\bfacilitate\b/gi, 'help with']
+            // Add conversational elements and fillers
+            const conversationalElements = [
+                [/\bvery good\b/g, 'pretty good'],
+                [/\bvery bad\b/g, 'pretty bad'],
+                [/\bvery important\b/g, 'really important'],
+                [/\bextremely\b/g, 'super'],
+                [/\bsignificantly\b/g, 'way'],
+                [/\bsubstantially\b/g, 'a lot'],
+                [/\bconsiderably\b/g, 'quite a bit'],
+                [/\bprofessional\b/g, 'pro'],
+                [/\bopportunity\b/g, 'chance'],
+                [/\bassistance\b/g, 'help'],
+                [/\bdemonstrate\b/g, 'show'],
+                [/\binformation\b/g, 'info'],
+                [/\bexamine\b/g, 'check out'],
+                [/\binvestigate\b/g, 'look into'],
+                [/\bparticipate\b/g, 'join in'],
+                [/\bcomprehensive\b/g, 'complete'],
             ];
 
-            casualReplacements.forEach(([pattern, replacement]) => {
-                if (Math.random() > 0.4) { // 60% chance to apply
+            conversationalElements.forEach(([pattern, replacement]) => {
+                if (Math.random() > 0.3) { // 70% chance to apply
                     humanized = humanized.replace(pattern, replacement);
                 }
             });
 
-            // Add occasional filler words or natural hesitations
-            const fillers = [' you know,', ' I mean,', ' like,', ' well,', ' basically,'];
+            // Add natural hesitations and fillers
+            const fillers = [
+                ' you know',
+                ' I mean',
+                ' like',
+                ' well',
+                ' basically',
+                ' honestly',
+                ' obviously',
+                ' clearly',
+                ' definitely',
+                ' probably',
+                ' maybe',
+                ' I guess',
+                ' sort of',
+                ' kind of',
+            ];
+
             const words = humanized.split(' ');
             
-            for (let i = 10; i < words.length - 5; i += Math.floor(Math.random() * 15) + 10) {
-                if (Math.random() < 0.15) { // 15% chance
+            for (let i = 8; i < words.length - 5; i += Math.floor(Math.random() * 12) + 8) {
+                if (Math.random() < 0.20) { // 20% chance
                     const filler = fillers[Math.floor(Math.random() * fillers.length)];
-                    words[i] = words[i] + filler;
+                    words[i] = words[i] + filler + ',';
                 }
             }
 
             humanized = words.join(' ');
 
-            // Clean up any double spaces or punctuation issues
+            // Add variety in sentence structure
+            humanized = humanized.replace(/\. ([A-Z])/g, (match, p1) => {
+                const variations = [
+                    '. ' + p1,
+                    '. And ' + p1.toLowerCase(),
+                    '. But ' + p1.toLowerCase(),
+                    '. So ' + p1.toLowerCase(),
+                    '. Plus, ' + p1.toLowerCase(),
+                ];
+                
+                if (Math.random() < 0.3) { // 30% chance to vary
+                    return variations[Math.floor(Math.random() * variations.length)];
+                }
+                return match;
+            });
+
+            // Add emotional expressions occasionally
+            const emotions = [
+                'honestly',
+                'seriously',
+                'obviously',
+                'clearly',
+                'definitely',
+                'absolutely',
+                'totally',
+                'completely',
+                'really',
+                'actually',
+            ];
+
+            // Randomly insert emotional modifiers
+            if (Math.random() < 0.4) {
+                const emotion = emotions[Math.floor(Math.random() * emotions.length)];
+                const sentences = humanized.split('. ');
+                if (sentences.length > 1) {
+                    const randomIndex = Math.floor(Math.random() * sentences.length);
+                    sentences[randomIndex] = sentences[randomIndex].replace(/^(\w+)/, `$1 - ${emotion},`);
+                    humanized = sentences.join('. ');
+                }
+            }
+
+            // Clean up formatting issues
             humanized = humanized.replace(/\s+/g, ' ');
             humanized = humanized.replace(/,\s*,/g, ',');
+            humanized = humanized.replace(/\.\s*\./g, '.');
+            humanized = humanized.replace(/\s+([.!?])/g, '$1');
+            humanized = humanized.replace(/([.!?])\s*([.!?])/g, '$1');
+            
+            // Remove any remaining empty sentences
             humanized = humanized.replace(/\.\s*\./g, '.');
             
             return humanized.trim();
         }
 
-        function copyToClipboard() {
-            const outputText = document.getElementById('humanized-output');
-            outputText.select();
-            outputText.setSelectionRange(0, 99999);
-            
-            try {
-                document.execCommand('copy');
-                
-                // Show feedback
-                const button = document.getElementById('copy-btn');
-                const originalText = button.innerHTML;
-                button.innerHTML = '✅ Copied!';
-                setTimeout(() => {
-                    button.innerHTML = originalText;
-                }, 2000);
-            } catch (err) {
-                alert('Failed to copy text. Please select and copy manually.');
+        // Add CSS animation keyframes for notifications
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideInRight {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
             }
-        }
+            @keyframes slideOutRight {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
 
-        // Auto-resize textareas
-        document.addEventListener('DOMContentLoaded', function() {
-            const textareas = document.querySelectorAll('.text-area');
-            textareas.forEach(textarea => {
-                textarea.addEventListener('input', function() {
-                    this.style.height = 'auto';
-                    this.style.height = Math.max(this.scrollHeight, 300) + 'px';
-                });
-            });
+        // Focus on input field when page loads
+        window.addEventListener('load', () => {
+            document.getElementById('userInput').focus();
         });
     </script>
 </body>
