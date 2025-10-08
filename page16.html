@@ -1,4142 +1,2243 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✅</text></svg>" type="image/svg+xml">
-<title>Chrono Focus Pro - Enhanced</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<style>
-:root {
-  /* Microsoft Fluent Design Colors */
-  --primary-blue: #0078d4;
-  --primary-blue-hover: #106ebe;
-  --primary-blue-dark: #004578;
-  --secondary-blue: #deecf9;
-  --accent-purple: #881798;
-  --accent-teal: #00bcf2;
-  --accent-green: #107c10;
-  --accent-orange: #ff8c00;
-  --accent-red: #d13438;
-  --accent-pink: #e3008c;
-
-  /* Background Colors */
-  --bg-primary: #ffffff;
-  --bg-secondary: #f3f2f1;
-  --bg-tertiary: #faf9f8;
-  --bg-card: #ffffff;
-  --bg-hover: #f3f2f1;
-  --bg-active: #edebe9;
-  --bg-selected: #deecf9;
-
-  /* Text Colors */
-  --text-primary: #323130;
-  --text-secondary: #605e5c;
-  --text-tertiary: #a19f9d;
-  --text-disabled: #c8c6c4;
-  --text-white: #ffffff;
-  --text-accent: #0078d4;
-
-  /* Border Colors */
-  --border-light: #edebe9;
-  --border-medium: #d2d0ce;
-  --border-dark: #8a8886;
-  --border-focus: #0078d4;
-
-  /* Shadow */
-  --shadow-light: 0 1.6px 3.6px 0 rgba(0,0,0,.132), 0 0.3px 0.9px 0 rgba(0,0,0,.108);
-  --shadow-medium: 0 3.2px 7.2px 0 rgba(0,0,0,.132), 0 0.6px 1.8px 0 rgba(0,0,0,.108);
-  --shadow-heavy: 0 6.4px 14.4px 0 rgba(0,0,0,.132), 0 1.2px 3.6px 0 rgba(0,0,0,.108);
-  --shadow-flyout: 0 25.6px 57.6px 0 rgba(0,0,0,.22), 0 4.8px 14.4px 0 rgba(0,0,0,.18);
-
-  /* Border Radius */
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 16px;
-  --radius-xl: 20px;
-  --radius-xxl: 24px;
-
-  /* Spacing */
-  --spacing-xs: 4px;
-  --spacing-sm: 8px;
-  --spacing-md: 12px;
-  --spacing-lg: 16px;
-  --spacing-xl: 20px;
-  --spacing-xxl: 24px;
-  --spacing-xxxl: 32px;
-
-  /* Typography */
-  --font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-size-xs: 11px;
-  --font-size-sm: 12px;
-  --font-size-md: 14px;
-  --font-size-lg: 16px;
-  --font-size-xl: 18px;
-  --font-size-xxl: 20px;
-  --font-size-xxxl: 24px;
-
-  /* Transitions */
-  --transition-fast: 0.1s ease-out;
-  --transition-normal: 0.2s ease-out;
-  --transition-slow: 0.3s ease-out;
-
-  /* Z-index */
-  --z-dropdown: 1000;
-  --z-modal: 2000;
-  --z-toast: 3000;
-
-  /* Glass Effect */
-  --glass-bg: rgba(255, 255, 255, 0.25);
-  --glass-border: rgba(255, 255, 255, 0.18);
-  --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-  --glass-blur: blur(10px);
-}
-
-/* Dark Theme */
-body.theme-dark {
-  --bg-primary: #1c1c1c;
-  --bg-secondary: #252525;
-  --bg-tertiary: #2d2d2d;
-  --bg-card: #252525;
-  --bg-hover: #2d2d2d;
-  --bg-active: #363636;
-  --bg-selected: #0f3a5c;
-
-  --text-primary: #ffffff;
-  --text-secondary: #c8c6c4;
-  --text-tertiary: #8a8886;
-  --text-disabled: #605e5c;
-  --text-accent: #4cc2ff;
-
-  --border-light: #323130;
-  --border-medium: #484644;
-  --border-dark: #605e5c;
-  
-  --glass-bg: rgba(0, 0, 0, 0.25);
-  --glass-border: rgba(255, 255, 255, 0.1);
-}
-
-/* Yellow Theme */
-body.theme-yellow {
-  --primary-blue: #ffc107;
-  --primary-blue-hover: #ffb300;
-  --primary-blue-dark: #ff8f00;
-  --secondary-blue: #fff8e1;
-  --accent-purple: #7b1fa2;
-  --accent-teal: #00bcd4;
-  --accent-green: #388e3c;
-  --accent-orange: #f57c00;
-  --accent-red: #d32f2f;
-  --accent-pink: #c2185b;
-
-  --bg-primary: #fffde7;
-  --bg-secondary: #fff9c4;
-  --bg-tertiary: #fff59d;
-  --bg-card: #ffffff;
-  --bg-hover: #fff176;
-  --bg-active: #ffee58;
-  --bg-selected: #fff59d;
-
-  --text-primary: #5d4037;
-  --text-secondary: #795548;
-  --text-tertiary: #8d6e63;
-  --text-disabled: #a1887f;
-  --text-accent: #ff8f00;
-  
-  --glass-bg: rgba(255, 253, 231, 0.7);
-  --glass-border: rgba(255, 193, 7, 0.3);
-}
-
-/* Cotton Candy Theme */
-body.theme-cotton-candy {
-  --primary-blue: #ff6ec7;
-  --primary-blue-hover: #ff4db8;
-  --primary-blue-dark: #ff2aa9;
-  --secondary-blue: #ffe6f2;
-  --accent-purple: #b967ff;
-  --accent-teal: #6effe8;
-  --accent-green: #6effa8;
-  --accent-orange: #ffb86c;
-  --accent-red: #ff6e6e;
-  --accent-pink: #ff6ec7;
-
-  --bg-primary: #f9f7fe;
-  --bg-secondary: #f0eafa;
-  --bg-tertiary: #e8dff5;
-  --bg-card: #ffffff;
-  --bg-hover: #e6d9f2;
-  --bg-active: #ddd2ee;
-  --bg-selected: #e8dff5;
-
-  --text-primary: #4a4453;
-  --text-secondary: #6b6375;
-  --text-tertiary: #8c8396;
-  --text-disabled: #ada4b5;
-  --text-accent: #b967ff;
-  
-  --glass-bg: rgba(249, 247, 254, 0.7);
-  --glass-border: rgba(185, 103, 255, 0.3);
-}
-
-/* Ocean Theme */
-body.theme-ocean {
-  --primary-blue: #2196f3;
-  --primary-blue-hover: #1976d2;
-  --primary-blue-dark: #0d47a1;
-  --secondary-blue: #e3f2fd;
-  --accent-purple: #7c4dff;
-  --accent-teal: #00bcd4;
-  --accent-green: #4caf50;
-  --accent-orange: #ff9800;
-  --accent-red: #f44336;
-  --accent-pink: #e91e63;
-
-  --bg-primary: #e1f5fe;
-  --bg-secondary: #b3e5fc;
-  --bg-tertiary: #81d4fa;
-  --bg-card: #ffffff;
-  --bg-hover: #4fc3f7;
-  --bg-active: #29b6f6;
-  --bg-selected: #81d4fa;
-
-  --text-primary: #01579b;
-  --text-secondary: #0277bd;
-  --text-tertiary: #0288d1;
-  --text-disabled: #4fc3f7;
-  --text-accent: #0d47a1;
-  
-  --glass-bg: rgba(225, 245, 254, 0.7);
-  --glass-border: rgba(33, 150, 243, 0.3);
-}
-
-/* Forest Theme */
-body.theme-forest {
-  --primary-blue: #388e3c;
-  --primary-blue-hover: #2e7d32;
-  --primary-blue-dark: #1b5e20;
-  --secondary-blue: #e8f5e9;
-  --accent-purple: #7b1fa2;
-  --accent-teal: #00695c;
-  --accent-green: #388e3c;
-  --accent-orange: #ef6c00;
-  --accent-red: #c62828;
-  --accent-pink: #ad1457;
-
-  --bg-primary: #e8f5e9;
-  --bg-secondary: #c8e6c9;
-  --bg-tertiary: #a5d6a7;
-  --bg-card: #ffffff;
-  --bg-hover: #81c784;
-  --bg-active: #66bb6a;
-  --bg-selected: #a5d6a7;
-
-  --text-primary: #1b5e20;
-  --text-secondary: #2e7d32;
-  --text-tertiary: #388e3c;
-  --text-disabled: #81c784;
-  --text-accent: #1b5e20;
-  
-  --glass-bg: rgba(232, 245, 233, 0.7);
-  --glass-border: rgba(56, 142, 60, 0.3);
-}
-
-/* Midnight Theme */
-body.theme-midnight {
-  --primary-blue: #9c27b0;
-  --primary-blue-hover: #8e24aa;
-  --primary-blue-dark: #7b1fa2;
-  --secondary-blue: #f3e5f5;
-  --accent-purple: #e91e63;
-  --accent-teal: #00bcd4;
-  --accent-green: #4caf50;
-  --accent-orange: #ff9800;
-  --accent-red: #f44336;
-  --accent-pink: #ad1457;
-
-  --bg-primary: #121212;
-  --bg-secondary: #1e1e1e;
-  --bg-tertiary: #252525;
-  --bg-card: #1e1e1e;
-  --bg-hover: #2d2d2d;
-  --bg-active: #363636;
-  --bg-selected: #4a148c;
-
-  --text-primary: #ffffff;
-  --text-secondary: #b3b3b3;
-  --text-tertiary: #8a8886;
-  --text-disabled: #666666;
-  --text-accent: #ba68c8;
-  
-  --glass-bg: rgba(30, 30, 30, 0.7);
-  --glass-border: rgba(156, 39, 176, 0.3);
-}
-
-/* Sunset Theme */
-body.theme-sunset {
-  --primary-blue: #ff5722;
-  --primary-blue-hover: #f4511e;
-  --primary-blue-dark: #d84315;
-  --secondary-blue: #fbe9e7;
-  --accent-purple: #e91e63;
-  --accent-teal: #00bcd4;
-  --accent-green: #4caf50;
-  --accent-orange: #ff9800;
-  --accent-red: #f44336;
-  --accent-pink: #ad1457;
-
-  --bg-primary: #fff3e0;
-  --bg-secondary: #ffe0b2;
-  --bg-tertiary: #ffcc80;
-  --bg-card: #ffffff;
-  --bg-hover: #ffb74d;
-  --bg-active: #ffa726;
-  --bg-selected: #ffcc80;
-
-  --text-primary: #5d4037;
-  --text-secondary: #6d4c41;
-  --text-tertiary: #8d6e63;
-  --text-disabled: #a1887f;
-  --text-accent: #e64a19;
-  
-  --glass-bg: rgba(255, 243, 224, 0.7);
-  --glass-border: rgba(255, 87, 34, 0.3);
-}
-
-/* Aurora Theme */
-body.theme-aurora {
-  --primary-blue: #00bcd4;
-  --primary-blue-hover: #00acc1;
-  --primary-blue-dark: #0097a7;
-  --secondary-blue: #e0f7fa;
-  --accent-purple: #9c27b0;
-  --accent-teal: #00bcd4;
-  --accent-green: #4caf50;
-  --accent-orange: #ff9800;
-  --accent-red: #f44336;
-  --accent-pink: #e91e63;
-
-  --bg-primary: #e1f5fe;
-  --bg-secondary: #b3e5fc;
-  --bg-tertiary: #81d4fa;
-  --bg-card: #ffffff;
-  --bg-hover: #4fc3f7;
-  --bg-active: #29b6f6;
-  --bg-selected: #81d4fa;
-
-  --text-primary: #006064;
-  --text-secondary: #00838f;
-  --text-tertiary: #0097a7;
-  --text-disabled: #4dd0e1;
-  --text-accent: #006064;
-  
-  --glass-bg: rgba(225, 245, 254, 0.7);
-  --glass-border: rgba(0, 188, 212, 0.3);
-}
-
-/* Global Styles */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-body {
-  font-family: var(--font-family);
-  font-size: var(--font-size-md);
-  color: var(--text-primary);
-  background-color: var(--bg-primary);
-  line-height: 1.4;
-  overflow-x: hidden;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  transition: background-color var(--transition-normal), color var(--transition-normal);
-}
-
-/* Glass Effect */
-.glass-effect {
-  background: var(--glass-bg);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  border: 1px solid var(--glass-border);
-  box-shadow: var(--glass-shadow);
-}
-
-/* App Container */
-.app {
-  display: flex;
-  height: 100vh;
-  width: 100vw;
-  overflow: hidden;
-  background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
-}
-
-/* Sidebar */
-.sidebar {
-  width: 280px;
-  background: var(--glass-bg);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  border-right: 1px solid var(--glass-border);
-  display: flex;
-  flex-direction: column;
-  flex-shrink: 0;
-  overflow: hidden;
-  transition: transform var(--transition-normal);
-  z-index: 100;
-  border-radius: 0 var(--radius-xl) var(--radius-xl) 0;
-}
-
-.sidebar.collapsed {
-  transform: translateX(-100%);
-}
-
-/* App Header */
-.app-header {
-  padding: var(--spacing-lg);
-  border-bottom: 1px solid var(--glass-border);
-  background: var(--glass-bg);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  border-radius: 0 var(--radius-xl) 0 0;
-}
-
-.app-title {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-md);
-  font-size: var(--font-size-xl);
-  font-weight: 600;
-  color: var(--text-primary);
-  margin-bottom: var(--spacing-md);
-}
-
-.app-icon {
-  width: 32px;
-  height: 32px;
-  background: linear-gradient(135deg, var(--primary-blue), var(--accent-purple));
-  border-radius: var(--radius-lg);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-size: var(--font-size-lg);
-}
-
-.user-profile {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-md);
-  padding: var(--spacing-md);
-  border-radius: var(--radius-lg);
-  cursor: pointer;
-  transition: all var(--transition-fast);
-  background: var(--glass-bg);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-}
-
-.user-profile:hover {
-  background: var(--bg-hover);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-light);
-}
-
-.user-avatar {
-  width: 40px;
-  height: 40px;
-  background: var(--primary-blue);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-weight: 600;
-  font-size: var(--font-size-md);
-  overflow: hidden;
-  border: 2px solid var(--glass-border);
-}
-
-.user-avatar img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.user-info {
-  flex: 1;
-}
-
-.user-name {
-  font-weight: 500;
-  font-size: var(--font-size-md);
-  color: var(--text-primary);
-}
-
-.user-email {
-  font-size: var(--font-size-sm);
-  color: var(--text-secondary);
-}
-
-/* Navigation */
-.nav-section {
-  padding: var(--spacing-lg);
-  flex: 1;
-  overflow-y: auto;
-}
-
-.nav-group {
-  margin-bottom: var(--spacing-xxl);
-}
-
-.nav-group-title {
-  font-size: var(--font-size-xs);
-  font-weight: 600;
-  color: var(--text-secondary);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-bottom: var(--spacing-md);
-  padding: 0 var(--spacing-md);
-}
-
-.nav-item {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-md);
-  padding: var(--spacing-md);
-  border-radius: var(--radius-lg);
-  cursor: pointer;
-  transition: all var(--transition-fast);
-  margin-bottom: var(--spacing-xs);
-  font-size: var(--font-size-md);
-  color: var(--text-primary);
-  text-decoration: none;
-  border: none;
-  background: none;
-  width: 100%;
-  text-align: left;
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-}
-
-.nav-item:hover {
-  background: var(--bg-hover);
-  transform: translateX(5px);
-  box-shadow: var(--shadow-light);
-}
-
-.nav-item.active {
-  background: var(--bg-selected);
-  color: var(--text-accent);
-  font-weight: 500;
-  box-shadow: var(--shadow-medium);
-}
-
-.nav-item i {
-  width: 20px;
-  text-align: center;
-  font-size: var(--font-size-lg);
-}
-
-.nav-item-text {
-  flex: 1;
-}
-
-.nav-item-count {
-  font-size: var(--font-size-sm);
-  color: var(--text-secondary);
-  background: var(--bg-tertiary);
-  padding: 2px 8px;
-  border-radius: 12px;
-  min-width: 20px;
-  text-align: center;
-}
-
-.nav-item.active .nav-item-count {
-  background: var(--primary-blue);
-  color: white;
-}
-
-/* Settings */
-.sidebar-footer {
-  padding: var(--spacing-lg);
-  border-top: 1px solid var(--glass-border);
-  background: var(--glass-bg);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  border-radius: 0 0 var(--radius-xl) 0;
-}
-
-/* Main Content */
-.main-content {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  background: transparent;
-}
-
-/* Main Header */
-.main-header {
-  padding: var(--spacing-lg) var(--spacing-xxl);
-  border-bottom: 1px solid var(--glass-border);
-  background: var(--glass-bg);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  min-height: 64px;
-  border-radius: 0 0 var(--radius-xl) var(--radius-xl);
-}
-
-.header-left {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-lg);
-}
-
-.menu-btn {
-  display: none;
-  background: none;
-  border: none;
-  color: var(--text-primary);
-  font-size: var(--font-size-xl);
-  cursor: pointer;
-  padding: var(--spacing-sm);
-  border-radius: var(--radius-md);
-  transition: all var(--transition-fast);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-}
-
-.menu-btn:hover {
-  background: var(--bg-hover);
-  transform: scale(1.1);
-}
-
-.page-title {
-  font-size: var(--font-size-xxl);
-  font-weight: 600;
-  color: var(--text-primary);
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-md);
-}
-
-.page-title i {
-  font-size: var(--font-size-xl);
-}
-
-.header-actions {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-sm);
-}
-
-.header-btn {
-  background: none;
-  border: none;
-  color: var(--text-secondary);
-  font-size: var(--font-size-lg);
-  cursor: pointer;
-  padding: var(--spacing-sm);
-  border-radius: var(--radius-md);
-  transition: all var(--transition-fast);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-}
-
-.header-btn:hover {
-  background: var(--bg-hover);
-  color: var(--text-primary);
-  transform: scale(1.1);
-}
-
-/* Task Input */
-.task-input-container {
-  padding: var(--spacing-xl) var(--spacing-xxl);
-  border-bottom: 1px solid var(--glass-border);
-  background: var(--glass-bg);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-}
-
-.task-input-wrapper {
-  position: relative;
-  display: flex;
-  align-items: flex-start;
-  gap: var(--spacing-md);
-  background: var(--glass-bg);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  border: 1px solid var(--glass-border);
-  border-radius: var(--radius-xl);
-  padding: var(--spacing-lg);
-  transition: all var(--transition-fast);
-  box-shadow: var(--shadow-light);
-}
-
-.task-input-wrapper:focus-within {
-  border-color: var(--border-focus);
-  box-shadow: var(--shadow-medium);
-  transform: translateY(-2px);
-}
-
-.task-checkbox-placeholder {
-  width: 20px;
-  height: 20px;
-  border: 2px solid var(--border-medium);
-  border-radius: 50%;
-  flex-shrink: 0;
-  margin-top: 2px;
-}
-
-.task-input {
-  flex: 1;
-  border: none;
-  outline: none;
-  background: none;
-  font-size: var(--font-size-lg);
-  font-family: inherit;
-  color: var(--text-primary);
-  resize: none;
-  min-height: 24px;
-  max-height: 120px;
-  line-height: 1.4;
-}
-
-.task-input::placeholder {
-  color: var(--text-tertiary);
-}
-
-.task-input-actions {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-sm);
-  opacity: 0;
-  transition: opacity var(--transition-fast);
-}
-
-.task-input-wrapper:focus-within .task-input-actions,
-.task-input-wrapper:hover .task-input-actions {
-  opacity: 1;
-}
-
-.task-input-btn {
-  background: none;
-  border: none;
-  color: var(--text-secondary);
-  cursor: pointer;
-  padding: var(--spacing-sm);
-  border-radius: var(--radius-md);
-  font-size: var(--font-size-md);
-  transition: all var(--transition-fast);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-}
-
-.task-input-btn:hover {
-  background: var(--bg-hover);
-  color: var(--text-primary);
-  transform: scale(1.1);
-}
-
-.task-input-btn.primary {
-  background: var(--primary-blue);
-  color: white;
-}
-
-.task-input-btn.primary:hover {
-  background: var(--primary-blue-hover);
-  transform: scale(1.1);
-}
-
-/* Task Options Panel */
-.task-options-panel {
-  background: var(--glass-bg);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  border-bottom: 1px solid var(--glass-border);
-  padding: 0 var(--spacing-xxl) var(--spacing-lg);
-  display: none;
-  border-radius: 0 0 var(--radius-xl) var(--radius-xl);
-}
-
-.task-options-panel.visible {
-  display: block;
-  animation: slideDown 0.3s ease-out;
-}
-
-.task-options-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: var(--spacing-lg);
-}
-
-.task-option-group {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-sm);
-}
-
-.task-option-label {
-  font-size: var(--font-size-sm);
-  font-weight: 500;
-  color: var(--text-secondary);
-}
-
-.task-option-select {
-  padding: var(--spacing-sm) var(--spacing-md);
-  border: 1px solid var(--glass-border);
-  border-radius: var(--radius-lg);
-  background: var(--glass-bg);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  color: var(--text-primary);
-  font-size: var(--font-size-md);
-  cursor: pointer;
-  transition: border-color var(--transition-fast);
-}
-
-.task-option-select:focus {
-  outline: none;
-  border-color: var(--border-focus);
-}
-
-/* Calendar View */
-.calendar-view {
-  padding: var(--spacing-xl);
-  flex: 1;
-  overflow-y: auto;
-  display: none;
-}
-
-.calendar-view.active {
-  display: block;
-}
-
-.calendar-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: var(--spacing-xl);
-  padding: var(--spacing-lg);
-  background: var(--glass-bg);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  border-radius: var(--radius-xl);
-  border: 1px solid var(--glass-border);
-}
-
-.calendar-nav {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-md);
-}
-
-.calendar-title {
-  font-size: var(--font-size-xl);
-  font-weight: 600;
-  color: var(--text-primary);
-  min-width: 200px;
-  text-align: center;
-}
-
-.calendar-grid {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: var(--spacing-sm);
-  margin-bottom: var(--spacing-lg);
-}
-
-.calendar-day-header {
-  text-align: center;
-  font-weight: 600;
-  color: var(--text-secondary);
-  padding: var(--spacing-sm);
-  font-size: var(--font-size-sm);
-}
-
-.calendar-day {
-  aspect-ratio: 1;
-  border: 1px solid var(--glass-border);
-  border-radius: var(--radius-md);
-  padding: var(--spacing-sm);
-  cursor: pointer;
-  transition: all var(--transition-fast);
-  background: var(--glass-bg);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-
-.calendar-day:hover {
-  background: var(--bg-hover);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-light);
-}
-
-.calendar-day.other-month {
-  color: var(--text-tertiary);
-  opacity: 0.5;
-}
-
-.calendar-day.today {
-  border-color: var(--primary-blue);
-  background: var(--bg-selected);
-}
-
-.calendar-day.has-tasks::after {
-  content: '';
-  width: 6px;
-  height: 6px;
-  background: var(--primary-blue);
-  border-radius: 50%;
-  margin: 2px auto 0;
-}
-
-.calendar-day-number {
-  font-weight: 500;
-  margin-bottom: var(--spacing-xs);
-  text-align: center;
-}
-
-.calendar-tasks {
-  flex: 1;
-  overflow-y: auto;
-  font-size: var(--font-size-xs);
-}
-
-.calendar-task {
-  padding: 2px 4px;
-  margin-bottom: 2px;
-  border-radius: 4px;
-  background: var(--bg-tertiary);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  font-size: 10px;
-}
-
-.calendar-task.high {
-  background: rgba(209, 52, 56, 0.2);
-  border-left: 2px solid var(--accent-red);
-}
-
-.calendar-task.medium {
-  background: rgba(255, 140, 0, 0.2);
-  border-left: 2px solid var(--accent-orange);
-}
-
-.calendar-task.low {
-  background: rgba(16, 124, 16, 0.2);
-  border-left: 2px solid var(--accent-green);
-}
-
-/* Task List */
-.task-list-container {
-  flex: 1;
-  overflow-y: auto;
-  background: transparent;
-  padding: var(--spacing-xl);
-}
-
-.task-list-header {
-  padding: var(--spacing-xl) var(--spacing-xxl) var(--spacing-lg);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border-bottom: 1px solid var(--glass-border);
-  background: var(--glass-bg);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
-}
-
-.task-list-info {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-lg);
-}
-
-.task-count {
-  font-size: var(--font-size-sm);
-  color: var(--text-secondary);
-}
-
-.task-filters {
-  display: flex;
-  gap: var(--spacing-sm);
-}
-
-.filter-btn {
-  background: none;
-  border: 1px solid var(--glass-border);
-  color: var(--text-secondary);
-  padding: var(--spacing-sm) var(--spacing-md);
-  border-radius: var(--radius-lg);
-  font-size: var(--font-size-sm);
-  cursor: pointer;
-  transition: all var(--transition-fast);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-}
-
-.filter-btn:hover {
-  background: var(--bg-hover);
-  color: var(--text-primary);
-  transform: translateY(-2px);
-}
-
-.filter-btn.active {
-  background: var(--primary-blue);
-  border-color: var(--primary-blue);
-  color: white;
-  box-shadow: var(--shadow-light);
-}
-
-.task-list {
-  padding: 0 var(--spacing-xxl) var(--spacing-xl);
-}
-
-.task-item {
-  display: flex;
-  align-items: flex-start;
-  gap: var(--spacing-lg);
-  padding: var(--spacing-lg);
-  margin-bottom: var(--spacing-md);
-  background: var(--glass-bg);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  border: 1px solid var(--glass-border);
-  border-radius: var(--radius-xl);
-  cursor: pointer;
-  transition: all var(--transition-fast);
-  box-shadow: var(--shadow-light);
-  position: relative;
-  animation: slideInUp 0.3s ease-out;
-}
-
-.task-item:hover {
-  box-shadow: var(--shadow-medium);
-  transform: translateY(-3px);
-  border-color: var(--border-medium);
-}
-
-.task-item.completed {
-  opacity: 0.7;
-}
-
-.task-item.completed .task-content {
-  text-decoration: line-through;
-  color: var(--text-secondary);
-}
-
-.task-checkbox {
-  width: 20px;
-  height: 20px;
-  border: 2px solid var(--border-medium);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all var(--transition-fast);
-  flex-shrink: 0;
-  margin-top: 2px;
-}
-
-.task-checkbox:hover {
-  border-color: var(--primary-blue);
-  transform: scale(1.1);
-}
-
-.task-checkbox.checked {
-  background: var(--primary-blue);
-  border-color: var(--primary-blue);
-  color: white;
-  box-shadow: var(--shadow-light);
-}
-
-.task-checkbox i {
-  font-size: 10px;
-  opacity: 0;
-  transition: opacity var(--transition-fast);
-}
-
-.task-checkbox.checked i {
-  opacity: 1;
-}
-
-.task-content-wrapper {
-  flex: 1;
-  min-width: 0;
-}
-
-.task-content {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-sm);
-  margin-bottom: var(--spacing-xs);
-}
-
-.task-icon {
-  color: var(--text-secondary);
-  font-size: var(--font-size-md);
-  width: 16px;
-  text-align: center;
-  flex-shrink: 0;
-}
-
-.task-text {
-  font-size: var(--font-size-md);
-  color: var(--text-primary);
-  line-height: 1.4;
-  word-break: break-word;
-  flex: 1;
-}
-
-.task-meta {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-md);
-  font-size: var(--font-size-sm);
-  color: var(--text-secondary);
-  flex-wrap: wrap;
-  margin-top: var(--spacing-xs);
-}
-
-.task-meta-item {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-xs);
-}
-
-.task-priority {
-  padding: 2px 8px;
-  border-radius: var(--radius-sm);
-  font-size: var(--font-size-xs);
-  font-weight: 500;
-  text-transform: uppercase;
-}
-
-.task-priority.high {
-  background: rgba(209, 52, 56, 0.1);
-  color: var(--accent-red);
-}
-
-.task-priority.medium {
-  background: rgba(255, 140, 0, 0.1);
-  color: var(--accent-orange);
-}
-
-.task-priority.low {
-  background: rgba(16, 124, 16, 0.1);
-  color: var(--accent-green);
-}
-
-.task-actions {
-  display: flex;
-  gap: var(--spacing-xs);
-  opacity: 0;
-  transition: opacity var(--transition-fast);
-}
-
-.task-item:hover .task-actions {
-  opacity: 1;
-}
-
-.task-action-btn {
-  background: none;
-  border: none;
-  color: var(--text-tertiary);
-  cursor: pointer;
-  padding: var(--spacing-xs);
-  border-radius: var(--radius-md);
-  font-size: var(--font-size-sm);
-  transition: all var(--transition-fast);
-  width: 28px;
-  height: 28px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-}
-
-.task-action-btn:hover {
-  background: var(--bg-hover);
-  color: var(--text-primary);
-  transform: scale(1.1);
-}
-
-.task-action-btn.edit:hover {
-  color: var(--primary-blue);
-}
-
-.task-action-btn.delete:hover {
-  color: var(--accent-red);
-}
-
-.task-action-btn.star:hover {
-  color: var(--accent-orange);
-}
-
-/* Empty State */
-.empty-state {
-  text-align: center;
-  padding: var(--spacing-xxxl);
-  color: var(--text-secondary);
-}
-
-.empty-state-icon {
-  font-size: 48px;
-  color: var(--text-tertiary);
-  margin-bottom: var(--spacing-lg);
-}
-
-.empty-state-title {
-  font-size: var(--font-size-xl);
-  font-weight: 500;
-  color: var(--text-primary);
-  margin-bottom: var(--spacing-sm);
-}
-
-.empty-state-text {
-  font-size: var(--font-size-md);
-  line-height: 1.5;
-}
-
-/* Modals */
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.4);
-  z-index: var(--z-modal);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  visibility: hidden;
-  transition: all var(--transition-normal);
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
-}
-
-.modal-overlay.visible {
-  opacity: 1;
-  visibility: visible;
-}
-
-.modal {
-  background: var(--glass-bg);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-flyout);
-  max-width: 500px;
-  width: 90%;
-  max-height: 80vh;
-  overflow: hidden;
-  transform: scale(0.9);
-  transition: transform var(--transition-normal);
-  border: 1px solid var(--glass-border);
-}
-
-.modal-overlay.visible .modal {
-  transform: scale(1);
-}
-
-.modal-header {
-  padding: var(--spacing-xl);
-  border-bottom: 1px solid var(--glass-border);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.modal-title {
-  font-size: var(--font-size-xl);
-  font-weight: 600;
-  color: var(--text-primary);
-}
-
-.modal-close {
-  background: none;
-  border: none;
-  color: var(--text-secondary);
-  cursor: pointer;
-  padding: var(--spacing-sm);
-  border-radius: var(--radius-md);
-  font-size: var(--font-size-lg);
-  transition: all var(--transition-fast);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-}
-
-.modal-close:hover {
-  background: var(--bg-hover);
-  color: var(--text-primary);
-  transform: scale(1.1);
-}
-
-.modal-content {
-  padding: var(--spacing-xl);
-  overflow-y: auto;
-  max-height: 60vh;
-}
-
-.modal-footer {
-  padding: var(--spacing-xl);
-  border-top: 1px solid var(--glass-border);
-  display: flex;
-  justify-content: flex-end;
-  gap: var(--spacing-md);
-}
-
-/* Login Modal */
-.login-form {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-lg);
-}
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-sm);
-}
-
-.form-label {
-  font-size: var(--font-size-md);
-  font-weight: 500;
-  color: var(--text-primary);
-}
-
-.form-input {
-  padding: var(--spacing-md);
-  border: 1px solid var(--glass-border);
-  border-radius: var(--radius-lg);
-  background: var(--glass-bg);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  color: var(--text-primary);
-  font-size: var(--font-size-md);
-  transition: border-color var(--transition-fast);
-}
-
-.form-input:focus {
-  outline: none;
-  border-color: var(--border-focus);
-}
-
-.avatar-upload {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-md);
-}
-
-.avatar-preview {
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  background: var(--primary-blue);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-weight: 600;
-  font-size: var(--font-size-lg);
-  overflow: hidden;
-  border: 2px solid var(--glass-border);
-}
-
-.avatar-preview img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.avatar-upload-btn {
-  background: var(--bg-secondary);
-  border: 1px solid var(--glass-border);
-  color: var(--text-primary);
-  padding: var(--spacing-sm) var(--spacing-md);
-  border-radius: var(--radius-lg);
-  font-size: var(--font-size-sm);
-  cursor: pointer;
-  transition: all var(--transition-fast);
-}
-
-.avatar-upload-btn:hover {
-  background: var(--bg-hover);
-}
-
-/* Settings Modal */
-.settings-grid {
-  display: grid;
-  gap: var(--spacing-xl);
-}
-
-.setting-group {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-md);
-}
-
-.setting-group-title {
-  font-size: var(--font-size-lg);
-  font-weight: 600;
-  color: var(--text-primary);
-  margin-bottom: var(--spacing-sm);
-}
-
-.setting-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: var(--spacing-lg);
-  background: var(--glass-bg);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--glass-border);
-}
-
-.setting-info {
-  flex: 1;
-}
-
-.setting-title {
-  font-size: var(--font-size-md);
-  font-weight: 500;
-  color: var(--text-primary);
-  margin-bottom: var(--spacing-xs);
-}
-
-.setting-description {
-  font-size: var(--font-size-sm);
-  color: var(--text-secondary);
-}
-
-/* Theme Selector */
-.theme-selector {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-  gap: var(--spacing-md);
-  margin-top: var(--spacing-md);
-}
-
-.theme-option {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--spacing-sm);
-  padding: var(--spacing-md);
-  border-radius: var(--radius-lg);
-  cursor: pointer;
-  transition: all var(--transition-fast);
-  background: var(--glass-bg);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  border: 1px solid var(--glass-border);
-}
-
-.theme-option:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-light);
-}
-
-.theme-option.active {
-  border-color: var(--primary-blue);
-  box-shadow: 0 0 0 2px var(--primary-blue);
-}
-
-.theme-preview {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-size: var(--font-size-sm);
-}
-
-.theme-name {
-  font-size: var(--font-size-sm);
-  font-weight: 500;
-  color: var(--text-primary);
-}
-
-/* AI Summary Panel */
-.ai-summary-panel {
-  background: var(--glass-bg);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  border: 1px solid var(--glass-border);
-  border-radius: var(--radius-xl);
-  padding: var(--spacing-lg);
-  margin-bottom: var(--spacing-lg);
-  box-shadow: var(--shadow-light);
-  animation: slideInDown 0.5s ease-out;
-}
-
-.ai-summary-header {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-md);
-  margin-bottom: var(--spacing-md);
-}
-
-.ai-summary-icon {
-  width: 32px;
-  height: 32px;
-  background: linear-gradient(135deg, var(--primary-blue), var(--accent-purple));
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-size: var(--font-size-md);
-}
-
-.ai-summary-title {
-  font-size: var(--font-size-lg);
-  font-weight: 600;
-  color: var(--text-primary);
-}
-
-.ai-summary-content {
-  font-size: var(--font-size-md);
-  color: var(--text-secondary);
-  line-height: 1.5;
-}
-
-/* Toggle Switch */
-.toggle-switch {
-  position: relative;
-  display: inline-block;
-  width: 44px;
-  height: 24px;
-}
-
-.toggle-switch input {
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-
-.toggle-slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: var(--border-medium);
-  transition: var(--transition-fast);
-  border-radius: 12px;
-}
-
-.toggle-slider:before {
-  position: absolute;
-  content: "";
-  height: 18px;
-  width: 18px;
-  left: 3px;
-  bottom: 3px;
-  background-color: white;
-  transition: var(--transition-fast);
-  border-radius: 50%;
-}
-
-input:checked + .toggle-slider {
-  background-color: var(--primary-blue);
-}
-
-input:checked + .toggle-slider:before {
-  transform: translateX(20px);
-}
-
-/* Buttons */
-.btn {
-  padding: var(--spacing-sm) var(--spacing-lg);
-  border: 1px solid var(--glass-border);
-  border-radius: var(--radius-lg);
-  font-size: var(--font-size-md);
-  font-weight: 500;
-  cursor: pointer;
-  transition: all var(--transition-fast);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--spacing-sm);
-  text-decoration: none;
-  background: var(--glass-bg);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  color: var(--text-primary);
-}
-
-.btn:hover {
-  background: var(--bg-hover);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-light);
-}
-
-.btn.primary {
-  background: var(--primary-blue);
-  border-color: var(--primary-blue);
-  color: white;
-}
-
-.btn.primary:hover {
-  background: var(--primary-blue-hover);
-  border-color: var(--primary-blue-hover);
-  transform: translateY(-2px);
-}
-
-.btn.secondary {
-  background: var(--bg-secondary);
-  border-color: var(--glass-border);
-}
-
-.btn.danger {
-  background: var(--accent-red);
-  border-color: var(--accent-red);
-  color: white;
-}
-
-.btn.danger:hover {
-  background: #b02a2e;
-  transform: translateY(-2px);
-}
-
-/* Toast Notifications */
-.toast-container {
-  position: fixed;
-  top: var(--spacing-xl);
-  right: var(--spacing-xl);
-  z-index: var(--z-toast);
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-sm);
-  max-width: 400px;
-}
-
-.toast {
-  background: var(--glass-bg);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  border: 1px solid var(--glass-border);
-  border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-heavy);
-  padding: var(--spacing-lg);
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-md);
-  transform: translateX(120%);
-  transition: transform var(--transition-normal);
-}
-
-.toast.show {
-  transform: translateX(0);
-}
-
-.toast-icon {
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: var(--font-size-sm);
-  flex-shrink: 0;
-}
-
-.toast.success .toast-icon {
-  background: var(--accent-green);
-  color: white;
-}
-
-.toast.error .toast-icon {
-  background: var(--accent-red);
-  color: white;
-}
-
-.toast.info .toast-icon {
-  background: var(--primary-blue);
-  color: white;
-}
-
-.toast-content {
-  flex: 1;
-}
-
-.toast-title {
-  font-weight: 500;
-  color: var(--text-primary);
-  margin-bottom: var(--spacing-xs);
-}
-
-.toast-message {
-  font-size: var(--font-size-sm);
-  color: var(--text-secondary);
-}
-
-.toast-close {
-  background: none;
-  border: none;
-  color: var(--text-tertiary);
-  cursor: pointer;
-  padding: var(--spacing-xs);
-  border-radius: var(--radius-md);
-  font-size: var(--font-size-sm);
-  transition: all var(--transition-fast);
-}
-
-.toast-close:hover {
-  background: var(--bg-hover);
-  color: var(--text-primary);
-}
-
-/* Animations */
-@keyframes slideInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes slideInDown {
-  from {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes slideDown {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes fadeOut {
-  from {
-    opacity: 1;
-    transform: scale(1);
-  }
-  to {
-    opacity: 0;
-    transform: scale(0.9);
-  }
-}
-
-@keyframes pulse {
-  0% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.05);
-  }
-  100% {
-    transform: scale(1);
-  }
-}
-
-@keyframes float {
-  0% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-5px);
-  }
-  100% {
-    transform: translateY(0px);
-  }
-}
-
-@keyframes liquidFlow {
-  0% {
-    left: -100%;
-  }
-  100% {
-    left: 100%;
-  }
-}
-
-@keyframes loading {
-  0% {
-    left: -100%;
-  }
-  100% {
-    left: 100%;
-  }
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes slideInLeft {
-  from {
-    opacity: 0;
-    transform: translateX(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-@keyframes bounceIn {
-  0% {
-    opacity: 0;
-    transform: scale(0.3);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1.05);
-  }
-  70% {
-    transform: scale(0.9);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-.fade-out {
-  animation: fadeOut 0.2s ease-out forwards;
-}
-
-.pulse {
-  animation: pulse 2s infinite;
-}
-
-.float {
-  animation: float 3s ease-in-out infinite;
-}
-
-.fade-in {
-  animation: fadeIn 0.5s ease-out;
-}
-
-.slide-in-left {
-  animation: slideInLeft 0.3s ease-out;
-}
-
-.bounce-in {
-  animation: bounceIn 0.6s ease-out;
-}
-
-/* Blur Effect */
-.blur-effect {
-  filter: blur(5px);
-  transition: filter 0.3s ease-out;
-}
-
-.blur-effect-removing {
-  filter: blur(0);
-}
-
-/* Liquid Glass Effect */
-.liquid-glass {
-  position: relative;
-  overflow: hidden;
-}
-
-.liquid-glass::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-  animation: liquidFlow 3s infinite;
-}
-
-/* Mobile Responsiveness */
-@media (max-width: 768px) {
-  .sidebar {
-    position: fixed;
-    left: 0;
-    top: 0;
-    height: 100vh;
-    z-index: 200;
-    transform: translateX(-100%);
-  }
-
-  .sidebar.visible {
-    transform: translateX(0);
-  }
-
-  .menu-btn {
-    display: block;
-  }
-
-  .main-header {
-    padding: var(--spacing-lg);
-  }
-
-  .page-title {
-    font-size: var(--font-size-xl);
-  }
-
-  .task-input-container {
-    padding: var(--spacing-lg);
-  }
-
-  .task-list-header {
-    padding: var(--spacing-lg);
-  }
-
-  .task-list {
-    padding: 0 var(--spacing-lg) var(--spacing-lg);
-  }
-
-  .task-item {
-    padding: var(--spacing-md);
-  }
-
-  .toast-container {
-    top: var(--spacing-lg);
-    right: var(--spacing-lg);
-    left: var(--spacing-lg);
-    max-width: none;
-  }
-
-  .modal {
-    width: 95%;
-    margin: var(--spacing-lg);
-  }
-
-  .task-options-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .task-input {
-    font-size: 16px; /* Prevent zoom on iOS */
-  }
-  
-  .theme-selector {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  
-  .calendar-grid {
-    grid-template-columns: repeat(7, 1fr);
-    gap: 2px;
-  }
-  
-  .calendar-day {
-    padding: 4px;
-    font-size: var(--font-size-xs);
-  }
-  
-  .calendar-task {
-    display: none; /* Hide task details on mobile calendar */
-  }
-  
-  .calendar-header {
-    flex-direction: column;
-    gap: var(--spacing-md);
-  }
-  
-  .calendar-nav {
-    order: 2;
-  }
-  
-  .calendar-title {
-    order: 1;
-  }
-  
-  .calendar-actions {
-    order: 3;
-  }
-}
-
-@media (max-width: 480px) {
-  .app-header {
-    padding: var(--spacing-md);
-  }
-
-  .app-title {
-    font-size: var(--font-size-lg);
-  }
-
-  .nav-section {
-    padding: var(--spacing-md);
-  }
-
-  .task-meta {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: var(--spacing-xs);
-  }
-
-  .task-actions {
-    position: absolute;
-    top: var(--spacing-md);
-    right: var(--spacing-md);
-    opacity: 1;
-    background: var(--glass-bg);
-    backdrop-filter: var(--glass-blur);
-    -webkit-backdrop-filter: var(--glass-blur);
-    border-radius: var(--radius-md);
-    padding: var(--spacing-xs);
-    box-shadow: var(--shadow-light);
-  }
-  
-  .theme-selector {
-    grid-template-columns: 1fr;
-  }
-  
-  .calendar-grid {
-    grid-template-columns: repeat(7, 1fr);
-  }
-  
-  .calendar-day-header {
-    font-size: 10px;
-    padding: 4px 2px;
-  }
-  
-  .calendar-day {
-    padding: 2px;
-    font-size: 10px;
-  }
-  
-  .calendar-day-number {
-    margin-bottom: 0;
-  }
-}
-
-/* Dark theme specific adjustments */
-body.theme-dark .toast {
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-}
-
-body.theme-dark .modal {
-  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
-}
-
-/* Custom Scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: var(--bg-tertiary);
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--border-medium);
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--border-dark);
-}
-
-/* Focus styles for accessibility */
-button:focus,
-input:focus,
-select:focus,
-.task-item:focus {
-  outline: 2px solid var(--primary-blue);
-  outline-offset: 2px;
-}
-
-/* Print styles */
-@media print {
-  .sidebar,
-  .header-actions,
-  .task-actions,
-  .task-input-container,
-  .task-options-panel,
-  .ai-summary-panel {
-    display: none !important;
-  }
-
-  .main-content {
-    margin: 0;
-  }
-
-  .task-item {
-    break-inside: avoid;
-    box-shadow: none;
-    border: 1px solid #ccc;
-  }
-}
-
-/* Drag and drop styles */
-.task-item.dragging {
-  opacity: 0.5;
-  transform: rotate(2deg);
-  z-index: 1000;
-}
-
-.drop-zone {
-  min-height: 60px;
-  border: 2px dashed var(--border-medium);
-  border-radius: var(--radius-xl);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: var(--spacing-md) 0;
-  color: var(--text-secondary);
-  font-size: var(--font-size-md);
-  transition: all var(--transition-fast);
-  background: var(--glass-bg);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-}
-
-.drop-zone.drag-over {
-  border-color: var(--primary-blue);
-  background: var(--bg-selected);
-  color: var(--text-accent);
-}
-
-/* Loading states */
-.loading {
-  position: relative;
-  overflow: hidden;
-}
-
-.loading::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-  animation: loading 1.5s infinite;
-}
-
-/* View Toggle */
-.view-toggle {
-  display: flex;
-  background: var(--glass-bg);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  border-radius: var(--radius-lg);
-  padding: 4px;
-  border: 1px solid var(--glass-border);
-}
-
-.view-toggle-btn {
-  padding: var(--spacing-sm) var(--spacing-md);
-  border: none;
-  background: transparent;
-  color: var(--text-secondary);
-  border-radius: var(--radius-md);
-  cursor: pointer;
-  transition: all var(--transition-fast);
-  font-size: var(--font-size-sm);
-  font-weight: 500;
-}
-
-.view-toggle-btn.active {
-  background: var(--primary-blue);
-  color: white;
-  box-shadow: var(--shadow-light);
-}
-
-.view-toggle-btn:hover:not(.active) {
-  background: var(--bg-hover);
-  color: var(--text-primary);
-}
-
-/* Calendar Actions */
-.calendar-actions {
-  display: flex;
-  gap: var(--spacing-sm);
-}
-
-/* Icon Customization */
-.icon-customization {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
-  gap: var(--spacing-md);
-  margin-top: var(--spacing-md);
-}
-
-.icon-option {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--spacing-xs);
-  padding: var(--spacing-sm);
-  border-radius: var(--radius-md);
-  cursor: pointer;
-  transition: all var(--transition-fast);
-  background: var(--glass-bg);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  border: 1px solid var(--glass-border);
-}
-
-.icon-option:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-light);
-}
-
-.icon-option.active {
-  border-color: var(--primary-blue);
-  box-shadow: 0 0 0 2px var(--primary-blue);
-}
-
-.icon-preview {
-  font-size: var(--font-size-xl);
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: var(--radius-md);
-  background: var(--bg-tertiary);
-}
-
-.icon-name {
-  font-size: var(--font-size-xs);
-  text-align: center;
-  color: var(--text-secondary);
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chrono Focus Pro - Premium Productivity Suite</title>
+    <link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@300;400;500;600;700&family=SF+Pro+Text:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <style>
+        :root {
+            /* Default Theme Variables */
+            --primary-color: #0078d4;
+            --secondary-color: #106ebe;
+            --accent-color: #40e0d0;
+            --background-primary: rgba(255, 255, 255, 0.1);
+            --background-secondary: rgba(255, 255, 255, 0.05);
+            --background-tertiary: rgba(0, 0, 0, 0.8);
+            --text-primary: rgba(255, 255, 255, 0.95);
+            --text-secondary: rgba(255, 255, 255, 0.7);
+            --text-muted: rgba(255, 255, 255, 0.5);
+            --border-color: rgba(255, 255, 255, 0.15);
+            --shadow-light: 0 8px 32px rgba(31, 38, 135, 0.37);
+            --shadow-medium: 0 8px 32px rgba(0, 0, 0, 0.3);
+            --blur: blur(20px);
+            --gradient-primary: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+            --gradient-secondary: linear-gradient(135deg, rgba(0, 120, 212, 0.3), rgba(16, 110, 190, 0.2));
+        }
+
+        /* Theme Definitions */
+        .theme-black {
+            --background-primary: rgba(30, 30, 30, 0.9);
+            --background-secondary: rgba(20, 20, 20, 0.8);
+            --background-tertiary: rgba(0, 0, 0, 0.95);
+            --text-primary: rgba(255, 255, 255, 0.95);
+            --text-secondary: rgba(255, 255, 255, 0.7);
+            --border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .theme-extrablack {
+            --background-primary: rgba(0, 0, 0, 0.95);
+            --background-secondary: rgba(10, 10, 10, 0.9);
+            --background-tertiary: rgba(0, 0, 0, 1);
+            --text-primary: rgba(255, 255, 255, 1);
+            --text-secondary: rgba(255, 255, 255, 0.8);
+            --border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .theme-sunset {
+            --primary-color: #ff6b6b;
+            --secondary-color: #ff8e53;
+            --accent-color: #ffa726;
+            --background-primary: rgba(255, 107, 107, 0.1);
+            --background-secondary: rgba(255, 142, 83, 0.1);
+            --background-tertiary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-primary: linear-gradient(135deg, rgba(255, 107, 107, 0.2), rgba(255, 142, 83, 0.1));
+        }
+
+        .theme-green {
+            --primary-color: #4caf50;
+            --secondary-color: #66bb6a;
+            --accent-color: #81c784;
+            --background-primary: rgba(76, 175, 80, 0.1);
+            --background-secondary: rgba(102, 187, 106, 0.1);
+            --background-tertiary: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            --gradient-primary: linear-gradient(135deg, rgba(76, 175, 80, 0.2), rgba(102, 187, 106, 0.1));
+        }
+
+        .theme-purple {
+            --primary-color: #9c27b0;
+            --secondary-color: #ab47bc;
+            --accent-color: #ba68c8;
+            --background-primary: rgba(156, 39, 176, 0.1);
+            --background-secondary: rgba(171, 71, 188, 0.1);
+            --background-tertiary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-primary: linear-gradient(135deg, rgba(156, 39, 176, 0.2), rgba(171, 71, 188, 0.1));
+        }
+
+        .theme-cotton-candy {
+            --primary-color: #ff9a9e;
+            --secondary-color: #fecfef;
+            --accent-color: #fecfef;
+            --background-primary: rgba(255, 154, 158, 0.1);
+            --background-secondary: rgba(254, 207, 239, 0.1);
+            --background-tertiary: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fecfef 100%);
+            --gradient-primary: linear-gradient(135deg, rgba(255, 154, 158, 0.2), rgba(254, 207, 239, 0.1));
+        }
+
+        .theme-cloud {
+            --primary-color: #74b9ff;
+            --secondary-color: #0984e3;
+            --accent-color: #00cec9;
+            --background-primary: rgba(116, 185, 255, 0.1);
+            --background-secondary: rgba(9, 132, 227, 0.1);
+            --background-tertiary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-primary: linear-gradient(135deg, rgba(116, 185, 255, 0.2), rgba(9, 132, 227, 0.1));
+        }
+
+        .theme-white {
+            --primary-color: #2196f3;
+            --secondary-color: #1976d2;
+            --accent-color: #03dac6;
+            --background-primary: rgba(255, 255, 255, 0.9);
+            --background-secondary: rgba(250, 250, 250, 0.8);
+            --background-tertiary: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            --text-primary: rgba(33, 33, 33, 0.9);
+            --text-secondary: rgba(97, 97, 97, 0.8);
+            --text-muted: rgba(158, 158, 158, 0.7);
+            --border-color: rgba(0, 0, 0, 0.1);
+        }
+
+        .theme-zenith1 {
+            --primary-color: #6c5ce7;
+            --secondary-color: #a29bfe;
+            --accent-color: #fd79a8;
+            --background-primary: rgba(108, 92, 231, 0.1);
+            --background-secondary: rgba(162, 155, 254, 0.1);
+            --background-tertiary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-primary: linear-gradient(135deg, rgba(108, 92, 231, 0.2), rgba(162, 155, 254, 0.1));
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--background-tertiary);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        /* Liquid Glass Components */
+        .glass {
+            background: var(--gradient-primary);
+            backdrop-filter: var(--blur);
+            -webkit-backdrop-filter: var(--blur);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            box-shadow: var(--shadow-light);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        .glass:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-medium);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .glass-intense {
+            background: var(--gradient-secondary);
+            backdrop-filter: var(--blur);
+            -webkit-backdrop-filter: var(--blur);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            box-shadow: var(--shadow-medium);
+        }
+
+        /* Login Screen */
+        .login-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--background-tertiary);
+            z-index: 1000;
+            transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        .login-card {
+            width: 400px;
+            max-width: 90%;
+            padding: 40px;
+            text-align: center;
+            animation: slideInUp 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        .login-logo {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            background: var(--gradient-secondary);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            color: var(--text-primary);
+        }
+
+        .login-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .login-subtitle {
+            font-size: 16px;
+            color: var(--text-secondary);
+            margin-bottom: 30px;
+        }
+
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .input-group {
+            position: relative;
+        }
+
+        .login-input {
+            width: 100%;
+            padding: 15px 20px;
+            background: var(--background-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-size: 16px;
+            font-family: inherit;
+            transition: all 0.3s ease;
+            backdrop-filter: var(--blur);
+            -webkit-backdrop-filter: var(--blur);
+        }
+
+        .login-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(0, 120, 212, 0.1);
+        }
+
+        .login-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .profile-upload {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 20px;
+            border-radius: 50%;
+            overflow: hidden;
+            cursor: pointer;
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .profile-upload:hover {
+            transform: scale(1.05);
+        }
+
+        .profile-upload input {
+            display: none;
+        }
+
+        .profile-preview {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-placeholder {
+            font-size: 40px;
+            color: var(--text-secondary);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(0, 120, 212, 0.3);
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0, 120, 212, 0.4);
+        }
+
+        /* Main App Container */
+        .app-container {
+            display: none;
+            width: 100%;
+            height: 100vh;
+            flex-direction: row;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 300px;
+            height: 100vh;
+            padding: 20px;
+            background: var(--background-primary);
+            backdrop-filter: var(--blur);
+            -webkit-backdrop-filter: var(--blur);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+        }
+
+        .user-profile {
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 16px;
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--border-color);
+        }
+
+        .user-info h3 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .user-info p {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .nav-menu {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .nav-item {
+            padding: 12px 16px;
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            color: var(--text-secondary);
+        }
+
+        .nav-item:hover,
+        .nav-item.active {
+            background: var(--gradient-secondary);
+            color: var(--text-primary);
+            transform: translateX(4px);
+        }
+
+        .nav-item i {
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            height: 100vh;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .content-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .page-title {
+            font-size: 32px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            font-family: inherit;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+            background: var(--gradient-primary);
+            color: var(--text-primary);
+            backdrop-filter: var(--blur);
+            -webkit-backdrop-filter: var(--blur);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-light);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            box-shadow: 0 4px 20px rgba(0, 120, 212, 0.3);
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 8px 30px rgba(0, 120, 212, 0.4);
+        }
+
+        /* Task Input */
+        .task-input-container {
+            margin-bottom: 30px;
+        }
+
+        .task-input {
+            width: 100%;
+            padding: 16px 20px;
+            background: var(--background-primary);
+            backdrop-filter: var(--blur);
+            -webkit-backdrop-filter: var(--blur);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-size: 16px;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+
+        .task-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(0, 120, 212, 0.1);
+        }
+
+        .task-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        /* Task List */
+        .task-list {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .task-item {
+            padding: 20px;
+            border-radius: 16px;
+            background: var(--gradient-primary);
+            backdrop-filter: var(--blur);
+            -webkit-backdrop-filter: var(--blur);
+            border: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: all 0.3s ease;
+            animation: slideInUp 0.3s ease;
+        }
+
+        .task-item:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .task-checkbox {
+            width: 20px;
+            height: 20px;
+            border-radius: 6px;
+            border: 2px solid var(--border-color);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .task-checkbox.checked {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-color: var(--primary-color);
+        }
+
+        .task-checkbox.checked i {
+            color: white;
+            font-size: 12px;
+        }
+
+        .task-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .task-text {
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .task-text.completed {
+            text-decoration: line-through;
+            opacity: 0.6;
+        }
+
+        .task-meta {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .task-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .task-action {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            border: none;
+            background: var(--background-secondary);
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .task-action:hover {
+            background: var(--gradient-secondary);
+            color: var(--text-primary);
+            transform: scale(1.1);
+        }
+
+        /* Calendar View */
+        .calendar-container {
+            display: none;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background: var(--gradient-primary);
+            border-radius: 16px;
+            backdrop-filter: var(--blur);
+            -webkit-backdrop-filter: var(--blur);
+        }
+
+        .calendar-nav {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .calendar-nav button {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            border: none;
+            background: var(--background-secondary);
+            color: var(--text-primary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .calendar-nav button:hover {
+            background: var(--gradient-secondary);
+            transform: scale(1.1);
+        }
+
+        .calendar-title {
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 2px;
+            background: var(--gradient-primary);
+            border-radius: 16px;
+            padding: 20px;
+            backdrop-filter: var(--blur);
+            -webkit-backdrop-filter: var(--blur);
+        }
+
+        .calendar-day-header {
+            padding: 15px;
+            text-align: center;
+            font-weight: 600;
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .calendar-day {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+            font-weight: 500;
+        }
+
+        .calendar-day:hover {
+            background: var(--background-secondary);
+        }
+
+        .calendar-day.today {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+        }
+
+        .calendar-day.has-tasks {
+            border: 2px solid var(--accent-color);
+        }
+
+        .calendar-day.other-month {
+            color: var(--text-muted);
+            opacity: 0.5;
+        }
+
+        /* AI Assistant */
+        .ai-container {
+            display: none;
+            flex-direction: column;
+            gap: 20px;
+            height: 100%;
+        }
+
+        .ai-header {
+            padding: 20px;
+            background: var(--gradient-secondary);
+            border-radius: 16px;
+            text-align: center;
+            backdrop-filter: var(--blur);
+            -webkit-backdrop-filter: var(--blur);
+        }
+
+        .ai-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-color), var(--primary-color));
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        .ai-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .ai-subtitle {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .ai-chat {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: var(--gradient-primary);
+            border-radius: 16px;
+            overflow: hidden;
+            backdrop-filter: var(--blur);
+            -webkit-backdrop-filter: var(--blur);
+        }
+
+        .ai-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .ai-message {
+            max-width: 80%;
+            padding: 12px 16px;
+            border-radius: 12px;
+            line-height: 1.4;
+        }
+
+        .ai-message.user {
+            align-self: flex-end;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+        }
+
+        .ai-message.assistant {
+            align-self: flex-start;
+            background: var(--background-secondary);
+            color: var(--text-primary);
+        }
+
+        .ai-input-container {
+            padding: 20px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            gap: 10px;
+        }
+
+        .ai-input {
+            flex: 1;
+            padding: 12px 16px;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            background: var(--background-secondary);
+            color: var(--text-primary);
+            font-family: inherit;
+        }
+
+        .ai-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .ai-send {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            border: none;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .ai-send:hover {
+            transform: scale(1.1);
+        }
+
+        /* Settings */
+        .settings-container {
+            display: none;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .settings-section {
+            padding: 25px;
+            background: var(--gradient-primary);
+            border-radius: 16px;
+            backdrop-filter: var(--blur);
+            -webkit-backdrop-filter: var(--blur);
+        }
+
+        .settings-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .theme-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+        }
+
+        .theme-option {
+            padding: 15px;
+            border-radius: 12px;
+            border: 2px solid var(--border-color);
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s ease;
+            background: var(--background-secondary);
+        }
+
+        .theme-option:hover {
+            transform: translateY(-2px);
+            border-color: var(--primary-color);
+        }
+
+        .theme-option.active {
+            border-color: var(--primary-color);
+            background: var(--gradient-secondary);
+        }
+
+        .theme-preview {
+            width: 100%;
+            height: 40px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+        }
+
+        .theme-name {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        /* Focus Mode */
+        .focus-mode {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.95);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .focus-content {
+            text-align: center;
+            color: white;
+        }
+
+        .focus-timer {
+            font-size: 72px;
+            font-weight: 300;
+            margin-bottom: 20px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .focus-task {
+            font-size: 24px;
+            margin-bottom: 40px;
+            opacity: 0.8;
+        }
+
+        .focus-controls {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        /* Animations */
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                flex-direction: row;
+                padding: 10px;
+                border-right: none;
+                border-top: 1px solid var(--border-color);
+                z-index: 100;
+                transform: translateY(100%);
+                transition: transform 0.3s ease;
+            }
+
+            .sidebar.active {
+                transform: translateY(0);
+            }
+
+            .user-profile {
+                display: none;
+            }
+
+            .nav-menu {
+                flex-direction: row;
+                flex: 1;
+                justify-content: space-around;
+            }
+
+            .nav-item {
+                flex-direction: column;
+                padding: 8px;
+                font-size: 12px;
+                text-align: center;
+                min-width: 60px;
+            }
+
+            .nav-item span {
+                display: none;
+            }
+
+            .main-content {
+                padding: 20px 15px 80px;
+            }
+
+            .app-container {
+                flex-direction: column;
+            }
+
+            .mobile-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 15px;
+                background: var(--gradient-primary);
+                backdrop-filter: var(--blur);
+                -webkit-backdrop-filter: var(--blur);
+                border-bottom: 1px solid var(--border-color);
+            }
+
+            .mobile-menu-btn {
+                width: 40px;
+                height: 40px;
+                border-radius: 10px;
+                border: none;
+                background: var(--background-secondary);
+                color: var(--text-primary);
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .page-title {
+                font-size: 24px;
+            }
+
+            .content-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .header-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .login-card {
+                width: 90%;
+                padding: 30px 20px;
+            }
+
+            .focus-timer {
+                font-size: 48px;
+            }
+
+            .focus-task {
+                font-size: 18px;
+            }
+
+            .calendar-grid {
+                padding: 15px;
+            }
+
+            .calendar-day {
+                font-size: 14px;
+            }
+
+            .task-item {
+                padding: 15px;
+            }
+
+            .ai-messages {
+                padding: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main-content {
+                padding: 15px 10px 80px;
+            }
+
+            .task-input {
+                padding: 12px 15px;
+                font-size: 16px;
+            }
+
+            .btn {
+                padding: 8px 16px;
+                font-size: 14px;
+            }
+
+            .theme-grid {
+                grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+                gap: 10px;
+            }
+        }
+
+        /* Dark mode optimizations */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --background-tertiary: rgba(0, 0, 0, 0.95);
+            }
+        }
+
+        /* High contrast mode */
+        @media (prefers-contrast: high) {
+            .glass {
+                border-width: 2px;
+            }
+            
+            .task-checkbox {
+                border-width: 3px;
+            }
+        }
+
+        /* Reduced motion */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
 </head>
-<body class="theme-dark">
-
-<!-- App Container -->
-<div class="app">
-  <!-- Sidebar -->
-  <aside class="sidebar" id="sidebar">
-    <!-- App Header -->
-    <header class="app-header">
-      <div class="app-title">
-        <div class="app-icon">
-          <i class="fas fa-check"></i>
+<body class="theme-black">
+    <!-- Login Screen -->
+    <div id="loginContainer" class="login-container">
+        <div class="login-card glass">
+            <div class="login-logo">
+                <i class="fas fa-clock"></i>
+            </div>
+            <h1 class="login-title">Chrono Focus Pro</h1>
+            <p class="login-subtitle">Premium Productivity Suite</p>
+            
+            <form class="login-form" id="loginForm">
+                <div class="profile-upload" onclick="document.getElementById('profileInput').click()">
+                    <input type="file" id="profileInput" accept="image/*">
+                    <img id="profilePreview" class="profile-preview" style="display: none;">
+                    <i class="fas fa-camera profile-placeholder" id="profilePlaceholder"></i>
+                </div>
+                
+                <div class="input-group">
+                    <input type="text" class="login-input" placeholder="Full Name" id="nameInput" required>
+                </div>
+                
+                <div class="input-group">
+                    <input type="email" class="login-input" placeholder="Email Address" id="emailInput" required>
+                </div>
+                
+                <button type="submit" class="login-btn">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Sign In to Chrono Focus Pro
+                </button>
+            </form>
         </div>
-        Chrono Focus Pro
-      </div>
-      
-      <div class="user-profile" id="userProfile">
-        <div class="user-avatar" id="userAvatar">
-          <i class="fas fa-user"></i>
-        </div>
-        <div class="user-info">
-          <div class="user-name" id="userName">Guest</div>
-          <div class="user-email" id="userEmail">Click to login</div>
-        </div>
-        <i class="fas fa-chevron-right" style="color: var(--text-tertiary);"></i>
-      </div>
-    </header>
-
-    <!-- Navigation -->
-    <nav class="nav-section">
-      <div class="nav-group">
-        <div class="nav-group-title">Tasks</div>
-        <button class="nav-item active" data-view="my-day">
-          <i class="fas fa-sun"></i>
-          <span class="nav-item-text">My Day</span>
-          <span class="nav-item-count" id="myDayCount">0</span>
-        </button>
-        <button class="nav-item" data-view="important">
-          <i class="fas fa-star"></i>
-          <span class="nav-item-text">Important</span>
-          <span class="nav-item-count" id="importantCount">0</span>
-        </button>
-        <button class="nav-item" data-view="planned">
-          <i class="fas fa-calendar-alt"></i>
-          <span class="nav-item-text">Planned</span>
-          <span class="nav-item-count" id="plannedCount">0</span>
-        </button>
-        <button class="nav-item" data-view="calendar">
-          <i class="fas fa-calendar"></i>
-          <span class="nav-item-text">Calendar</span>
-        </button>
-        <button class="nav-item" data-view="assigned">
-          <i class="fas fa-user"></i>
-          <span class="nav-item-text">Assigned to me</span>
-          <span class="nav-item-count" id="assignedCount">0</span>
-        </button>
-        <button class="nav-item" data-view="tasks">
-          <i class="fas fa-home"></i>
-          <span class="nav-item-text">Tasks</span>
-          <span class="nav-item-count" id="tasksCount">0</span>
-        </button>
-      </div>
-
-      <div class="nav-group">
-        <div class="nav-group-title">Lists</div>
-        <div id="customLists">
-          <!-- Custom lists will be added here -->
-        </div>
-      </div>
-    </nav>
-
-    <!-- Settings -->
-    <footer class="sidebar-footer">
-      <button class="nav-item" id="settingsBtn">
-        <i class="fas fa-cog"></i>
-        <span class="nav-item-text">Settings</span>
-      </button>
-    </footer>
-  </aside>
-
-  <!-- Main Content -->
-  <main class="main-content">
-    <!-- Main Header -->
-    <header class="main-header">
-      <div class="header-left">
-        <button class="menu-btn" id="menuBtn" aria-label="Toggle Menu">
-          <i class="fas fa-bars"></i>
-        </button>
-        <h1 class="page-title" id="pageTitle">
-          <i class="fas fa-sun"></i>
-          My Day
-        </h1>
-      </div>
-      <div class="header-actions">
-        <div class="view-toggle" id="viewToggle" style="display: none;">
-          <button class="view-toggle-btn active" data-view="list">
-            <i class="fas fa-list"></i>
-          </button>
-          <button class="view-toggle-btn" data-view="calendar">
-            <i class="fas fa-calendar"></i>
-          </button>
-        </div>
-        <button class="header-btn" id="sortBtn" title="Sort" aria-label="Sort tasks">
-          <i class="fas fa-sort"></i>
-        </button>
-        <button class="header-btn" id="viewBtn" title="View options" aria-label="View options">
-          <i class="fas fa-th-list"></i>
-        </button>
-        <button class="header-btn" id="shareBtn" title="Share list" aria-label="Share list">
-          <i class="fas fa-share-alt"></i>
-        </button>
-        <button class="header-btn" id="moreBtn" title="More options" aria-label="More options">
-          <i class="fas fa-ellipsis-h"></i>
-        </button>
-      </div>
-    </header>
-
-    <!-- AI Summary Panel -->
-    <div class="ai-summary-panel" id="aiSummaryPanel" style="display: none;">
-      <div class="ai-summary-header">
-        <div class="ai-summary-icon">
-          <i class="fas fa-robot"></i>
-        </div>
-        <div class="ai-summary-title">Your Monthly Task Summary</div>
-      </div>
-      <div class="ai-summary-content" id="aiSummaryContent">
-        <!-- AI-generated summary will appear here -->
-      </div>
     </div>
 
-    <!-- Task Input -->
-    <section class="task-input-container" id="taskInputContainer">
-      <div class="task-input-wrapper">
-        <div class="task-checkbox-placeholder"></div>
-        <textarea 
-          class="task-input" 
-          id="taskInput" 
-          placeholder="Add a task"
-          rows="1"
-          aria-label="Add a new task"
-        ></textarea>
-        <div class="task-input-actions">
-          <button class="task-input-btn" id="taskOptionsBtn" title="Add options" aria-label="Task options">
-            <i class="fas fa-plus"></i>
-          </button>
-          <button class="task-input-btn primary" id="addTaskBtn" title="Add task" aria-label="Add task">
-            <i class="fas fa-paper-plane"></i>
-          </button>
+    <!-- Main App -->
+    <div id="appContainer" class="app-container">
+        <!-- Mobile Header -->
+        <div class="mobile-header" style="display: none;">
+            <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+                <i class="fas fa-bars"></i>
+            </button>
+            <h2 id="mobilePageTitle">Tasks</h2>
+            <button class="mobile-menu-btn" onclick="toggleFocusMode()">
+                <i class="fas fa-crosshairs"></i>
+            </button>
         </div>
-      </div>
-    </section>
 
-    <!-- Task Options Panel -->
-    <section class="task-options-panel" id="taskOptionsPanel">
-      <div class="task-options-grid">
-        <div class="task-option-group">
-          <label class="task-option-label">Priority</label>
-          <select class="task-option-select" id="taskPriority" aria-label="Task priority">
-            <option value="low">Low</option>
-            <option value="medium" selected>Normal</option>
-            <option value="high">High</option>
-          </select>
+        <!-- Sidebar -->
+        <div id="sidebar" class="sidebar glass">
+            <div class="user-profile">
+                <img id="userAvatar" class="user-avatar" src="" alt="Profile">
+                <div class="user-info">
+                    <h3 id="userName">User Name</h3>
+                    <p id="userEmail">user@email.com</p>
+                </div>
+            </div>
+            
+            <nav class="nav-menu">
+                <div class="nav-item active" onclick="showSection('tasks')">
+                    <i class="fas fa-tasks"></i>
+                    <span>My Day</span>
+                </div>
+                <div class="nav-item" onclick="showSection('important')">
+                    <i class="fas fa-star"></i>
+                    <span>Important</span>
+                </div>
+                <div class="nav-item" onclick="showSection('planned')">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>Planned</span>
+                </div>
+                <div class="nav-item" onclick="showSection('calendar')">
+                    <i class="fas fa-calendar"></i>
+                    <span>Calendar</span>
+                </div>
+                <div class="nav-item" onclick="showSection('ai')">
+                    <i class="fas fa-robot"></i>
+                    <span>OptiChain AI Pro</span>
+                </div>
+                <div class="nav-item" onclick="showSection('analytics')">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Analytics</span>
+                </div>
+                <div class="nav-item" onclick="showSection('settings')">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </div>
+            </nav>
         </div>
-        <div class="task-option-group">
-          <label class="task-option-label">Category</label>
-          <select class="task-option-select" id="taskCategory" aria-label="Task category">
-            <option value="general">📋 General</option>
-            <option value="work">💼 Work</option>
-            <option value="personal">👤 Personal</option>
-            <option value="shopping">🛒 Shopping</option>
-            <option value="health">❤️ Health</option>
-            <option value="learning">📚 Learning</option>
-          </select>
-        </div>
-        <div class="task-option-group">
-          <label class="task-option-label">Due Date</label>
-          <input type="date" class="task-option-select" id="taskDueDate" aria-label="Task due date">
-        </div>
-        <div class="task-option-group">
-          <label class="task-option-label">Reminder</label>
-          <input type="datetime-local" class="task-option-select" id="taskReminder" aria-label="Task reminder">
-        </div>
-      </div>
-    </section>
 
-    <!-- Calendar View -->
-    <section class="calendar-view" id="calendarView">
-      <div class="calendar-header">
-        <div class="calendar-nav">
-          <button class="btn" id="prevMonth">
-            <i class="fas fa-chevron-left"></i>
-          </button>
-          <div class="calendar-title" id="calendarTitle">January 2024</div>
-          <button class="btn" id="nextMonth">
-            <i class="fas fa-chevron-right"></i>
-          </button>
-        </div>
-        <div class="calendar-actions">
-          <button class="btn primary" id="todayBtn">Today</button>
-        </div>
-      </div>
-      <div class="calendar-grid" id="calendarGrid">
-        <!-- Calendar will be generated here -->
-      </div>
-    </section>
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Tasks Section -->
+            <div id="tasksSection" class="content-section">
+                <div class="content-header">
+                    <h1 class="page-title">My Day</h1>
+                    <div class="header-actions">
+                        <button class="btn" onclick="toggleFocusMode()">
+                            <i class="fas fa-crosshairs"></i>
+                            Focus Mode
+                        </button>
+                        <button class="btn" onclick="sortTasks()">
+                            <i class="fas fa-sort"></i>
+                            Sort
+                        </button>
+                        <button class="btn" onclick="filterTasks()">
+                            <i class="fas fa-filter"></i>
+                            Filter
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="task-input-container">
+                    <input type="text" class="task-input" id="taskInput" placeholder="Add a task... (Use emojis! 🎯📝✨)" onkeypress="handleTaskInput(event)">
+                </div>
+                
+                <div class="task-list" id="taskList">
+                    <!-- Tasks will be dynamically added here -->
+                </div>
+            </div>
 
-    <!-- Task List -->
-    <section class="task-list-container" id="taskListView">
-      <div class="task-list-header">
-        <div class="task-list-info">
-          <span class="task-count" id="taskCount">0 tasks</span>
-        </div>
-        <div class="task-filters">
-          <button class="filter-btn active" data-filter="all">All</button>
-          <button class="filter-btn" data-filter="active">Active</button>
-          <button class="filter-btn" data-filter="completed">Completed</button>
-        </div>
-      </div>
+            <!-- Important Section -->
+            <div id="importantSection" class="content-section" style="display: none;">
+                <div class="content-header">
+                    <h1 class="page-title">Important</h1>
+                    <div class="header-actions">
+                        <button class="btn" onclick="markAllImportant()">
+                            <i class="fas fa-star"></i>
+                            Mark All
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="task-list" id="importantTaskList">
+                    <!-- Important tasks will be shown here -->
+                </div>
+            </div>
 
-      <div class="task-list" id="taskList">
-        <!-- Tasks will be rendered here -->
-      </div>
+            <!-- Planned Section -->
+            <div id="plannedSection" class="content-section" style="display: none;">
+                <div class="content-header">
+                    <h1 class="page-title">Planned</h1>
+                    <div class="header-actions">
+                        <button class="btn" onclick="showCalendarPicker()">
+                            <i class="fas fa-calendar-plus"></i>
+                            Schedule
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="task-list" id="plannedTaskList">
+                    <!-- Planned tasks will be shown here -->
+                </div>
+            </div>
 
-      <!-- Empty State -->
-      <div class="empty-state" id="emptyState" style="display: none;">
-        <div class="empty-state-icon">
-          <i class="fas fa-clipboard-check"></i>
-        </div>
-        <div class="empty-state-title">No tasks yet</div>
-        <div class="empty-state-text">
-          Add a task above to get started with your productivity journey.
-        </div>
-      </div>
-    </section>
-  </main>
-</div>
+            <!-- Calendar Section -->
+            <div id="calendarSection" class="calendar-container">
+                <div class="calendar-header">
+                    <div class="calendar-nav">
+                        <button onclick="previousMonth()">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <h2 class="calendar-title" id="calendarTitle">November 2024</h2>
+                        <button onclick="nextMonth()">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                    <button class="btn btn-primary" onclick="goToToday()">
+                        <i class="fas fa-calendar-day"></i>
+                        Today
+                    </button>
+                </div>
+                
+                <div class="calendar-grid" id="calendarGrid">
+                    <!-- Calendar will be dynamically generated -->
+                </div>
+            </div>
 
-<!-- Login Modal -->
-<div class="modal-overlay" id="loginModal">
-  <div class="modal">
-    <div class="modal-header">
-      <h2 class="modal-title">Welcome to Chrono Focus Pro</h2>
-      <button class="modal-close" id="closeLoginModal" aria-label="Close login">
-        <i class="fas fa-times"></i>
-      </button>
+            <!-- AI Assistant Section -->
+            <div id="aiSection" class="ai-container">
+                <div class="ai-header">
+                    <div class="ai-avatar">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h2 class="ai-title">OptiChain AI Pro</h2>
+                    <p class="ai-subtitle">Your intelligent productivity assistant</p>
+                </div>
+                
+                <div class="ai-chat">
+                    <div class="ai-messages" id="aiMessages">
+                        <div class="ai-message assistant">
+                            Hello! I'm OptiChain AI Pro, your personal productivity assistant. I can help you find tasks, check holidays, provide productivity tips, and much more. How can I assist you today? 🤖
+                        </div>
+                    </div>
+                    
+                    <div class="ai-input-container">
+                        <input type="text" class="ai-input" id="aiInput" placeholder="Ask me anything... (e.g., 'Is September 23 a holiday?')" onkeypress="handleAIInput(event)">
+                        <button class="ai-send" onclick="sendAIMessage()">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analytics Section -->
+            <div id="analyticsSection" class="content-section" style="display: none;">
+                <div class="content-header">
+                    <h1 class="page-title">Analytics</h1>
+                    <div class="header-actions">
+                        <button class="btn" onclick="exportAnalytics()">
+                            <i class="fas fa-download"></i>
+                            Export
+                        </button>
+                    </div>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+                    <div class="glass" style="padding: 20px;">
+                        <h3 style="margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+                            <i class="fas fa-chart-line"></i>
+                            Productivity Overview
+                        </h3>
+                        <div id="productivityChart" style="height: 200px;"></div>
+                    </div>
+                    
+                    <div class="glass" style="padding: 20px;">
+                        <h3 style="margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+                            <i class="fas fa-clock"></i>
+                            Time Tracking
+                        </h3>
+                        <div id="timeStats">
+                            <div style="margin-bottom: 10px;">
+                                <strong>Today:</strong> <span id="todayTime">0h 0m</span>
+                            </div>
+                            <div style="margin-bottom: 10px;">
+                                <strong>This Week:</strong> <span id="weekTime">0h 0m</span>
+                            </div>
+                            <div>
+                                <strong>This Month:</strong> <span id="monthTime">0h 0m</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Section -->
+            <div id="settingsSection" class="settings-container">
+                <div class="settings-section">
+                    <h3 class="settings-title">
+                        <i class="fas fa-palette"></i>
+                        Theme Selection
+                    </h3>
+                    <div class="theme-grid" id="themeGrid">
+                        <!-- Themes will be dynamically generated -->
+                    </div>
+                </div>
+                
+                <div class="settings-section">
+                    <h3 class="settings-title">
+                        <i class="fas fa-bell"></i>
+                        Notifications
+                    </h3>
+                    <div style="display: flex; flex-direction: column; gap: 15px;">
+                        <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                            <input type="checkbox" id="taskReminders" checked>
+                            <span>Task reminders</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                            <input type="checkbox" id="dailySummary" checked>
+                            <span>Daily summary</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                            <input type="checkbox" id="focusModeAlerts">
+                            <span>Focus mode alerts</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="settings-section">
+                    <h3 class="settings-title">
+                        <i class="fas fa-user-cog"></i>
+                        Account
+                    </h3>
+                    <div style="display: flex; flex-direction: column; gap: 15px;">
+                        <button class="btn" onclick="exportData()">
+                            <i class="fas fa-download"></i>
+                            Export Data
+                        </button>
+                        <button class="btn" onclick="importData()">
+                            <i class="fas fa-upload"></i>
+                            Import Data
+                        </button>
+                        <button class="btn" onclick="clearAllData()" style="background: linear-gradient(135deg, #ff4757, #ff3838);">
+                            <i class="fas fa-trash"></i>
+                            Clear All Data
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="modal-content">
-      <div class="login-form">
-        <div class="form-group">
-          <label class="form-label" for="loginName">Your Name</label>
-          <input type="text" class="form-input" id="loginName" placeholder="Enter your name">
-        </div>
-        
-        <div class="form-group">
-          <label class="form-label" for="loginEmail">Email (optional)</label>
-          <input type="email" class="form-input" id="loginEmail" placeholder="Enter your email">
-        </div>
-        
-        <div class="form-group">
-          <label class="form-label">Profile Picture</label>
-          <div class="avatar-upload">
-            <div class="avatar-preview" id="avatarPreview">
-              <i class="fas fa-user"></i>
+
+    <!-- Focus Mode Overlay -->
+    <div id="focusMode" class="focus-mode">
+        <div class="focus-content">
+            <div class="focus-timer" id="focusTimer">25:00</div>
+            <div class="focus-task" id="focusTaskName">Focus Session</div>
+            <div class="focus-controls">
+                <button class="btn" onclick="startFocusTimer()" id="focusStartBtn">
+                    <i class="fas fa-play"></i>
+                    Start
+                </button>
+                <button class="btn" onclick="pauseFocusTimer()" id="focusPauseBtn" style="display: none;">
+                    <i class="fas fa-pause"></i>
+                    Pause
+                </button>
+                <button class="btn" onclick="stopFocusTimer()">
+                    <i class="fas fa-stop"></i>
+                    Stop
+                </button>
+                <button class="btn" onclick="closeFocusMode()">
+                    <i class="fas fa-times"></i>
+                    Exit
+                </button>
             </div>
-            <input type="file" id="avatarUpload" accept="image/*" style="display: none;">
-            <button class="avatar-upload-btn" id="avatarUploadBtn">Choose Image</button>
-          </div>
         </div>
-      </div>
     </div>
-    <div class="modal-footer">
-      <button class="btn primary" id="saveLoginBtn">Get Started</button>
-    </div>
-  </div>
-</div>
 
-<!-- Settings Modal -->
-<div class="modal-overlay" id="settingsModal">
-  <div class="modal">
-    <div class="modal-header">
-      <h2 class="modal-title">Settings</h2>
-      <button class="modal-close" id="closeSettingsModal" aria-label="Close settings">
-        <i class="fas fa-times"></i>
-      </button>
-    </div>
-    <div class="modal-content">
-      <div class="settings-grid">
-        <!-- Theme Settings -->
-        <div class="setting-group">
-          <div class="setting-group-title">Theme</div>
-          
-          <div class="theme-selector">
-            <div class="theme-option active" data-theme="dark">
-              <div class="theme-preview" style="background: linear-gradient(135deg, #1c1c1c, #252525);">
-                <i class="fas fa-moon"></i>
-              </div>
-              <div class="theme-name">Dark</div>
-            </div>
-            <div class="theme-option" data-theme="yellow">
-              <div class="theme-preview" style="background: linear-gradient(135deg, #ffc107, #ffb300);">
-                <i class="fas fa-sun"></i>
-              </div>
-              <div class="theme-name">Sunshine</div>
-            </div>
-            <div class="theme-option" data-theme="cotton-candy">
-              <div class="theme-preview" style="background: linear-gradient(135deg, #ff6ec7, #b967ff);">
-                <i class="fas fa-cloud"></i>
-              </div>
-              <div class="theme-name">Cotton Candy</div>
-            </div>
-            <div class="theme-option" data-theme="ocean">
-              <div class="theme-preview" style="background: linear-gradient(135deg, #2196f3, #0d47a1);">
-                <i class="fas fa-water"></i>
-              </div>
-              <div class="theme-name">Ocean</div>
-            </div>
-            <div class="theme-option" data-theme="forest">
-              <div class="theme-preview" style="background: linear-gradient(135deg, #388e3c, #1b5e20);">
-                <i class="fas fa-tree"></i>
-              </div>
-              <div class="theme-name">Forest</div>
-            </div>
-            <div class="theme-option" data-theme="midnight">
-              <div class="theme-preview" style="background: linear-gradient(135deg, #9c27b0, #7b1fa2);">
-                <i class="fas fa-star"></i>
-              </div>
-              <div class="theme-name">Midnight</div>
-            </div>
-            <div class="theme-option" data-theme="sunset">
-              <div class="theme-preview" style="background: linear-gradient(135deg, #ff5722, #f4511e);">
-                <i class="fas fa-sun"></i>
-              </div>
-              <div class="theme-name">Sunset</div>
-            </div>
-            <div class="theme-option" data-theme="aurora">
-              <div class="theme-preview" style="background: linear-gradient(135deg, #00bcd4, #0097a7);">
-                <i class="fas fa-palette"></i>
-              </div>
-              <div class="theme-name">Aurora</div>
-            </div>
-          </div>
-        </div>
+    <script>
+        // App State
+        let currentUser = null;
+        let tasks = JSON.parse(localStorage.getItem('chronoFocusTasks')) || [];
+        let currentDate = new Date();
+        let currentTheme = localStorage.getItem('chronoFocusTheme') || 'theme-black';
+        let focusTimer = null;
+        let focusTimeRemaining = 25 * 60; // 25 minutes in seconds
+        let focusIsRunning = false;
 
-        <!-- Icon Customization -->
-        <div class="setting-group">
-          <div class="setting-group-title">Task Icons</div>
-          
-          <div class="icon-customization" id="iconCustomization">
-            <!-- Icons will be added here dynamically -->
-          </div>
-        </div>
+        // Theme definitions
+        const themes = {
+            'theme-black': { name: 'Black', preview: 'linear-gradient(135deg, #1e1e1e, #000)' },
+            'theme-extrablack': { name: 'Extra Black', preview: 'linear-gradient(135deg, #000, #0a0a0a)' },
+            'theme-sunset': { name: 'Sunset', preview: 'linear-gradient(135deg, #ff6b6b, #ff8e53)' },
+            'theme-green': { name: 'Green', preview: 'linear-gradient(135deg, #4caf50, #66bb6a)' },
+            'theme-purple': { name: 'Purple', preview: 'linear-gradient(135deg, #9c27b0, #ab47bc)' },
+            'theme-cotton-candy': { name: 'Cotton Candy', preview: 'linear-gradient(135deg, #ff9a9e, #fecfef)' },
+            'theme-cloud': { name: 'Cloud', preview: 'linear-gradient(135deg, #74b9ff, #0984e3)' },
+            'theme-white': { name: 'White', preview: 'linear-gradient(135deg, #f5f7fa, #c3cfe2)' },
+            'theme-zenith1': { name: 'Zenith 1', preview: 'linear-gradient(135deg, #6c5ce7, #a29bfe)' }
+        };
 
-        <!-- Appearance Settings -->
-        <div class="setting-group">
-          <div class="setting-group-title">Appearance</div>
-          
-          <div class="setting-item">
-            <div class="setting-info">
-              <div class="setting-title">Glass Effect</div>
-              <div class="setting-description">Enable frosted glass appearance</div>
-            </div>
-            <label class="toggle-switch">
-              <input type="checkbox" id="glassEffectToggle" checked>
-              <span class="toggle-slider"></span>
-            </label>
-          </div>
+        // Holidays data (simplified for demo)
+        const holidays = {
+            '2024-09-23': 'Autumnal Equinox',
+            '2024-12-25': 'Christmas Day',
+            '2024-01-01': 'New Year\'s Day',
+            '2024-07-04': 'Independence Day',
+            '2024-11-28': 'Thanksgiving',
+            '2024-10-31': 'Halloween'
+        };
 
-          <div class="setting-item">
-            <div class="setting-info">
-              <div class="setting-title">Rounded Corners</div>
-              <div class="setting-description">Use rounded UI elements</div>
-            </div>
-            <label class="toggle-switch">
-              <input type="checkbox" id="roundedCornersToggle" checked>
-              <span class="toggle-slider"></span>
-            </label>
-          </div>
-
-          <div class="setting-item">
-            <div class="setting-info">
-              <div class="setting-title">Animations</div>
-              <div class="setting-description">Enable smooth animations</div>
-            </div>
-            <label class="toggle-switch">
-              <input type="checkbox" id="animationsToggle" checked>
-              <span class="toggle-slider"></span>
-            </label>
-          </div>
-        </div>
-
-        <!-- Sound Settings -->
-        <div class="setting-group">
-          <div class="setting-group-title">Sound</div>
-          
-          <div class="setting-item">
-            <div class="setting-info">
-              <div class="setting-title">Sound Effects</div>
-              <div class="setting-description">Play sounds for actions</div>
-            </div>
-            <label class="toggle-switch">
-              <input type="checkbox" id="soundEffectsToggle" checked>
-              <span class="toggle-slider"></span>
-            </label>
-          </div>
-
-          <div class="setting-item">
-            <div class="setting-info">
-              <div class="setting-title">Task Completion Sound</div>
-              <div class="setting-description">Play sound when completing tasks</div>
-            </div>
-            <label class="toggle-switch">
-              <input type="checkbox" id="completionSoundToggle" checked>
-              <span class="toggle-slider"></span>
-            </label>
-          </div>
-
-          <div class="setting-item">
-            <div class="setting-info">
-              <div class="setting-title">Notification Sounds</div>
-              <div class="setting-description">Play sounds for notifications</div>
-            </div>
-            <label class="toggle-switch">
-              <input type="checkbox" id="notificationSoundToggle" checked>
-              <span class="toggle-slider"></span>
-            </label>
-          </div>
-        </div>
-
-        <!-- Task Settings -->
-        <div class="setting-group">
-          <div class="setting-group-title">Tasks</div>
-          
-          <div class="setting-item">
-            <div class="setting-info">
-              <div class="setting-title">Auto-complete Subtasks</div>
-              <div class="setting-description">Automatically complete parent task when all subtasks are done</div>
-            </div>
-            <label class="toggle-switch">
-              <input type="checkbox" id="autoCompleteToggle">
-              <span class="toggle-slider"></span>
-            </label>
-          </div>
-
-          <div class="setting-item">
-            <div class="setting-info">
-              <div class="setting-title">Move Completed Tasks</div>
-              <div class="setting-description">Move completed tasks to the bottom of the list</div>
-            </div>
-            <label class="toggle-switch">
-              <input type="checkbox" id="moveCompletedToggle" checked>
-              <span class="toggle-slider"></span>
-            </label>
-          </div>
-
-          <div class="setting-item">
-            <div class="setting-info">
-              <div class="setting-title">Smart Suggestions</div>
-              <div class="setting-description">Show task suggestions based on your history</div>
-            </div>
-            <label class="toggle-switch">
-              <input type="checkbox" id="smartSuggestionsToggle" checked>
-              <span class="toggle-slider"></span>
-            </label>
-          </div>
-        </div>
-
-        <!-- Notifications -->
-        <div class="setting-group">
-          <div class="setting-group-title">Notifications</div>
-          
-          <div class="setting-item">
-            <div class="setting-info">
-              <div class="setting-title">Desktop Notifications</div>
-              <div class="setting-description">Show notifications for reminders and deadlines</div>
-            </div>
-            <label class="toggle-switch">
-              <input type="checkbox" id="desktopNotificationsToggle">
-              <span class="toggle-slider"></span>
-            </label>
-          </div>
-
-          <div class="setting-item">
-            <div class="setting-info">
-              <div class="setting-title">Daily Summary</div>
-              <div class="setting-description">Get a daily summary of your tasks</div>
-            </div>
-            <label class="toggle-switch">
-              <input type="checkbox" id="dailySummaryToggle">
-              <span class="toggle-slider"></span>
-            </label>
-          </div>
-          
-          <div class="setting-item">
-            <div class="setting-info">
-              <div class="setting-title">AI Monthly Summary</div>
-              <div class="setting-description">Show AI-generated monthly task summary</div>
-            </div>
-            <label class="toggle-switch">
-              <input type="checkbox" id="aiSummaryToggle" checked>
-              <span class="toggle-slider"></span>
-            </label>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn secondary" id="resetSettingsBtn">Reset to Default</button>
-      <button class="btn primary" id="saveSettingsBtn">Save Changes</button>
-    </div>
-  </div>
-</div>
-
-<!-- Toast Container -->
-<div class="toast-container" id="toastContainer"></div>
-
-<!-- Audio Elements -->
-<audio id="taskCompleteSound" preload="auto">
-  <source src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+D2v2MbBjiR2O/NdSgEIXHA9eGVSwwQU6vmu3MgBCl+zPLOeSEEIF/A7+OYTw4WXrPh5oxLEAk+ltryxXUiBC19zPLNeSMEJHfH8N+QQAkUXrTp66hWFAlFn+D2wGQaBS2w7ur1sIA0==" type="audio/wav">
-</audio>
-
-<audio id="taskAddSound" preload="auto">
-  <source src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+D2v2MbBjiR2O/NdSgEIXHA9eGVSwwQU6vmu3MgBCl+zPLOeSEEIF/A7+OYTw4WXrPh5oxLEAk+ltryxXUiBC19zPLNeSMEJHfH8N+QQAkUXrTp66hWFAlFn+D2wGQaBS2w7ur1sIA0=" type="audio/wav">
-</audio>
-
-<audio id="taskDeleteSound" preload="auto">
-  <source src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+D2v2MbBjiR2O/NdSgEIXHA9eGVSwwQU6vmu3MgBCl+zPLOeSEEIF/A7+OYTw4WXrPh5oxLEAk+ltryxXUiBC19zPLNeSMEJHfH8N+QQAkUXrTp66hWFAlFn+D2wGQaBS2w7ur1sIA0=" type="audio/wav">
-</audio>
-
-<audio id="notificationSound" preload="auto">
-  <source src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+D2v2MbBjiR2O/NdSgEIXHA9eGVSwwQU6vmu3MgBCl+zPLOeSEEIF/A7+OYTw4WXrPh5oxLEAk+ltryxXUiBC19zPLNeSMEJHfH8N+QQAkUXrTp66hWFAlFn+D2wGQaBS2w7ur1sIA0=" type="audio/wav">
-</audio>
-
-<script>
-class ChronoFocusPro {
-  constructor() {
-    this.currentView = 'my-day';
-    this.currentFilter = 'all';
-    this.currentCalendarView = 'month';
-    this.currentDate = new Date();
-    this.settings = this.loadSettings();
-    this.tasks = this.loadTasks();
-    this.user = this.loadUser();
-    this.draggedTask = null;
-    this.avatarFile = null;
-    this.taskIcons = this.loadTaskIcons();
-    
-    this.initializeElements();
-    this.setupEventListeners();
-    this.applySettings();
-    this.updateView();
-    this.setupAutoResize();
-    this.requestNotificationPermission();
-    this.startReminderChecker();
-    
-    // Show login modal if user is not logged in
-    if (!this.user.name) {
-      this.showLogin();
-    } else {
-      this.updateUserProfile();
-    }
-    
-    // Apply blur effect on initial load
-    this.applyBlurEffect();
-    
-    // Initialize calendar
-    this.renderCalendar();
-  }
-
-  initializeElements() {
-    this.elements = {
-      // Layout
-      sidebar: document.getElementById('sidebar'),
-      menuBtn: document.getElementById('menuBtn'),
-      
-      // Navigation
-      navItems: document.querySelectorAll('.nav-item[data-view]'),
-      pageTitle: document.getElementById('pageTitle'),
-      
-      // User Profile
-      userProfile: document.getElementById('userProfile'),
-      userAvatar: document.getElementById('userAvatar'),
-      userName: document.getElementById('userName'),
-      userEmail: document.getElementById('userEmail'),
-      
-      // Task Input
-      taskInputContainer: document.getElementById('taskInputContainer'),
-      taskInput: document.getElementById('taskInput'),
-      addTaskBtn: document.getElementById('addTaskBtn'),
-      taskOptionsBtn: document.getElementById('taskOptionsBtn'),
-      taskOptionsPanel: document.getElementById('taskOptionsPanel'),
-      taskPriority: document.getElementById('taskPriority'),
-      taskCategory: document.getElementById('taskCategory'),
-      taskDueDate: document.getElementById('taskDueDate'),
-      taskReminder: document.getElementById('taskReminder'),
-      
-      // Task List
-      taskListView: document.getElementById('taskListView'),
-      taskList: document.getElementById('taskList'),
-      taskCount: document.getElementById('taskCount'),
-      emptyState: document.getElementById('emptyState'),
-      filterBtns: document.querySelectorAll('.filter-btn'),
-      
-      // Calendar
-      calendarView: document.getElementById('calendarView'),
-      calendarTitle: document.getElementById('calendarTitle'),
-      calendarGrid: document.getElementById('calendarGrid'),
-      prevMonth: document.getElementById('prevMonth'),
-      nextMonth: document.getElementById('nextMonth'),
-      todayBtn: document.getElementById('todayBtn'),
-      viewToggle: document.getElementById('viewToggle'),
-      
-      // AI Summary
-      aiSummaryPanel: document.getElementById('aiSummaryPanel'),
-      aiSummaryContent: document.getElementById('aiSummaryContent'),
-      
-      // Login
-      loginModal: document.getElementById('loginModal'),
-      closeLoginModal: document.getElementById('closeLoginModal'),
-      saveLoginBtn: document.getElementById('saveLoginBtn'),
-      loginName: document.getElementById('loginName'),
-      loginEmail: document.getElementById('loginEmail'),
-      avatarPreview: document.getElementById('avatarPreview'),
-      avatarUpload: document.getElementById('avatarUpload'),
-      avatarUploadBtn: document.getElementById('avatarUploadBtn'),
-      
-      // Settings
-      settingsBtn: document.getElementById('settingsBtn'),
-      settingsModal: document.getElementById('settingsModal'),
-      closeSettingsModal: document.getElementById('closeSettingsModal'),
-      saveSettingsBtn: document.getElementById('saveSettingsBtn'),
-      resetSettingsBtn: document.getElementById('resetSettingsBtn'),
-      iconCustomization: document.getElementById('iconCustomization'),
-      
-      // Setting toggles
-      glassEffectToggle: document.getElementById('glassEffectToggle'),
-      roundedCornersToggle: document.getElementById('roundedCornersToggle'),
-      animationsToggle: document.getElementById('animationsToggle'),
-      soundEffectsToggle: document.getElementById('soundEffectsToggle'),
-      completionSoundToggle: document.getElementById('completionSoundToggle'),
-      notificationSoundToggle: document.getElementById('notificationSoundToggle'),
-      autoCompleteToggle: document.getElementById('autoCompleteToggle'),
-      moveCompletedToggle: document.getElementById('moveCompletedToggle'),
-      smartSuggestionsToggle: document.getElementById('smartSuggestionsToggle'),
-      desktopNotificationsToggle: document.getElementById('desktopNotificationsToggle'),
-      dailySummaryToggle: document.getElementById('dailySummaryToggle'),
-      aiSummaryToggle: document.getElementById('aiSummaryToggle'),
-      
-      // Theme options
-      themeOptions: document.querySelectorAll('.theme-option'),
-      
-      // Audio
-      taskCompleteSound: document.getElementById('taskCompleteSound'),
-      taskAddSound: document.getElementById('taskAddSound'),
-      taskDeleteSound: document.getElementById('taskDeleteSound'),
-      notificationSound: document.getElementById('notificationSound'),
-      
-      // Toast
-      toastContainer: document.getElementById('toastContainer'),
-      
-      // Counters
-      myDayCount: document.getElementById('myDayCount'),
-      importantCount: document.getElementById('importantCount'),
-      plannedCount: document.getElementById('plannedCount'),
-      assignedCount: document.getElementById('assignedCount'),
-      tasksCount: document.getElementById('tasksCount')
-    };
-  }
-
-  setupEventListeners() {
-    // Mobile menu
-    this.elements.menuBtn.addEventListener('click', () => this.toggleSidebar());
-    
-    // Navigation
-    this.elements.navItems.forEach(item => {
-      item.addEventListener('click', () => this.switchView(item.dataset.view));
-    });
-    
-    // User profile
-    this.elements.userProfile.addEventListener('click', () => this.showLogin());
-    
-    // Task input
-    this.elements.taskInput.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter' && !e.shiftKey) {
-        e.preventDefault();
-        this.addTask();
-      }
-    });
-    
-    this.elements.addTaskBtn.addEventListener('click', () => this.addTask());
-    this.elements.taskOptionsBtn.addEventListener('click', () => this.toggleTaskOptions());
-    
-    // Task filters
-    this.elements.filterBtns.forEach(btn => {
-      btn.addEventListener('click', () => this.setFilter(btn.dataset.filter));
-    });
-    
-    // Calendar navigation
-    this.elements.prevMonth.addEventListener('click', () => this.navigateCalendar(-1));
-    this.elements.nextMonth.addEventListener('click', () => this.navigateCalendar(1));
-    this.elements.todayBtn.addEventListener('click', () => this.goToToday());
-    
-    // View toggle
-    this.elements.viewToggle.addEventListener('click', (e) => {
-      if (e.target.classList.contains('view-toggle-btn')) {
-        this.switchCalendarView(e.target.dataset.view);
-      }
-    });
-    
-    // Login
-    this.elements.closeLoginModal.addEventListener('click', () => this.hideLogin());
-    this.elements.saveLoginBtn.addEventListener('click', () => this.saveLogin());
-    this.elements.avatarUploadBtn.addEventListener('click', () => this.elements.avatarUpload.click());
-    this.elements.avatarUpload.addEventListener('change', (e) => this.handleAvatarUpload(e));
-    
-    // Settings
-    this.elements.settingsBtn.addEventListener('click', () => this.showSettings());
-    this.elements.closeSettingsModal.addEventListener('click', () => this.hideSettings());
-    this.elements.saveSettingsBtn.addEventListener('click', () => this.saveSettings());
-    this.elements.resetSettingsBtn.addEventListener('click', () => this.resetSettings());
-    
-    // Settings toggles
-    Object.keys(this.settings).forEach(key => {
-      const toggle = document.getElementById(key + 'Toggle');
-      if (toggle) {
-        toggle.addEventListener('change', () => {
-          this.settings[key] = toggle.checked;
-          this.applySettings();
+        // Initialize App
+        document.addEventListener('DOMContentLoaded', function() {
+            // Apply saved theme
+            document.body.className = currentTheme;
+            
+            // Check if user is logged in
+            const savedUser = localStorage.getItem('chronoFocusUser');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                showApp();
+            }
+            
+            // Initialize components
+            initializeThemeGrid();
+            initializeCalendar();
+            updateAnalytics();
+            
+            // Setup responsive design
+            setupResponsiveDesign();
         });
-      }
-    });
-    
-    // Theme selection
-    this.elements.themeOptions.forEach(option => {
-      option.addEventListener('click', () => this.selectTheme(option.dataset.theme));
-    });
-    
-    // Close modals when clicking outside
-    this.elements.loginModal.addEventListener('click', (e) => {
-      if (e.target === this.elements.loginModal) {
-        this.hideLogin();
-      }
-    });
-    
-    this.elements.settingsModal.addEventListener('click', (e) => {
-      if (e.target === this.elements.settingsModal) {
-        this.hideSettings();
-      }
-    });
-    
-    // Keyboard shortcuts
-    document.addEventListener('keydown', (e) => {
-      if (e.ctrlKey || e.metaKey) {
-        switch (e.key) {
-          case 'n':
+
+        // Login System
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            this.elements.taskInput.focus();
-            break;
-          case ',':
-            e.preventDefault();
-            this.showSettings();
-            break;
-        }
-      }
-    });
-  }
-
-  // User Management
-  loadUser() {
-    const defaultUser = {
-      name: '',
-      email: '',
-      avatar: null
-    };
-    
-    const saved = localStorage.getItem('chronoFocusUser');
-    return saved ? { ...defaultUser, ...JSON.parse(saved) } : defaultUser;
-  }
-
-  saveUser() {
-    localStorage.setItem('chronoFocusUser', JSON.stringify(this.user));
-  }
-
-  showLogin() {
-    this.elements.loginName.value = this.user.name || '';
-    this.elements.loginEmail.value = this.user.email || '';
-    this.updateAvatarPreview();
-    this.elements.loginModal.classList.add('visible');
-  }
-
-  hideLogin() {
-    this.elements.loginModal.classList.remove('visible');
-  }
-
-  saveLogin() {
-    const name = this.elements.loginName.value.trim();
-    if (!name) {
-      this.showToast('Please enter your name', 'error');
-      return;
-    }
-    
-    this.user.name = name;
-    this.user.email = this.elements.loginEmail.value.trim();
-    
-    if (this.avatarFile) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        this.user.avatar = e.target.result;
-        this.saveUser();
-        this.updateUserProfile();
-        this.hideLogin();
-        this.showToast(`Welcome, ${name}!`, 'success');
-      };
-      reader.readAsDataURL(this.avatarFile);
-    } else {
-      this.saveUser();
-      this.updateUserProfile();
-      this.hideLogin();
-      this.showToast(`Welcome, ${name}!`, 'success');
-    }
-  }
-
-  handleAvatarUpload(e) {
-    const file = e.target.files[0];
-    if (!file) return;
-    
-    if (!file.type.startsWith('image/')) {
-      this.showToast('Please select an image file', 'error');
-      return;
-    }
-    
-    this.avatarFile = file;
-    this.updateAvatarPreview();
-  }
-
-  updateAvatarPreview() {
-    if (this.avatarFile) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        this.elements.avatarPreview.innerHTML = `<img src="${e.target.result}" alt="Avatar">`;
-      };
-      reader.readAsDataURL(this.avatarFile);
-    } else if (this.user.avatar) {
-      this.elements.avatarPreview.innerHTML = `<img src="${this.user.avatar}" alt="Avatar">`;
-    } else {
-      this.elements.avatarPreview.innerHTML = '<i class="fas fa-user"></i>';
-    }
-  }
-
-  updateUserProfile() {
-    this.elements.userName.textContent = this.user.name || 'Guest';
-    this.elements.userEmail.textContent = this.user.email || 'Click to login';
-    
-    if (this.user.avatar) {
-      this.elements.userAvatar.innerHTML = `<img src="${this.user.avatar}" alt="${this.user.name}">`;
-    } else {
-      this.elements.userAvatar.innerHTML = '<i class="fas fa-user"></i>';
-    }
-  }
-
-  // Task Management
-  addTask() {
-    const text = this.elements.taskInput.value.trim();
-    if (!text) return;
-    
-    const task = {
-      id: this.generateId(),
-      text,
-      completed: false,
-      important: false,
-      priority: this.elements.taskPriority.value,
-      category: this.elements.taskCategory.value,
-      dueDate: this.elements.taskDueDate.value || null,
-      reminder: this.elements.taskReminder.value || null,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      myDay: this.currentView === 'my-day'
-    };
-    
-    this.tasks.push(task);
-    this.saveTasks();
-    this.updateView();
-    this.updateCounts();
-    this.generateAISummary();
-    
-    // Clear input
-    this.elements.taskInput.value = '';
-    this.elements.taskInput.style.height = 'auto';
-    this.elements.taskDueDate.value = '';
-    this.elements.taskReminder.value = '';
-    this.hideTaskOptions();
-    
-    // Play sound
-    this.playSound('taskAdd');
-    
-    // Show toast
-    this.showToast('Task added successfully!', 'success');
-    
-    // Set reminder if specified
-    if (task.reminder) {
-      this.scheduleReminder(task);
-    }
-    
-    // Update calendar if in calendar view
-    if (this.currentView === 'calendar') {
-      this.renderCalendar();
-    }
-  }
-
-  toggleTask(taskId) {
-    const task = this.tasks.find(t => t.id === taskId);
-    if (!task) return;
-    
-    task.completed = !task.completed;
-    task.updatedAt = new Date().toISOString();
-    
-    if (task.completed) {
-      task.completedAt = new Date().toISOString();
-      this.playSound('taskComplete');
-      this.showToast('Task completed! 🎉', 'success');
-    } else {
-      delete task.completedAt;
-    }
-    
-    this.saveTasks();
-    this.updateView();
-    this.updateCounts();
-    this.generateAISummary();
-    
-    // Update calendar if in calendar view
-    if (this.currentView === 'calendar') {
-      this.renderCalendar();
-    }
-  }
-
-  toggleImportant(taskId) {
-    const task = this.tasks.find(t => t.id === taskId);
-    if (!task) return;
-    
-    task.important = !task.important;
-    task.updatedAt = new Date().toISOString();
-    
-    this.saveTasks();
-    this.updateView();
-    this.updateCounts();
-    this.generateAISummary();
-    
-    this.playSound('notification');
-    this.showToast(task.important ? 'Added to Important' : 'Removed from Important', 'info');
-  }
-
-  editTask(taskId) {
-    const task = this.tasks.find(t => t.id === taskId);
-    if (!task) return;
-    
-    const newText = prompt('Edit task:', task.text);
-    if (newText && newText.trim() !== task.text) {
-      task.text = newText.trim();
-      task.updatedAt = new Date().toISOString();
-      this.saveTasks();
-      this.updateView();
-      this.generateAISummary();
-      this.showToast('Task updated!', 'success');
-    }
-  }
-
-  deleteTask(taskId) {
-    if (!confirm('Are you sure you want to delete this task?')) return;
-    
-    this.tasks = this.tasks.filter(t => t.id !== taskId);
-    this.saveTasks();
-    this.updateView();
-    this.updateCounts();
-    this.generateAISummary();
-    
-    this.playSound('taskDelete');
-    this.showToast('Task deleted', 'success');
-    
-    // Update calendar if in calendar view
-    if (this.currentView === 'calendar') {
-      this.renderCalendar();
-    }
-  }
-
-  addToMyDay(taskId) {
-    const task = this.tasks.find(t => t.id === taskId);
-    if (!task) return;
-    
-    task.myDay = true;
-    task.updatedAt = new Date().toISOString();
-    
-    this.saveTasks();
-    this.updateView();
-    this.updateCounts();
-    this.generateAISummary();
-    
-    this.showToast('Added to My Day', 'info');
-  }
-
-  // Calendar Management
-  renderCalendar() {
-    const year = this.currentDate.getFullYear();
-    const month = this.currentDate.getMonth();
-    
-    // Update calendar title
-    const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
-      'July', 'August', 'September', 'October', 'November', 'December'];
-    this.elements.calendarTitle.textContent = `${monthNames[month]} ${year}`;
-    
-    // Clear calendar grid
-    this.elements.calendarGrid.innerHTML = '';
-    
-    // Add day headers
-    const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-    dayNames.forEach(day => {
-      const dayHeader = document.createElement('div');
-      dayHeader.className = 'calendar-day-header';
-      dayHeader.textContent = day;
-      this.elements.calendarGrid.appendChild(dayHeader);
-    });
-    
-    // Get first day of month and number of days
-    const firstDay = new Date(year, month, 1);
-    const lastDay = new Date(year, month + 1, 0);
-    const daysInMonth = lastDay.getDate();
-    const startingDay = firstDay.getDay();
-    
-    // Add empty cells for days before the first day of the month
-    for (let i = 0; i < startingDay; i++) {
-      const emptyDay = document.createElement('div');
-      emptyDay.className = 'calendar-day other-month';
-      this.elements.calendarGrid.appendChild(emptyDay);
-    }
-    
-    // Add days of the month
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    
-    for (let day = 1; day <= daysInMonth; day++) {
-      const date = new Date(year, month, day);
-      const dayElement = document.createElement('div');
-      dayElement.className = 'calendar-day';
-      
-      // Check if this day has tasks
-      const dayTasks = this.getTasksForDate(date);
-      if (dayTasks.length > 0) {
-        dayElement.classList.add('has-tasks');
-      }
-      
-      // Check if this is today
-      if (date.getTime() === today.getTime()) {
-        dayElement.classList.add('today');
-      }
-      
-      // Add day number
-      const dayNumber = document.createElement('div');
-      dayNumber.className = 'calendar-day-number';
-      dayNumber.textContent = day;
-      dayElement.appendChild(dayNumber);
-      
-      // Add tasks for this day
-      if (dayTasks.length > 0) {
-        const tasksContainer = document.createElement('div');
-        tasksContainer.className = 'calendar-tasks';
-        
-        // Show up to 3 tasks
-        dayTasks.slice(0, 3).forEach(task => {
-          const taskElement = document.createElement('div');
-          taskElement.className = `calendar-task ${task.priority}`;
-          taskElement.textContent = task.text;
-          tasksContainer.appendChild(taskElement);
+            
+            const name = document.getElementById('nameInput').value;
+            const email = document.getElementById('emailInput').value;
+            const profileInput = document.getElementById('profileInput');
+            
+            let profileImage = '/api/placeholder/100/100'; // Default avatar
+            
+            if (profileInput.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    profileImage = e.target.result;
+                    completeLogin(name, email, profileImage);
+                };
+                reader.readAsDataURL(profileInput.files[0]);
+            } else {
+                completeLogin(name, email, profileImage);
+            }
         });
-        
-        // Show indicator if there are more tasks
-        if (dayTasks.length > 3) {
-          const moreElement = document.createElement('div');
-          moreElement.className = 'calendar-task';
-          moreElement.textContent = `+${dayTasks.length - 3} more`;
-          tasksContainer.appendChild(moreElement);
+
+        document.getElementById('profileInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('profilePreview').src = e.target.result;
+                    document.getElementById('profilePreview').style.display = 'block';
+                    document.getElementById('profilePlaceholder').style.display = 'none';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        function completeLogin(name, email, profileImage) {
+            currentUser = { name, email, profileImage };
+            localStorage.setItem('chronoFocusUser', JSON.stringify(currentUser));
+            showApp();
         }
-        
-        dayElement.appendChild(tasksContainer);
-      }
-      
-      // Add click event to view tasks for this day
-      dayElement.addEventListener('click', () => {
-        this.showTasksForDate(date);
-      });
-      
-      this.elements.calendarGrid.appendChild(dayElement);
-    }
-  }
 
-  getTasksForDate(date) {
-    return this.tasks.filter(task => {
-      if (task.completed) return false;
-      
-      if (task.dueDate) {
-        const taskDate = new Date(task.dueDate);
-        taskDate.setHours(0, 0, 0, 0);
-        return taskDate.getTime() === date.getTime();
-      }
-      
-      return false;
-    });
-  }
-
-  showTasksForDate(date) {
-    const tasks = this.getTasksForDate(date);
-    const dateString = date.toLocaleDateString();
-    
-    if (tasks.length === 0) {
-      this.showToast(`No tasks scheduled for ${dateString}`, 'info');
-    } else {
-      const taskList = tasks.map(task => `• ${task.text}`).join('\n');
-      alert(`Tasks for ${dateString}:\n\n${taskList}`);
-    }
-  }
-
-  navigateCalendar(direction) {
-    if (this.currentCalendarView === 'month') {
-      this.currentDate.setMonth(this.currentDate.getMonth() + direction);
-    }
-    this.renderCalendar();
-  }
-
-  goToToday() {
-    this.currentDate = new Date();
-    this.renderCalendar();
-  }
-
-  switchCalendarView(view) {
-    this.currentCalendarView = view;
-    
-    // Update active button
-    this.elements.viewToggle.querySelectorAll('.view-toggle-btn').forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.view === view);
-    });
-    
-    // For now, we only have month view implemented
-    if (view === 'list') {
-      this.elements.calendarView.style.display = 'none';
-      this.elements.taskListView.style.display = 'block';
-    } else {
-      this.elements.calendarView.style.display = 'block';
-      this.elements.taskListView.style.display = 'none';
-      this.renderCalendar();
-    }
-  }
-
-  // View Management
-  switchView(view) {
-    this.currentView = view;
-    
-    // Update navigation
-    this.elements.navItems.forEach(item => {
-      item.classList.toggle('active', item.dataset.view === view);
-    });
-    
-    // Update page title
-    const titles = {
-      'my-day': { icon: 'fas fa-sun', text: 'My Day' },
-      'important': { icon: 'fas fa-star', text: 'Important' },
-      'planned': { icon: 'fas fa-calendar-alt', text: 'Planned' },
-      'calendar': { icon: 'fas fa-calendar', text: 'Calendar' },
-      'assigned': { icon: 'fas fa-user', text: 'Assigned to me' },
-      'tasks': { icon: 'fas fa-home', text: 'Tasks' }
-    };
-    
-    const title = titles[view];
-    this.elements.pageTitle.innerHTML = `<i class="${title.icon}"></i> ${title.text}`;
-    
-    // Show/hide task input and view toggle based on view
-    if (view === 'calendar') {
-      this.elements.taskInputContainer.style.display = 'none';
-      this.elements.viewToggle.style.display = 'flex';
-      this.elements.calendarView.style.display = 'block';
-      this.elements.taskListView.style.display = 'none';
-      this.renderCalendar();
-    } else {
-      this.elements.taskInputContainer.style.display = 'block';
-      this.elements.viewToggle.style.display = 'none';
-      this.elements.calendarView.style.display = 'none';
-      this.elements.taskListView.style.display = 'block';
-      this.updateView();
-    }
-    
-    this.closeSidebar();
-  }
-
-  updateView() {
-    const tasks = this.getFilteredTasks();
-    this.renderTasks(tasks);
-    this.updateTaskCount(tasks.length);
-    
-    // Show/hide empty state
-    this.elements.emptyState.style.display = tasks.length === 0 ? 'block' : 'none';
-  }
-
-  getFilteredTasks() {
-    let filtered = [...this.tasks];
-    
-    // Filter by view
-    switch (this.currentView) {
-      case 'my-day':
-        filtered = filtered.filter(task => task.myDay && !task.completed);
-        break;
-      case 'important':
-        filtered = filtered.filter(task => task.important);
-        break;
-      case 'planned':
-        filtered = filtered.filter(task => task.dueDate);
-        break;
-      case 'assigned':
-        // For now, show all tasks as "assigned to me"
-        break;
-      case 'tasks':
-        // Show all tasks
-        break;
-    }
-    
-    // Filter by completion status
-    if (this.currentFilter === 'active') {
-      filtered = filtered.filter(task => !task.completed);
-    } else if (this.currentFilter === 'completed') {
-      filtered = filtered.filter(task => task.completed);
-    }
-    
-    // Sort tasks
-    filtered.sort((a, b) => {
-      // Completed tasks go to bottom if setting is enabled
-      if (this.settings.moveCompleted && a.completed !== b.completed) {
-        return a.completed - b.completed;
-      }
-      
-      // Important tasks go to top
-      if (a.important !== b.important) {
-        return b.important - a.important;
-      }
-      
-      // Sort by priority
-      const priorityOrder = { high: 0, medium: 1, low: 2 };
-      if (a.priority !== b.priority) {
-        return priorityOrder[a.priority] - priorityOrder[b.priority];
-      }
-      
-      // Sort by due date
-      if (a.dueDate && b.dueDate) {
-        return new Date(a.dueDate) - new Date(b.dueDate);
-      }
-      if (a.dueDate && !b.dueDate) return -1;
-      if (!a.dueDate && b.dueDate) return 1;
-      
-      // Sort by creation date (newest first)
-      return new Date(b.createdAt) - new Date(a.createdAt);
-    });
-    
-    return filtered;
-  }
-
-  renderTasks(tasks) {
-    this.elements.taskList.innerHTML = '';
-    
-    tasks.forEach(task => {
-      const taskElement = this.createTaskElement(task);
-      this.elements.taskList.appendChild(taskElement);
-    });
-  }
-
-  createTaskElement(task) {
-    const taskItem = document.createElement('div');
-    taskItem.className = 'task-item';
-    taskItem.dataset.taskId = task.id;
-    
-    if (task.completed) {
-      taskItem.classList.add('completed');
-    }
-    
-    // Format due date
-    let dueDateText = '';
-    if (task.dueDate) {
-      const dueDate = new Date(task.dueDate);
-      const today = new Date();
-      const tomorrow = new Date(today);
-      tomorrow.setDate(today.getDate() + 1);
-      
-      if (dueDate.toDateString() === today.toDateString()) {
-        dueDateText = 'Today';
-      } else if (dueDate.toDateString() === tomorrow.toDateString()) {
-        dueDateText = 'Tomorrow';
-      } else {
-        dueDateText = dueDate.toLocaleDateString();
-      }
-    }
-    
-    // Get icon for task category
-    const icon = this.getTaskIcon(task.category);
-    
-    taskItem.innerHTML = `
-      <div class="task-checkbox ${task.completed ? 'checked' : ''}" data-action="toggle">
-        <i class="fas fa-check"></i>
-      </div>
-      
-      <div class="task-content-wrapper">
-        <div class="task-content">
-          <span class="task-icon">${icon}</span>
-          <span class="task-text">${this.escapeHtml(task.text)}</span>
-        </div>
-        
-        <div class="task-meta">
-          ${task.priority !== 'medium' ? `
-            <div class="task-meta-item">
-              <span class="task-priority ${task.priority}">${task.priority}</span>
-            </div>
-          ` : ''}
-          
-          ${task.dueDate ? `
-            <div class="task-meta-item">
-              <i class="fas fa-calendar"></i>
-              <span>${dueDateText}</span>
-            </div>
-          ` : ''}
-          
-          ${task.reminder ? `
-            <div class="task-meta-item">
-              <i class="fas fa-bell"></i>
-              <span>Reminder</span>
-            </div>
-          ` : ''}
-          
-          <div class="task-meta-item">
-            <span>${task.category.charAt(0).toUpperCase() + task.category.slice(1)}</span>
-          </div>
-        </div>
-      </div>
-      
-      <div class="task-actions">
-        ${!task.myDay ? `
-          <button class="task-action-btn" data-action="add-to-my-day" title="Add to My Day">
-            <i class="fas fa-sun"></i>
-          </button>
-        ` : ''}
-        
-        <button class="task-action-btn star ${task.important ? 'active' : ''}" 
-                data-action="toggle-important" 
-                title="${task.important ? 'Remove from Important' : 'Mark as Important'}">
-          <i class="fas fa-star"></i>
-        </button>
-        
-        <button class="task-action-btn edit" data-action="edit" title="Edit">
-          <i class="fas fa-edit"></i>
-        </button>
-        
-        <button class="task-action-btn delete" data-action="delete" title="Delete">
-          <i class="fas fa-trash"></i>
-        </button>
-      </div>
-    `;
-    
-    // Add event listeners
-    taskItem.addEventListener('click', (e) => {
-      const action = e.target.closest('[data-action]')?.dataset.action;
-      if (!action) return;
-      
-      e.stopPropagation();
-      
-      switch (action) {
-        case 'toggle':
-          this.toggleTask(task.id);
-          break;
-        case 'toggle-important':
-          this.toggleImportant(task.id);
-          break;
-        case 'edit':
-          this.editTask(task.id);
-          break;
-        case 'delete':
-          this.deleteTask(task.id);
-          break;
-        case 'add-to-my-day':
-          this.addToMyDay(task.id);
-          break;
-      }
-    });
-    
-    // Drag and drop
-    taskItem.draggable = true;
-    taskItem.addEventListener('dragstart', (e) => {
-      this.draggedTask = task;
-      taskItem.classList.add('dragging');
-    });
-    
-    taskItem.addEventListener('dragend', () => {
-      taskItem.classList.remove('dragging');
-      this.draggedTask = null;
-    });
-    
-    return taskItem;
-  }
-
-  getTaskIcon(category) {
-    return this.taskIcons[category] || '📋';
-  }
-
-  setFilter(filter) {
-    this.currentFilter = filter;
-    
-    this.elements.filterBtns.forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.filter === filter);
-    });
-    
-    this.updateView();
-  }
-
-  updateTaskCount(count) {
-    const text = count === 1 ? '1 task' : `${count} tasks`;
-    this.elements.taskCount.textContent = text;
-  }
-
-  updateCounts() {
-    const counts = {
-      myDay: this.tasks.filter(t => t.myDay && !t.completed).length,
-      important: this.tasks.filter(t => t.important && !t.completed).length,
-      planned: this.tasks.filter(t => t.dueDate && !t.completed).length,
-      assigned: this.tasks.filter(t => !t.completed).length,
-      tasks: this.tasks.filter(t => !t.completed).length
-    };
-    
-    this.elements.myDayCount.textContent = counts.myDay;
-    this.elements.importantCount.textContent = counts.important;
-    this.elements.plannedCount.textContent = counts.planned;
-    this.elements.assignedCount.textContent = counts.assigned;
-    this.elements.tasksCount.textContent = counts.tasks;
-  }
-
-  // AI Summary
-  generateAISummary() {
-    if (!this.settings.aiSummary) {
-      this.elements.aiSummaryPanel.style.display = 'none';
-      return;
-    }
-    
-    const currentMonth = new Date().getMonth();
-    const currentYear = new Date().getFullYear();
-    
-    // Get tasks from current month
-    const monthTasks = this.tasks.filter(task => {
-      const taskDate = new Date(task.createdAt);
-      return taskDate.getMonth() === currentMonth && taskDate.getFullYear() === currentYear;
-    });
-    
-    if (monthTasks.length === 0) {
-      this.elements.aiSummaryPanel.style.display = 'none';
-      return;
-    }
-    
-    const completedTasks = monthTasks.filter(task => task.completed);
-    const importantTasks = monthTasks.filter(task => task.important);
-    const highPriorityTasks = monthTasks.filter(task => task.priority === 'high');
-    
-    // Generate summary text
-    let summary = `This month, you've completed <strong>${completedTasks.length}</strong> out of <strong>${monthTasks.length}</strong> tasks. `;
-    
-    if (completedTasks.length > 0) {
-      const completionRate = Math.round((completedTasks.length / monthTasks.length) * 100);
-      summary += `That's a <strong>${completionRate}%</strong> completion rate! `;
-      
-      if (completionRate >= 80) {
-        summary += `🎉 Excellent progress! Keep up the great work.`;
-      } else if (completionRate >= 60) {
-        summary += `👍 Good job! You're making steady progress.`;
-      } else {
-        summary += `💪 Keep going! Every task completed is a step forward.`;
-      }
-    }
-    
-    if (importantTasks.length > 0) {
-      summary += ` You have <strong>${importantTasks.length}</strong> important tasks this month.`;
-    }
-    
-    if (highPriorityTasks.length > 0) {
-      const highPriorityCompleted = highPriorityTasks.filter(task => task.completed).length;
-      summary += ` <strong>${highPriorityCompleted}</strong> out of <strong>${highPriorityTasks.length}</strong> high priority tasks are completed.`;
-    }
-    
-    // Show the panel
-    this.elements.aiSummaryContent.innerHTML = summary;
-    this.elements.aiSummaryPanel.style.display = 'block';
-  }
-
-  // UI Helpers
-  toggleSidebar() {
-    this.elements.sidebar.classList.toggle('visible');
-  }
-
-  closeSidebar() {
-    if (window.innerWidth <= 768) {
-      this.elements.sidebar.classList.remove('visible');
-    }
-  }
-
-  toggleTaskOptions() {
-    this.elements.taskOptionsPanel.classList.toggle('visible');
-  }
-
-  hideTaskOptions() {
-    this.elements.taskOptionsPanel.classList.remove('visible');
-  }
-
-  setupAutoResize() {
-    this.elements.taskInput.addEventListener('input', () => {
-      this.elements.taskInput.style.height = 'auto';
-      this.elements.taskInput.style.height = Math.min(this.elements.taskInput.scrollHeight, 120) + 'px';
-    });
-  }
-
-  // Task Icons Management
-  loadTaskIcons() {
-    const defaultIcons = {
-      general: '📋',
-      work: '💼',
-      personal: '👤',
-      shopping: '🛒',
-      health: '❤️',
-      learning: '📚'
-    };
-    
-    const saved = localStorage.getItem('chronoFocusTaskIcons');
-    return saved ? { ...defaultIcons, ...JSON.parse(saved) } : defaultIcons;
-  }
-
-  saveTaskIcons() {
-    localStorage.setItem('chronoFocusTaskIcons', JSON.stringify(this.taskIcons));
-  }
-
-  renderIconCustomization() {
-    this.elements.iconCustomization.innerHTML = '';
-    
-    Object.keys(this.taskIcons).forEach(category => {
-      const iconOption = document.createElement('div');
-      iconOption.className = 'icon-option';
-      iconOption.dataset.category = category;
-      
-      iconOption.innerHTML = `
-        <div class="icon-preview">${this.taskIcons[category]}</div>
-        <div class="icon-name">${category.charAt(0).toUpperCase() + category.slice(1)}</div>
-      `;
-      
-      iconOption.addEventListener('click', () => {
-        this.customizeIcon(category);
-      });
-      
-      this.elements.iconCustomization.appendChild(iconOption);
-    });
-  }
-
-  customizeIcon(category) {
-    const newIcon = prompt(`Enter a new icon for ${category}:`, this.taskIcons[category]);
-    if (newIcon && newIcon.trim() !== '') {
-      this.taskIcons[category] = newIcon.trim();
-      this.saveTaskIcons();
-      this.renderIconCustomization();
-      this.updateView();
-      this.showToast(`Icon for ${category} updated!`, 'success');
-    }
-  }
-
-  // Settings Management
-  loadSettings() {
-    const defaultSettings = {
-      glassEffect: true,
-      roundedCorners: true,
-      animations: true,
-      soundEffects: true,
-      completionSound: true,
-      notificationSound: true,
-      compactView: false,
-      autoComplete: false,
-      moveCompleted: true,
-      smartSuggestions: true,
-      desktopNotifications: false,
-      dailySummary: false,
-      aiSummary: true,
-      theme: 'dark'
-    };
-    
-    const saved = localStorage.getItem('chronoFocusSettings');
-    return saved ? { ...defaultSettings, ...JSON.parse(saved) } : defaultSettings;
-  }
-
-  saveSettings() {
-    localStorage.setItem('chronoFocusSettings', JSON.stringify(this.settings));
-    this.hideSettings();
-    this.showToast('Settings saved!', 'success');
-  }
-
-  resetSettings() {
-    if (!confirm('Reset all settings to default?')) return;
-    
-    this.settings = {
-      glassEffect: true,
-      roundedCorners: true,
-      animations: true,
-      soundEffects: true,
-      completionSound: true,
-      notificationSound: true,
-      compactView: false,
-      autoComplete: false,
-      moveCompleted: true,
-      smartSuggestions: true,
-      desktopNotifications: false,
-      dailySummary: false,
-      aiSummary: true,
-      theme: 'dark'
-    };
-    
-    // Reset task icons
-    this.taskIcons = {
-      general: '📋',
-      work: '💼',
-      personal: '👤',
-      shopping: '🛒',
-      health: '❤️',
-      learning: '📚'
-    };
-    this.saveTaskIcons();
-    
-    this.applySettings();
-    this.loadSettingsUI();
-    this.showToast('Settings reset to default', 'info');
-  }
-
-  applySettings() {
-    // Apply theme
-    document.body.className = `theme-${this.settings.theme}`;
-    
-    // Apply glass effect
-    if (this.settings.glassEffect) {
-      document.body.classList.add('glass-effect');
-    } else {
-      document.body.classList.remove('glass-effect');
-    }
-    
-    // Apply rounded corners
-    if (this.settings.roundedCorners) {
-      document.body.classList.add('rounded-corners');
-    } else {
-      document.body.classList.remove('rounded-corners');
-    }
-    
-    // Apply animations
-    if (this.settings.animations) {
-      document.body.classList.add('animations-enabled');
-    } else {
-      document.body.classList.remove('animations-enabled');
-    }
-    
-    // Request notification permission if enabled
-    if (this.settings.desktopNotifications && 'Notification' in window) {
-      Notification.requestPermission();
-    }
-    
-    // Update AI summary
-    this.generateAISummary();
-  }
-
-  loadSettingsUI() {
-    Object.keys(this.settings).forEach(key => {
-      const toggle = document.getElementById(key + 'Toggle');
-      if (toggle) {
-        toggle.checked = this.settings[key];
-      }
-    });
-    
-    // Set active theme
-    this.elements.themeOptions.forEach(option => {
-      option.classList.toggle('active', option.dataset.theme === this.settings.theme);
-    });
-    
-    // Render icon customization
-    this.renderIconCustomization();
-  }
-
-  selectTheme(theme) {
-    this.settings.theme = theme;
-    this.applySettings();
-    
-    // Update UI
-    this.elements.themeOptions.forEach(option => {
-      option.classList.toggle('active', option.dataset.theme === theme);
-    });
-  }
-
-  showSettings() {
-    this.loadSettingsUI();
-    this.elements.settingsModal.classList.add('visible');
-  }
-
-  hideSettings() {
-    this.elements.settingsModal.classList.remove('visible');
-  }
-
-  // Blur Effect
-  applyBlurEffect() {
-    const mainContent = document.querySelector('.main-content');
-    mainContent.classList.add('blur-effect');
-    
-    setTimeout(() => {
-      mainContent.classList.remove('blur-effect');
-      mainContent.classList.add('blur-effect-removing');
-      
-      setTimeout(() => {
-        mainContent.classList.remove('blur-effect-removing');
-      }, 300);
-    }, 500);
-  }
-
-  // Sound Management
-  playSound(type) {
-    if (!this.settings.soundEffects) return;
-    
-    let audio = null;
-    
-    switch (type) {
-      case 'taskComplete':
-        if (this.settings.completionSound) {
-          audio = this.elements.taskCompleteSound;
+        function showApp() {
+            document.getElementById('loginContainer').style.display = 'none';
+            document.getElementById('appContainer').style.display = 'flex';
+            
+            // Update user info
+            document.getElementById('userName').textContent = currentUser.name;
+            document.getElementById('userEmail').textContent = currentUser.email;
+            document.getElementById('userAvatar').src = currentUser.profileImage;
+            
+            // Load tasks
+            renderTasks();
         }
-        break;
-      case 'taskAdd':
-        audio = this.elements.taskAddSound;
-        break;
-      case 'taskDelete':
-        audio = this.elements.taskDeleteSound;
-        break;
-      case 'notification':
-        if (this.settings.notificationSound) {
-          audio = this.elements.notificationSound;
+
+        // Task Management
+        function handleTaskInput(event) {
+            if (event.key === 'Enter' && event.target.value.trim()) {
+                addTask(event.target.value.trim());
+                event.target.value = '';
+            }
         }
-        break;
-    }
-    
-    if (audio) {
-      audio.currentTime = 0;
-      audio.play().catch(() => {
-        // Ignore audio play errors (user hasn't interacted with page yet)
-      });
-    }
-  }
 
-  // Notifications & Reminders
-  requestNotificationPermission() {
-    if ('Notification' in window && this.settings.desktopNotifications) {
-      Notification.requestPermission();
-    }
-  }
+        function addTask(text) {
+            const task = {
+                id: Date.now().toString(),
+                text: text,
+                completed: false,
+                important: false,
+                createdAt: new Date().toISOString(),
+                dueDate: null,
+                notes: '',
+                tags: []
+            };
+            
+            tasks.unshift(task);
+            saveTasks();
+            renderTasks();
+            updateAnalytics();
+            
+            // Animation
+            const taskElement = document.querySelector(`[data-task-id="${task.id}"]`);
+            if (taskElement) {
+                taskElement.style.animation = 'slideInUp 0.3s ease';
+            }
+        }
 
-  showNotification(title, body, icon = null) {
-    if (!this.settings.desktopNotifications || !('Notification' in window) || Notification.permission !== 'granted') {
-      return;
-    }
-    
-    new Notification(title, {
-      body,
-      icon: icon || '/favicon.ico',
-      tag: 'chrono-focus-reminder'
-    });
-    
-    this.playSound('notification');
-  }
+        function toggleTask(taskId) {
+            const task = tasks.find(t => t.id === taskId);
+            if (task) {
+                task.completed = !task.completed;
+                saveTasks();
+                renderTasks();
+                updateAnalytics();
+            }
+        }
 
-  scheduleReminder(task) {
-    const reminderTime = new Date(task.reminder);
-    const now = new Date();
-    
-    if (reminderTime <= now) return;
-    
-    const timeUntilReminder = reminderTime - now;
-    
-    setTimeout(() => {
-      this.showNotification(
-        'Task Reminder',
-        `Don't forget: ${task.text}`,
-      );
-      
-      this.showToast(`Reminder: ${task.text}`, 'info');
-    }, timeUntilReminder);
-  }
+        function toggleImportant(taskId) {
+            const task = tasks.find(t => t.id === taskId);
+            if (task) {
+                task.important = !task.important;
+                saveTasks();
+                renderTasks();
+            }
+        }
 
-  startReminderChecker() {
-    // Check for due reminders every minute
-    setInterval(() => {
-      const now = new Date();
-      const reminderTasks = this.tasks.filter(task => 
-        task.reminder && 
-        !task.completed && 
-        new Date(task.reminder) <= now &&
-        !task.reminderShown
-      );
-      
-      reminderTasks.forEach(task => {
-        this.showNotification(
-          'Task Reminder',
-          `Don't forget: ${task.text}`
-        );
-        
-        this.showToast(`Reminder: ${task.text}`, 'info');
-        
-        // Mark reminder as shown
-        task.reminderShown = true;
-        this.saveTasks();
-      });
-    }, 60000); // Check every minute
-  }
+        function deleteTask(taskId) {
+            tasks = tasks.filter(t => t.id !== taskId);
+            saveTasks();
+            renderTasks();
+            updateAnalytics();
+        }
 
-  // Toast Notifications
-  showToast(message, type = 'info', duration = 3000) {
-    const toast = document.createElement('div');
-    toast.className = `toast ${type}`;
-    
-    const icons = {
-      success: 'fa-check-circle',
-      error: 'fa-exclamation-circle',
-      info: 'fa-info-circle'
-    };
-    
-    const titles = {
-      success: 'Success',
-      error: 'Error',
-      info: 'Info'
-    };
-    
-    toast.innerHTML = `
-      <div class="toast-icon">
-        <i class="fas ${icons[type]}"></i>
-      </div>
-      <div class="toast-content">
-        <div class="toast-title">${titles[type]}</div>
-        <div class="toast-message">${this.escapeHtml(message)}</div>
-      </div>
-      <button class="toast-close">
-        <i class="fas fa-times"></i>
-      </button>
-    `;
-    
-    const closeBtn = toast.querySelector('.toast-close');
-    closeBtn.addEventListener('click', () => this.removeToast(toast));
-    
-    this.elements.toastContainer.appendChild(toast);
-    
-    // Show toast
-    setTimeout(() => toast.classList.add('show'), 100);
-    
-    // Auto remove
-    setTimeout(() => this.removeToast(toast), duration);
-    
-    return toast;
-  }
+        function editTask(taskId) {
+            const task = tasks.find(t => t.id === taskId);
+            if (task) {
+                const newText = prompt('Edit task:', task.text);
+                if (newText && newText.trim()) {
+                    task.text = newText.trim();
+                    saveTasks();
+                    renderTasks();
+                }
+            }
+        }
 
-  removeToast(toast) {
-    toast.classList.remove('show');
-    setTimeout(() => {
-      if (toast.parentNode) {
-        toast.parentNode.removeChild(toast);
-      }
-    }, 300);
-  }
+        function renderTasks() {
+            const taskList = document.getElementById('taskList');
+            const importantList = document.getElementById('importantTaskList');
+            const plannedList = document.getElementById('plannedTaskList');
+            
+            // Clear lists
+            taskList.innerHTML = '';
+            importantList.innerHTML = '';
+            plannedList.innerHTML = '';
+            
+            // Today's tasks
+            const todayTasks = tasks.filter(task => {
+                const today = new Date().toDateString();
+                const taskDate = new Date(task.createdAt).toDateString();
+                return taskDate === today || !task.completed;
+            });
+            
+            // Important tasks
+            const importantTasks = tasks.filter(task => task.important);
+            
+            // Planned tasks
+            const plannedTasks = tasks.filter(task => task.dueDate);
+            
+            // Render today's tasks
+            todayTasks.forEach(task => {
+                taskList.appendChild(createTaskElement(task));
+            });
+            
+            // Render important tasks
+            importantTasks.forEach(task => {
+                importantList.appendChild(createTaskElement(task));
+            });
+            
+            // Render planned tasks
+            plannedTasks.forEach(task => {
+                plannedList.appendChild(createTaskElement(task));
+            });
+            
+            // Show empty states if needed
+            if (todayTasks.length === 0) {
+                taskList.innerHTML = '<div style="text-align: center; color: var(--text-muted); padding: 40px;">No tasks for today. Add one above! ✨</div>';
+            }
+            
+            if (importantTasks.length === 0) {
+                importantList.innerHTML = '<div style="text-align: center; color: var(--text-muted); padding: 40px;">No important tasks yet. Star some tasks to see them here! ⭐</div>';
+            }
+            
+            if (plannedTasks.length === 0) {
+                plannedList.innerHTML = '<div style="text-align: center; color: var(--text-muted); padding: 40px;">No planned tasks. Schedule some tasks to see them here! 📅</div>';
+            }
+        }
 
-  // Data Management
-  loadTasks() {
-    const saved = localStorage.getItem('chronoFocusTasks');
-    return saved ? JSON.parse(saved) : [];
-  }
+        function createTaskElement(task) {
+            const taskElement = document.createElement('div');
+            taskElement.className = 'task-item glass';
+            taskElement.setAttribute('data-task-id', task.id);
+            
+            const dueText = task.dueDate ? new Date(task.dueDate).toLocaleDateString() : '';
+            
+            taskElement.innerHTML = `
+                <div class="task-checkbox ${task.completed ? 'checked' : ''}" onclick="toggleTask('${task.id}')">
+                    ${task.completed ? '<i class="fas fa-check"></i>' : ''}
+                </div>
+                <div class="task-content">
+                    <div class="task-text ${task.completed ? 'completed' : ''}">${task.text}</div>
+                    ${dueText ? `<div class="task-meta">Due: ${dueText}</div>` : ''}
+                </div>
+                <div class="task-actions">
+                    <button class="task-action" onclick="toggleImportant('${task.id}')" title="Mark Important">
+                        <i class="fas fa-star ${task.important ? 'important' : ''}"></i>
+                    </button>
+                    <button class="task-action" onclick="editTask('${task.id}')" title="Edit">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="task-action" onclick="deleteTask('${task.id}')" title="Delete">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            `;
+            
+            return taskElement;
+        }
 
-  saveTasks() {
-    localStorage.setItem('chronoFocusTasks', JSON.stringify(this.tasks));
-  }
+        function saveTasks() {
+            localStorage.setItem('chronoFocusTasks', JSON.stringify(tasks));
+        }
 
-  generateId() {
-    return 'task_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-  }
+        // Navigation
+        function showSection(sectionName) {
+            // Hide all sections
+            const sections = document.querySelectorAll('.content-section, .calendar-container, .ai-container, .settings-container');
+            sections.forEach(section => section.style.display = 'none');
+            
+            // Remove active class from all nav items
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach(item => item.classList.remove('active'));
+            
+            // Show selected section
+            const targetSection = document.getElementById(sectionName + 'Section');
+            if (targetSection) {
+                targetSection.style.display = sectionName === 'calendar' ? 'flex' : 'block';
+            }
+            
+            // Add active class to clicked nav item
+            event.target.closest('.nav-item').classList.add('active');
+            
+            // Update mobile page title
+            const titles = {
+                'tasks': 'My Day',
+                'important': 'Important',
+                'planned': 'Planned',
+                'calendar': 'Calendar',
+                'ai': 'OptiChain AI Pro',
+                'analytics': 'Analytics',
+                'settings': 'Settings'
+            };
+            
+            const mobileTitle = document.getElementById('mobilePageTitle');
+            if (mobileTitle) {
+                mobileTitle.textContent = titles[sectionName] || 'Chrono Focus Pro';
+            }
+            
+            // Special handling for calendar
+            if (sectionName === 'calendar') {
+                renderCalendar();
+            }
+        }
 
-  escapeHtml(text) {
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
-  }
-}
+        // Calendar
+        function initializeCalendar() {
+            renderCalendar();
+        }
 
-// Initialize app when DOM is loaded
-document.addEventListener('DOMContentLoaded', () => {
-  window.chronoFocusPro = new ChronoFocusPro();
-});
+        function renderCalendar() {
+            const grid = document.getElementById('calendarGrid');
+            const title = document.getElementById('calendarTitle');
+            
+            if (!grid || !title) return;
+            
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+            
+            title.textContent = new Date(year, month).toLocaleDateString('en-US', {
+                month: 'long',
+                year: 'numeric'
+            });
+            
+            grid.innerHTML = '';
+            
+            // Day headers
+            const dayHeaders = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            dayHeaders.forEach(day => {
+                const dayElement = document.createElement('div');
+                dayElement.className = 'calendar-day-header';
+                dayElement.textContent = day;
+                grid.appendChild(dayElement);
+            });
+            
+            // Get first day of month and number of days
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const daysInPrevMonth = new Date(year, month, 0).getDate();
+            
+            // Previous month's trailing days
+            for (let i = firstDay - 1; i >= 0; i--) {
+                const dayElement = document.createElement('div');
+                dayElement.className = 'calendar-day other-month';
+                dayElement.textContent = daysInPrevMonth - i;
+                grid.appendChild(dayElement);
+            }
+            
+            // Current month's days
+            const today = new Date();
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dayElement = document.createElement('div');
+                dayElement.className = 'calendar-day';
+                dayElement.textContent = day;
+                
+                // Check if it's today
+                if (year === today.getFullYear() && month === today.getMonth() && day === today.getDate()) {
+                    dayElement.classList.add('today');
+                }
+                
+                // Check if there are tasks on this day
+                const dateString = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                const hasTasks = tasks.some(task => task.dueDate === dateString);
+                if (hasTasks) {
+                    dayElement.classList.add('has-tasks');
+                }
+                
+                dayElement.addEventListener('click', () => selectCalendarDay(year, month, day));
+                grid.appendChild(dayElement);
+            }
+            
+            // Next month's leading days
+            const totalCells = grid.children.length;
+            const remainingCells = 42 - totalCells; // 6 rows × 7 days
+            for (let day = 1; day <= remainingCells; day++) {
+                const dayElement = document.createElement('div');
+                dayElement.className = 'calendar-day other-month';
+                dayElement.textContent = day;
+                grid.appendChild(dayElement);
+            }
+        }
 
-// Handle window resize
-window.addEventListener('resize', () => {
-  if (window.innerWidth > 768 && window.chronoFocusPro) {
-    window.chronoFocusPro.elements.sidebar.classList.remove('visible');
-  }
-});
-</script>
+        function previousMonth() {
+            currentDate.setMonth(currentDate.getMonth() - 1);
+            renderCalendar();
+        }
 
+        function nextMonth() {
+            currentDate.setMonth(currentDate.getMonth() + 1);
+            renderCalendar();
+        }
+
+        function goToToday() {
+            currentDate = new Date();
+            renderCalendar();
+        }
+
+        function selectCalendarDay(year, month, day) {
+            const dateString = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+            const taskText = prompt('Add a task for ' + new Date(year, month, day).toLocaleDateString() + ':');
+            
+            if (taskText && taskText.trim()) {
+                const task = {
+                    id: Date.now().toString(),
+                    text: taskText.trim(),
+                    completed: false,
+                    important: false,
+                    createdAt: new Date().toISOString(),
+                    dueDate: dateString,
+                    notes: '',
+                    tags: []
+                };
+                
+                tasks.unshift(task);
+                saveTasks();
+                renderTasks();
+                renderCalendar();
+                updateAnalytics();
+            }
+        }
+
+        // AI Assistant
+        function handleAIInput(event) {
+            if (event.key === 'Enter') {
+                sendAIMessage();
+            }
+        }
+
+        function sendAIMessage() {
+            const input = document.getElementById('aiInput');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            addAIMessage(message, 'user');
+            input.value = '';
+            
+            // Simulate AI processing
+            setTimeout(() => {
+                const response = generateAIResponse(message);
+                addAIMessage(response, 'assistant');
+            }, 500);
+        }
+
+        function addAIMessage(message, sender) {
+            const messages = document.getElementById('aiMessages');
+            const messageElement = document.createElement('div');
+            messageElement.className = `ai-message ${sender}`;
+            messageElement.textContent = message;
+            
+            messages.appendChild(messageElement);
+            messages.scrollTop = messages.scrollHeight;
+        }
+
+        function generateAIResponse(message) {
+            const lowerMessage = message.toLowerCase();
+            
+            // Holiday detection
+            const holidayRegex = /(\d{1,2})[\/\-](\d{1,2})(?:[\/\-](\d{4}))?|(\w+ \d{1,2})/i;
+            if (lowerMessage.includes('holiday') || lowerMessage.includes('vacation')) {
+                const match = message.match(holidayRegex);
+                if (match) {
+                    // Simple holiday check (this would be more sophisticated in a real app)
+                    const dateStr = match[0];
+                    for (const [date, holiday] of Object.entries(holidays)) {
+                        if (dateStr.includes('23') && dateStr.includes('september')) {
+                            return `September 23rd is the Autumnal Equinox! 🍂 It's the first day of fall when day and night are approximately equal in length.`;
+                        }
+                    }
+                    return `I don't have specific holiday information for ${dateStr}, but you can check your local calendar for regional holidays! 📅`;
+                }
+                return "I can help you check holidays! Try asking about a specific date like 'Is September 23 a holiday?' 🎉";
+            }
+            
+            // Task search
+            if (lowerMessage.includes('find') || lowerMessage.includes('search')) {
+                const searchTerm = message.replace(/find|search|task|tasks/gi, '').trim();
+                const matchingTasks = tasks.filter(task => 
+                    task.text.toLowerCase().includes(searchTerm.toLowerCase())
+                );
+                
+                if (matchingTasks.length > 0) {
+                    const taskList = matchingTasks.map(task => `• ${task.text}`).join('\n');
+                    return `I found ${matchingTasks.length} task(s) matching "${searchTerm}":\n\n${taskList}`;
+                }
+                return `I couldn't find any tasks matching "${searchTerm}". Try a different search term! 🔍`;
+            }
+            
+            // Productivity tips
+            if (lowerMessage.includes('tip') || lowerMessage.includes('productive') || lowerMessage.includes('focus')) {
+                const tips = [
+                    "Try the Pomodoro Technique: Work for 25 minutes, then take a 5-minute break! 🍅",
+                    "Break large tasks into smaller, manageable chunks. It's less overwhelming! 📝",
+                    "Use the 2-minute rule: If something takes less than 2 minutes, do it now! ⏰",
+                    "Prioritize your tasks using the Eisenhower Matrix: Urgent vs Important! 📊",
+                    "Take regular breaks to maintain focus and avoid burnout! 😌",
+                    "Use time-blocking to dedicate specific hours to specific tasks! 📅",
+                    "Eliminate distractions by putting your phone in another room! 📱"
+                ];
+                return tips[Math.floor(Math.random() * tips.length)];
+            }
+            
+            // Analytics
+            if (lowerMessage.includes('stat') || lowerMessage.includes('progress') || lowerMessage.includes('analytics')) {
+                const completed = tasks.filter(t => t.completed).length;
+                const total = tasks.length;
+                const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
+                
+                return `Here's your productivity summary:\n• Total tasks: ${total}\n• Completed: ${completed}\n• Completion rate: ${percentage}%\n\nKeep up the great work! 💪`;
+            }
+            
+            // General responses
+            const responses = [
+                "I'm here to help you stay productive! Ask me about your tasks, holidays, or productivity tips! 🚀",
+                "That's an interesting question! I can help you with task management, calendar queries, and productivity advice. What would you like to know? 🤖",
+                "I'm OptiChain AI Pro, your productivity companion! I can search your tasks, check holidays, and provide helpful tips. How can I assist? ⚡",
+                "Great question! I specialize in productivity and task management. Try asking me to find specific tasks or check if a date is a holiday! 🎯"
+            ];
+            
+            return responses[Math.floor(Math.random() * responses.length)];
+        }
+
+        // Focus Mode
+        function toggleFocusMode() {
+            const focusMode = document.getElementById('focusMode');
+            const isVisible = focusMode.style.display === 'flex';
+            
+            if (isVisible) {
+                closeFocusMode();
+            } else {
+                // Select current task for focus
+                const incompleteTasks = tasks.filter(t => !t.completed);
+                if (incompleteTasks.length > 0) {
+                    document.getElementById('focusTaskName').textContent = incompleteTasks[0].text;
+                } else {
+                    document.getElementById('focusTaskName').textContent = 'Focus Session';
+                }
+                
+                focusMode.style.display = 'flex';
+                resetFocusTimer();
+            }
+        }
+
+        function closeFocusMode() {
+            document.getElementById('focusMode').style.display = 'none';
+            if (focusTimer) {
+                clearInterval(focusTimer);
+                focusTimer = null;
+            }
+            focusIsRunning = false;
+            updateFocusButtons();
+        }
+
+        function startFocusTimer() {
+            focusIsRunning = true;
+            updateFocusButtons();
+            
+            focusTimer = setInterval(() => {
+                focusTimeRemaining--;
+                updateFocusDisplay();
+                
+                if (focusTimeRemaining <= 0) {
+                    clearInterval(focusTimer);
+                    focusIsRunning = false;
+                    updateFocusButtons();
+                    alert('Focus session complete! Great job! 🎉');
+                    resetFocusTimer();
+                }
+            }, 1000);
+        }
+
+        function pauseFocusTimer() {
+            if (focusTimer) {
+                clearInterval(focusTimer);
+                focusTimer = null;
+            }
+            focusIsRunning = false;
+            updateFocusButtons();
+        }
+
+        function stopFocusTimer() {
+            if (focusTimer) {
+                clearInterval(focusTimer);
+                focusTimer = null;
+            }
+            focusIsRunning = false;
+            resetFocusTimer();
+            updateFocusButtons();
+        }
+
+        function resetFocusTimer() {
+            focusTimeRemaining = 25 * 60; // Reset to 25 minutes
+            updateFocusDisplay();
+        }
+
+        function updateFocusDisplay() {
+            const minutes = Math.floor(focusTimeRemaining / 60);
+            const seconds = focusTimeRemaining % 60;
+            document.getElementById('focusTimer').textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function updateFocusButtons() {
+            const startBtn = document.getElementById('focusStartBtn');
+            const pauseBtn = document.getElementById('focusPauseBtn');
+            
+            if (focusIsRunning) {
+                startBtn.style.display = 'none';
+                pauseBtn.style.display = 'flex';
+            } else {
+                startBtn.style.display = 'flex';
+                pauseBtn.style.display = 'none';
+            }
+        }
+
+        // Theme System
+        function initializeThemeGrid() {
+            const themeGrid = document.getElementById('themeGrid');
+            
+            Object.entries(themes).forEach(([themeClass, themeData]) => {
+                const themeOption = document.createElement('div');
+                themeOption.className = `theme-option ${themeClass === currentTheme ? 'active' : ''}`;
+                themeOption.onclick = () => changeTheme(themeClass);
+                
+                themeOption.innerHTML = `
+                    <div class="theme-preview" style="background: ${themeData.preview};"></div>
+                    <div class="theme-name">${themeData.name}</div>
+                `;
+                
+                themeGrid.appendChild(themeOption);
+            });
+        }
+
+        function changeTheme(newTheme) {
+            // Update body class
+            document.body.className = newTheme;
+            currentTheme = newTheme;
+            
+            // Save to localStorage
+            localStorage.setItem('chronoFocusTheme', newTheme);
+            
+            // Update theme grid
+            document.querySelectorAll('.theme-option').forEach(option => {
+                option.classList.remove('active');
+            });
+            document.querySelector(`.theme-option[onclick*="${newTheme}"]`).classList.add('active');
+        }
+
+        // Analytics
+        function updateAnalytics() {
+            // Simple analytics for demo
+            const total = tasks.length;
+            const completed = tasks.filter(t => t.completed).length;
+            const todayTasks = tasks.filter(task => {
+                const today = new Date().toDateString();
+                const taskDate = new Date(task.createdAt).toDateString();
+                return taskDate === today;
+            });
+            
+            // Update time stats (mock data for demo)
+            document.getElementById('todayTime').textContent = `${todayTasks.length}h 30m`;
+            document.getElementById('weekTime').textContent = `${Math.min(total * 2, 40)}h 15m`;
+            document.getElementById('monthTime').textContent = `${Math.min(total * 8, 160)}h 45m`;
+            
+            // Simple productivity chart simulation
+            const chart = document.getElementById('productivityChart');
+            if (chart) {
+                const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
+                chart.innerHTML = `
+                    <div style="display: flex; align-items: center; justify-content: center; height: 100%; flex-direction: column; gap: 10px;">
+                        <div style="font-size: 48px; font-weight: 700; color: var(--primary-color);">${percentage}%</div>
+                        <div style="color: var(--text-secondary);">Tasks Completed</div>
+                        <div style="width: 100%; height: 8px; background: var(--background-secondary); border-radius: 4px; overflow: hidden;">
+                            <div style="width: ${percentage}%; height: 100%; background: linear-gradient(135deg, var(--primary-color), var(--accent-color)); transition: width 0.3s ease;"></div>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        // Utility Functions
+        function sortTasks() {
+            const options = ['Date Created', 'Alphabetical', 'Completion Status', 'Importance'];
+            const choice = prompt(`Sort tasks by:\n1. ${options[0]}\n2. ${options[1]}\n3. ${options[2]}\n4. ${options[3]}\n\nEnter number (1-4):`);
+            
+            switch(choice) {
+                case '1':
+                    tasks.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                    break;
+                case '2':
+                    tasks.sort((a, b) => a.text.localeCompare(b.text));
+                    break;
+                case '3':
+                    tasks.sort((a, b) => a.completed - b.completed);
+                    break;
+                case '4':
+                    tasks.sort((a, b) => b.important - a.important);
+                    break;
+                default:
+                    return;
+            }
+            
+            saveTasks();
+            renderTasks();
+        }
+
+        function filterTasks() {
+            // Simple filter implementation
+            const filter = prompt('Filter tasks:\n1. All\n2. Completed\n3. Incomplete\n4. Important\n\nEnter number (1-4):');
+            
+            // This would be implemented with a more sophisticated filtering system
+            alert('Filter functionality coming soon! 🔍');
+        }
+
+        function markAllImportant() {
+            const incompleteTasks = tasks.filter(t => !t.completed);
+            incompleteTasks.forEach(task => task.important = true);
+            saveTasks();
+            renderTasks();
+        }
+
+        function exportAnalytics() {
+            const data = {
+                totalTasks: tasks.length,
+                completedTasks: tasks.filter(t => t.completed).length,
+                importantTasks: tasks.filter(t => t.important).length,
+                exportDate: new Date().toISOString()
+            };
+            
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'chrono-focus-analytics.json';
+            a.click();
+        }
+
+        function exportData() {
+            const data = {
+                user: currentUser,
+                tasks: tasks,
+                theme: currentTheme,
+                exportDate: new Date().toISOString()
+            };
+            
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'chrono-focus-backup.json';
+            a.click();
+        }
+
+        function importData() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        try {
+                            const data = JSON.parse(e.target.result);
+                            if (data.tasks) {
+                                tasks = data.tasks;
+                                saveTasks();
+                                renderTasks();
+                                updateAnalytics();
+                                alert('Data imported successfully! 📥');
+                            }
+                        } catch (error) {
+                            alert('Error importing data. Please check the file format. ❌');
+                        }
+                    };
+                    reader.readAsText(file);
+                }
+            };
+            input.click();
+        }
+
+        function clearAllData() {
+            if (confirm('Are you sure you want to clear all data? This cannot be undone.')) {
+                tasks = [];
+                saveTasks();
+                renderTasks();
+                updateAnalytics();
+                alert('All data cleared! 🧹');
+            }
+        }
+
+        // Responsive Design
+        function setupResponsiveDesign() {
+            function checkMobile() {
+                const isMobile = window.innerWidth <= 768;
+                const mobileHeader = document.querySelector('.mobile-header');
+                const sidebar = document.getElementById('sidebar');
+                
+                if (isMobile) {
+                    mobileHeader.style.display = 'flex';
+                    sidebar.classList.remove('active');
+                } else {
+                    mobileHeader.style.display = 'none';
+                    sidebar.classList.remove('active');
+                }
+            }
+            
+            checkMobile();
+            window.addEventListener('resize', checkMobile);
+        }
+
+        function toggleMobileMenu() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('active');
+        }
+
+        // Add some demo tasks on first load
+        if (tasks.length === 0) {
+            const demoTasks = [
+                { id: '1', text: '🎯 Welcome to Chrono Focus Pro!', completed: false, important: true, createdAt: new Date().toISOString(), dueDate: null, notes: '', tags: [] },
+                { id: '2', text: '📝 Try adding your first task', completed: false, important: false, createdAt: new Date().toISOString(), dueDate: null, notes: '', tags: [] },
+                { id: '3', text: '⭐ Mark important tasks with the star', completed: false, important: false, createdAt: new Date().toISOString(), dueDate: null, notes: '', tags: [] },
+                { id: '4', text: '🗓️ Schedule tasks on the calendar', completed: false, important: false, createdAt: new Date().toISOString(), dueDate: null, notes: '', tags: [] },
+                { id: '5', text: '🤖 Chat with OptiChain AI Pro', completed: false, important: false, createdAt: new Date().toISOString(), dueDate: null, notes: '', tags: [] }
+            ];
+            
+            tasks = demoTasks;
+            saveTasks();
+        }
+    </script>
 </body>
 </html>
