@@ -243,6 +243,99 @@ body.theme-forest {
   --glass-border: rgba(56, 142, 60, 0.3);
 }
 
+/* Midnight Theme */
+body.theme-midnight {
+  --primary-blue: #9c27b0;
+  --primary-blue-hover: #8e24aa;
+  --primary-blue-dark: #7b1fa2;
+  --secondary-blue: #f3e5f5;
+  --accent-purple: #e91e63;
+  --accent-teal: #00bcd4;
+  --accent-green: #4caf50;
+  --accent-orange: #ff9800;
+  --accent-red: #f44336;
+  --accent-pink: #ad1457;
+
+  --bg-primary: #121212;
+  --bg-secondary: #1e1e1e;
+  --bg-tertiary: #252525;
+  --bg-card: #1e1e1e;
+  --bg-hover: #2d2d2d;
+  --bg-active: #363636;
+  --bg-selected: #4a148c;
+
+  --text-primary: #ffffff;
+  --text-secondary: #b3b3b3;
+  --text-tertiary: #8a8886;
+  --text-disabled: #666666;
+  --text-accent: #ba68c8;
+  
+  --glass-bg: rgba(30, 30, 30, 0.7);
+  --glass-border: rgba(156, 39, 176, 0.3);
+}
+
+/* Sunset Theme */
+body.theme-sunset {
+  --primary-blue: #ff5722;
+  --primary-blue-hover: #f4511e;
+  --primary-blue-dark: #d84315;
+  --secondary-blue: #fbe9e7;
+  --accent-purple: #e91e63;
+  --accent-teal: #00bcd4;
+  --accent-green: #4caf50;
+  --accent-orange: #ff9800;
+  --accent-red: #f44336;
+  --accent-pink: #ad1457;
+
+  --bg-primary: #fff3e0;
+  --bg-secondary: #ffe0b2;
+  --bg-tertiary: #ffcc80;
+  --bg-card: #ffffff;
+  --bg-hover: #ffb74d;
+  --bg-active: #ffa726;
+  --bg-selected: #ffcc80;
+
+  --text-primary: #5d4037;
+  --text-secondary: #6d4c41;
+  --text-tertiary: #8d6e63;
+  --text-disabled: #a1887f;
+  --text-accent: #e64a19;
+  
+  --glass-bg: rgba(255, 243, 224, 0.7);
+  --glass-border: rgba(255, 87, 34, 0.3);
+}
+
+/* Aurora Theme */
+body.theme-aurora {
+  --primary-blue: #00bcd4;
+  --primary-blue-hover: #00acc1;
+  --primary-blue-dark: #0097a7;
+  --secondary-blue: #e0f7fa;
+  --accent-purple: #9c27b0;
+  --accent-teal: #00bcd4;
+  --accent-green: #4caf50;
+  --accent-orange: #ff9800;
+  --accent-red: #f44336;
+  --accent-pink: #e91e63;
+
+  --bg-primary: #e1f5fe;
+  --bg-secondary: #b3e5fc;
+  --bg-tertiary: #81d4fa;
+  --bg-card: #ffffff;
+  --bg-hover: #4fc3f7;
+  --bg-active: #29b6f6;
+  --bg-selected: #81d4fa;
+
+  --text-primary: #006064;
+  --text-secondary: #00838f;
+  --text-tertiary: #0097a7;
+  --text-disabled: #4dd0e1;
+  --text-accent: #006064;
+  
+  --glass-bg: rgba(225, 245, 254, 0.7);
+  --glass-border: rgba(0, 188, 212, 0.3);
+}
+
 /* Global Styles */
 * {
   margin: 0;
@@ -711,6 +804,138 @@ body {
 .task-option-select:focus {
   outline: none;
   border-color: var(--border-focus);
+}
+
+/* Calendar View */
+.calendar-view {
+  padding: var(--spacing-xl);
+  flex: 1;
+  overflow-y: auto;
+  display: none;
+}
+
+.calendar-view.active {
+  display: block;
+}
+
+.calendar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-xl);
+  padding: var(--spacing-lg);
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--glass-border);
+}
+
+.calendar-nav {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.calendar-title {
+  font-size: var(--font-size-xl);
+  font-weight: 600;
+  color: var(--text-primary);
+  min-width: 200px;
+  text-align: center;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-lg);
+}
+
+.calendar-day-header {
+  text-align: center;
+  font-weight: 600;
+  color: var(--text-secondary);
+  padding: var(--spacing-sm);
+  font-size: var(--font-size-sm);
+}
+
+.calendar-day {
+  aspect-ratio: 1;
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.calendar-day:hover {
+  background: var(--bg-hover);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-light);
+}
+
+.calendar-day.other-month {
+  color: var(--text-tertiary);
+  opacity: 0.5;
+}
+
+.calendar-day.today {
+  border-color: var(--primary-blue);
+  background: var(--bg-selected);
+}
+
+.calendar-day.has-tasks::after {
+  content: '';
+  width: 6px;
+  height: 6px;
+  background: var(--primary-blue);
+  border-radius: 50%;
+  margin: 2px auto 0;
+}
+
+.calendar-day-number {
+  font-weight: 500;
+  margin-bottom: var(--spacing-xs);
+  text-align: center;
+}
+
+.calendar-tasks {
+  flex: 1;
+  overflow-y: auto;
+  font-size: var(--font-size-xs);
+}
+
+.calendar-task {
+  padding: 2px 4px;
+  margin-bottom: 2px;
+  border-radius: 4px;
+  background: var(--bg-tertiary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 10px;
+}
+
+.calendar-task.high {
+  background: rgba(209, 52, 56, 0.2);
+  border-left: 2px solid var(--accent-red);
+}
+
+.calendar-task.medium {
+  background: rgba(255, 140, 0, 0.2);
+  border-left: 2px solid var(--accent-orange);
+}
+
+.calendar-task.low {
+  background: rgba(16, 124, 16, 0.2);
+  border-left: 2px solid var(--accent-green);
 }
 
 /* Task List */
@@ -1556,6 +1781,62 @@ input:checked + .toggle-slider:before {
   }
 }
 
+@keyframes liquidFlow {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+@keyframes loading {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes bounceIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+  70% {
+    transform: scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
 .fade-out {
   animation: fadeOut 0.2s ease-out forwards;
 }
@@ -1566,6 +1847,18 @@ input:checked + .toggle-slider:before {
 
 .float {
   animation: float 3s ease-in-out infinite;
+}
+
+.fade-in {
+  animation: fadeIn 0.5s ease-out;
+}
+
+.slide-in-left {
+  animation: slideInLeft 0.3s ease-out;
+}
+
+.bounce-in {
+  animation: bounceIn 0.6s ease-out;
 }
 
 /* Blur Effect */
@@ -1593,15 +1886,6 @@ input:checked + .toggle-slider:before {
   height: 100%;
   background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
   animation: liquidFlow 3s infinite;
-}
-
-@keyframes liquidFlow {
-  0% {
-    left: -100%;
-  }
-  100% {
-    left: 100%;
-  }
 }
 
 /* Mobile Responsiveness */
@@ -1670,6 +1954,37 @@ input:checked + .toggle-slider:before {
   .theme-selector {
     grid-template-columns: repeat(2, 1fr);
   }
+  
+  .calendar-grid {
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+  }
+  
+  .calendar-day {
+    padding: 4px;
+    font-size: var(--font-size-xs);
+  }
+  
+  .calendar-task {
+    display: none; /* Hide task details on mobile calendar */
+  }
+  
+  .calendar-header {
+    flex-direction: column;
+    gap: var(--spacing-md);
+  }
+  
+  .calendar-nav {
+    order: 2;
+  }
+  
+  .calendar-title {
+    order: 1;
+  }
+  
+  .calendar-actions {
+    order: 3;
+  }
 }
 
 @media (max-width: 480px) {
@@ -1706,6 +2021,24 @@ input:checked + .toggle-slider:before {
   
   .theme-selector {
     grid-template-columns: 1fr;
+  }
+  
+  .calendar-grid {
+    grid-template-columns: repeat(7, 1fr);
+  }
+  
+  .calendar-day-header {
+    font-size: 10px;
+    padding: 4px 2px;
+  }
+  
+  .calendar-day {
+    padding: 2px;
+    font-size: 10px;
+  }
+  
+  .calendar-day-number {
+    margin-bottom: 0;
   }
 }
 
@@ -1814,13 +2147,94 @@ select:focus,
   animation: loading 1.5s infinite;
 }
 
-@keyframes loading {
-  0% {
-    left: -100%;
-  }
-  100% {
-    left: 100%;
-  }
+/* View Toggle */
+.view-toggle {
+  display: flex;
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border-radius: var(--radius-lg);
+  padding: 4px;
+  border: 1px solid var(--glass-border);
+}
+
+.view-toggle-btn {
+  padding: var(--spacing-sm) var(--spacing-md);
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+}
+
+.view-toggle-btn.active {
+  background: var(--primary-blue);
+  color: white;
+  box-shadow: var(--shadow-light);
+}
+
+.view-toggle-btn:hover:not(.active) {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+/* Calendar Actions */
+.calendar-actions {
+  display: flex;
+  gap: var(--spacing-sm);
+}
+
+/* Icon Customization */
+.icon-customization {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-md);
+}
+
+.icon-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-sm);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+}
+
+.icon-option:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-light);
+}
+
+.icon-option.active {
+  border-color: var(--primary-blue);
+  box-shadow: 0 0 0 2px var(--primary-blue);
+}
+
+.icon-preview {
+  font-size: var(--font-size-xl);
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+  background: var(--bg-tertiary);
+}
+
+.icon-name {
+  font-size: var(--font-size-xs);
+  text-align: center;
+  color: var(--text-secondary);
 }
 </style>
 </head>
@@ -1870,6 +2284,10 @@ select:focus,
           <span class="nav-item-text">Planned</span>
           <span class="nav-item-count" id="plannedCount">0</span>
         </button>
+        <button class="nav-item" data-view="calendar">
+          <i class="fas fa-calendar"></i>
+          <span class="nav-item-text">Calendar</span>
+        </button>
         <button class="nav-item" data-view="assigned">
           <i class="fas fa-user"></i>
           <span class="nav-item-text">Assigned to me</span>
@@ -1913,6 +2331,14 @@ select:focus,
         </h1>
       </div>
       <div class="header-actions">
+        <div class="view-toggle" id="viewToggle" style="display: none;">
+          <button class="view-toggle-btn active" data-view="list">
+            <i class="fas fa-list"></i>
+          </button>
+          <button class="view-toggle-btn" data-view="calendar">
+            <i class="fas fa-calendar"></i>
+          </button>
+        </div>
         <button class="header-btn" id="sortBtn" title="Sort" aria-label="Sort tasks">
           <i class="fas fa-sort"></i>
         </button>
@@ -1942,7 +2368,7 @@ select:focus,
     </div>
 
     <!-- Task Input -->
-    <section class="task-input-container">
+    <section class="task-input-container" id="taskInputContainer">
       <div class="task-input-wrapper">
         <div class="task-checkbox-placeholder"></div>
         <textarea 
@@ -1996,8 +2422,29 @@ select:focus,
       </div>
     </section>
 
+    <!-- Calendar View -->
+    <section class="calendar-view" id="calendarView">
+      <div class="calendar-header">
+        <div class="calendar-nav">
+          <button class="btn" id="prevMonth">
+            <i class="fas fa-chevron-left"></i>
+          </button>
+          <div class="calendar-title" id="calendarTitle">January 2024</div>
+          <button class="btn" id="nextMonth">
+            <i class="fas fa-chevron-right"></i>
+          </button>
+        </div>
+        <div class="calendar-actions">
+          <button class="btn primary" id="todayBtn">Today</button>
+        </div>
+      </div>
+      <div class="calendar-grid" id="calendarGrid">
+        <!-- Calendar will be generated here -->
+      </div>
+    </section>
+
     <!-- Task List -->
-    <section class="task-list-container">
+    <section class="task-list-container" id="taskListView">
       <div class="task-list-header">
         <div class="task-list-info">
           <span class="task-count" id="taskCount">0 tasks</span>
@@ -2112,6 +2559,33 @@ select:focus,
               </div>
               <div class="theme-name">Forest</div>
             </div>
+            <div class="theme-option" data-theme="midnight">
+              <div class="theme-preview" style="background: linear-gradient(135deg, #9c27b0, #7b1fa2);">
+                <i class="fas fa-star"></i>
+              </div>
+              <div class="theme-name">Midnight</div>
+            </div>
+            <div class="theme-option" data-theme="sunset">
+              <div class="theme-preview" style="background: linear-gradient(135deg, #ff5722, #f4511e);">
+                <i class="fas fa-sun"></i>
+              </div>
+              <div class="theme-name">Sunset</div>
+            </div>
+            <div class="theme-option" data-theme="aurora">
+              <div class="theme-preview" style="background: linear-gradient(135deg, #00bcd4, #0097a7);">
+                <i class="fas fa-palette"></i>
+              </div>
+              <div class="theme-name">Aurora</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Icon Customization -->
+        <div class="setting-group">
+          <div class="setting-group-title">Task Icons</div>
+          
+          <div class="icon-customization" id="iconCustomization">
+            <!-- Icons will be added here dynamically -->
           </div>
         </div>
 
@@ -2300,11 +2774,14 @@ class ChronoFocusPro {
   constructor() {
     this.currentView = 'my-day';
     this.currentFilter = 'all';
+    this.currentCalendarView = 'month';
+    this.currentDate = new Date();
     this.settings = this.loadSettings();
     this.tasks = this.loadTasks();
     this.user = this.loadUser();
     this.draggedTask = null;
     this.avatarFile = null;
+    this.taskIcons = this.loadTaskIcons();
     
     this.initializeElements();
     this.setupEventListeners();
@@ -2323,6 +2800,9 @@ class ChronoFocusPro {
     
     // Apply blur effect on initial load
     this.applyBlurEffect();
+    
+    // Initialize calendar
+    this.renderCalendar();
   }
 
   initializeElements() {
@@ -2342,6 +2822,7 @@ class ChronoFocusPro {
       userEmail: document.getElementById('userEmail'),
       
       // Task Input
+      taskInputContainer: document.getElementById('taskInputContainer'),
       taskInput: document.getElementById('taskInput'),
       addTaskBtn: document.getElementById('addTaskBtn'),
       taskOptionsBtn: document.getElementById('taskOptionsBtn'),
@@ -2352,10 +2833,20 @@ class ChronoFocusPro {
       taskReminder: document.getElementById('taskReminder'),
       
       // Task List
+      taskListView: document.getElementById('taskListView'),
       taskList: document.getElementById('taskList'),
       taskCount: document.getElementById('taskCount'),
       emptyState: document.getElementById('emptyState'),
       filterBtns: document.querySelectorAll('.filter-btn'),
+      
+      // Calendar
+      calendarView: document.getElementById('calendarView'),
+      calendarTitle: document.getElementById('calendarTitle'),
+      calendarGrid: document.getElementById('calendarGrid'),
+      prevMonth: document.getElementById('prevMonth'),
+      nextMonth: document.getElementById('nextMonth'),
+      todayBtn: document.getElementById('todayBtn'),
+      viewToggle: document.getElementById('viewToggle'),
       
       // AI Summary
       aiSummaryPanel: document.getElementById('aiSummaryPanel'),
@@ -2377,6 +2868,7 @@ class ChronoFocusPro {
       closeSettingsModal: document.getElementById('closeSettingsModal'),
       saveSettingsBtn: document.getElementById('saveSettingsBtn'),
       resetSettingsBtn: document.getElementById('resetSettingsBtn'),
+      iconCustomization: document.getElementById('iconCustomization'),
       
       // Setting toggles
       glassEffectToggle: document.getElementById('glassEffectToggle'),
@@ -2439,6 +2931,18 @@ class ChronoFocusPro {
     // Task filters
     this.elements.filterBtns.forEach(btn => {
       btn.addEventListener('click', () => this.setFilter(btn.dataset.filter));
+    });
+    
+    // Calendar navigation
+    this.elements.prevMonth.addEventListener('click', () => this.navigateCalendar(-1));
+    this.elements.nextMonth.addEventListener('click', () => this.navigateCalendar(1));
+    this.elements.todayBtn.addEventListener('click', () => this.goToToday());
+    
+    // View toggle
+    this.elements.viewToggle.addEventListener('click', (e) => {
+      if (e.target.classList.contains('view-toggle-btn')) {
+        this.switchCalendarView(e.target.dataset.view);
+      }
     });
     
     // Login
@@ -2634,6 +3138,11 @@ class ChronoFocusPro {
     if (task.reminder) {
       this.scheduleReminder(task);
     }
+    
+    // Update calendar if in calendar view
+    if (this.currentView === 'calendar') {
+      this.renderCalendar();
+    }
   }
 
   toggleTask(taskId) {
@@ -2655,6 +3164,11 @@ class ChronoFocusPro {
     this.updateView();
     this.updateCounts();
     this.generateAISummary();
+    
+    // Update calendar if in calendar view
+    if (this.currentView === 'calendar') {
+      this.renderCalendar();
+    }
   }
 
   toggleImportant(taskId) {
@@ -2699,6 +3213,11 @@ class ChronoFocusPro {
     
     this.playSound('taskDelete');
     this.showToast('Task deleted', 'success');
+    
+    // Update calendar if in calendar view
+    if (this.currentView === 'calendar') {
+      this.renderCalendar();
+    }
   }
 
   addToMyDay(taskId) {
@@ -2716,6 +3235,157 @@ class ChronoFocusPro {
     this.showToast('Added to My Day', 'info');
   }
 
+  // Calendar Management
+  renderCalendar() {
+    const year = this.currentDate.getFullYear();
+    const month = this.currentDate.getMonth();
+    
+    // Update calendar title
+    const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+      'July', 'August', 'September', 'October', 'November', 'December'];
+    this.elements.calendarTitle.textContent = `${monthNames[month]} ${year}`;
+    
+    // Clear calendar grid
+    this.elements.calendarGrid.innerHTML = '';
+    
+    // Add day headers
+    const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    dayNames.forEach(day => {
+      const dayHeader = document.createElement('div');
+      dayHeader.className = 'calendar-day-header';
+      dayHeader.textContent = day;
+      this.elements.calendarGrid.appendChild(dayHeader);
+    });
+    
+    // Get first day of month and number of days
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
+    const daysInMonth = lastDay.getDate();
+    const startingDay = firstDay.getDay();
+    
+    // Add empty cells for days before the first day of the month
+    for (let i = 0; i < startingDay; i++) {
+      const emptyDay = document.createElement('div');
+      emptyDay.className = 'calendar-day other-month';
+      this.elements.calendarGrid.appendChild(emptyDay);
+    }
+    
+    // Add days of the month
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    for (let day = 1; day <= daysInMonth; day++) {
+      const date = new Date(year, month, day);
+      const dayElement = document.createElement('div');
+      dayElement.className = 'calendar-day';
+      
+      // Check if this day has tasks
+      const dayTasks = this.getTasksForDate(date);
+      if (dayTasks.length > 0) {
+        dayElement.classList.add('has-tasks');
+      }
+      
+      // Check if this is today
+      if (date.getTime() === today.getTime()) {
+        dayElement.classList.add('today');
+      }
+      
+      // Add day number
+      const dayNumber = document.createElement('div');
+      dayNumber.className = 'calendar-day-number';
+      dayNumber.textContent = day;
+      dayElement.appendChild(dayNumber);
+      
+      // Add tasks for this day
+      if (dayTasks.length > 0) {
+        const tasksContainer = document.createElement('div');
+        tasksContainer.className = 'calendar-tasks';
+        
+        // Show up to 3 tasks
+        dayTasks.slice(0, 3).forEach(task => {
+          const taskElement = document.createElement('div');
+          taskElement.className = `calendar-task ${task.priority}`;
+          taskElement.textContent = task.text;
+          tasksContainer.appendChild(taskElement);
+        });
+        
+        // Show indicator if there are more tasks
+        if (dayTasks.length > 3) {
+          const moreElement = document.createElement('div');
+          moreElement.className = 'calendar-task';
+          moreElement.textContent = `+${dayTasks.length - 3} more`;
+          tasksContainer.appendChild(moreElement);
+        }
+        
+        dayElement.appendChild(tasksContainer);
+      }
+      
+      // Add click event to view tasks for this day
+      dayElement.addEventListener('click', () => {
+        this.showTasksForDate(date);
+      });
+      
+      this.elements.calendarGrid.appendChild(dayElement);
+    }
+  }
+
+  getTasksForDate(date) {
+    return this.tasks.filter(task => {
+      if (task.completed) return false;
+      
+      if (task.dueDate) {
+        const taskDate = new Date(task.dueDate);
+        taskDate.setHours(0, 0, 0, 0);
+        return taskDate.getTime() === date.getTime();
+      }
+      
+      return false;
+    });
+  }
+
+  showTasksForDate(date) {
+    const tasks = this.getTasksForDate(date);
+    const dateString = date.toLocaleDateString();
+    
+    if (tasks.length === 0) {
+      this.showToast(`No tasks scheduled for ${dateString}`, 'info');
+    } else {
+      const taskList = tasks.map(task => `• ${task.text}`).join('\n');
+      alert(`Tasks for ${dateString}:\n\n${taskList}`);
+    }
+  }
+
+  navigateCalendar(direction) {
+    if (this.currentCalendarView === 'month') {
+      this.currentDate.setMonth(this.currentDate.getMonth() + direction);
+    }
+    this.renderCalendar();
+  }
+
+  goToToday() {
+    this.currentDate = new Date();
+    this.renderCalendar();
+  }
+
+  switchCalendarView(view) {
+    this.currentCalendarView = view;
+    
+    // Update active button
+    this.elements.viewToggle.querySelectorAll('.view-toggle-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.view === view);
+    });
+    
+    // For now, we only have month view implemented
+    if (view === 'list') {
+      this.elements.calendarView.style.display = 'none';
+      this.elements.taskListView.style.display = 'block';
+    } else {
+      this.elements.calendarView.style.display = 'block';
+      this.elements.taskListView.style.display = 'none';
+      this.renderCalendar();
+    }
+  }
+
   // View Management
   switchView(view) {
     this.currentView = view;
@@ -2730,6 +3400,7 @@ class ChronoFocusPro {
       'my-day': { icon: 'fas fa-sun', text: 'My Day' },
       'important': { icon: 'fas fa-star', text: 'Important' },
       'planned': { icon: 'fas fa-calendar-alt', text: 'Planned' },
+      'calendar': { icon: 'fas fa-calendar', text: 'Calendar' },
       'assigned': { icon: 'fas fa-user', text: 'Assigned to me' },
       'tasks': { icon: 'fas fa-home', text: 'Tasks' }
     };
@@ -2737,7 +3408,21 @@ class ChronoFocusPro {
     const title = titles[view];
     this.elements.pageTitle.innerHTML = `<i class="${title.icon}"></i> ${title.text}`;
     
-    this.updateView();
+    // Show/hide task input and view toggle based on view
+    if (view === 'calendar') {
+      this.elements.taskInputContainer.style.display = 'none';
+      this.elements.viewToggle.style.display = 'flex';
+      this.elements.calendarView.style.display = 'block';
+      this.elements.taskListView.style.display = 'none';
+      this.renderCalendar();
+    } else {
+      this.elements.taskInputContainer.style.display = 'block';
+      this.elements.viewToggle.style.display = 'none';
+      this.elements.calendarView.style.display = 'none';
+      this.elements.taskListView.style.display = 'block';
+      this.updateView();
+    }
+    
     this.closeSidebar();
   }
 
@@ -2846,15 +3531,8 @@ class ChronoFocusPro {
       }
     }
     
-    // Category icons
-    const categoryIcons = {
-      general: '📋',
-      work: '💼',
-      personal: '👤',
-      shopping: '🛒',
-      health: '❤️',
-      learning: '📚'
-    };
+    // Get icon for task category
+    const icon = this.getTaskIcon(task.category);
     
     taskItem.innerHTML = `
       <div class="task-checkbox ${task.completed ? 'checked' : ''}" data-action="toggle">
@@ -2863,7 +3541,7 @@ class ChronoFocusPro {
       
       <div class="task-content-wrapper">
         <div class="task-content">
-          <span class="task-icon">${categoryIcons[task.category] || '📋'}</span>
+          <span class="task-icon">${icon}</span>
           <span class="task-text">${this.escapeHtml(task.text)}</span>
         </div>
         
@@ -2956,6 +3634,10 @@ class ChronoFocusPro {
     });
     
     return taskItem;
+  }
+
+  getTaskIcon(category) {
+    return this.taskIcons[category] || '📋';
   }
 
   setFilter(filter) {
@@ -3070,6 +3752,57 @@ class ChronoFocusPro {
     });
   }
 
+  // Task Icons Management
+  loadTaskIcons() {
+    const defaultIcons = {
+      general: '📋',
+      work: '💼',
+      personal: '👤',
+      shopping: '🛒',
+      health: '❤️',
+      learning: '📚'
+    };
+    
+    const saved = localStorage.getItem('chronoFocusTaskIcons');
+    return saved ? { ...defaultIcons, ...JSON.parse(saved) } : defaultIcons;
+  }
+
+  saveTaskIcons() {
+    localStorage.setItem('chronoFocusTaskIcons', JSON.stringify(this.taskIcons));
+  }
+
+  renderIconCustomization() {
+    this.elements.iconCustomization.innerHTML = '';
+    
+    Object.keys(this.taskIcons).forEach(category => {
+      const iconOption = document.createElement('div');
+      iconOption.className = 'icon-option';
+      iconOption.dataset.category = category;
+      
+      iconOption.innerHTML = `
+        <div class="icon-preview">${this.taskIcons[category]}</div>
+        <div class="icon-name">${category.charAt(0).toUpperCase() + category.slice(1)}</div>
+      `;
+      
+      iconOption.addEventListener('click', () => {
+        this.customizeIcon(category);
+      });
+      
+      this.elements.iconCustomization.appendChild(iconOption);
+    });
+  }
+
+  customizeIcon(category) {
+    const newIcon = prompt(`Enter a new icon for ${category}:`, this.taskIcons[category]);
+    if (newIcon && newIcon.trim() !== '') {
+      this.taskIcons[category] = newIcon.trim();
+      this.saveTaskIcons();
+      this.renderIconCustomization();
+      this.updateView();
+      this.showToast(`Icon for ${category} updated!`, 'success');
+    }
+  }
+
   // Settings Management
   loadSettings() {
     const defaultSettings = {
@@ -3118,6 +3851,17 @@ class ChronoFocusPro {
       aiSummary: true,
       theme: 'dark'
     };
+    
+    // Reset task icons
+    this.taskIcons = {
+      general: '📋',
+      work: '💼',
+      personal: '👤',
+      shopping: '🛒',
+      health: '❤️',
+      learning: '📚'
+    };
+    this.saveTaskIcons();
     
     this.applySettings();
     this.loadSettingsUI();
@@ -3170,6 +3914,9 @@ class ChronoFocusPro {
     this.elements.themeOptions.forEach(option => {
       option.classList.toggle('active', option.dataset.theme === this.settings.theme);
     });
+    
+    // Render icon customization
+    this.renderIconCustomization();
   }
 
   selectTheme(theme) {
@@ -3393,4 +4140,3 @@ window.addEventListener('resize', () => {
 
 </body>
 </html>
-
