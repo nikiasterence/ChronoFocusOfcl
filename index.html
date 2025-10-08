@@ -31,6 +31,10 @@
       --liquid-effect: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
       --liquid-border: 1px solid rgba(255, 255, 255, 0.2);
       --liquid-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+      
+      /* Custom background colors */
+      --custom-bg-start: #E9F1F8;
+      --custom-bg-end: #DDEBF7;
     }
 
     @media (prefers-color-scheme: dark) {
@@ -54,6 +58,10 @@
         --liquid-effect: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
         --liquid-border: 1px solid rgba(255, 255, 255, 0.1);
         --liquid-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+        
+        /* Custom background colors for dark mode */
+        --custom-bg-start: #0f172a;
+        --custom-bg-end: #1e293b;
       }
     }
 
@@ -65,7 +73,7 @@
       min-height: 100vh;
       font-family: 'Inter', sans-serif;
       color: var(--text-primary);
-      background: linear-gradient(-45deg, var(--bg-gradient-start), var(--bg-gradient-end), #4A00E0, #8E2DE2);
+      background: linear-gradient(-45deg, var(--custom-bg-start), var(--custom-bg-end), #4A00E0, #8E2DE2);
       background-size: 400% 400%;
       animation: gradient 25s ease infinite;
       display: grid;
@@ -73,6 +81,7 @@
       padding: 1rem;
       overflow-y: auto;
       position: relative;
+      transition: background 0.5s ease;
     }
 
     /* Liquid Glass Background Elements */
@@ -411,6 +420,117 @@
       transform: translateX(24px);
     }
 
+    /* --- Settings Modal --- */
+    .settings-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+    .settings-modal.active {
+      opacity: 1;
+      visibility: visible;
+    }
+    .settings-content {
+      width: min(90vw, 500px);
+      background: var(--glass-bg);
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: var(--liquid-shadow);
+      backdrop-filter: blur(25px) saturate(150%);
+      -webkit-backdrop-filter: blur(25px) saturate(150%);
+      border: var(--liquid-border);
+      position: relative;
+      transform: translateY(20px);
+      transition: transform 0.3s ease;
+    }
+    .settings-modal.active .settings-content {
+      transform: translateY(0);
+    }
+    .settings-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+    .settings-title {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--header-text);
+      margin: 0;
+    }
+    .close-settings {
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: var(--text-secondary);
+      padding: 8px;
+      border-radius: 50%;
+      transition: all 0.2s;
+    }
+    .close-settings:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--text-primary);
+    }
+    .settings-section {
+      margin-bottom: 24px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--glass-border);
+    }
+    .settings-section:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+    .settings-section-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      color: var(--header-text);
+    }
+    .color-options {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+      gap: 12px;
+      margin-top: 12px;
+    }
+    .color-option {
+      width: 60px;
+      height: 60px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      border: 2px solid transparent;
+    }
+    .color-option:hover {
+      transform: scale(1.05);
+    }
+    .color-option.active {
+      border-color: var(--header-text);
+      box-shadow: 0 0 0 3px var(--button-focus);
+    }
+    .sound-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .haptic-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
     /* --- ⭐ RESPONSIVE IMPROVEMENTS FOR MOBILE ⭐ --- */
     @media (max-width: 480px) {
       body {
@@ -450,6 +570,17 @@
       
       .toggle-container {
         padding: 10px 14px;
+      }
+      
+      .settings-content {
+        padding: 20px;
+      }
+      .color-options {
+        grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+      }
+      .color-option {
+        width: 50px;
+        height: 50px;
       }
     }
   </style>
@@ -514,6 +645,69 @@
     <div id="success" class="success" role="status" aria-live="polite"></div>
     <footer class="footer"><p>© <span id="year"></span> Chrono Focus · Crafted by CozytuStudios Team</p></footer>
 </main>
+
+<!-- Settings Modal -->
+<div id="settings-modal" class="settings-modal">
+  <div class="settings-content">
+    <div class="settings-header">
+      <h2 class="settings-title">Settings</h2>
+      <button class="close-settings" id="close-settings">✕</button>
+    </div>
+    
+    <div class="settings-section">
+      <h3 class="settings-section-title">Profile</h3>
+      <div class="profile-pic-group">
+        <div id="settings-pfp-preview">👤</div>
+        <input type="file" id="settings-pfp-upload" class="sr-only" accept="image/*">
+        <label for="settings-pfp-upload" id="settings-pfp-upload-label" tabindex="0">Change Profile Picture</label>
+      </div>
+    </div>
+    
+    <div class="settings-section">
+      <h3 class="settings-section-title">Security</h3>
+      <div class="toggle-container">
+        <span class="toggle-label">Enable Passcode</span>
+        <label class="toggle-switch">
+          <input type="checkbox" id="settings-passcode-toggle">
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      <button class="btn" id="change-pin-btn" style="margin-top: 12px;">Change PIN</button>
+    </div>
+    
+    <div class="settings-section">
+      <h3 class="settings-section-title">Appearance</h3>
+      <p>Choose your background color:</p>
+      <div class="color-options">
+        <div class="color-option active" data-color="default" style="background: linear-gradient(-45deg, var(--custom-bg-start), var(--custom-bg-end), #4A00E0, #8E2DE2);"></div>
+        <div class="color-option" data-color="blue" style="background: linear-gradient(-45deg, #3B82F6, #1D4ED8, #4A00E0, #8E2DE2);"></div>
+        <div class="color-option" data-color="green" style="background: linear-gradient(-45deg, #10B981, #059669, #047857, #065F46);"></div>
+        <div class="color-option" data-color="purple" style="background: linear-gradient(-45deg, #8B5CF6, #7C3AED, #6D28D9, #5B21B6);"></div>
+        <div class="color-option" data-color="orange" style="background: linear-gradient(-45deg, #F59E0B, #D97706, #B45309, #92400E);"></div>
+        <div class="color-option" data-color="pink" style="background: linear-gradient(-45deg, #EC4899, #DB2777, #BE185D, #9D174D);"></div>
+      </div>
+    </div>
+    
+    <div class="settings-section">
+      <h3 class="settings-section-title">Sound & Haptics</h3>
+      <div class="sound-toggle">
+        <span class="toggle-label">Sound Effects</span>
+        <label class="toggle-switch">
+          <input type="checkbox" id="sound-toggle" checked>
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      <div class="haptic-toggle">
+        <span class="toggle-label">Haptic Feedback</span>
+        <label class="toggle-switch">
+          <input type="checkbox" id="haptic-toggle" checked>
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+    </div>
+  </div>
+</div>
+
   <script>
     (function() {
       'use strict';
@@ -522,10 +716,21 @@
       const USER_PIN_KEY = 'chronoFocus-userPin';
       const SAVED_REGION_KEY = 'chronoFocus-userRegion';
       const PASSCODE_ENABLED_KEY = 'chronoFocus-passcodeEnabled';
+      const SOUND_ENABLED_KEY = 'chronoFocus-soundEnabled';
+      const HAPTIC_ENABLED_KEY = 'chronoFocus-hapticEnabled';
+      const BACKGROUND_COLOR_KEY = 'chronoFocus-backgroundColor';
       const VERSION = 'Zenith 1 · Beta 7';
 
       // Global reference to keypad event handler to allow proper removal
       let pinKeypadHandler = null;
+
+      // Audio elements for sound effects
+      const clickSound = new Audio('data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQQAAAAAAA==');
+      const successSound = new Audio('data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQQAAAAAAA==');
+      const errorSound = new Audio('data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQQAAAAAAA==');
+      
+      // In a real implementation, you would replace these with actual sound files
+      // For now, we'll use these placeholder base64 encoded silent audio
 
       document.addEventListener('DOMContentLoaded', initialize);
 
@@ -555,6 +760,56 @@
             this.click();
           }
         });
+        
+        // Add Enter key support for the entire document to redirect to page1.html
+        document.addEventListener('keydown', function(e) {
+          if (e.key === 'Enter' && document.getElementById('main-content').classList.contains('active')) {
+            if (!document.getElementById('enterBtn').disabled) {
+              document.getElementById('enterBtn').click();
+            }
+          }
+        });
+        
+        // Settings modal functionality
+        document.getElementById('settings-btn').addEventListener('click', openSettings);
+        document.getElementById('close-settings').addEventListener('click', closeSettings);
+        document.getElementById('settings-modal').addEventListener('click', function(e) {
+          if (e.target === this) closeSettings();
+        });
+        
+        // Settings functionality
+        setupSettings();
+      }
+      
+      // Sound and haptic functions
+      function playSound(sound) {
+        const soundEnabled = localStorage.getItem(SOUND_ENABLED_KEY) !== 'false';
+        if (soundEnabled) {
+          sound.currentTime = 0;
+          sound.play().catch(e => console.log('Sound play failed:', e));
+        }
+      }
+      
+      function triggerHaptic() {
+        const hapticEnabled = localStorage.getItem(HAPTIC_ENABLED_KEY) !== 'false';
+        if (hapticEnabled && 'vibrate' in navigator) {
+          navigator.vibrate(10);
+        }
+      }
+      
+      function playClick() {
+        playSound(clickSound);
+        triggerHaptic();
+      }
+      
+      function playSuccess() {
+        playSound(successSound);
+        triggerHaptic();
+      }
+      
+      function playError() {
+        playSound(errorSound);
+        triggerHaptic();
       }
       
       function checkUserState() {
@@ -562,6 +817,14 @@
         const userData = storedData ? JSON.parse(storedData) : null;
         const userPin = localStorage.getItem(USER_PIN_KEY);
         const passcodeEnabled = localStorage.getItem(PASSCODE_ENABLED_KEY) !== 'false';
+        
+        // Initialize sound and haptic settings if not set
+        if (localStorage.getItem(SOUND_ENABLED_KEY) === null) {
+          localStorage.setItem(SOUND_ENABLED_KEY, 'true');
+        }
+        if (localStorage.getItem(HAPTIC_ENABLED_KEY) === null) {
+          localStorage.setItem(HAPTIC_ENABLED_KEY, 'true');
+        }
         
         document.getElementById('loader').classList.add('hidden');
 
@@ -662,6 +925,7 @@
               };
               
               localStorage.setItem(USER_DATA_KEY, JSON.stringify(newUserData));
+              playSuccess();
               
               if(isUpdate) {
                 alert('Profile updated successfully!');
@@ -707,6 +971,7 @@
           
           function handleIncorrectPin() {
               pinDisplay.classList.add('shake');
+              playError();
               setTimeout(() => {
                   pinDisplay.classList.remove('shake');
                   resetPinDisplay();
@@ -714,17 +979,18 @@
           }
 
           const modes = {
-              set: { title: 'Set Your 4-Digit PIN', subtitle: 'This will be used for quick, secure access.', logo: '🔒', next: (newPin) => { localStorage.setItem(USER_PIN_KEY, newPin); showMainApp(userData); } },
-              login: { title: `Welcome Back, ${userData.name}`, subtitle: 'Please enter your PIN to continue.', logo: '🔑', next: (enteredPin) => (enteredPin === savedPin ? showMainApp(userData) : handleIncorrectPin()) },
+              set: { title: 'Set Your 4-Digit PIN', subtitle: 'This will be used for quick, secure access.', logo: '🔒', next: (newPin) => { localStorage.setItem(USER_PIN_KEY, newPin); playSuccess(); showMainApp(userData); } },
+              login: { title: `Welcome Back, ${userData.name}`, subtitle: 'Please enter your PIN to continue.', logo: '🔑', next: (enteredPin) => (enteredPin === savedPin ? (playSuccess(), showMainApp(userData)) : handleIncorrectPin()) },
               confirmOld: { title: 'Enter Your Current PIN', subtitle: 'Please confirm your old PIN to proceed.', logo: '🔐', next: (enteredPin) => {
                   if (enteredPin === savedPin) {
+                    playSuccess();
                     const action = confirm("Do you want to change your PIN? OK for PIN change, Cancel to edit your profile.");
                     if(action) { setupPinScreen('setNew', userData); } 
                     else { showModule('registration-container'); setupRegistration(true); }
                   } else { handleIncorrectPin(); }
               }},
               setNew: { title: 'Set a New PIN', subtitle: 'Enter your new 4-digit PIN.', logo: '🔒', next: (newPin) => { tempPin = newPin; resetPinDisplay(); setupPinScreen('confirmNew', userData); } },
-              confirmNew: { title: 'Confirm Your New PIN', subtitle: 'Please re-enter your new PIN.', logo: '✅', next: (confirmedPin) => (confirmedPin === tempPin ? (localStorage.setItem(USER_PIN_KEY, confirmedPin), alert('PIN updated successfully!'), showMainApp(userData)) : (alert('PINs do not match. Please try again.'), setupPinScreen('setNew', userData))) }
+              confirmNew: { title: 'Confirm Your New PIN', subtitle: 'Please re-enter your new PIN.', logo: '✅', next: (confirmedPin) => (confirmedPin === tempPin ? (localStorage.setItem(USER_PIN_KEY, confirmedPin), playSuccess(), alert('PIN updated successfully!'), showMainApp(userData)) : (playError(), alert('PINs do not match. Please try again.'), setupPinScreen('setNew', userData))) }
           };
 
           title.textContent = modes[mode].title;
@@ -738,6 +1004,8 @@
               const key = e.target.closest('[data-key]')?.dataset.key;
               if (!key) return;
 
+              playClick();
+              
               if (key === 'del') { currentPin = currentPin.slice(0, -1); } 
               else if (currentPin.length < 4) { currentPin += key; }
               
@@ -753,12 +1021,14 @@
           // Add keyboard support for PIN entry
           document.addEventListener('keydown', function(e) {
             if (e.key >= '0' && e.key <= '9' && currentPin.length < 4) {
+              playClick();
               currentPin += e.key;
               updatePinDisplay();
               if (currentPin.length === 4) {
                 setTimeout(() => modes[mode].next(currentPin), 250);
               }
             } else if (e.key === 'Backspace') {
+              playClick();
               currentPin = currentPin.slice(0, -1);
               updatePinDisplay();
             }
@@ -826,6 +1096,8 @@
             // Add page transition animation
             document.querySelector('.container.active').style.animation = 'pageTransition 0.8s ease forwards';
             
+            playSuccess();
+            
             setTimeout(() => {
                 // Here you would redirect to the main part of the app
                 console.log(`Redirecting to app for region: ${selectedRegion}`);
@@ -846,6 +1118,152 @@
         // Initial setup calls
         personalizeHeader();
         loadSavedRegion();
+      }
+      
+      function openSettings() {
+        document.getElementById('settings-modal').classList.add('active');
+        playClick();
+        
+        // Load current settings
+        const userData = JSON.parse(localStorage.getItem(USER_DATA_KEY));
+        if (userData && userData.pfp) {
+          document.getElementById('settings-pfp-preview').style.backgroundImage = `url(${userData.pfp})`;
+          document.getElementById('settings-pfp-preview').textContent = '';
+        }
+        
+        document.getElementById('settings-passcode-toggle').checked = localStorage.getItem(PASSCODE_ENABLED_KEY) !== 'false';
+        document.getElementById('sound-toggle').checked = localStorage.getItem(SOUND_ENABLED_KEY) !== 'false';
+        document.getElementById('haptic-toggle').checked = localStorage.getItem(HAPTIC_ENABLED_KEY) !== 'false';
+        
+        // Set active color
+        const savedColor = localStorage.getItem(BACKGROUND_COLOR_KEY) || 'default';
+        document.querySelectorAll('.color-option').forEach(option => {
+          option.classList.toggle('active', option.dataset.color === savedColor);
+        });
+      }
+      
+      function closeSettings() {
+        document.getElementById('settings-modal').classList.remove('active');
+        playClick();
+      }
+      
+      function setupSettings() {
+        // Profile picture change in settings
+        document.getElementById('settings-pfp-upload').addEventListener('change', function(e) {
+          const file = e.target.files?.[0];
+          if (!file) return;
+
+          if (file.size > 5 * 1024 * 1024) {
+            alert('File is too large. Please select an image under 5MB.');
+            return;
+          }
+
+          const reader = new FileReader();
+          reader.onload = (event) => {
+            const pfpData = event.target.result;
+            document.getElementById('settings-pfp-preview').style.backgroundImage = `url(${pfpData})`;
+            document.getElementById('settings-pfp-preview').textContent = '';
+            
+            // Update user data
+            const userData = JSON.parse(localStorage.getItem(USER_DATA_KEY));
+            userData.pfp = pfpData;
+            localStorage.setItem(USER_DATA_KEY, JSON.stringify(userData));
+            
+            // Update main app display
+            if (document.getElementById('main-content').classList.contains('active')) {
+              document.getElementById('user-pfp').style.backgroundImage = `url(${pfpData})`;
+              document.getElementById('user-pfp').textContent = '';
+            }
+            
+            playSuccess();
+            alert('Profile picture updated successfully!');
+          };
+          reader.onerror = () => {
+            alert('Error reading file. Please try another image.');
+          };
+          reader.readAsDataURL(file);
+        });
+        
+        // Passcode toggle in settings
+        document.getElementById('settings-passcode-toggle').addEventListener('change', function() {
+          localStorage.setItem(PASSCODE_ENABLED_KEY, this.checked);
+          playClick();
+        });
+        
+        // Change PIN button
+        document.getElementById('change-pin-btn').addEventListener('click', function() {
+          const userData = JSON.parse(localStorage.getItem(USER_DATA_KEY));
+          closeSettings();
+          showModule('pin-container');
+          setupPinScreen('confirmOld', userData);
+        });
+        
+        // Color options
+        document.querySelectorAll('.color-option').forEach(option => {
+          option.addEventListener('click', function() {
+            document.querySelectorAll('.color-option').forEach(opt => opt.classList.remove('active'));
+            this.classList.add('active');
+            
+            const color = this.dataset.color;
+            localStorage.setItem(BACKGROUND_COLOR_KEY, color);
+            
+            // Apply the color theme
+            applyBackgroundColor(color);
+            playClick();
+          });
+        });
+        
+        // Sound toggle
+        document.getElementById('sound-toggle').addEventListener('change', function() {
+          localStorage.setItem(SOUND_ENABLED_KEY, this.checked);
+          playClick();
+        });
+        
+        // Haptic toggle
+        document.getElementById('haptic-toggle').addEventListener('change', function() {
+          localStorage.setItem(HAPTIC_ENABLED_KEY, this.checked);
+          triggerHaptic(); // Test haptic when toggling
+        });
+        
+        // Apply saved background color on load
+        const savedColor = localStorage.getItem(BACKGROUND_COLOR_KEY) || 'default';
+        applyBackgroundColor(savedColor);
+      }
+      
+      function applyBackgroundColor(color) {
+        const root = document.documentElement;
+        
+        switch(color) {
+          case 'blue':
+            root.style.setProperty('--custom-bg-start', '#3B82F6');
+            root.style.setProperty('--custom-bg-end', '#1D4ED8');
+            break;
+          case 'green':
+            root.style.setProperty('--custom-bg-start', '#10B981');
+            root.style.setProperty('--custom-bg-end', '#059669');
+            break;
+          case 'purple':
+            root.style.setProperty('--custom-bg-start', '#8B5CF6');
+            root.style.setProperty('--custom-bg-end', '#7C3AED');
+            break;
+          case 'orange':
+            root.style.setProperty('--custom-bg-start', '#F59E0B');
+            root.style.setProperty('--custom-bg-end', '#D97706');
+            break;
+          case 'pink':
+            root.style.setProperty('--custom-bg-start', '#EC4899');
+            root.style.setProperty('--custom-bg-end', '#DB2777');
+            break;
+          default:
+            // Reset to default colors based on theme
+            if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+              root.style.setProperty('--custom-bg-start', '#0f172a');
+              root.style.setProperty('--custom-bg-end', '#1e293b');
+            } else {
+              root.style.setProperty('--custom-bg-start', '#E9F1F8');
+              root.style.setProperty('--custom-bg-end', '#DDEBF7');
+            }
+        }
       }
 
     })();
