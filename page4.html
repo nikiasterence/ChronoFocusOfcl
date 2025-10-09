@@ -3,836 +3,848 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Notes App with OptiChain AI</title>
-    <link rel="icon" href="Chronofocus.png" type="image/x-icon">
+    <title>Gridora Notes - Advanced Note Taking</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-color: #007AFF;
-            --background-color: #f5f5f7;
-            --text-color: #1d1d1f;
-            --sidebar-bg: #f2f2f7;
-            --note-bg: #ffffff;
-            --border-color: #c6c6c8;
-            --radius: 20px;
-            --shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            --glass-bg: rgba(255, 255, 255, 0.25);
-            --glass-border: 1px solid rgba(255, 255, 255, 0.18);
-            --icon-radius: 50%;
-            --z-island: 1000;
-            --transition: all 0.3s ease;
-            --border-radius-pill: 50px;
+            /* Light Theme - Notion Style */
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --bg-tertiary: #f1f3f4;
+            --text-primary: #37352f;
+            --text-secondary: #6b7280;
+            --text-muted: #9ca3af;
+            --border-color: #e5e7eb;
+            --accent-color: #3b82f6;
+            --accent-hover: #2563eb;
+            --sidebar-bg: #f7f6f3;
+            --card-bg: #ffffff;
+            --hover-bg: #f3f4f6;
+            --shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.1);
+            --glass-bg: rgba(255, 255, 255, 0.95);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --radius-xl: 20px;
         }
 
-        /* Theme Variables */
-        .theme-cotton-candy {
-            --primary-color: #FF9FF3;
-            --background-color: #F8F9FA;
-            --text-color: #2C2C54;
-            --sidebar-bg: #FDEBF7;
-            --note-bg: #FFFFFF;
-            --border-color: #FFC8F0;
-            --glass-bg: rgba(255, 255, 255, 0.7);
+        [data-theme="dark"] {
+            --bg-primary: #1a1a1a;
+            --bg-secondary: #2d2d2d;
+            --bg-tertiary: #404040;
+            --text-primary: #ffffff;
+            --text-secondary: #d1d5db;
+            --text-muted: #9ca3af;
+            --border-color: #374151;
+            --accent-color: #60a5fa;
+            --accent-hover: #3b82f6;
+            --sidebar-bg: #262626;
+            --card-bg: #2d2d2d;
+            --hover-bg: #374151;
+            --shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+            --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.4);
+            --glass-bg: rgba(26, 26, 26, 0.95);
+            --glass-border: rgba(255, 255, 255, 0.1);
         }
 
-        .theme-midnight {
-            --primary-color: #5DADE2;
-            --background-color: #1C2833;
-            --text-color: #EAECEE;
-            --sidebar-bg: #2C3E50;
-            --note-bg: #34495E;
-            --border-color: #5D6D7E;
-            --glass-bg: rgba(44, 62, 80, 0.7);
+        [data-theme="midnight"] {
+            --bg-primary: #0f0f0f;
+            --bg-secondary: #1a1a1a;
+            --bg-tertiary: #2d2d2d;
+            --text-primary: #e5e7eb;
+            --text-secondary: #d1d5db;
+            --text-muted: #9ca3af;
+            --border-color: #2d2d2d;
+            --accent-color: #8b5cf6;
+            --accent-hover: #7c3aed;
+            --sidebar-bg: #111111;
+            --card-bg: #1a1a1a;
+            --hover-bg: #2d2d2d;
+            --shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+            --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.6);
+            --glass-bg: rgba(15, 15, 15, 0.95);
+            --glass-border: rgba(255, 255, 255, 0.05);
         }
 
-        .theme-golden {
-            --primary-color: #D4AF37;
-            --background-color: #FEF9E7;
-            --text-color: #5D4037;
-            --sidebar-bg: #FFF8E1;
-            --note-bg: #FFFFFF;
-            --border-color: #FFD54F;
-            --glass-bg: rgba(255, 255, 255, 0.7);
+        [data-theme="ocean"] {
+            --bg-primary: #0c1821;
+            --bg-secondary: #1a2332;
+            --bg-tertiary: #2d3748;
+            --text-primary: #e2e8f0;
+            --text-secondary: #cbd5e0;
+            --text-muted: #a0aec0;
+            --border-color: #2d3748;
+            --accent-color: #38b2ac;
+            --accent-hover: #319795;
+            --sidebar-bg: #1a2332;
+            --card-bg: #2d3748;
+            --hover-bg: #4a5568;
+            --shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+            --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.5);
+            --glass-bg: rgba(12, 24, 33, 0.95);
+            --glass-border: rgba(255, 255, 255, 0.1);
         }
 
-        .theme-extra-dark {
-            --primary-color: #BB86FC;
-            --background-color: #121212;
-            --text-color: #E1E1E1;
-            --sidebar-bg: #1E1E1E;
-            --note-bg: #2D2D2D;
-            --border-color: #383838;
-            --glass-bg: rgba(45, 45, 45, 0.7);
+        [data-theme="cotton-candy"] {
+            --bg-primary: #fdf2f8;
+            --bg-secondary: #fce7f3;
+            --bg-tertiary: #fbcfe8;
+            --text-primary: #831843;
+            --text-secondary: #be185d;
+            --text-muted: #ec4899;
+            --border-color: #f9a8d4;
+            --accent-color: #ec4899;
+            --accent-hover: #db2777;
+            --sidebar-bg: #fdf2f8;
+            --card-bg: #fce7f3;
+            --hover-bg: #fbcfe8;
+            --shadow: 0 1px 3px rgba(236, 72, 153, 0.15);
+            --shadow-lg: 0 10px 25px rgba(236, 72, 153, 0.2);
+            --glass-bg: rgba(253, 242, 248, 0.95);
+            --glass-border: rgba(236, 72, 153, 0.2);
         }
 
-        .theme-white-blue {
-            --primary-color: #007AFF;
-            --background-color: #FFFFFF;
-            --text-color: #1D1D1F;
-            --sidebar-bg: #F2F2F7;
-            --note-bg: #FFFFFF;
-            --border-color: #C6C6C8;
-            --glass-bg: rgba(255, 255, 255, 0.7);
+        [data-theme="forest"] {
+            --bg-primary: #0f1419;
+            --bg-secondary: #1a232e;
+            --bg-tertiary: #2d3748;
+            --text-primary: #e2e8f0;
+            --text-secondary: #cbd5e0;
+            --text-muted: #a0aec0;
+            --border-color: #2d3748;
+            --accent-color: #10b981;
+            --accent-hover: #059669;
+            --sidebar-bg: #1a232e;
+            --card-bg: #2d3748;
+            --hover-bg: #4a5568;
+            --shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+            --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.5);
+            --glass-bg: rgba(15, 20, 25, 0.95);
+            --glass-border: rgba(255, 255, 255, 0.1);
         }
 
-        /* Additional themes remain the same as before... */
+        [data-theme="sunset"] {
+            --bg-primary: #1c1c28;
+            --bg-secondary: #2d2d44;
+            --bg-tertiary: #3d3d5c;
+            --text-primary: #f8fafc;
+            --text-secondary: #e2e8f0;
+            --text-muted: #94a3b8;
+            --border-color: #3d3d5c;
+            --accent-color: #f59e0b;
+            --accent-hover: #d97706;
+            --sidebar-bg: #2d2d44;
+            --card-bg: #3d3d5c;
+            --hover-bg: #4a5568;
+            --shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+            --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.5);
+            --glass-bg: rgba(28, 28, 40, 0.95);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
         }
 
         body {
-            background-color: var(--background-color);
-            color: var(--text-color);
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            transition: all 0.3s ease;
-            overflow: hidden;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
         }
 
-        /* Dynamic Island - Smaller for mobile */
-        .dynamic-island {
-            position: fixed;
-            top: 10px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: var(--z-island);
-            background: rgba(20, 20, 20, 0.85);
-            backdrop-filter: blur(30px);
-            -webkit-backdrop-filter: blur(30px);
-            border: 1px solid rgba(255,255,255,0.1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            padding: 0 15px;
-            border-radius: var(--border-radius-pill);
-            cursor: pointer;
-            transition: var(--transition);
-            height: 40px;
-            min-width: 180px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.25);
-            animation: islandPulse 4s infinite ease-in-out;
-        }
-        
-        @keyframes islandPulse {
-            0%, 100% { transform: translateX(-50%) scale(1); box-shadow: 0 10px 40px rgba(0,0,0,0.25);}
-            50% { transform: translateX(-50%) scale(1.03); box-shadow: 0 15px 50px rgba(0,0,0,0.3);}
-        }
-        
-        .island-idle-content { 
-            display: flex; 
-            align-items: center; 
-            gap: 8px; 
-            transition: opacity 0.3s ease, transform 0.3s ease; 
-            font-size: 14px;
-        }
-        
-        .dynamic-island.expanded .island-idle-content { 
-            opacity: 0; 
-            transform: scale(0.8); 
-            pointer-events: none; 
-        }
-        
-        .island-controls {
-            display: flex;
-            gap: 8px;
-            align-items: center;
-            opacity: 0;
-            pointer-events: none;
-            position: absolute;
-            transition: opacity 0.4s 0.2s ease, transform 0.4s 0.2s ease;
-            transform: translateY(10px);
-        }
-        
-        .island-btn {
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            border: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-size: 0.9rem;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .island-btn::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            transition: width 0.3s, height 0.3s;
-        }
-        
-        .island-btn:hover::after {
-            width: 100%;
-            height: 100%;
-        }
-        
-        .island-btn:hover { 
-            background: var(--primary-color); 
-            transform: scale(1.1); 
-        }
-        
-        .island-btn:active { 
-            transform: scale(0.95); 
-        }
-        
-        /* Expanded State */
-        .dynamic-island.expanded {
-            height: 60px;
-            width: auto;
-            padding: 0 30px;
-            min-width: 350px;
-            border-radius: 30px;
-            animation: islandExpand 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
-        }
-        
-        @keyframes islandExpand {
-            0% { min-width: 180px; height: 40px; border-radius: 20px; }
-            100% { min-width: 350px; height: 60px; border-radius: 30px; }
-        }
-        
-        .dynamic-island.expanded .island-controls { 
-            opacity: 1; 
-            pointer-events: auto; 
-            transform: translateY(0); 
-        }
-
-        /* App Header - More compact for mobile */
-        .app-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 15px;
-            border-bottom: 1px solid var(--border-color);
-            background-color: var(--note-bg);
-            border-radius: 0 0 var(--radius) var(--radius);
-            box-shadow: var(--shadow);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            background: var(--glass-bg);
-            border: var(--glass-border);
-            height: 60px;
-        }
-
-        .app-title {
-            font-size: 18px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .app-title i {
-            color: var(--primary-color);
-        }
-
-        .header-controls {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-        }
-
-        /* Back Button */
-        .back-btn {
-            background: none;
-            border: none;
-            color: var(--primary-color);
-            font-size: 18px;
-            cursor: pointer;
-            padding: 8px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background-color 0.2s;
-        }
-
-        .back-btn:hover {
-            background-color: rgba(0, 0, 0, 0.05);
-        }
-
-        /* Main App Container */
         .app-container {
             display: flex;
-            flex: 1;
-            overflow: hidden;
-            padding: 8px;
-            gap: 8px;
+            height: 100vh;
+            background: var(--bg-primary);
         }
 
-        /* Library View - New */
-        .library-view {
-            width: 100%;
-            background-color: var(--sidebar-bg);
-            border-radius: var(--radius);
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            box-shadow: var(--shadow);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            background: var(--glass-bg);
-            border: var(--glass-border);
-        }
-
-        .library-header {
-            padding: 12px 15px;
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .library-title {
-            font-size: 18px;
-            font-weight: 600;
-        }
-
-        .library-controls {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-
-        /* Search Bar */
-        .search-container {
-            position: relative;
-            flex: 1;
-            max-width: 300px;
-        }
-
-        .search-input {
-            width: 100%;
-            background-color: var(--note-bg);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius);
-            padding: 8px 15px 8px 35px;
-            color: var(--text-color);
-            outline: none;
-            font-size: 14px;
-        }
-
-        .search-icon {
-            position: absolute;
-            left: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #8E8E93;
-        }
-
-        /* New Note Button - Smaller for mobile */
-        .new-note-btn {
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 8px;
-            border-radius: 50%;
-            cursor: pointer;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            width: 40px;
-            height: 40px;
-        }
-
-        .new-note-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-        }
-
-        .notes-list {
-            flex: 1;
+        .sidebar {
+            width: 280px;
+            background: var(--sidebar-bg);
+            border-right: 1px solid var(--border-color);
+            padding: 16px;
             overflow-y: auto;
+            flex-shrink: 0;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
             padding: 8px 0;
         }
 
-        .note-item {
-            padding: 12px 15px;
-            border-bottom: 1px solid var(--border-color);
-            cursor: pointer;
-            transition: all 0.2s;
+        .logo {
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            border-radius: 0;
+            gap: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .logo i {
+            color: var(--accent-color);
+            font-size: 20px;
+        }
+
+        .sidebar-section {
+            margin-bottom: 24px;
+        }
+
+        .section-title {
+            font-size: 12px;
+            font-weight: 500;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+            letter-spacing: 0.5px;
+            padding-left: 8px;
+        }
+
+        .sidebar-btn {
+            width: 100%;
+            padding: 8px 12px;
+            background: none;
+            border: none;
+            border-radius: var(--radius-md);
+            color: var(--text-secondary);
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 4px;
+            text-align: left;
+        }
+
+        .sidebar-btn:hover {
+            background: var(--hover-bg);
+            color: var(--text-primary);
+        }
+
+        .sidebar-btn.active {
+            background: var(--accent-color);
+            color: white;
+        }
+
+        .sidebar-btn i {
+            width: 16px;
+            text-align: center;
+        }
+
+        .notes-list {
+            margin-top: 20px;
+        }
+
+        .note-item {
+            padding: 10px 12px;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-bottom: 4px;
+            border-left: 3px solid transparent;
         }
 
         .note-item:hover {
-            background-color: rgba(0, 0, 0, 0.05);
+            background: var(--hover-bg);
         }
 
         .note-item.active {
-            background-color: rgba(0, 122, 255, 0.1);
-            border-left: 3px solid var(--primary-color);
-        }
-
-        .note-item-content {
-            flex: 1;
-            overflow: hidden;
+            background: var(--accent-color);
+            color: white;
         }
 
         .note-title {
-            font-weight: 600;
+            font-weight: 500;
+            font-size: 14px;
             margin-bottom: 4px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            font-size: 15px;
         }
 
         .note-preview {
             font-size: 12px;
-            color: #8E8E93;
-            white-space: nowrap;
+            color: var(--text-muted);
+            opacity: 0.8;
             overflow: hidden;
-            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
         }
 
-        .note-actions {
-            display: flex;
-            gap: 5px;
-            opacity: 0;
-            transition: opacity 0.2s;
+        .note-item.active .note-preview {
+            color: rgba(255, 255, 255, 0.8);
         }
 
-        .note-item:hover .note-actions {
-            opacity: 1;
-        }
-
-        .delete-btn {
-            background: none;
-            border: none;
-            color: #8E8E93;
-            cursor: pointer;
-            padding: 5px;
-            border-radius: var(--icon-radius);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .delete-btn:hover {
-            background-color: rgba(255, 59, 48, 0.1);
-            color: #FF3B30;
-        }
-
-        /* Note Editor View */
-        .note-editor-view {
+        .main-content {
             flex: 1;
             display: flex;
             flex-direction: column;
-            overflow: hidden;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
+            background: var(--bg-primary);
+            position: relative;
+        }
+
+        .header {
+            background: var(--bg-primary);
+            border-bottom: 1px solid var(--border-color);
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
             backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            background: var(--glass-bg);
-            border: var(--glass-border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
-        .note-header {
-            padding: 12px 18px;
-            border-bottom: 1px solid var(--border-color);
+        .header-left {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 16px;
         }
 
-        .note-title-input {
-            flex: 1;
-            background: transparent;
-            border: none;
-            font-size: 18px;
-            font-weight: 600;
-            color: var(--text-color);
-            outline: none;
-        }
-
-        .note-title-input::placeholder {
-            color: #8E8E93;
-        }
-
-        /* Writing Tools - Hidden by default on mobile */
-        .writing-tools {
-            display: none;
+        .header-right {
+            display: flex;
+            align-items: center;
             gap: 8px;
-            padding: 8px 18px;
-            border-bottom: 1px solid var(--border-color);
-            background-color: var(--note-bg);
-            flex-wrap: wrap;
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s ease, padding 0.3s ease;
         }
 
-        .writing-tools.expanded {
-            display: flex;
-            max-height: 500px;
-            padding: 8px 18px;
-        }
-
-        .tool-group {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            padding: 4px 8px;
-            border-radius: var(--radius);
-            background-color: var(--sidebar-bg);
-        }
-
-        .tool-btn {
+        .header-btn {
+            padding: 8px 10px;
             background: none;
             border: none;
-            color: var(--text-color);
+            border-radius: var(--radius-md);
+            color: var(--text-secondary);
             cursor: pointer;
-            padding: 6px;
-            border-radius: var(--icon-radius);
+            transition: all 0.2s ease;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.2s;
-            width: 32px;
-            height: 32px;
-            font-size: 14px;
         }
 
-        .tool-btn:hover {
-            background-color: rgba(0, 0, 0, 0.1);
-            transform: scale(1.05);
+        .header-btn:hover {
+            background: var(--hover-bg);
+            color: var(--text-primary);
         }
 
-        .tool-btn.active {
-            background-color: var(--primary-color);
+        .content-area {
+            flex: 1;
+            padding: 0;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            text-align: center;
+            color: var(--text-muted);
+            padding: 40px;
+        }
+
+        .empty-state i {
+            font-size: 64px;
+            margin-bottom: 24px;
+            color: var(--accent-color);
+            opacity: 0.5;
+        }
+
+        .empty-state h2 {
+            font-size: 24px;
+            margin-bottom: 12px;
+            color: var(--text-primary);
+        }
+
+        .empty-state p {
+            font-size: 16px;
+            margin-bottom: 24px;
+        }
+
+        .create-note-btn {
+            padding: 12px 24px;
+            background: var(--accent-color);
             color: white;
+            border: none;
+            border-radius: var(--radius-lg);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        .font-select, .size-select {
-            background-color: var(--sidebar-bg);
-            border: 1px solid var(--border-color);
-            color: var(--text-color);
-            border-radius: 8px;
-            padding: 4px 6px;
-            outline: none;
-            font-size: 12px;
+        .create-note-btn:hover {
+            background: var(--accent-hover);
+            transform: translateY(-1px);
         }
 
         .note-editor {
-            flex: 1;
-            padding: 15px 18px;
-            overflow-y: auto;
-            background-color: var(--note-bg);
-        }
-
-        .note-editor-content {
+            background: var(--card-bg);
+            margin: 0 auto;
+            max-width: 900px;
             min-height: 100%;
-            outline: none;
-            line-height: 1.6;
-            font-size: 16px;
         }
 
-        .note-editor-content img {
-            max-width: 100%;
-            border-radius: 8px;
-            margin: 10px 0;
+        .note-cover {
+            width: 100%;
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+            margin-bottom: 24px;
+            position: relative;
         }
 
-        .highlight {
-            background-color: yellow;
-            padding: 2px;
-            border-radius: 3px;
-        }
-
-        /* Show/Hide Tools Button */
-        .toggle-tools-btn {
-            display: block;
-            background-color: var(--primary-color);
+        .note-cover-edit {
+            position: absolute;
+            bottom: 16px;
+            right: 16px;
+            background: rgba(0, 0, 0, 0.7);
             color: white;
             border: none;
+            border-radius: var(--radius-md);
             padding: 8px 12px;
-            border-radius: var(--radius);
+            font-size: 12px;
             cursor: pointer;
-            font-weight: 500;
-            margin: 8px auto;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .note-cover:hover .note-cover-edit {
+            opacity: 1;
+        }
+
+        .note-title-input {
+            width: 100%;
+            font-size: 40px;
+            font-weight: 700;
+            color: var(--text-primary);
+            background: none;
+            border: none;
+            outline: none;
+            margin-bottom: 16px;
+            padding: 0 40px;
+            border-radius: var(--radius-sm);
+            transition: all 0.2s ease;
+        }
+
+        .note-title-input:focus {
+            background: var(--hover-bg);
+        }
+
+        .note-title-input::placeholder {
+            color: var(--text-muted);
+            font-weight: 700;
+        }
+
+        .editor-toolbar {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 8px 40px;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .toolbar-btn {
+            padding: 6px 10px;
+            background: none;
+            border: 1px solid transparent;
+            border-radius: var(--radius-sm);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s ease;
             font-size: 14px;
         }
 
-        .toggle-tools-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        .toolbar-btn:hover {
+            background: var(--hover-bg);
+            color: var(--text-primary);
         }
 
-        /* AI Sidebar Styles */
+        .toolbar-btn.active {
+            background: var(--accent-color);
+            color: white;
+        }
+
+        .note-content {
+            min-height: 400px;
+            font-size: 16px;
+            line-height: 1.7;
+            color: var(--text-primary);
+            background: none;
+            border: none;
+            outline: none;
+            resize: none;
+            width: 100%;
+            font-family: inherit;
+            padding: 0 40px 40px;
+        }
+
+        .note-content:focus {
+            background: none;
+        }
+
+        .file-upload-area {
+            border: 2px dashed var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 40px;
+            text-align: center;
+            margin: 24px 40px;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .file-upload-area:hover {
+            border-color: var(--accent-color);
+            background: var(--hover-bg);
+        }
+
+        .file-upload-area.dragover {
+            border-color: var(--accent-color);
+            background: var(--accent-color);
+            color: white;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .table-container {
+            background: var(--card-bg);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            margin: 24px 40px;
+            border: 1px solid var(--border-color);
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table th,
+        .table td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .table th {
+            background: var(--bg-tertiary);
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .table tr:hover {
+            background: var(--hover-bg);
+        }
+
         .ai-sidebar {
             position: fixed;
             top: 0;
-            right: -100%;
-            width: 100%;
-            height: 100%;
-            background-color: var(--sidebar-bg);
-            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
-            transition: right 0.3s ease;
-            z-index: 1001;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            border-radius: 0;
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+            right: -400px;
+            width: 380px;
+            height: 100vh;
             background: var(--glass-bg);
-            border: var(--glass-border);
+            backdrop-filter: blur(20px);
+            border-left: 1px solid var(--glass-border);
+            padding: 24px;
+            overflow-y: auto;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            box-shadow: var(--shadow-lg);
         }
 
         .ai-sidebar.open {
             right: 0;
         }
 
-        .sidebar-header {
-            padding: 12px 15px;
-            border-bottom: 1px solid var(--border-color);
+        .ai-header {
             display: flex;
+            align-items: center;
             justify-content: space-between;
-            align-items: center;
-        }
-
-        .sidebar-title {
-            font-weight: 600;
-            font-size: 18px;
-        }
-
-        .header-btn {
-            background: none;
-            border: none;
-            color: var(--text-color);
-            cursor: pointer;
-            padding: 5px;
-            border-radius: var(--icon-radius);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .sidebar-content {
-            flex: 1;
-            overflow-y: auto;
-            padding: 15px;
-        }
-
-        .ai-section {
-            margin-bottom: 20px;
-            padding-bottom: 15px;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
             border-bottom: 1px solid var(--border-color);
         }
 
-        .ai-section h4 {
+        .ai-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-primary);
             display: flex;
             align-items: center;
             gap: 8px;
+        }
+
+        .ai-section {
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            margin-bottom: 16px;
+            border: 1px solid var(--border-color);
+            transition: all 0.2s ease;
+        }
+
+        .ai-section:hover {
+            transform: translateY(-1px);
+        }
+
+        .ai-section h4 {
+            font-size: 16px;
+            font-weight: 500;
             margin-bottom: 12px;
-            font-size: 15px;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .ai-section h4 i {
-            color: var(--primary-color);
+            color: var(--accent-color);
         }
 
         .ai-output {
-            background-color: var(--note-bg);
-            padding: 10px;
-            border-radius: var(--radius);
+            background: var(--bg-secondary);
+            border-radius: var(--radius-md);
+            padding: 16px;
             margin-bottom: 12px;
-            font-size: 13px;
-            line-height: 1.5;
-            min-height: 50px;
-            max-height: 200px;
-            overflow-y: auto;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            color: var(--text-secondary);
+            font-size: 14px;
+            line-height: 1.6;
+            border: 1px solid var(--border-color);
+            min-height: 80px;
+        }
+
+        .ai-button {
+            width: 100%;
+            padding: 12px 16px;
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: var(--radius-lg);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .ai-button:hover {
+            background: var(--accent-hover);
+            transform: translateY(-1px);
+        }
+
+        .ai-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .ai-input {
+            width: 100%;
+            padding: 12px 16px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            color: var(--text-primary);
+            font-size: 14px;
+            outline: none;
+            transition: all 0.2s ease;
+            margin-bottom: 12px;
+        }
+
+        .ai-input:focus {
+            border-color: var(--accent-color);
         }
 
         .summary-options {
             display: flex;
             gap: 8px;
-            margin-top: 8px;
+            margin-bottom: 12px;
         }
 
-        .summary-option-btn, .ai-button {
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 6px 12px;
-            border-radius: var(--radius);
-            cursor: pointer;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            font-size: 13px;
-        }
-
-        .summary-option-btn:hover, .ai-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-        }
-
-        .ai-input {
-            width: 100%;
-            background-color: var(--note-bg);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius);
+        .summary-option-btn {
+            flex: 1;
             padding: 8px 12px;
-            color: var(--text-color);
-            outline: none;
-            margin-bottom: 8px;
-            font-size: 14px;
+            background: var(--bg-secondary);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
         }
 
-        .ai-input::placeholder {
-            color: #8E8E93;
+        .summary-option-btn:hover {
+            background: var(--accent-color);
+            color: white;
+            border-color: var(--accent-color);
         }
 
-        mark {
-            background-color: rgba(255, 255, 0, 0.3);
-            padding: 2px 4px;
-            border-radius: 4px;
-        }
-
-        /* Settings Panel */
-        .settings-panel {
+        .settings-overlay {
             position: fixed;
             top: 0;
-            right: 0;
-            bottom: 0;
+            left: 0;
             width: 100%;
-            background-color: var(--sidebar-bg);
-            border-left: 1px solid var(--border-color);
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
             z-index: 2000;
-            display: flex;
-            flex-direction: column;
-            transform: translateX(100%);
-            transition: transform 0.3s ease;
-            box-shadow: var(--shadow);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            background: var(--glass-bg);
-            border: var(--glass-border);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.2s ease;
         }
 
-        .settings-panel.show {
-            transform: translateX(0);
+        .settings-overlay.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .settings-panel {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border-radius: var(--radius-xl);
+            padding: 32px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
+            border: 1px solid var(--glass-border);
+            transition: all 0.2s ease;
+        }
+
+        .settings-overlay.visible .settings-panel {
+            transform: translate(-50%, -50%) scale(1);
         }
 
         .settings-header {
-            padding: 12px 15px;
-            border-bottom: 1px solid var(--border-color);
             display: flex;
+            align-items: center;
             justify-content: space-between;
-            align-items: center;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border-color);
         }
 
-        .settings-title {
-            font-weight: 600;
-            font-size: 18px;
+        .setting-group {
+            margin-bottom: 24px;
         }
 
-        .close-settings {
-            background: none;
-            border: none;
-            color: var(--text-color);
-            cursor: pointer;
-            font-size: 18px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 5px;
-            border-radius: var(--icon-radius);
-        }
-
-        .settings-content {
-            flex: 1;
-            padding: 15px;
-            overflow-y: auto;
-        }
-
-        .settings-section {
-            margin-bottom: 25px;
-        }
-
-        .settings-section-title {
-            font-weight: 600;
-            margin-bottom: 12px;
+        .setting-group label {
             font-size: 16px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .settings-section-title i {
-            color: var(--primary-color);
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+            display: block;
         }
 
         .theme-options {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 12px;
         }
 
         .theme-option {
-            height: 70px;
-            border-radius: var(--radius);
-            cursor: pointer;
-            border: 2px solid transparent;
-            transition: all 0.2s;
             display: flex;
-            flex-direction: column;
-            justify-content: flex-end;
-            padding: 8px;
-            position: relative;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 16px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            cursor: pointer;
+            transition: all 0.2s ease;
         }
 
         .theme-option:hover {
-            transform: scale(1.05);
+            background: var(--hover-bg);
+            border-color: var(--accent-color);
         }
 
-        .theme-option.active {
-            border-color: var(--primary-color);
+        .theme-option input[type="radio"] {
+            margin: 0;
         }
 
-        .theme-option-name {
-            font-size: 11px;
-            font-weight: 600;
-            color: white;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+        .glass {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
         }
 
-        /* Theme option styles remain the same... */
+        .image-upload {
+            display: none;
+        }
 
-        .setting-item {
+        .image-placeholder {
+            width: 100%;
+            height: 200px;
+            background: var(--bg-secondary);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            margin: 16px 0;
+            border: 2px dashed var(--border-color);
+            transition: all 0.2s ease;
+        }
+
+        .image-placeholder:hover {
+            border-color: var(--accent-color);
+        }
+
+        .image-preview {
+            width: 100%;
+            max-height: 300px;
+            object-fit: cover;
+            border-radius: var(--radius-md);
+            margin: 16px 0;
+        }
+
+        .budget-container {
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            margin: 24px 40px;
+            border: 1px solid var(--border-color);
+        }
+
+        .budget-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .budget-category {
+            margin-bottom: 20px;
+        }
+
+        .budget-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -840,534 +852,314 @@
             border-bottom: 1px solid var(--border-color);
         }
 
-        .setting-label {
-            font-weight: 500;
-            font-size: 14px;
-        }
-
-        .setting-control {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .toggle-switch {
-            position: relative;
-            display: inline-block;
-            width: 45px;
-            height: 22px;
-        }
-
-        .toggle-switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-
-        .toggle-slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #ccc;
-            transition: .4s;
-            border-radius: 22px;
-        }
-
-        .toggle-slider:before {
-            position: absolute;
-            content: "";
-            height: 16px;
-            width: 16px;
-            left: 3px;
-            bottom: 3px;
-            background-color: white;
-            transition: .4s;
-            border-radius: 50%;
-        }
-
-        input:checked + .toggle-slider {
-            background-color: var(--primary-color);
-        }
-
-        input:checked + .toggle-slider:before {
-            transform: translateX(23px);
-        }
-
-        /* Text animation for AI summaries */
-        .typing-animation {
+        .budget-progress {
+            height: 8px;
+            background: var(--bg-tertiary);
+            border-radius: 4px;
+            margin-top: 8px;
             overflow: hidden;
-            border-right: 2px solid var(--primary-color);
-            white-space: nowrap;
-            margin: 0 auto;
-            animation: typing 3.5s steps(40, end), blink-caret 0.75s step-end infinite;
         }
 
-        @keyframes typing {
-            from { width: 0 }
-            to { width: 100% }
+        .budget-progress-bar {
+            height: 100%;
+            background: var(--accent-color);
+            border-radius: 4px;
         }
 
-        @keyframes blink-caret {
-            from, to { border-color: transparent }
-            50% { border-color: var(--primary-color) }
+        .ai-model-selector {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .ai-model-btn {
+            flex: 1;
+            padding: 10px;
+            background: var(--bg-secondary);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .ai-model-btn.active {
+            background: var(--accent-color);
+            color: white;
+            border-color: var(--accent-color);
+        }
+
+        .ai-model-btn.slow {
+            border-left: 4px solid #f59e0b;
+        }
+
+        .ai-model-btn.fast {
+            border-left: 4px solid #10b981;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                position: fixed;
+                left: -100%;
+                z-index: 1000;
+            }
+
+            .sidebar.open {
+                left: 0;
+            }
+
+            .ai-sidebar {
+                width: 100%;
+                right: -100%;
+            }
+
+            .note-editor {
+                padding: 0;
+                margin: 0;
+            }
+
+            .note-title-input {
+                padding: 0 20px;
+                font-size: 32px;
+            }
+
+            .editor-toolbar {
+                padding: 8px 20px;
+            }
+
+            .note-content {
+                padding: 0 20px 40px;
+            }
+
+            .file-upload-area {
+                margin: 24px 20px;
+            }
+
+            .table-container {
+                margin: 24px 20px;
+            }
+
+            .budget-container {
+                margin: 24px 20px;
+            }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-color);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .fade-in {
-            animation: fadeIn 1s;
+            animation: fadeIn 0.2s ease;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        .highlighted-text {
-            background-color: rgba(255, 255, 0, 0.3);
-            padding: 2px 4px;
-            border-radius: 4px;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0% { background-color: rgba(255, 255, 0, 0.3); }
-            50% { background-color: rgba(255, 255, 0, 0.6); }
-            100% { background-color: rgba(255, 255, 0, 0.3); }
-        }
-
-        /* Writing animation for AI responses */
-        .writing-animation {
+        /* Loading spinner */
+        .spinner {
             display: inline-block;
-            position: relative;
-        }
-
-        .writing-animation::after {
-            content: '';
-            position: absolute;
-            width: 4px;
-            height: 100%;
-            background-color: var(--primary-color);
-            right: -6px;
-            animation: blink 1s infinite;
-        }
-
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0; }
-        }
-
-        /* Emoji Picker */
-        .emoji-picker {
-            position: absolute;
-            background: var(--note-bg);
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            padding: 8px;
-            display: grid;
-            grid-template-columns: repeat(6, 1fr);
-            gap: 4px;
-            z-index: 1002;
-            max-width: 220px;
-            max-height: 180px;
-            overflow-y: auto;
-            border: var(--glass-border);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-        }
-
-        .emoji-option {
-            padding: 4px;
-            cursor: pointer;
-            text-align: center;
-            border-radius: 5px;
-            transition: background-color 0.2s;
-            font-size: 14px;
-        }
-
-        .emoji-option:hover {
-            background-color: rgba(0, 0, 0, 0.1);
-        }
-
-        /* Copy/Paste Toast */
-        .toast {
-            position: fixed;
-            bottom: 15px;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: rgba(0, 0, 0, 0.8);
-            color: white;
-            padding: 10px 16px;
-            border-radius: var(--radius);
-            z-index: 9999;
-            font-weight: 500;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-            animation: toastSlideIn 0.3s ease, toastSlideOut 0.3s ease 2.7s forwards;
-            font-size: 14px;
-        }
-
-        @keyframes toastSlideIn {
-            from { bottom: -50px; opacity: 0; }
-            to { bottom: 15px; opacity: 1; }
-        }
-
-        @keyframes toastSlideOut {
-            from { bottom: 15px; opacity: 1; }
-            to { bottom: -50px; opacity: 0; }
-        }
-
-        /* Mobile AI Sidebar Close Button */
-        .ai-close-btn {
-            display: flex;
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            background: var(--primary-color);
-            color: white;
-            border: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--border-color);
             border-radius: 50%;
-            width: 36px;
-            height: 36px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            z-index: 1002;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            border-top-color: var(--accent-color);
+            animation: spin 1s ease-in-out infinite;
         }
 
-        /* View States */
-        .library-view.active {
-            display: flex;
-        }
-
-        .note-editor-view.active {
-            display: flex;
-        }
-
-        .library-view, .note-editor-view {
-            display: none;
-        }
-
-        /* Responsive Design */
-        @media (min-width: 768px) {
-            .dynamic-island {
-                top: 15px;
-                height: 45px;
-                min-width: 220px;
-            }
-            
-            .dynamic-island.expanded {
-                height: 70px;
-                min-width: 450px;
-            }
-            
-            .app-header {
-                padding: 12px 20px;
-                height: 65px;
-            }
-            
-            .app-title {
-                font-size: 20px;
-            }
-            
-            .library-header {
-                padding: 15px 20px;
-            }
-            
-            .library-title {
-                font-size: 20px;
-            }
-            
-            .new-note-btn {
-                width: 45px;
-                height: 45px;
-            }
-            
-            .note-item {
-                padding: 15px 20px;
-            }
-            
-            .note-header {
-                padding: 15px 25px;
-            }
-            
-            .writing-tools {
-                padding: 10px 25px;
-            }
-            
-            .note-editor {
-                padding: 20px 25px;
-            }
-            
-            .ai-sidebar {
-                width: 400px;
-                border-radius: var(--radius) 0 0 var(--radius);
-            }
-            
-            .settings-panel {
-                width: 400px;
-            }
-            
-            .theme-options {
-                grid-template-columns: repeat(4, 1fr);
-                gap: 15px;
-            }
-            
-            .theme-option {
-                height: 80px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .app-header {
-                padding: 8px 12px;
-                height: 55px;
-            }
-            
-            .app-title {
-                font-size: 16px;
-            }
-            
-            .library-header {
-                padding: 10px 12px;
-            }
-            
-            .library-title {
-                font-size: 16px;
-            }
-            
-            .new-note-btn {
-                width: 36px;
-                height: 36px;
-                font-size: 14px;
-            }
-            
-            .note-item {
-                padding: 10px 12px;
-            }
-            
-            .note-header {
-                padding: 10px 15px;
-            }
-            
-            .note-title-input {
-                font-size: 16px;
-            }
-            
-            .writing-tools {
-                padding: 6px 15px;
-            }
-            
-            .note-editor {
-                padding: 12px 15px;
-            }
-            
-            .theme-options {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            
-            .setting-item {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 8px;
-            }
-            
-            .setting-control {
-                width: 100%;
-                justify-content: space-between;
-            }
-            
-            .dynamic-island.expanded { 
-                width: 95%; 
-                min-width: 95%; 
-                height: auto; 
-                padding: 12px; 
-                flex-direction: column; 
-                gap: 12px; 
-                border-radius: 25px; 
-            }
-            
-            .dynamic-island.expanded .island-controls { 
-                position: static; 
-                transform: none; 
-                opacity: 1; 
-                pointer-events: auto; 
-                flex-wrap: wrap; 
-                justify-content: center;
-            }
-            
-            .island-btn { 
-                width: 36px; 
-                height: 36px; 
-            }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
     </style>
 </head>
-<body class="theme-cotton-candy">
-    <!-- Dynamic Island -->
-    <div class="dynamic-island" id="dynamic-island">
-        <div class="island-idle-content">
-            <i class="fas fa-brain"></i>&nbsp;
-            <strong>Optichain AI</strong>
-        </div>
-        <div class="island-controls">
-            <button class="island-btn" id="island-ai-btn" title="Access Optichain AI"><i class="fas fa-robot"></i></button>
-            <button class="island-btn" id="island-image-btn" title="Insert Image"><i class="fas fa-image"></i></button>
-            <button class="island-btn" id="island-emoji-btn" title="Insert Emoji"><i class="fas fa-smile"></i></button>
-            <button class="island-btn" id="island-copy-btn" title="Copy Content"><i class="fas fa-copy"></i></button>
-            <button class="island-btn" id="island-paste-btn" title="Paste Content"><i class="fas fa-paste"></i></button>
-            <button class="island-btn" id="island-settings-btn" title="Settings"><i class="fas fa-cog"></i></button>
-        </div>
-    </div>
-
-    <div class="app-header">
-        <button class="back-btn" id="backBtn" title="Go Back">
-            <i class="fas fa-arrow-left"></i>
-        </button>
-        <div class="app-title">
-            <i class="fas fa-sticky-note"></i> 
-            <span id="currentViewTitle">Notes Library</span>
-        </div>
-        <div class="header-controls">
-            <!-- Full Version Button Removed -->
-        </div>
-    </div>
-
+<body data-theme="light">
     <div class="app-container">
-        <!-- Library View -->
-        <div class="library-view active" id="libraryView">
-            <div class="library-header">
-                <div class="library-title">All Notes</div>
-                <div class="library-controls">
-                    <div class="search-container">
-                        <i class="fas fa-search search-icon"></i>
-                        <input type="text" class="search-input" id="searchInput" placeholder="Search notes...">
-                    </div>
-                    <button class="new-note-btn" id="newNoteBtn" title="New Note">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-grid-2"></i>
+                    <span>Gridora Notes</span>
+                </div>
+                <button class="header-btn" id="toggle-sidebar">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+
+            <div class="sidebar-section">
+                <h3 class="section-title">Workspace</h3>
+                <button class="sidebar-btn" id="new-note-btn">
+                    <i class="fas fa-plus"></i>
+                    <span>New Note</span>
+                </button>
+                <button class="sidebar-btn" id="import-csv-btn">
+                    <i class="fas fa-file-csv"></i>
+                    <span>Import CSV/Excel</span>
+                </button>
+                <button class="sidebar-btn" id="ai-assistant-btn">
+                    <i class="fas fa-robot"></i>
+                    <span>AI Assistant</span>
+                </button>
+                <button class="sidebar-btn" id="budget-btn">
+                    <i class="fas fa-chart-pie"></i>
+                    <span>Monthly Budget</span>
+                </button>
+                <button class="sidebar-btn" id="settings-btn">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </button>
+            </div>
+
+            <div class="sidebar-section">
+                <h3 class="section-title">Recent Notes</h3>
+                <div class="notes-list" id="notes-list">
+                    <!-- Notes will be populated here -->
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="header">
+                <div class="header-left">
+                    <button class="header-btn" id="mobile-menu-btn">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h1 id="current-title">Gridora Notes</h1>
+                </div>
+                <div class="header-right">
+                    <button class="header-btn" id="save-btn" title="Save Note">
+                        <i class="fas fa-save"></i>
+                    </button>
+                    <button class="header-btn" id="delete-btn" title="Delete Note">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                    <button class="header-btn" id="export-btn" title="Export Note">
+                        <i class="fas fa-download"></i>
+                    </button>
+                </div>
+            </header>
+
+            <div class="content-area" id="content-area">
+                <!-- Empty State -->
+                <div class="empty-state" id="empty-state">
+                    <i class="fas fa-grid-2"></i>
+                    <h2>Welcome to Gridora Notes</h2>
+                    <p>Create your first note or import data to get started</p>
+                    <button class="create-note-btn" id="create-first-note">
                         <i class="fas fa-plus"></i>
+                        Create Note
                     </button>
                 </div>
-            </div>
-            <div class="notes-list" id="notesList">
-                <!-- Notes will be dynamically added here -->
-            </div>
-        </div>
 
-        <!-- Note Editor View -->
-        <div class="note-editor-view" id="noteEditorView">
-            <div class="note-header">
-                <input type="text" class="note-title-input" id="noteTitle" placeholder="Note Title">
-            </div>
-            <button class="toggle-tools-btn" id="toggleToolsBtn">
-                <i class="fas fa-chevron-down"></i> Show Tools
-            </button>
-            <div class="writing-tools" id="writingTools">
-                <div class="tool-group">
-                    <select class="font-select" id="fontSelect">
-                        <option value="Arial">Arial</option>
-                        <option value="Georgia">Georgia</option>
-                        <option value="Courier New">Courier New</option>
-                        <option value="Times New Roman">Times New Roman</option>
-                        <option value="Verdana">Verdana</option>
-                    </select>
-                </div>
-                <div class="tool-group">
-                    <select class="size-select" id="sizeSelect">
-                        <option value="12px">Small</option>
-                        <option value="16px" selected>Medium</option>
-                        <option value="20px">Large</option>
-                        <option value="24px">X-Large</option>
-                    </select>
-                </div>
-                <div class="tool-group">
-                    <button class="tool-btn" data-command="bold" title="Bold">
-                        <i class="fas fa-bold"></i>
-                    </button>
-                    <button class="tool-btn" data-command="italic" title="Italic">
-                        <i class="fas fa-italic"></i>
-                    </button>
-                    <button class="tool-btn" data-command="underline" title="Underline">
-                        <i class="fas fa-underline"></i>
-                    </button>
-                </div>
-                <div class="tool-group">
-                    <button class="tool-btn" data-command="justifyLeft" title="Align Left">
-                        <i class="fas fa-align-left"></i>
-                    </button>
-                    <button class="tool-btn" data-command="justifyCenter" title="Align Center">
-                        <i class="fas fa-align-center"></i>
-                    </button>
-                    <button class="tool-btn" data-command="justifyRight" title="Align Right">
-                        <i class="fas fa-align-right"></i>
-                    </button>
-                </div>
-                <div class="tool-group">
-                    <button class="tool-btn" data-command="insertUnorderedList" title="Bullet List">
-                        <i class="fas fa-list-ul"></i>
-                    </button>
-                    <button class="tool-btn" data-command="insertOrderedList" title="Numbered List">
-                        <i class="fas fa-list-ol"></i>
-                    </button>
-                    <button class="tool-btn" data-command="outdent" title="Decrease Indent">
-                        <i class="fas fa-outdent"></i>
-                    </button>
-                    <button class="tool-btn" data-command="indent" title="Increase Indent">
-                        <i class="fas fa-indent"></i>
-                    </button>
-                </div>
-                <div class="tool-group">
-                    <button class="tool-btn" id="insertImage" title="Insert Image">
-                        <i class="fas fa-image"></i>
-                    </button>
-                    <button class="tool-btn" id="insertEmoji" title="Insert Emoji">
-                        <i class="fas fa-smile"></i>
-                    </button>
-                    <button class="tool-btn" data-command="createLink" title="Insert Link">
-                        <i class="fas fa-link"></i>
-                    </button>
-                </div>
-                <div class="tool-group">
-                    <button class="tool-btn" data-command="strikeThrough" title="Strikethrough">
-                        <i class="fas fa-strikethrough"></i>
-                    </button>
-                    <button class="tool-btn" data-command="superscript" title="Superscript">
-                        <i class="fas fa-superscript"></i>
-                    </button>
-                    <button class="tool-btn" data-command="subscript" title="Subscript">
-                        <i class="fas fa-subscript"></i>
-                    </button>
-                </div>
-                <div class="tool-group">
-                    <button class="tool-btn" id="highlightText" title="Highlight Text">
-                        <i class="fas fa-highlighter"></i>
-                    </button>
-                    <button class="tool-btn" id="clearFormatting" title="Clear Formatting">
-                        <i class="fas fa-eraser"></i>
-                    </button>
-                </div>
-            </div>
-            <div class="note-editor">
-                <div class="note-editor-content" id="noteEditor" contenteditable="true">
-                    <!-- Note content will be edited here -->
-                </div>
-            </div>
-        </div>
-    </div>
+                <!-- Note Editor -->
+                <div class="note-editor" id="note-editor" style="display: none;">
+                    <div class="note-cover" id="note-cover" style="display: none;">
+                        <button class="note-cover-edit" id="edit-cover-btn">
+                            <i class="fas fa-camera"></i>
+                            Change Cover
+                        </button>
+                    </div>
+                    <input type="text" class="note-title-input" id="note-title" placeholder="Untitled">
+                    
+                    <div class="editor-toolbar">
+                        <button class="toolbar-btn" data-command="bold">
+                            <i class="fas fa-bold"></i>
+                        </button>
+                        <button class="toolbar-btn" data-command="italic">
+                            <i class="fas fa-italic"></i>
+                        </button>
+                        <button class="toolbar-btn" data-command="underline">
+                            <i class="fas fa-underline"></i>
+                        </button>
+                        <button class="toolbar-btn" data-command="createLink">
+                            <i class="fas fa-link"></i>
+                        </button>
+                        <button class="toolbar-btn" data-command="insertUnorderedList">
+                            <i class="fas fa-list-ul"></i>
+                        </button>
+                        <button class="toolbar-btn" data-command="insertOrderedList">
+                            <i class="fas fa-list-ol"></i>
+                        </button>
+                        <button class="toolbar-btn" id="image-btn">
+                            <i class="fas fa-image"></i>
+                        </button>
+                        <button class="toolbar-btn" id="code-btn">
+                            <i class="fas fa-code"></i>
+                        </button>
+                    </div>
 
-    <!-- AI Sidebar -->
-    <aside class="ai-sidebar glass" id="aiSidebar">
-        <button class="ai-close-btn" id="mobile-ai-close-btn">
-            <i class="fas fa-times"></i>
-        </button>
-        <div class="sidebar-header">
-            <h2 class="sidebar-title">OptiChain AI</h2>
-            <button class="header-btn" id="ai-close-btn" aria-label="Close AI assistant">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-        <div class="sidebar-content">
+                    <div class="note-content" id="note-content" contenteditable="true" placeholder="Start writing..."></div>
+
+                    <!-- File Upload Area -->
+                    <div class="file-upload-area" id="file-upload-area">
+                        <i class="fas fa-cloud-upload-alt" style="font-size: 32px; color: var(--accent-color); margin-bottom: 12px;"></i>
+                        <p><strong>Click to upload CSV/Excel files</strong> or drag and drop</p>
+                        <p style="font-size: 12px; color: var(--text-muted); margin-top: 8px;">Supported formats: .csv, .xlsx, .xls</p>
+                        <input type="file" class="file-input" id="csv-file-input" accept=".csv,.xlsx,.xls">
+                    </div>
+
+                    <!-- Table Container -->
+                    <div class="table-container" id="table-container" style="display: none;">
+                        <table class="table" id="data-table">
+                            <thead id="table-header"></thead>
+                            <tbody id="table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Budget View -->
+                <div class="budget-container" id="budget-container" style="display: none;">
+                    <div class="budget-header">
+                        <h2>Monthly Budget</h2>
+                        <button class="create-note-btn" id="add-budget-item">
+                            <i class="fas fa-plus"></i>
+                            Add Item
+                        </button>
+                    </div>
+                    <div id="budget-content">
+                        <!-- Budget items will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- AI Assistant Sidebar -->
+        <aside class="ai-sidebar" id="ai-sidebar">
+            <div class="ai-header">
+                <h2 class="ai-title">
+                    <i class="fas fa-robot"></i>
+                    AI Assistant
+                </h2>
+                <button class="header-btn" id="ai-close-btn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <div class="ai-model-selector">
+                <button class="ai-model-btn slow" id="ai-model-4">OptiChain 4.0 Pro</button>
+                <button class="ai-model-btn fast active" id="ai-model-5">OptiChain 5.0 Pro</button>
+            </div>
+
             <!-- Smart Summary Section -->
             <div class="ai-section">
                 <h4><i class="fas fa-file-alt"></i>Smart Summary</h4>
@@ -1421,1011 +1213,1473 @@
                 <div id="quiz-output" class="ai-output">Generate a quiz to test your knowledge of the document.</div>
                 <button id="quiz-btn" class="ai-button"><i class="fas fa-question"></i>Generate Quiz</button>
             </div>
-            
+
             <!-- Content Analysis Section -->
             <div class="ai-section">
                 <h4><i class="fas fa-chart-pie"></i>Content Analysis</h4>
                 <div id="analysis-output" class="ai-output">Analyze the sentiment and tone of your document.</div>
                 <button id="analysis-btn" class="ai-button"><i class="fas fa-magnifying-glass-chart"></i>Analyze Content</button>
             </div>
-        </div>
-    </aside>
 
-    <!-- Settings Panel -->
-    <div class="settings-panel" id="settingsPanel">
-        <div class="settings-header">
-            <div class="settings-title">Settings</div>
-            <button class="close-settings" id="closeSettings">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-        <div class="settings-content">
-            <div class="settings-section">
-                <div class="settings-section-title">
-                    <i class="fas fa-palette"></i> Theme
-                </div>
-                <div class="theme-options">
-                    <div class="theme-option theme-cotton-candy-option active" data-theme="cotton-candy">
-                        <div class="theme-option-name">Cotton Candy</div>
-                    </div>
-                    <div class="theme-option theme-midnight-option" data-theme="midnight">
-                        <div class="theme-option-name">Midnight</div>
-                    </div>
-                    <div class="theme-option theme-golden-option" data-theme="golden">
-                        <div class="theme-option-name">Golden</div>
-                    </div>
-                    <div class="theme-option theme-extra-dark-option" data-theme="extra-dark">
-                        <div class="theme-option-name">Extra Dark</div>
-                    </div>
-                    <div class="theme-option theme-white-blue-option" data-theme="white-blue">
-                        <div class="theme-option-name">White & Blue</div>
-                    </div>
-                    <div class="theme-option theme-blue-option" data-theme="blue">
-                        <div class="theme-option-name">Blue</div>
-                    </div>
-                    <div class="theme-option theme-nature-option" data-theme="nature">
-                        <div class="theme-option-name">Nature</div>
-                    </div>
-                    <div class="theme-option theme-sunset-option" data-theme="sunset">
-                        <div class="theme-option-name">Sunset</div>
-                    </div>
-                    <div class="theme-option theme-ocean-option" data-theme="ocean">
-                        <div class="theme-option-name">Ocean</div>
-                    </div>
-                    <div class="theme-option theme-lavender-option" data-theme="lavender">
-                        <div class="theme-option-name">Lavender</div>
-                    </div>
-                    <div class="theme-option theme-forest-option" data-theme="forest">
-                        <div class="theme-option-name">Forest</div>
-                    </div>
-                    <div class="theme-option theme-rose-option" data-theme="rose">
-                        <div class="theme-option-name">Rose</div>
-                    </div>
-                    <div class="theme-option theme-coffee-option" data-theme="coffee">
-                        <div class="theme-option-name">Coffee</div>
-                    </div>
-                    <div class="theme-option theme-space-option" data-theme="space">
-                        <div class="theme-option-name">Space</div>
-                    </div>
-                    <div class="theme-option theme-crimson-option" data-theme="crimson">
-                        <div class="theme-option-name">Crimson</div>
-                    </div>
-                    <div class="theme-option theme-mint-option" data-theme="mint">
-                        <div class="theme-option-name">Mint</div>
-                    </div>
-                    <div class="theme-option theme-amber-option" data-theme="amber">
-                        <div class="theme-option-name">Amber</div>
-                    </div>
-                    <div class="theme-option theme-twilight-option" data-theme="twilight">
-                        <div class="theme-option-name">Twilight</div>
-                    </div>
-                    <div class="theme-option theme-slate-option" data-theme="slate">
-                        <div class="theme-option-name">Slate</div>
-                    </div>
-                    <div class="theme-option theme-neon-option" data-theme="neon">
-                        <div class="theme-option-name">Neon</div>
-                    </div>
-                    <div class="theme-option theme-solar-option" data-theme="solar">
-                        <div class="theme-option-name">Solar</div>
-                    </div>
-                    <div class="theme-option theme-aurora-option" data-theme="aurora">
-                        <div class="theme-option-name">Aurora</div>
-                    </div>
-                    <div class="theme-option theme-cherry-option" data-theme="cherry">
-                        <div class="theme-option-name">Cherry</div>
-                    </div>
-                    <div class="theme-option theme-grape-option" data-theme="grape">
-                        <div class="theme-option-name">Grape</div>
-                    </div>
-                    <div class="theme-option theme-sand-option" data-theme="sand">
-                        <div class="theme-option-name">Sand</div>
-                    </div>
-                    <div class="theme-option theme-cyber-option" data-theme="cyber">
-                        <div class="theme-option-name">Cyber</div>
-                    </div>
-                    <div class="theme-option theme-pastel-option" data-theme="pastel">
-                        <div class="theme-option-name">Pastel</div>
-                    </div>
+            <!-- Translation Section -->
+            <div class="ai-section">
+                <h4><i class="fas fa-language"></i>Translate</h4>
+                <div id="translation-output" class="ai-output">Translate your text to another language.</div>
+                <div class="summary-options">
+                    <button id="translate-en" class="summary-option-btn" data-lang="en">English</button>
+                    <button id="translate-es" class="summary-option-btn" data-lang="es">Spanish</button>
+                    <button id="translate-fr" class="summary-option-btn" data-lang="fr">French</button>
                 </div>
             </div>
 
-            <div class="settings-section">
-                <div class="settings-section-title">
-                    <i class="fas fa-robot"></i> AI Assistant
+            <!-- Text Simplification Section -->
+            <div class="ai-section">
+                <h4><i class="fas fa-text-height"></i>Simplify Text</h4>
+                <div id="simplify-output" class="ai-output">Make complex text easier to understand.</div>
+                <button id="simplify-btn" class="ai-button"><i class="fas fa-comment-alt"></i>Simplify</button>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Settings Panel -->
+    <div class="settings-overlay" id="settings-overlay">
+        <div class="settings-panel">
+            <div class="settings-header">
+                <h2>Settings</h2>
+                <button class="header-btn" id="settings-close-btn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <div class="setting-group">
+                <label>Theme</label>
+                <div class="theme-options">
+                    <label class="theme-option">
+                        <input type="radio" name="theme" value="light" checked>
+                        <span>Light</span>
+                    </label>
+                    <label class="theme-option">
+                        <input type="radio" name="theme" value="dark">
+                        <span>Dark</span>
+                    </label>
+                    <label class="theme-option">
+                        <input type="radio" name="theme" value="midnight">
+                        <span>Midnight</span>
+                    </label>
+                    <label class="theme-option">
+                        <input type="radio" name="theme" value="ocean">
+                        <span>Ocean</span>
+                    </label>
+                    <label class="theme-option">
+                        <input type="radio" name="theme" value="cotton-candy">
+                        <span>Cotton Candy</span>
+                    </label>
+                    <label class="theme-option">
+                        <input type="radio" name="theme" value="forest">
+                        <span>Forest</span>
+                    </label>
+                    <label class="theme-option">
+                        <input type="radio" name="theme" value="sunset">
+                        <span>Sunset</span>
+                    </label>
                 </div>
-                <div class="setting-item">
-                    <div class="setting-label">Enhanced AI Mode</div>
-                    <div class="setting-control">
-                        <label class="toggle-switch">
-                            <input type="checkbox" id="enhancedAIMode" checked>
-                            <span class="toggle-slider"></span>
-                        </label>
-                    </div>
-                </div>
-                <div class="setting-item">
-                    <div class="setting-label">Auto Grammar Check</div>
-                    <div class="setting-control">
-                        <label class="toggle-switch">
-                            <input type="checkbox" id="autoGrammarCheck">
-                            <span class="toggle-slider"></span>
-                        </label>
-                    </div>
-                </div>
-                <div class="setting-item">
-                    <div class="setting-label">AI Animation Effects</div>
-                    <div class="setting-control">
-                        <label class="toggle-switch">
-                            <input type="checkbox" id="aiAnimations" checked>
-                            <span class="toggle-slider"></span>
-                        </label>
-                    </div>
-                </div>
+            </div>
+
+            <div class="setting-group">
+                <label>Data Management</label>
+                <button class="ai-button" id="export-data-btn" style="margin-bottom: 12px;">
+                    <i class="fas fa-download"></i>
+                    Export All Data
+                </button>
+                <button class="ai-button" id="import-data-btn" style="background: var(--bg-tertiary); color: var(--text-primary);">
+                    <i class="fas fa-upload"></i>
+                    Import Data
+                </button>
+                <input type="file" id="import-data-input" accept=".json" style="display: none;">
             </div>
         </div>
     </div>
 
-    <audio id="clickSound" src="data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQQAAAAAAA=="></audio>
-    <audio id="deleteSound" src="data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQQAAAAAAA=="></audio>
-
+    <!-- Include the AI and main functionality -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script>
-        // Notes data structure
-        let notes = JSON.parse(localStorage.getItem('notes')) || [];
-        let currentNoteId = null;
-        let aiPanelVisible = false;
-        let settingsVisible = false;
-        let enhancedAIMode = localStorage.getItem('enhancedAIMode') !== 'false';
-        let autoGrammarCheck = localStorage.getItem('autoGrammarCheck') === 'true';
-        let aiAnimations = localStorage.getItem('aiAnimations') !== 'false';
-        let toolsExpanded = false;
-        let currentView = 'library'; // 'library' or 'editor'
-
-        // DOM Elements
-        const libraryView = document.getElementById('libraryView');
-        const noteEditorView = document.getElementById('noteEditorView');
-        const notesList = document.getElementById('notesList');
-        const noteTitle = document.getElementById('noteTitle');
-        const noteEditor = document.getElementById('noteEditor');
-        const newNoteBtn = document.getElementById('newNoteBtn');
-        const settingsPanel = document.getElementById('settingsPanel');
-        const closeSettings = document.getElementById('closeSettings');
-        const themeOptions = document.querySelectorAll('.theme-option');
-        const aiSidebar = document.getElementById('aiSidebar');
-        const aiCloseBtn = document.getElementById('ai-close-btn');
-        const mobileAiCloseBtn = document.getElementById('mobile-ai-close-btn');
-        const toolBtns = document.querySelectorAll('.tool-btn');
-        const fontSelect = document.getElementById('fontSelect');
-        const sizeSelect = document.getElementById('sizeSelect');
-        const insertImageBtn = document.getElementById('insertImage');
-        const insertEmojiBtn = document.getElementById('insertEmoji');
-        const highlightTextBtn = document.getElementById('highlightText');
-        const clearFormattingBtn = document.getElementById('clearFormatting');
-        const aiActionBtns = document.querySelectorAll('.ai-button, .summary-option-btn');
-        const enhancedAIModeToggle = document.getElementById('enhancedAIMode');
-        const autoGrammarCheckToggle = document.getElementById('autoGrammarCheck');
-        const aiAnimationsToggle = document.getElementById('aiAnimations');
-        const clickSound = document.getElementById('clickSound');
-        const deleteSound = document.getElementById('deleteSound');
-        const dynamicIsland = document.getElementById('dynamic-island');
-        const islandAiBtn = document.getElementById('island-ai-btn');
-        const islandImageBtn = document.getElementById('island-image-btn');
-        const islandEmojiBtn = document.getElementById('island-emoji-btn');
-        const islandCopyBtn = document.getElementById('island-copy-btn');
-        const islandPasteBtn = document.getElementById('island-paste-btn');
-        const islandSettingsBtn = document.getElementById('island-settings-btn');
-        const toggleToolsBtn = document.getElementById('toggleToolsBtn');
-        const writingTools = document.getElementById('writingTools');
-        const backBtn = document.getElementById('backBtn');
-        const currentViewTitle = document.getElementById('currentViewTitle');
-        const searchInput = document.getElementById('searchInput');
-
-        // AI Elements
-        const summaryOutput = document.getElementById('summary-output');
-        const writingOutput = document.getElementById('writing-output');
-        const grammarOutput = document.getElementById('grammar-output');
-        const qaAnswer = document.getElementById('qa-answer');
-        const keypointsOutput = document.getElementById('keypoints-output');
-        const keywordsOutput = document.getElementById('keywords-output');
-        const quizOutput = document.getElementById('quiz-output');
-        const analysisOutput = document.getElementById('analysis-output');
-        const qaInput = document.getElementById('qa-input');
-
-        // Initialize the app
-        function init() {
-            // Load settings
-            enhancedAIModeToggle.checked = enhancedAIMode;
-            autoGrammarCheckToggle.checked = autoGrammarCheck;
-            aiAnimationsToggle.checked = aiAnimations;
-
-            renderNotesList();
-            setupEventListeners();
-
-            // Start with library view
-            showLibraryView();
-
-            // Select first note if available
-            if (notes.length > 0) {
-                selectNote(notes[0].id);
+        // Gridora Notes App - Main JavaScript
+        class GridoraNotesApp {
+            constructor() {
+                this.notes = JSON.parse(localStorage.getItem('gridoranotes_notes') || '[]');
+                this.currentNote = null;
+                this.isAiProcessing = false;
+                this.aiModel = '5.0'; // Default to faster model
+                this.ai = new OptiChainAI();
+                this.currentView = 'notes'; // 'notes' or 'budget'
+                
+                this.init();
             }
-        }
 
-        // Set up event listeners
-        function setupEventListeners() {
-            // Back button
-            backBtn.addEventListener('click', handleBackButton);
-
-            // Search functionality
-            searchInput.addEventListener('input', handleSearch);
-
-            // Dynamic Island
-            dynamicIsland.addEventListener('click', (e) => {
-                if (!e.target.closest('.island-btn')) {
-                    dynamicIsland.classList.toggle('expanded');
+            init() {
+                this.setupEventListeners();
+                this.loadTheme();
+                this.renderNotesList();
+                this.resetAiOutputs();
+                
+                if (this.notes.length === 0) {
+                    this.showEmptyState();
+                } else {
+                    this.loadNote(this.notes[0].id);
                 }
-            });
-            
-            document.addEventListener('click', (e) => {
-                if (!dynamicIsland.contains(e.target) && dynamicIsland.classList.contains('expanded')) {
-                    dynamicIsland.classList.remove('expanded');
-                }
-            });
-            
-            islandAiBtn.addEventListener('click', toggleAISidebar);
-            islandImageBtn.addEventListener('click', insertImageFromIsland);
-            islandEmojiBtn.addEventListener('click', showEmojiPickerFromIsland);
-            islandCopyBtn.addEventListener('click', copyContent);
-            islandPasteBtn.addEventListener('click', pasteContent);
-            islandSettingsBtn.addEventListener('click', toggleSettings);
+            }
 
-            // Mobile AI close button
-            mobileAiCloseBtn.addEventListener('click', toggleAISidebar);
+            setupEventListeners() {
+                // Sidebar buttons
+                document.getElementById('new-note-btn').addEventListener('click', () => this.createNewNote());
+                document.getElementById('import-csv-btn').addEventListener('click', () => this.triggerFileUpload());
+                document.getElementById('ai-assistant-btn').addEventListener('click', () => this.toggleAiSidebar());
+                document.getElementById('budget-btn').addEventListener('click', () => this.showBudgetView());
+                document.getElementById('settings-btn').addEventListener('click', () => this.toggleSettings());
 
-            // Toggle tools button
-            toggleToolsBtn.addEventListener('click', toggleWritingTools);
+                // Header buttons
+                document.getElementById('save-btn').addEventListener('click', () => this.saveCurrentNote());
+                document.getElementById('delete-btn').addEventListener('click', () => this.deleteCurrentNote());
+                document.getElementById('export-btn').addEventListener('click', () => this.exportCurrentNote());
+                document.getElementById('create-first-note').addEventListener('click', () => this.createNewNote());
 
-            // Theme selection
-            themeOptions.forEach(option => {
-                option.addEventListener('click', () => {
-                    const theme = option.getAttribute('data-theme');
-                    document.body.className = `theme-${theme}`;
-                    
-                    // Update active theme indicator
-                    themeOptions.forEach(opt => opt.classList.remove('active'));
-                    option.classList.add('active');
-                    
-                    playSound('click');
+                // Mobile menu
+                document.getElementById('mobile-menu-btn').addEventListener('click', () => this.toggleSidebar());
+
+                // AI sidebar
+                document.getElementById('ai-close-btn').addEventListener('click', () => this.toggleAiSidebar());
+
+                // Settings
+                document.getElementById('settings-close-btn').addEventListener('click', () => this.toggleSettings());
+                document.getElementById('settings-overlay').addEventListener('click', (e) => {
+                    if (e.target.id === 'settings-overlay') this.toggleSettings();
                 });
-            });
 
-            // New note button
-            newNoteBtn.addEventListener('click', createNewNote);
+                // Theme selection
+                document.querySelectorAll('input[name="theme"]').forEach(input => {
+                    input.addEventListener('change', (e) => this.setTheme(e.target.value));
+                });
 
-            // Note title input
-            noteTitle.addEventListener('input', saveNote);
+                // Editor events
+                document.getElementById('note-title').addEventListener('input', () => this.autoSave());
+                document.getElementById('note-content').addEventListener('input', () => this.autoSave());
 
-            // Note editor content
-            noteEditor.addEventListener('input', saveNote);
+                // Toolbar buttons
+                document.querySelectorAll('.toolbar-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => this.handleToolbarCommand(e));
+                });
 
-            // Text formatting buttons
-            toolBtns.forEach(btn => {
-                if (btn.getAttribute('data-command')) {
-                    btn.addEventListener('click', () => {
-                        const command = btn.getAttribute('data-command');
-                        if (command === 'createLink') {
-                            const url = prompt('Enter URL:');
-                            if (url) {
-                                document.execCommand(command, false, url);
-                            }
-                        } else {
-                            document.execCommand(command, false, null);
-                        }
-                        noteEditor.focus();
-                        playSound('click');
+                // File upload
+                document.getElementById('file-upload-area').addEventListener('click', () => this.triggerFileUpload());
+                document.getElementById('csv-file-input').addEventListener('change', (e) => this.handleFileUpload(e));
+
+                // Cover image
+                document.getElementById('edit-cover-btn').addEventListener('click', () => this.triggerCoverUpload());
+                document.getElementById('image-btn').addEventListener('click', () => this.insertImage());
+
+                // Drag and drop
+                this.setupDragAndDrop();
+
+                // AI functionality
+                this.setupAiEventListeners();
+
+                // Data management
+                document.getElementById('export-data-btn').addEventListener('click', () => this.exportAllData());
+                document.getElementById('import-data-btn').addEventListener('click', () => this.triggerDataImport());
+                document.getElementById('import-data-input').addEventListener('change', (e) => this.importAllData(e));
+
+                // Budget
+                document.getElementById('add-budget-item').addEventListener('click', () => this.addBudgetItem());
+            }
+
+            setupAiEventListeners() {
+                // AI Model selection
+                document.getElementById('ai-model-4').addEventListener('click', () => this.setAiModel('4.0'));
+                document.getElementById('ai-model-5').addEventListener('click', () => this.setAiModel('5.0'));
+
+                // Summary buttons
+                document.querySelectorAll('[id^="summarize-btn-"]').forEach(btn => {
+                    btn.addEventListener('click', (e) => this.handleAIAction('summarize', { size: e.target.dataset.size }));
+                });
+
+                // Translation buttons
+                document.querySelectorAll('[id^="translate-"]').forEach(btn => {
+                    btn.addEventListener('click', (e) => this.handleAIAction('translate', { lang: e.target.dataset.lang }));
+                });
+
+                // AI action buttons
+                const aiActions = ['writing', 'grammar', 'keypoints', 'keywords', 'quiz', 'analysis', 'simplify'];
+                aiActions.forEach(action => {
+                    const btn = document.getElementById(`${action}-btn`);
+                    if (btn) {
+                        btn.addEventListener('click', () => this.handleAIAction(action));
+                    }
+                });
+
+                // QA functionality
+                document.getElementById('qa-btn').addEventListener('click', () => this.handleAIAction('qa'));
+                document.getElementById('qa-input').addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        this.handleAIAction('qa');
+                    }
+                });
+            }
+
+            setupDragAndDrop() {
+                const uploadArea = document.getElementById('file-upload-area');
+                
+                ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                    uploadArea.addEventListener(eventName, (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
                     });
-                }
-            });
-
-            // Font and size selection
-            fontSelect.addEventListener('change', () => {
-                document.execCommand('fontName', false, fontSelect.value);
-                noteEditor.focus();
-                playSound('click');
-            });
-
-            sizeSelect.addEventListener('change', () => {
-                const size = sizeSelect.value;
-                document.execCommand('fontSize', false, '7'); // This is a hack for font size
-                
-                // Apply the actual size via CSS
-                const selection = window.getSelection();
-                if (selection.rangeCount > 0) {
-                    const range = selection.getRangeAt(0);
-                    const selectedText = range.extractContents();
-                    const span = document.createElement('span');
-                    span.style.fontSize = size;
-                    span.appendChild(selectedText);
-                    range.insertNode(span);
-                }
-                noteEditor.focus();
-                playSound('click');
-            });
-
-            // Insert image
-            insertImageBtn.addEventListener('click', insertImage);
-
-            // Insert emoji
-            insertEmojiBtn.addEventListener('click', showEmojiPicker);
-
-            // Highlight text
-            highlightTextBtn.addEventListener('click', () => {
-                document.execCommand('hiliteColor', false, '#FFFF00');
-                noteEditor.focus();
-                playSound('click');
-            });
-
-            // Clear formatting
-            clearFormattingBtn.addEventListener('click', () => {
-                document.execCommand('removeFormat', false, null);
-                noteEditor.focus();
-                playSound('click');
-            });
-
-            // AI actions
-            document.getElementById('summarize-btn-small').addEventListener('click', () => handleAIAction('summarize', 'small'));
-            document.getElementById('summarize-btn-medium').addEventListener('click', () => handleAIAction('summarize', 'medium'));
-            document.getElementById('summarize-btn-large').addEventListener('click', () => handleAIAction('summarize', 'large'));
-            document.getElementById('writing-btn').addEventListener('click', () => handleAIAction('writing'));
-            document.getElementById('grammar-btn').addEventListener('click', () => handleAIAction('grammar'));
-            document.getElementById('qa-btn').addEventListener('click', () => handleAIAction('qa'));
-            document.getElementById('keypoints-btn').addEventListener('click', () => handleAIAction('keypoints'));
-            document.getElementById('keywords-btn').addEventListener('click', () => handleAIAction('keywords'));
-            document.getElementById('quiz-btn').addEventListener('click', () => handleAIAction('quiz'));
-            document.getElementById('analysis-btn').addEventListener('click', () => handleAIAction('analysis'));
-
-            // QA input enter key
-            qaInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    handleAIAction('qa');
-                }
-            });
-
-            // Settings controls
-            enhancedAIModeToggle.addEventListener('change', toggleEnhancedAIMode);
-            autoGrammarCheckToggle.addEventListener('change', toggleAutoGrammarCheck);
-            aiAnimationsToggle.addEventListener('change', toggleAIAnimations);
-            
-            // Close settings panel
-            closeSettings.addEventListener('click', toggleSettings);
-            
-            // Close AI sidebar
-            aiCloseBtn.addEventListener('click', toggleAISidebar);
-        }
-
-        // Handle back button
-        function handleBackButton() {
-            if (currentView === 'editor') {
-                showLibraryView();
-            } else {
-                // Navigate to page4.html
-                window.location.href = 'page4.html';
-            }
-            playSound('click');
-        }
-
-        // Handle search
-        function handleSearch() {
-            const searchTerm = searchInput.value.toLowerCase();
-            const noteItems = document.querySelectorAll('.note-item');
-            
-            noteItems.forEach(item => {
-                const title = item.querySelector('.note-title').textContent.toLowerCase();
-                const preview = item.querySelector('.note-preview').textContent.toLowerCase();
-                
-                if (title.includes(searchTerm) || preview.includes(searchTerm)) {
-                    item.style.display = 'flex';
-                } else {
-                    item.style.display = 'none';
-                }
-            });
-        }
-
-        // Show library view
-        function showLibraryView() {
-            libraryView.classList.add('active');
-            noteEditorView.classList.remove('active');
-            currentView = 'library';
-            currentViewTitle.textContent = 'Notes Library';
-            backBtn.innerHTML = '<i class="fas fa-home"></i>';
-            backBtn.title = 'Go Home';
-        }
-
-        // Show note editor view
-        function showNoteEditorView() {
-            libraryView.classList.remove('active');
-            noteEditorView.classList.add('active');
-            currentView = 'editor';
-            currentViewTitle.textContent = 'Edit Note';
-            backBtn.innerHTML = '<i class="fas fa-arrow-left"></i>';
-            backBtn.title = 'Back to Library';
-        }
-
-        // Toggle writing tools visibility on mobile
-        function toggleWritingTools() {
-            toolsExpanded = !toolsExpanded;
-            if (toolsExpanded) {
-                writingTools.classList.add('expanded');
-                toggleToolsBtn.innerHTML = '<i class="fas fa-chevron-up"></i> Hide Tools';
-            } else {
-                writingTools.classList.remove('expanded');
-                toggleToolsBtn.innerHTML = '<i class="fas fa-chevron-down"></i> Show Tools';
-            }
-            playSound('click');
-        }
-
-        // Play sound effects
-        function playSound(type) {
-            if (type === 'click') {
-                clickSound.currentTime = 0;
-                clickSound.play().catch(e => console.log("Audio play failed:", e));
-            } else if (type === 'delete') {
-                deleteSound.currentTime = 0;
-                deleteSound.play().catch(e => console.log("Audio play failed:", e));
-            }
-        }
-
-        // Toggle settings panel
-        function toggleSettings() {
-            settingsVisible = !settingsVisible;
-            if (settingsVisible) {
-                settingsPanel.classList.add('show');
-            } else {
-                settingsPanel.classList.remove('show');
-            }
-            playSound('click');
-        }
-
-        // Toggle AI sidebar visibility
-        function toggleAISidebar() {
-            aiSidebar.classList.toggle('open');
-            playSound('click');
-        }
-
-        // Insert image from dynamic island
-        function insertImageFromIsland() {
-            insertImage();
-            dynamicIsland.classList.remove('expanded');
-        }
-
-        // Show emoji picker from dynamic island
-        function showEmojiPickerFromIsland() {
-            showEmojiPicker();
-            dynamicIsland.classList.remove('expanded');
-        }
-
-        // Copy content to clipboard
-        function copyContent() {
-            const text = noteEditor.textContent || noteEditor.innerText;
-            if (text.trim()) {
-                navigator.clipboard.writeText(text).then(() => {
-                    showToast('Content copied to clipboard!');
-                }).catch(err => {
-                    console.error('Failed to copy: ', err);
-                    showToast('Failed to copy content');
                 });
-            } else {
-                showToast('No content to copy');
-            }
-            dynamicIsland.classList.remove('expanded');
-        }
 
-        // Paste content from clipboard
-        function pasteContent() {
-            navigator.clipboard.readText().then(text => {
-                if (text.trim()) {
-                    document.execCommand('insertText', false, text);
-                    showToast('Content pasted!');
-                } else {
-                    showToast('No content to paste');
-                }
-            }).catch(err => {
-                console.error('Failed to paste: ', err);
-                showToast('Failed to paste content');
-            });
-            dynamicIsland.classList.remove('expanded');
-        }
-
-        // Show toast notification
-        function showToast(message) {
-            const toast = document.createElement('div');
-            toast.className = 'toast';
-            toast.textContent = message;
-            document.body.appendChild(toast);
-            
-            setTimeout(() => {
-                toast.remove();
-            }, 3000);
-        }
-
-        // Show emoji picker
-        function showEmojiPicker() {
-            // Remove existing emoji picker if any
-            const existingPicker = document.querySelector('.emoji-picker');
-            if (existingPicker) {
-                existingPicker.remove();
-                return;
-            }
-
-            // Create emoji picker
-            const emojiPicker = document.createElement('div');
-            emojiPicker.className = 'emoji-picker';
-
-            // Position the picker near the emoji button
-            const emojiBtnRect = insertEmojiBtn.getBoundingClientRect();
-            emojiPicker.style.position = 'absolute';
-            emojiPicker.style.top = `${emojiBtnRect.bottom + window.scrollY}px`;
-            emojiPicker.style.left = `${emojiBtnRect.left + window.scrollX}px`;
-
-            // Common emojis
-            const emojis = ['😀', '😃', '😄', '😁', '😆', '😅', '😂', '🤣', '😊', '😇', '🙂', '🙃', '😉', '😌', '😍', '🥰', '😘', '😗', '😙', '😚', '😋', '😛', '😝', '😜', '🤪', '🤨', '🧐', '🤓', '😎', '🤩', '🥳', '😏', '😒', '😞', '😔', '😟', '😕', '🙁', '☹️', '😣', '😖', '😫', '😩', '🥺', '😢', '😭', '😤', '😠', '😡', '🤬', '🤯', '😳', '🥵', '🥶', '😱', '😨', '😰', '😥', '😓', '🤗', '🤔', '🤭', '🤫', '🤥', '😶', '😐', '😑', '😬', '🙄', '😯', '😦', '😧', '😮', '😲', '🥱', '😴', '🤤', '😪', '😵', '🤐', '🥴', '🤢', '🤮', '🤧', '😷', '🤒', '🤕', '🤑', '🤠', '😈', '👿', '👹', '👺', '🤡', '💩', '👻', '💀', '☠️', '👽', '👾', '🤖', '🎃', '😺', '😸', '😹', '😻', '😼', '😽', '🙀', '😿', '😾'];
-
-            // Add emojis to picker
-            emojis.forEach(emoji => {
-                const emojiOption = document.createElement('div');
-                emojiOption.className = 'emoji-option';
-                emojiOption.textContent = emoji;
-                emojiOption.addEventListener('click', () => {
-                    insertEmoji(emoji);
-                    emojiPicker.remove();
-                    playSound('click');
+                ['dragenter', 'dragover'].forEach(eventName => {
+                    uploadArea.addEventListener(eventName, () => {
+                        uploadArea.classList.add('dragover');
+                    });
                 });
-                emojiPicker.appendChild(emojiOption);
-            });
 
-            document.body.appendChild(emojiPicker);
+                ['dragleave', 'drop'].forEach(eventName => {
+                    uploadArea.addEventListener(eventName, () => {
+                        uploadArea.classList.remove('dragover');
+                    });
+                });
 
-            // Close picker when clicking outside
-            document.addEventListener('click', function closePicker(e) {
-                if (!emojiPicker.contains(e.target) && e.target !== insertEmojiBtn && e.target !== islandEmojiBtn) {
-                    emojiPicker.remove();
-                    document.removeEventListener('click', closePicker);
-                }
-            });
-        }
-
-        // Insert image
-        function insertImage() {
-            const url = prompt('Enter image URL:');
-            if (url) {
-                document.execCommand('insertImage', false, url);
-                playSound('click');
+                uploadArea.addEventListener('drop', (e) => {
+                    const files = e.dataTransfer.files;
+                    if (files.length > 0) {
+                        this.processFile(files[0]);
+                    }
+                });
             }
-        }
 
-        // Insert emoji at cursor position
-        function insertEmoji(emoji) {
-            const selection = window.getSelection();
-            if (selection.rangeCount > 0) {
-                const range = selection.getRangeAt(0);
-                range.deleteContents();
-                const textNode = document.createTextNode(emoji);
-                range.insertNode(textNode);
-                range.setStartAfter(textNode);
-                range.setEndAfter(textNode);
-                selection.removeAllRanges();
-                selection.addRange(range);
+            createNewNote() {
+                const note = {
+                    id: this.generateId(),
+                    title: 'Untitled',
+                    content: '',
+                    coverImage: null,
+                    tableData: null,
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString()
+                };
+
+                this.notes.unshift(note);
+                this.saveNotes();
+                this.renderNotesList();
+                this.loadNote(note.id);
+                this.showEditor();
+                
+                // Focus on title input
+                setTimeout(() => {
+                    document.getElementById('note-title').focus();
+                    document.getElementById('note-title').select();
+                }, 100);
             }
-            noteEditor.focus();
-        }
 
-        // Create a new note
-        function createNewNote() {
-            const newNote = {
-                id: Date.now().toString(),
-                title: 'Untitled Note',
-                content: '',
-                createdAt: new Date().toISOString(),
-                updatedAt: new Date().toISOString()
-            };
+            loadNote(noteId) {
+                const note = this.notes.find(n => n.id === noteId);
+                if (!note) return;
 
-            notes.unshift(newNote);
-            saveNotesToStorage();
-            renderNotesList();
-            selectNote(newNote.id);
-            showNoteEditorView();
-            playSound('click');
-        }
+                this.currentNote = note;
+                this.showEditor();
 
-        // Delete a note
-        function deleteNote(noteId) {
-            if (confirm('Are you sure you want to delete this note?')) {
-                notes = notes.filter(note => note.id !== noteId);
-                saveNotesToStorage();
-                renderNotesList();
+                document.getElementById('note-title').value = note.title;
+                document.getElementById('note-content').innerHTML = note.content;
+                document.getElementById('current-title').textContent = note.title;
 
-                // Select another note if available
-                if (notes.length > 0) {
-                    selectNote(notes[0].id);
+                // Load cover image if exists
+                if (note.coverImage) {
+                    document.getElementById('note-cover').style.backgroundImage = `url(${note.coverImage})`;
+                    document.getElementById('note-cover').style.display = 'block';
                 } else {
-                    createNewNote();
+                    document.getElementById('note-cover').style.display = 'none';
                 }
-                
-                playSound('delete');
+
+                if (note.tableData) {
+                    this.displayTable(note.tableData);
+                } else {
+                    document.getElementById('table-container').style.display = 'none';
+                }
+
+                this.updateActiveNoteInList();
+                this.resetAiOutputs();
             }
-        }
 
-        // Select a note to edit
-        function selectNote(noteId) {
-            const note = notes.find(n => n.id === noteId);
+            saveCurrentNote() {
+                if (!this.currentNote) return;
 
-            if (note) {
-                currentNoteId = noteId;
-                noteTitle.value = note.title;
-                noteEditor.innerHTML = note.content;
+                this.currentNote.title = document.getElementById('note-title').value || 'Untitled';
+                this.currentNote.content = document.getElementById('note-content').innerHTML;
+                this.currentNote.updatedAt = new Date().toISOString();
+
+                this.saveNotes();
+                this.renderNotesList();
+                document.getElementById('current-title').textContent = this.currentNote.title;
+                this.showToast('Note saved!', 'success');
+            }
+
+            autoSave() {
+                if (!this.currentNote) return;
                 
-                // Update active note in list
+                clearTimeout(this.autoSaveTimeout);
+                this.autoSaveTimeout = setTimeout(() => {
+                    this.saveCurrentNote();
+                }, 1000);
+            }
+
+            deleteCurrentNote() {
+                if (!this.currentNote) return;
+
+                if (confirm('Are you sure you want to delete this note?')) {
+                    this.notes = this.notes.filter(n => n.id !== this.currentNote.id);
+                    this.saveNotes();
+                    this.renderNotesList();
+                    
+                    if (this.notes.length > 0) {
+                        this.loadNote(this.notes[0].id);
+                    } else {
+                        this.showEmptyState();
+                    }
+                    
+                    this.showToast('Note deleted!', 'info');
+                }
+            }
+
+            exportCurrentNote() {
+                if (!this.currentNote) return;
+
+                const dataStr = JSON.stringify(this.currentNote, null, 2);
+                const dataBlob = new Blob([dataStr], { type: 'application/json' });
+                const url = URL.createObjectURL(dataBlob);
+                
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `${this.currentNote.title.replace(/[^a-z0-9]/gi, '_')}.json`;
+                link.click();
+                
+                URL.revokeObjectURL(url);
+                this.showToast('Note exported!', 'success');
+            }
+
+            renderNotesList() {
+                const notesList = document.getElementById('notes-list');
+                notesList.innerHTML = '';
+
+                if (this.notes.length === 0) {
+                    notesList.innerHTML = '<p style="text-align: center; color: var(--text-muted); font-size: 14px; padding: 20px;">No notes yet</p>';
+                    return;
+                }
+
+                this.notes.forEach(note => {
+                    const noteElement = document.createElement('div');
+                    noteElement.className = 'note-item';
+                    noteElement.dataset.noteId = note.id;
+                    
+                    const preview = this.getTextPreview(note.content);
+                    
+                    noteElement.innerHTML = `
+                        <div class="note-title">${note.title}</div>
+                        <div class="note-preview">${preview}</div>
+                    `;
+
+                    noteElement.addEventListener('click', () => this.loadNote(note.id));
+                    notesList.appendChild(noteElement);
+                });
+
+                this.updateActiveNoteInList();
+            }
+
+            updateActiveNoteInList() {
                 document.querySelectorAll('.note-item').forEach(item => {
                     item.classList.remove('active');
-                    if (item.getAttribute('data-id') === noteId) {
+                    if (this.currentNote && item.dataset.noteId === this.currentNote.id) {
                         item.classList.add('active');
                     }
                 });
             }
-        }
 
-        // Save the current note
-        function saveNote() {
-            if (!currentNoteId) return;
+            getTextPreview(html) {
+                const div = document.createElement('div');
+                div.innerHTML = html;
+                const text = div.textContent || div.innerText || '';
+                return text.substring(0, 100) + (text.length > 100 ? '...' : '');
+            }
 
-            const noteIndex = notes.findIndex(n => n.id === currentNoteId);
-            if (noteIndex !== -1) {
-                notes[noteIndex].title = noteTitle.value;
-                notes[noteIndex].content = noteEditor.innerHTML;
-                notes[noteIndex].updatedAt = new Date().toISOString();
+            showEmptyState() {
+                document.getElementById('empty-state').style.display = 'flex';
+                document.getElementById('note-editor').style.display = 'none';
+                document.getElementById('budget-container').style.display = 'none';
+                document.getElementById('current-title').textContent = 'Gridora Notes';
+                this.currentNote = null;
+                this.currentView = 'notes';
+            }
+
+            showEditor() {
+                document.getElementById('empty-state').style.display = 'none';
+                document.getElementById('note-editor').style.display = 'block';
+                document.getElementById('budget-container').style.display = 'none';
+                this.currentView = 'notes';
+            }
+
+            showBudgetView() {
+                document.getElementById('empty-state').style.display = 'none';
+                document.getElementById('note-editor').style.display = 'none';
+                document.getElementById('budget-container').style.display = 'block';
+                document.getElementById('current-title').textContent = 'Monthly Budget';
+                this.currentView = 'budget';
+                this.renderBudget();
+            }
+
+            handleToolbarCommand(e) {
+                e.preventDefault();
+                const command = e.target.closest('.toolbar-btn').dataset.command;
                 
-                saveNotesToStorage();
-                renderNotesList();
-                
-                // Auto grammar check if enabled
-                if (autoGrammarCheck) {
-                    setTimeout(() => {
-                        handleAIAction('grammar');
-                    }, 1000);
+                if (command === 'createLink') {
+                    const url = prompt('Enter URL:');
+                    if (url) {
+                        document.execCommand(command, false, url);
+                    }
+                } else if (e.target.closest('#code-btn')) {
+                    this.insertCodeBlock();
+                } else {
+                    document.execCommand(command, false, null);
+                }
+
+                // Update toolbar button states
+                this.updateToolbarStates();
+            }
+
+            insertCodeBlock() {
+                const selection = window.getSelection();
+                if (selection.rangeCount > 0) {
+                    const range = selection.getRangeAt(0);
+                    const codeElement = document.createElement('code');
+                    codeElement.style.cssText = 'background: var(--bg-tertiary); padding: 2px 6px; border-radius: 4px; font-family: monospace;';
+                    
+                    if (range.collapsed) {
+                        codeElement.textContent = 'code';
+                        range.insertNode(codeElement);
+                    } else {
+                        range.surroundContents(codeElement);
+                    }
                 }
             }
-        }
 
-        // Save notes to localStorage
-        function saveNotesToStorage() {
-            localStorage.setItem('notes', JSON.stringify(notes));
-        }
-
-        // Render the notes list
-        function renderNotesList() {
-            notesList.innerHTML = '';
-
-            if (notes.length === 0) {
-                const emptyMessage = document.createElement('div');
-                emptyMessage.className = 'note-item';
-                emptyMessage.innerHTML = `
-                    <div class="note-item-content">
-                        <div class="note-title">No notes available</div>
-                        <div class="note-preview">Create a new note to get started</div>
-                    </div>
-                `;
-                notesList.appendChild(emptyMessage);
-                return;
+            insertImage() {
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = 'image/*';
+                input.onchange = (e) => {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = (e) => {
+                            const img = document.createElement('img');
+                            img.src = e.target.result;
+                            img.style.maxWidth = '100%';
+                            img.style.borderRadius = '8px';
+                            img.style.margin = '16px 0';
+                            
+                            const selection = window.getSelection();
+                            if (selection.rangeCount > 0) {
+                                const range = selection.getRangeAt(0);
+                                range.insertNode(img);
+                            } else {
+                                document.getElementById('note-content').appendChild(img);
+                            }
+                            
+                            this.autoSave();
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                };
+                input.click();
             }
 
-            notes.forEach(note => {
-                const noteItem = document.createElement('div');
-                noteItem.className = 'note-item';
-                noteItem.setAttribute('data-id', note.id);
+            triggerCoverUpload() {
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = 'image/*';
+                input.onchange = (e) => {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = (e) => {
+                            this.currentNote.coverImage = e.target.result;
+                            document.getElementById('note-cover').style.backgroundImage = `url(${e.target.result})`;
+                            document.getElementById('note-cover').style.display = 'block';
+                            this.autoSave();
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                };
+                input.click();
+            }
+
+            updateToolbarStates() {
+                document.querySelectorAll('.toolbar-btn').forEach(btn => {
+                    const command = btn.dataset.command;
+                    if (command && document.queryCommandState(command)) {
+                        btn.classList.add('active');
+                    } else {
+                        btn.classList.remove('active');
+                    }
+                });
+            }
+
+            triggerFileUpload() {
+                document.getElementById('csv-file-input').click();
+            }
+
+            handleFileUpload(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    this.processFile(file);
+                }
+            }
+
+            processFile(file) {
+                const fileType = file.type;
+                const fileName = file.name.toLowerCase();
+
+                if (fileName.endsWith('.csv') || fileType === 'text/csv') {
+                    this.processCSV(file);
+                } else if (fileName.endsWith('.xlsx') || fileName.endsWith('.xls') || 
+                          fileType === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ||
+                          fileType === 'application/vnd.ms-excel') {
+                    this.processExcel(file);
+                } else {
+                    this.showToast('Unsupported file type. Please upload CSV or Excel files.', 'error');
+                }
+            }
+
+            processCSV(file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const csv = e.target.result;
+                    const lines = csv.split('\n');
+                    const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));
+                    
+                    const data = lines.slice(1)
+                        .filter(line => line.trim())
+                        .map(line => {
+                            const values = line.split(',').map(v => v.trim().replace(/"/g, ''));
+                            const row = {};
+                            headers.forEach((header, index) => {
+                                row[header] = values[index] || '';
+                            });
+                            return row;
+                        });
+
+                    this.handleTableData({ headers, data });
+                };
+                reader.readAsText(file);
+            }
+
+            processExcel(file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    const firstSheetName = workbook.SheetNames[0];
+                    const worksheet = workbook.Sheets[firstSheetName];
+                    const jsonData = XLSX.utils.sheet_to_json(worksheet);
+
+                    if (jsonData.length > 0) {
+                        const headers = Object.keys(jsonData[0]);
+                        this.handleTableData({ headers, data: jsonData });
+                    }
+                };
+                reader.readAsArrayBuffer(file);
+            }
+
+            handleTableData(tableData) {
+                if (!this.currentNote) {
+                    this.createNewNote();
+                }
+
+                this.currentNote.tableData = tableData;
+                this.displayTable(tableData);
+                this.autoSave();
+                this.showToast('Data imported successfully!', 'success');
+            }
+
+            displayTable(tableData) {
+                const tableContainer = document.getElementById('table-container');
+                const tableHeader = document.getElementById('table-header');
+                const tableBody = document.getElementById('table-body');
+
+                // Create header
+                tableHeader.innerHTML = '';
+                const headerRow = document.createElement('tr');
+                tableData.headers.forEach(header => {
+                    const th = document.createElement('th');
+                    th.textContent = header;
+                    headerRow.appendChild(th);
+                });
+                tableHeader.appendChild(headerRow);
+
+                // Create body
+                tableBody.innerHTML = '';
+                tableData.data.forEach(row => {
+                    const tr = document.createElement('tr');
+                    tableData.headers.forEach(header => {
+                        const td = document.createElement('td');
+                        td.textContent = row[header] || '';
+                        tr.appendChild(td);
+                    });
+                    tableBody.appendChild(tr);
+                });
+
+                tableContainer.style.display = 'block';
+            }
+
+            // Budget functionality
+            renderBudget() {
+                const budgetContent = document.getElementById('budget-content');
+                const budgetData = JSON.parse(localStorage.getItem('gridoranotes_budget') || '[]');
                 
-                // Create a preview of the content (text only)
-                const tempDiv = document.createElement('div');
-                tempDiv.innerHTML = note.content;
-                const textContent = tempDiv.textContent || tempDiv.innerText || '';
-                const preview = textContent.substring(0, 50) + (textContent.length > 50 ? '...' : '');
-                
-                noteItem.innerHTML = `
-                    <div class="note-item-content">
-                        <div class="note-title">
-                            ${note.title || 'Untitled Note'}
+                if (budgetData.length === 0) {
+                    budgetContent.innerHTML = `
+                        <div style="text-align: center; padding: 40px; color: var(--text-muted);">
+                            <i class="fas fa-chart-pie" style="font-size: 48px; margin-bottom: 16px;"></i>
+                            <p>No budget items yet. Add your first item to get started.</p>
                         </div>
-                        <div class="note-preview">${preview || 'Empty note'}</div>
+                    `;
+                    return;
+                }
+
+                let totalBudget = 0;
+                let totalSpent = 0;
+                
+                budgetContent.innerHTML = '';
+                
+                budgetData.forEach(category => {
+                    const categoryElement = document.createElement('div');
+                    categoryElement.className = 'budget-category';
+                    
+                    let categorySpent = 0;
+                    let categoryBudget = 0;
+                    
+                    const itemsHTML = category.items.map(item => {
+                        categorySpent += item.spent || 0;
+                        categoryBudget += item.budget || 0;
+                        
+                        const progressPercent = item.budget ? Math.min(100, (item.spent || 0) / item.budget * 100) : 0;
+                        
+                        return `
+                            <div class="budget-item">
+                                <div>
+                                    <strong>${item.name}</strong>
+                                    <div style="font-size: 12px; color: var(--text-muted);">
+                                        $${item.spent || 0} of $${item.budget || 0}
+                                    </div>
+                                    <div class="budget-progress">
+                                        <div class="budget-progress-bar" style="width: ${progressPercent}%"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <button class="header-btn edit-budget-item" data-category="${category.name}" data-item="${item.name}">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="header-btn delete-budget-item" data-category="${category.name}" data-item="${item.name}">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+                    
+                    const categoryProgressPercent = categoryBudget ? Math.min(100, categorySpent / categoryBudget * 100) : 0;
+                    
+                    categoryElement.innerHTML = `
+                        <h3>${category.name}</h3>
+                        <div style="font-size: 14px; color: var(--text-muted); margin-bottom: 12px;">
+                            $${categorySpent} of $${categoryBudget}
+                        </div>
+                        <div class="budget-progress">
+                            <div class="budget-progress-bar" style="width: ${categoryProgressPercent}%"></div>
+                        </div>
+                        ${itemsHTML}
+                    `;
+                    
+                    budgetContent.appendChild(categoryElement);
+                    
+                    totalBudget += categoryBudget;
+                    totalSpent += categorySpent;
+                });
+                
+                // Add event listeners for budget item buttons
+                document.querySelectorAll('.edit-budget-item').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const category = e.target.closest('button').dataset.category;
+                        const item = e.target.closest('button').dataset.item;
+                        this.editBudgetItem(category, item);
+                    });
+                });
+                
+                document.querySelectorAll('.delete-budget-item').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const category = e.target.closest('button').dataset.category;
+                        const item = e.target.closest('button').dataset.item;
+                        this.deleteBudgetItem(category, item);
+                    });
+                });
+                
+                // Add summary
+                const summaryElement = document.createElement('div');
+                summaryElement.className = 'budget-category';
+                const totalProgressPercent = totalBudget ? Math.min(100, totalSpent / totalBudget * 100) : 0;
+                
+                summaryElement.innerHTML = `
+                    <h3>Total</h3>
+                    <div style="font-size: 14px; color: var(--text-muted); margin-bottom: 12px;">
+                        $${totalSpent} of $${totalBudget}
                     </div>
-                    <div class="note-actions">
-                        <button class="delete-btn" title="Delete Note">
-                            <i class="fas fa-trash"></i>
-                        </button>
+                    <div class="budget-progress">
+                        <div class="budget-progress-bar" style="width: ${totalProgressPercent}%"></div>
                     </div>
                 `;
                 
-                noteItem.addEventListener('click', (e) => {
-                    if (!e.target.closest('.delete-btn')) {
-                        selectNote(note.id);
-                        showNoteEditorView();
-                        playSound('click');
-                    }
+                budgetContent.appendChild(summaryElement);
+            }
+
+            addBudgetItem() {
+                const category = prompt('Enter category name:');
+                if (!category) return;
+                
+                const name = prompt('Enter item name:');
+                if (!name) return;
+                
+                const budget = parseFloat(prompt('Enter budget amount:'));
+                if (isNaN(budget)) return;
+                
+                const spent = parseFloat(prompt('Enter spent amount (optional):')) || 0;
+                
+                const budgetData = JSON.parse(localStorage.getItem('gridoranotes_budget') || '[]');
+                let categoryIndex = budgetData.findIndex(c => c.name === category);
+                
+                if (categoryIndex === -1) {
+                    budgetData.push({
+                        name: category,
+                        items: []
+                    });
+                    categoryIndex = budgetData.length - 1;
+                }
+                
+                budgetData[categoryIndex].items.push({
+                    name: name,
+                    budget: budget,
+                    spent: spent
                 });
                 
-                const deleteBtn = noteItem.querySelector('.delete-btn');
-                deleteBtn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    deleteNote(note.id);
+                localStorage.setItem('gridoranotes_budget', JSON.stringify(budgetData));
+                this.renderBudget();
+                this.showToast('Budget item added!', 'success');
+            }
+
+            editBudgetItem(categoryName, itemName) {
+                const budgetData = JSON.parse(localStorage.getItem('gridoranotes_budget') || '[]');
+                const category = budgetData.find(c => c.name === categoryName);
+                if (!category) return;
+                
+                const item = category.items.find(i => i.name === itemName);
+                if (!item) return;
+                
+                const newBudget = parseFloat(prompt('Enter new budget amount:', item.budget));
+                if (isNaN(newBudget)) return;
+                
+                const newSpent = parseFloat(prompt('Enter new spent amount:', item.spent || 0)) || 0;
+                
+                item.budget = newBudget;
+                item.spent = newSpent;
+                
+                localStorage.setItem('gridoranotes_budget', JSON.stringify(budgetData));
+                this.renderBudget();
+                this.showToast('Budget item updated!', 'success');
+            }
+
+            deleteBudgetItem(categoryName, itemName) {
+                if (!confirm('Are you sure you want to delete this budget item?')) return;
+                
+                const budgetData = JSON.parse(localStorage.getItem('gridoranotes_budget') || '[]');
+                const category = budgetData.find(c => c.name === categoryName);
+                if (!category) return;
+                
+                category.items = category.items.filter(i => i.name !== itemName);
+                
+                // Remove category if empty
+                if (category.items.length === 0) {
+                    budgetData.splice(budgetData.indexOf(category), 1);
+                }
+                
+                localStorage.setItem('gridoranotes_budget', JSON.stringify(budgetData));
+                this.renderBudget();
+                this.showToast('Budget item deleted!', 'info');
+            }
+
+            // AI Functionality
+            setAiModel(model) {
+                this.aiModel = model;
+                
+                // Update UI
+                document.querySelectorAll('.ai-model-btn').forEach(btn => {
+                    btn.classList.remove('active');
                 });
                 
-                notesList.appendChild(noteItem);
-            });
-        }
-
-        // Toggle enhanced AI mode
-        function toggleEnhancedAIMode() {
-            enhancedAIMode = enhancedAIModeToggle.checked;
-            localStorage.setItem('enhancedAIMode', enhancedAIMode);
-            playSound('click');
-        }
-
-        // Toggle auto grammar check
-        function toggleAutoGrammarCheck() {
-            autoGrammarCheck = autoGrammarCheckToggle.checked;
-            localStorage.setItem('autoGrammarCheck', autoGrammarCheck);
-            playSound('click');
-        }
-
-        // Toggle AI animations
-        function toggleAIAnimations() {
-            aiAnimations = aiAnimationsToggle.checked;
-            localStorage.setItem('aiAnimations', aiAnimations);
-            playSound('click');
-        }
-
-        // Handle AI actions
-        function handleAIAction(action, size = 'medium') {
-            const text = noteEditor.textContent || noteEditor.innerText;
-
-            if (!text.trim()) {
-                showError('Please add some content to your note first.');
-                return;
+                if (model === '4.0') {
+                    document.getElementById('ai-model-4').classList.add('active');
+                } else {
+                    document.getElementById('ai-model-5').classList.add('active');
+                }
+                
+                this.showToast(`AI model set to OptiChain ${model} Pro`, 'info');
             }
 
-            let result = '';
+            async handleAIAction(action, options = {}) {
+                if (this.isAiProcessing) return;
 
-            switch(action) {
-                case 'summarize':
-                    result = generateSummary(text, size);
-                    summaryOutput.innerHTML = result;
-                    break;
-                case 'writing':
-                    result = analyzeWriting(text);
-                    writingOutput.innerHTML = result;
-                    break;
-                case 'grammar':
-                    result = fixGrammar(text);
-                    grammarOutput.innerHTML = result;
-                    break;
-                case 'qa':
-                    const question = qaInput.value.trim();
-                    if (!question) {
-                        showError('Please enter a question.');
-                        return;
+                const text = this.getCurrentText();
+                if (text.trim().length < 50 && action !== 'translate') {
+                    this.showToast('Please provide at least 50 characters of text for AI analysis.', 'error');
+                    return;
+                }
+
+                const buttonMap = {
+                    summarize: 'summarize-btn-medium',
+                    qa: 'qa-btn',
+                    writing: 'writing-btn',
+                    grammar: 'grammar-btn',
+                    keypoints: 'keypoints-btn',
+                    keywords: 'keywords-btn',
+                    quiz: 'quiz-btn',
+                    analysis: 'analysis-btn',
+                    simplify: 'simplify-btn',
+                    translate: 'translate-en'
+                };
+
+                const outputMap = {
+                    summarize: 'summary-output',
+                    qa: 'qa-answer',
+                    writing: 'writing-output',
+                    grammar: 'grammar-output',
+                    keypoints: 'keypoints-output',
+                    keywords: 'keywords-output',
+                    quiz: 'quiz-output',
+                    analysis: 'analysis-output',
+                    simplify: 'simplify-output',
+                    translate: 'translation-output'
+                };
+
+                const button = document.getElementById(buttonMap[action]);
+                const outputEl = document.getElementById(outputMap[action]);
+                
+                if (!button || !outputEl) {
+                    console.error(`Invalid AI action: ${action}`);
+                    return;
+                }
+
+                this.isAiProcessing = true;
+                this.disableAiButtons();
+
+                const originalHTML = button.innerHTML;
+                const loadingHTML = '<i class="fas fa-spinner fa-spin"></i> Thinking...';
+
+                if (action === 'summarize') {
+                    document.querySelectorAll('.summary-option-btn').forEach(b => {
+                        b.innerHTML = '<i class="spinner"></i>';
+                    });
+                } else if (action === 'translate') {
+                    document.querySelectorAll('[id^="translate-"]').forEach(b => {
+                        b.innerHTML = '<i class="spinner"></i>';
+                    });
+                } else {
+                    button.innerHTML = loadingHTML;
+                }
+
+                try {
+                    let result;
+                    const delay = this.aiModel === '4.0' ? 1500 : 500; // Simulate speed difference
+                    
+                    switch (action) {
+                        case 'summarize':
+                            result = this.ai.generateSummary(text, options.size);
+                            await this.delayExecution(delay);
+                            await this.typeEffect(outputEl, result);
+                            break;
+                        case 'writing':
+                            result = this.ai.analyzeWriting(text);
+                            await this.delayExecution(delay);
+                            outputEl.innerHTML = this.formatAiOutput(result);
+                            break;
+                        case 'grammar':
+                            result = this.ai.fixGrammar(text);
+                            await this.delayExecution(delay);
+                            outputEl.innerHTML = this.formatAiOutput(result);
+                            break;
+                        case 'qa':
+                            const question = document.getElementById('qa-input').value.trim();
+                            if (!question) {
+                                this.showToast('Please enter a question.', 'error');
+                                throw new Error('No Question');
+                            }
+                            result = this.ai.answerQuestion(text, question);
+                            await this.delayExecution(delay);
+                            outputEl.innerHTML = result;
+                            break;
+                        case 'keypoints':
+                            result = this.ai.extractKeyPoints(text);
+                            await this.delayExecution(delay);
+                            await this.typeEffect(outputEl, result);
+                            break;
+                        case 'keywords':
+                            const keywords = this.ai.extractKeyWords(text, 15);
+                            await this.delayExecution(delay);
+                            result = keywords.map(kw => 
+                                `<mark style="display: inline-block; margin: 2px 4px; padding: 3px 8px; border-radius: 8px; background: var(--accent-color); color: white;">${kw.word}</mark>`
+                            ).join('');
+                            outputEl.innerHTML = result || "No significant keywords found.";
+                            break;
+                        case 'quiz':
+                            result = this.ai.generateQuiz(text);
+                            await this.delayExecution(delay);
+                            outputEl.innerHTML = result.replace(/\n/g, '<br>');
+                            break;
+                        case 'analysis':
+                            result = this.ai.analyzeContent(text);
+                            await this.delayExecution(delay);
+                            outputEl.innerHTML = this.formatAiOutput(result);
+                            break;
+                        case 'simplify':
+                            result = this.ai.simplifyText(text);
+                            await this.delayExecution(delay);
+                            outputEl.innerHTML = this.formatAiOutput(result);
+                            break;
+                        case 'translate':
+                            result = this.ai.translateText(text, options.lang);
+                            await this.delayExecution(delay);
+                            outputEl.innerHTML = result;
+                            break;
                     }
-                    result = answerQuestion(text, question);
-                    qaAnswer.innerHTML = result;
-                    break;
-                case 'keypoints':
-                    result = extractKeyPoints(text);
-                    keypointsOutput.innerHTML = result;
-                    break;
-                case 'keywords':
-                    result = extractKeywords(text);
-                    keywordsOutput.innerHTML = result;
-                    break;
-                case 'quiz':
-                    result = generateQuiz(text);
-                    quizOutput.innerHTML = result;
-                    break;
-                case 'analysis':
-                    result = analyzeContent(text);
-                    analysisOutput.innerHTML = result;
-                    break;
-            }
-
-            playSound('click');
-        }
-
-        // AI Functions
-        function generateSummary(text, size = 'medium') {
-            const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0);
-            
-            if (sentences.length === 0) {
-                return "Not enough content to summarize.";
-            }
-
-            let summaryLength;
-            switch(size) {
-                case 'small': summaryLength = Math.min(2, Math.max(1, Math.floor(sentences.length / 5))); break;
-                case 'large': summaryLength = Math.min(8, Math.max(3, Math.floor(sentences.length / 2))); break;
-                default: summaryLength = Math.min(4, Math.max(2, Math.floor(sentences.length / 3)));
-            }
-
-            // Simple heuristic: take the first few sentences
-            const summarySentences = sentences.slice(0, summaryLength);
-            
-            const summaryType = size === 'small' ? "Brief Summary" : size === 'large' ? "Detailed Summary" : "Medium Summary";
-            
-            return `<strong>${summaryType}:</strong><br><br>${summarySentences.join(' ')}`;
-        }
-
-        function analyzeWriting(text) {
-            const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0);
-            let suggestions = [];
-
-            // Check for passive voice
-            const passiveRegex = /\b(am|is|are|was|were|be|being|been)\s+[a-z]+ed\b/gi;
-            if (passiveRegex.test(text)) {
-                suggestions.push("Consider using active voice instead of passive voice for clearer writing");
-            }
-
-            // Check for long sentences
-            sentences.forEach((sentence, index) => {
-                if (sentence.split(/\s+/).length > 25) {
-                    suggestions.push(`Sentence ${index + 1} might be too long. Consider breaking it up.`);
-                }
-            });
-
-            // Check for weak words
-            const weakWords = /\b(very|really|quite|somewhat|rather)\b/gi;
-            if (weakWords.test(text)) {
-                suggestions.push("Try to replace weak modifiers (very, really, etc.) with stronger words");
-            }
-
-            if (suggestions.length === 0) {
-                return "✅ Your writing looks clear and effective! No major issues found.";
-            }
-
-            return `<strong>Writing Suggestions:</strong><br><br>${suggestions.map(s => `• ${s}`).join('<br>')}`;
-        }
-
-        function fixGrammar(text) {
-            let correctedText = text;
-            const corrections = {
-                ' their is ': ' there is ', ' their are ': ' there are ', ' theyre ': ' they\'re ', ' its ': ' it\'s ',
-                ' alot ': ' a lot ', 'definately': 'definitely', 'seperate': 'separate', 'recieve': 'receive',
-                ' i ': ' I ', ' dont ': ' don\'t ', ' doesnt ': ' doesn\'t ', ' wont ': ' won\'t ', ' cant ': ' can\'t ',
-                ' couldnt ': ' couldn\'t ', ' shouldnt ': ' shouldn\'t ', ' wouldnt ': ' wouldn\'t ', ' isnt ': ' isn\'t ',
-                ' arent ': ' aren\'t ', ' wasnt ': ' wasn\'t ', ' werent ': ' weren\'t ', ' hasnt ': ' hasn\'t ',
-                ' havent ': ' haven\'t ', ' hadnt ': ' hadn\'t ', ' lets ': ' let\'s ', ' thats ': ' that\'s ',
-                ' whats ': ' what\'s ', ' heres ': ' here\'s ', ' theres ': ' there\'s ', ' whos ': ' who\'s ',
-                ' hows ': ' how\'s ', ' wheres ': ' where\'s ', ' whens ': ' when\'s ', ' whys ': ' why\'s '
-            };
-            
-            let suggestions = [];
-            
-            // Apply corrections
-            for (const [error, fix] of Object.entries(corrections)) {
-                const regex = new RegExp(error, 'gi');
-                if (regex.test(correctedText)) {
-                    suggestions.push(`Replaced "<mark>${error.trim()}</mark>" with "<mark>${fix.trim()}</mark>"`);
-                    correctedText = correctedText.replace(regex, fix);
+                } catch (error) {
+                    if (error.message !== 'No Question') {
+                        console.error(`AI action '${action}' failed:`, error);
+                        outputEl.textContent = 'An error occurred. Please try again.';
+                    }
+                } finally {
+                    this.isAiProcessing = false;
+                    this.enableAiButtons();
+                    
+                    if (action === 'summarize') {
+                        document.getElementById('summarize-btn-small').innerHTML = "Small";
+                        document.getElementById('summarize-btn-medium').innerHTML = "Medium";
+                        document.getElementById('summarize-btn-large').innerHTML = "Large";
+                    } else if (action === 'translate') {
+                        document.getElementById('translate-en').innerHTML = "English";
+                        document.getElementById('translate-es').innerHTML = "Spanish";
+                        document.getElementById('translate-fr').innerHTML = "French";
+                    } else {
+                        button.innerHTML = originalHTML;
+                    }
                 }
             }
-            
-            if (suggestions.length === 0) return "✅ No common grammatical errors found.";
-            
-            return `<strong>Grammar Suggestions:</strong><br><br>${suggestions.slice(0, 8).join('<br>')}`;
+
+            delayExecution(ms) {
+                return new Promise(resolve => setTimeout(resolve, ms));
+            }
+
+            getCurrentText() {
+                if (this.currentView === 'notes') {
+                    const noteContent = document.getElementById('note-content');
+                    return noteContent.textContent || noteContent.innerText || '';
+                }
+                return '';
+            }
+
+            formatAiOutput(text) {
+                return text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
+            }
+
+            async typeEffect(element, text, speed = 10) {
+                element.innerHTML = '';
+                for (let i = 0; i < text.length; i++) {
+                    element.innerHTML += text.charAt(i);
+                    await new Promise(resolve => setTimeout(resolve, speed));
+                }
+            }
+
+            disableAiButtons() {
+                document.querySelectorAll('.ai-button, .summary-option-btn, [id^="translate-"]').forEach(btn => {
+                    btn.disabled = true;
+                });
+            }
+
+            enableAiButtons() {
+                document.querySelectorAll('.ai-button, .summary-option-btn, [id^="translate-"]').forEach(btn => {
+                    btn.disabled = false;
+                });
+            }
+
+            resetAiOutputs() {
+                document.getElementById('summary-output').innerHTML = 'Click a size to generate an intelligent summary of your document.';
+                document.getElementById('writing-output').innerHTML = 'Get suggestions to improve your writing clarity, style, and impact.';
+                document.getElementById('grammar-output').innerHTML = 'Find and correct grammatical errors in your text.';
+                document.getElementById('qa-answer').innerHTML = 'Get intelligent answers based on the content.';
+                document.getElementById('keypoints-output').innerHTML = 'Extract the most important points from your document.';
+                document.getElementById('keywords-output').innerHTML = 'Find the most frequent and important keywords.';
+                document.getElementById('quiz-output').innerHTML = 'Generate a quiz to test your knowledge of the document.';
+                document.getElementById('analysis-output').innerHTML = 'Analyze the sentiment and tone of your document.';
+                document.getElementById('simplify-output').innerHTML = 'Make complex text easier to understand.';
+                document.getElementById('translation-output').innerHTML = 'Translate your text to another language.';
+            }
+
+            // Theme and Settings
+            setTheme(themeName) {
+                document.body.setAttribute('data-theme', themeName);
+                localStorage.setItem('gridoranotes_theme', themeName);
+                document.querySelector(`input[name="theme"][value="${themeName}"]`).checked = true;
+            }
+
+            loadTheme() {
+                const theme = localStorage.getItem('gridoranotes_theme') || 'light';
+                this.setTheme(theme);
+            }
+
+            toggleSidebar() {
+                document.getElementById('sidebar').classList.toggle('open');
+            }
+
+            toggleAiSidebar() {
+                document.getElementById('ai-sidebar').classList.toggle('open');
+            }
+
+            toggleSettings() {
+                document.getElementById('settings-overlay').classList.toggle('visible');
+            }
+
+            // Data Management
+            exportAllData() {
+                const data = {
+                    notes: this.notes,
+                    budget: JSON.parse(localStorage.getItem('gridoranotes_budget') || '[]'),
+                    exportDate: new Date().toISOString(),
+                    version: '1.0'
+                };
+
+                const dataStr = JSON.stringify(data, null, 2);
+                const dataBlob = new Blob([dataStr], { type: 'application/json' });
+                const url = URL.createObjectURL(dataBlob);
+                
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `gridoranotes_backup_${new Date().toISOString().split('T')[0]}.json`;
+                link.click();
+                
+                URL.revokeObjectURL(url);
+                this.showToast('All data exported!', 'success');
+            }
+
+            triggerDataImport() {
+                document.getElementById('import-data-input').click();
+            }
+
+            importAllData(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    try {
+                        const data = JSON.parse(e.target.result);
+                        if (data.notes && Array.isArray(data.notes)) {
+                            if (confirm('This will replace all existing notes. Are you sure?')) {
+                                this.notes = data.notes;
+                                this.saveNotes();
+                                if (data.budget) {
+                                    localStorage.setItem('gridoranotes_budget', JSON.stringify(data.budget));
+                                }
+                                this.renderNotesList();
+                                if (this.notes.length > 0) {
+                                    this.loadNote(this.notes[0].id);
+                                } else {
+                                    this.showEmptyState();
+                                }
+                                this.showToast('Data imported successfully!', 'success');
+                            }
+                        } else {
+                            this.showToast('Invalid backup file format.', 'error');
+                        }
+                    } catch (error) {
+                        this.showToast('Error reading backup file.', 'error');
+                        console.error('Import error:', error);
+                    }
+                };
+                reader.readAsText(file);
+            }
+
+            // Utility Methods
+            generateId() {
+                return Date.now().toString(36) + Math.random().toString(36).substr(2);
+            }
+
+            saveNotes() {
+                localStorage.setItem('gridoranotes_notes', JSON.stringify(this.notes));
+            }
+
+            showToast(message, type = 'info') {
+                const toast = document.createElement('div');
+                toast.textContent = message;
+                
+                let bgColor = 'var(--accent-color)';
+                if (type === 'error') bgColor = '#ef4444';
+                if (type === 'success') bgColor = '#10b981';
+                if (type === 'info') bgColor = 'var(--accent-color)';
+
+                toast.style.cssText = `
+                    position: fixed;
+                    bottom: 20px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    background: ${bgColor};
+                    color: white;
+                    padding: 12px 24px;
+                    border-radius: var(--radius-lg);
+                    z-index: 10000;
+                    font-weight: 500;
+                    box-shadow: var(--shadow-lg);
+                    animation: fadeIn 0.2s ease;
+                `;
+
+                document.body.appendChild(toast);
+                
+                setTimeout(() => {
+                    toast.style.opacity = '0';
+                    toast.style.transform = 'translateX(-50%) translateY(10px)';
+                    setTimeout(() => toast.remove(), 300);
+                }, 3000);
+            }
         }
 
-        function answerQuestion(text, question) {
-            const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0);
-            const questionWords = new Set(question.toLowerCase().replace('?', '').split(/\s+/).filter(w => w.length > 2));
-            
-            if (questionWords.size === 0) return "Please ask a more specific question.";
-            
-            let bestSentence = { text: "", score: -1 };
-            sentences.forEach(sentence => {
-                const sentenceLower = sentence.toLowerCase();
-                let score = 0;
-                let matchedWords = 0;
-                questionWords.forEach(qWord => {
-                    if (sentenceLower.includes(qWord)) {
-                        score += 2;
-                        matchedWords++;
+        // OptiChain AI Class (Enhanced)
+        class OptiChainAI {
+            constructor() {
+                this.stopWords = new Set(['a', 'about', 'above', 'after', 'again', 'against', 'all', 'am', 'an', 'and', 'any', 'are', 'as', 'at', 'be', 'because', 'been', 'before', 'being', 'below', 'between', 'both', 'but', 'by', 'can', 'cannot', 'could', 'did', 'do', 'does', 'doing', 'down', 'during', 'each', 'few', 'for', 'from', 'further', 'had', 'has', 'have', 'having', 'he', 'her', 'here', 'hers', 'herself', 'him', 'himself', 'his', 'how', 'i', 'if', 'in', 'into', 'is', 'it', 'its', 'itself', 'me', 'more', 'most', 'my', 'myself', 'no', 'nor', 'not', 'of', 'off', 'on', 'once', 'only', 'or', 'other', 'our', 'ours', 'ourselves', 'out', 'over', 'own', 'same', 'she', 'should', 'so', 'some', 'such', 'than', 'that', 'the', 'their', 'theirs', 'them', 'themselves', 'then', 'there', 'these', 'they', 'this', 'those', 'through', 'to', 'too', 'under', 'until', 'up', 'very', 'was', 'we', 'were', 'what', 'when', 'where', 'which', 'while', 'who', 'whom', 'why', 'with', 'you', 'your', 'yours', 'yourself', 'yourselves']);
+            }
+
+            preprocessText(text) {
+                if (!text || typeof text !== 'string') return '';
+                let processed = text;
+                processed = processed.replace(/ﬁ/g, 'fi').replace(/ﬂ/g, 'fl');
+                processed = processed.replace(/\s+/g, ' ').trim();
+                processed = processed.replace(/([a-z])-\s+([a-z])/g, '$1$2');
+                return processed;
+            }
+
+            tokenizeSentences(text) {
+                if (!text) return [];
+                return text.match(/[^.!?]+[.!?]\s*(?=[A-Z]|\d|"|"|'|$)/g)?.map(s => s.trim()).filter(s => s.length > 15 && s.length < 1500) || [];
+            }
+
+            generateSummary(text, size = 'medium') {
+                let targetSentenceCount;
+                switch (size) {
+                    case 'small': targetSentenceCount = 3; break;
+                    case 'large': targetSentenceCount = 8; break;
+                    default: targetSentenceCount = 5;
+                }
+
+                const sentences = this.tokenizeSentences(this.preprocessText(text));
+                if (sentences.length <= targetSentenceCount) {
+                    return sentences.join(' ');
+                }
+
+                const keywords = this.extractKeyWords(text, 20);
+                const scoredSentences = sentences.map((sentence, i) => {
+                    const sentenceLower = sentence.toLowerCase();
+                    let score = 0;
+                    const positionRatio = i / sentences.length;
+                    if (positionRatio < 0.2) score += 2.0;
+                    if (positionRatio > 0.8) score += 1.5;
+
+                    keywords.forEach(kw => {
+                        if (sentenceLower.includes(kw.word)) {
+                            score += kw.score;
+                        }
+                    });
+
+                    if (sentence.length < 20 || sentence.length > 800) score *= 0.5;
+                    const cuePhrases = ['in conclusion', 'in summary', 'the main point', 'importantly', 'essentially'];
+                    if (cuePhrases.some(phrase => sentenceLower.startsWith(phrase))) score *= 2.0;
+
+                    return { sentence, score, index: i };
+                });
+
+                const topSentences = scoredSentences
+                    .sort((a, b) => b.score - a.score)
+                    .slice(0, targetSentenceCount)
+                    .sort((a, b) => a.index - b.index);
+
+                return topSentences.map(item => item.sentence).join(' ');
+            }
+
+            answerQuestion(text, question) {
+                const sentences = this.tokenizeSentences(this.preprocessText(text));
+                const questionWords = new Set(question.toLowerCase().replace('?', '').split(/\s+/).filter(w => !this.stopWords.has(w) && w.length > 2));
+                
+                if (questionWords.size === 0) return "Please ask a more specific question.";
+
+                let bestSentence = { text: "", score: -1 };
+                sentences.forEach(sentence => {
+                    const sentenceLower = sentence.toLowerCase();
+                    let score = 0;
+                    let matchedWords = 0;
+
+                    questionWords.forEach(qWord => {
+                        if (sentenceLower.includes(qWord)) {
+                            score += 2;
+                            matchedWords++;
+                        }
+                    });
+
+                    if (matchedWords > 1) score += matchedWords * 3;
+                    if (/\b(is|are|was|were)\b/i.test(sentence) && sentence.length < 250) score *= 1.5;
+
+                    if (score > bestSentence.score) bestSentence = { text: sentence, score: score };
+                });
+
+                if (bestSentence.score <= 1) return "I could not find a confident answer. Try rephrasing your question.";
+
+                let answerText = bestSentence.text;
+                questionWords.forEach(word => {
+                    const regex = new RegExp(`\\b(${word})\\b`, 'gi');
+                    answerText = answerText.replace(regex, `<mark>$1</mark>`);
+                });
+
+                return answerText;
+            }
+
+            extractKeyWords(text, count = 15) {
+                const words = this.preprocessText(text).toLowerCase().replace(/[^\w\s]/g, ' ').split(/\s+/).filter(word => word.length > 3 && !this.stopWords.has(word));
+                const wordFreq = {};
+                words.forEach(word => {
+                    wordFreq[word] = (wordFreq[word] || 0) + 1;
+                });
+
+                const scores = Object.entries(wordFreq).map(([word, freq]) => ({
+                    word,
+                    score: freq * Math.log(words.length / (wordFreq[word] || 1))
+                }));
+
+                return scores.sort((a, b) => b.score - a.score).slice(0, count);
+            }
+
+            extractKeyPoints(text) {
+                const summary = this.generateSummary(text, 'large');
+                const points = summary.split('. ').filter(p => p.trim().length > 0).map(p => p.trim() + '.');
+                return points.map((point, index) => `${index + 1}. ${point}`).join('\n\n') || "No key points could be extracted.";
+            }
+
+            analyzeWriting(text) {
+                const sentences = this.tokenizeSentences(this.preprocessText(text));
+                let results = { passive: [], fillers: [], weasels: [], longSentences: [] };
+
+                const passiveRegex = /\b(am|is|are|was|were|be|being|been)\b\s\w+ed\b/i;
+                sentences.forEach(s => {
+                    if (passiveRegex.test(s)) results.passive.push(s);
+                    if (s.split(' ').length > 30) results.longSentences.push(s);
+                });
+
+                const fillerRegex = /\b(basically|actually|literally|like|just|really|very|stuff|things|you know|sort of|kind of)\b/gi;
+                const fillerMatches = text.match(fillerRegex);
+                if (fillerMatches) results.fillers = [...new Set(fillerMatches)];
+
+                const weaselRegex = /\b(many|various|several|some|few|most|often|sometimes|arguably|perhaps|could|might)\b/gi;
+                const weaselMatches = text.match(weaselRegex);
+                if (weaselMatches) results.weasels = [...new Set(weaselMatches)];
+
+                let report = "✍️ **Writing Analysis**\n\n";
+                if (results.passive.length > 0) {
+                    report += `**Passive Voice:** ${results.passive.length} sentence(s) might be in passive voice. Consider making them more active.\n*Example: "${results.passive[0]}"*\n\n`;
+                }
+                if (results.fillers.length > 0) {
+                    report += `**Filler Words:** Found common filler words. Your writing might be stronger without them.\n*Examples: ${results.fillers.slice(0, 5).join(', ')}*\n\n`;
+                }
+                if (results.weasels.length > 0) {
+                    report += `**Vague Language:** These words can make your writing less direct.\n*Examples: ${results.weasels.slice(0, 5).join(', ')}*\n\n`;
+                }
+                if (results.longSentences.length > 0) {
+                    report += `**Long Sentences:** ${results.longSentences.length} sentence(s) are quite long. Consider breaking them up for better readability.\n\n`;
+                }
+
+                if (report.length < 50) return "✅ Your writing looks clear and direct! No major issues found.";
+                return report;
+            }
+
+            generateQuiz(text) {
+                const sentences = this.tokenizeSentences(this.preprocessText(text));
+                const keywords = this.extractKeyWords(text, 10);
+                let quiz = [];
+
+                keywords.forEach(kw => {
+                    const keywordSentences = sentences.filter(s => s.toLowerCase().includes(kw.word));
+                    if (keywordSentences.length > 0) {
+                        const questionSentence = keywordSentences[0];
+                        const question = questionSentence.replace(new RegExp(kw.word, 'ig'), '_____');
+                        quiz.push({ question: question, answer: kw.word });
                     }
                 });
-                if (matchedWords > 1) score += matchedWords * 3;
-                if (score > bestSentence.score) bestSentence = { text: sentence, score: score };
-            });
-            
-            if (bestSentence.score <= 1) return "I could not find a confident answer. Try rephrasing your question.";
-            
-            let answerText = bestSentence.text;
-            questionWords.forEach(word => {
-                const regex = new RegExp(`\\b(${word})\\b`, 'gi');
-                answerText = answerText.replace(regex, `<mark>$1</mark>`);
-            });
-            
-            return answerText;
-        }
 
-        function extractKeyPoints(text) {
-            const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0);
-            const keyPoints = sentences.slice(0, Math.min(5, sentences.length));
-            
-            if (keyPoints.length === 0) return "No key points could be extracted.";
-            
-            return `<strong>Key Points:</strong><br><br>${keyPoints.map((point, index) => `${index + 1}. ${point}`).join('<br><br>')}`;
-        }
+                if (quiz.length === 0) return "Could not generate a quiz from this text.";
+                return quiz.slice(0, 5).map((item, index) => 
+                    `${index + 1}. ${item.question}\n   <mark>Answer: ${item.answer}</mark>`
+                ).join('\n\n');
+            }
 
-        function extractKeywords(text) {
-            const words = text.toLowerCase().replace(/[^\w\s]/g, ' ').split(/\s+/).filter(word => word.length > 3);
-            const wordFreq = {};
-            words.forEach(word => {
-                wordFreq[word] = (wordFreq[word] || 0) + 1;
-            });
-            
-            const keywords = Object.entries(wordFreq)
-                .sort((a, b) => b[1] - a[1])
-                .slice(0, 15)
-                .map(([word]) => word);
-            
-            if (keywords.length === 0) return "No significant keywords found.";
-            
-            return `<strong>Keywords:</strong><br><br>${keywords.map(kw => `<mark style="display: inline-block; margin: 2px 4px; padding: 3px 8px; border-radius: 8px;">${kw}</mark>`).join('')}`;
-        }
+            analyzeContent(text) {
+                const positiveWords = ['good', 'great', 'excellent', 'amazing', 'awesome', 'love', 'like', 'happy', 'beautiful', 'wonderful'];
+                const negativeWords = ['bad', 'terrible', 'horrible', 'awful', 'hate', 'dislike', 'sad', 'ugly', 'boring'];
+                let positiveScore = 0;
+                let negativeScore = 0;
 
-        function generateQuiz(text) {
-            const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0);
-            const keywords = extractKeywords(text).match(/<mark[^>]*>([^<]+)<\/mark>/g)?.map(m => m.replace(/<[^>]*>/g, '')) || [];
-            
-            let quiz = [];
-            keywords.forEach(kw => {
-                const keywordSentences = sentences.filter(s => s.toLowerCase().includes(kw));
-                if(keywordSentences.length > 0) {
-                    const questionSentence = keywordSentences[0];
-                    const question = questionSentence.replace(new RegExp(kw, 'ig'), '_____');
-                    quiz.push({question: question, answer: kw});
+                const words = this.preprocessText(text).toLowerCase().split(/\s+/);
+                words.forEach(word => {
+                    if (positiveWords.includes(word)) positiveScore++;
+                    if (negativeWords.includes(word)) negativeScore++;
+                });
+
+                let sentiment = "Neutral";
+                if (positiveScore > negativeScore * 1.5) sentiment = "Positive";
+                else if (negativeScore > positiveScore * 1.5) sentiment = "Negative";
+
+                // Calculate readability (simplified)
+                const sentences = this.tokenizeSentences(text);
+                const avgSentenceLength = sentences.reduce((sum, s) => sum + s.split(' ').length, 0) / sentences.length;
+                let readability = "Standard";
+                if (avgSentenceLength > 25) readability = "Complex";
+                else if (avgSentenceLength < 15) readability = "Simple";
+
+                return `**Sentiment Analysis:** ${sentiment}\n\n**Positive Keywords:** ${positiveScore}\n**Negative Keywords:** ${negativeScore}\n\n**Readability:** ${readreadability}`;
+            }
+
+            fixGrammar(text) {
+                let correctedText = text;
+                const corrections = {
+                    ' their is ': ' there is ',
+                    ' their are ': ' there are ',
+                    ' theyre ': ' they\'re ',
+                    ' its ': ' it\'s ',
+                    ' alot ': ' a lot ',
+                    'definately': 'definitely',
+                    'seperate': 'separate',
+                    'recieve': 'receive',
+                    ' i ': ' I ',
+                    ' dont ': ' don\'t ',
+                    ' doesnt ': ' doesn\'t ',
+                    ' wont ': ' won\'t ',
+                    ' cant ': ' can\'t ',
+                    ' couldnt ': ' couldn\'t ',
+                    ' shouldnt ': ' shouldn\'t ',
+                    ' wouldnt ': ' wouldn\'t ',
+                    ' isnt ': ' isn\'t ',
+                    ' arent ': ' aren\'t ',
+                    ' wasnt ': ' wasn\'t ',
+                    ' werent ': ' weren\'t ',
+                    ' hasnt ': ' hasn\'t ',
+                    ' havent ': ' haven\'t ',
+                    ' hadnt ': ' hadn\'t ',
+                    ' lets ': ' let\'s ',
+                    ' thats ': ' that\'s ',
+                    ' whats ': ' what\'s ',
+                    ' heres ': ' here\'s ',
+                    ' theres ': ' there\'s ',
+                    ' whos ': ' who\'s ',
+                    ' hows ': ' how\'s ',
+                    ' wheres ': ' where\'s ',
+                    ' whens ': ' when\'s ',
+                    ' whys ': ' why\'s '
+                };
+
+                let suggestions = [];
+
+                for (const [error, fix] of Object.entries(corrections)) {
+                    const regex = new RegExp(error, 'gi');
+                    if (regex.test(correctedText)) {
+                        suggestions.push(`Replaced "<mark>${error.trim()}</mark>" with "<mark>${fix.trim()}</mark>"`);
+                        correctedText = correctedText.replace(regex, fix);
+                    }
                 }
-            });
-            
-            if (quiz.length === 0) return "Could not generate a quiz from this text.";
-            
-            return `<strong>Quiz:</strong><br><br>${quiz.slice(0, 5).map((item, index) => `${index + 1}. ${item.question}<br><mark>Answer: ${item.answer}</mark>`).join('<br><br>')}`;
+
+                const sentences = this.tokenizeSentences(correctedText);
+                sentences.forEach(sentence => {
+                    if (/(he|she|it) (have|do) /gi.test(sentence)) {
+                        suggestions.push(`Subject-verb agreement: "${sentence.substring(0, 50)}..."`);
+                    }
+                    if (/(don't|doesn't|didn't|can't|couldn't|won't|wouldn't|shouldn't) no /gi.test(sentence)) {
+                        suggestions.push(`Double negative: "${sentence.substring(0, 50)}..."`);
+                    }
+                    if (sentence.length < 20 && !sentence.match(/[.!?]$/)) {
+                        suggestions.push(`Possible sentence fragment: "${sentence}"`);
+                    }
+                });
+
+                if (suggestions.length === 0) return "✅ No common grammatical errors found.";
+
+                return `**Grammar Suggestions:**\n\n${suggestions.slice(0, 8).join('\n')}\n\n*Note: These are automated suggestions. Please review them carefully.*`;
+            }
+
+            simplifyText(text) {
+                // This is a simplified version - a real implementation would use more sophisticated NLP
+                const complexWords = {
+                    'utilize': 'use',
+                    'facilitate': 'help',
+                    'implement': 'do',
+                    'optimize': 'improve',
+                    'leverage': 'use',
+                    'synergize': 'work together',
+                    'paradigm': 'model',
+                    'robust': 'strong',
+                    'scalable': 'able to grow',
+                    'streamline': 'simplify'
+                };
+
+                let simplified = text;
+                let changes = [];
+
+                for (const [complex, simple] of Object.entries(complexWords)) {
+                    const regex = new RegExp(`\\b${complex}\\b`, 'gi');
+                    if (regex.test(simplified)) {
+                        changes.push(`"${complex}" → "${simple}"`);
+                        simplified = simplified.replace(regex, simple);
+                    }
+                }
+
+                if (changes.length === 0) {
+                    return "Your text is already quite simple and clear!";
+                }
+
+                return `**Simplified Text:**\n\n${simplified}\n\n**Changes Made:**\n${changes.join('\n')}`;
+            }
+
+            translateText(text, lang) {
+                // This is a mock translation - a real implementation would use a translation API
+                const translations = {
+                    'es': `**Spanish Translation:**\n\n${text}\n\n*Note: This is a simulated translation. For accurate translations, consider using a dedicated translation service.*`,
+                    'fr': `**French Translation:**\n\n${text}\n\n*Note: This is a simulated translation. For accurate translations, consider using a dedicated translation service.*`,
+                    'en': `**English (Original):**\n\n${text}`
+                };
+
+                return translations[lang] || "Translation not available for this language.";
+            }
         }
 
-        function analyzeContent(text) {
-            const positiveWords = ['good', 'great', 'excellent', 'amazing', 'awesome', 'love', 'like', 'happy', 'beautiful', 'wonderful'];
-            const negativeWords = ['bad', 'terrible', 'horrible', 'awful', 'hate', 'dislike', 'sad', 'ugly', 'boring'];
-            
-            let positiveScore = 0;
-            let negativeScore = 0;
-            
-            const words = text.toLowerCase().split(/\s+/);
-            words.forEach(word => {
-                if(positiveWords.includes(word)) positiveScore++;
-                if(negativeWords.includes(word)) negativeScore++;
-            });
-            
-            let sentiment = "Neutral";
-            if (positiveScore > negativeScore * 1.5) sentiment = "Positive";
-            else if (negativeScore > positiveScore * 1.5) sentiment = "Negative";
-            
-            return `<strong>Sentiment Analysis:</strong> ${sentiment}<br><br><strong>Positive Keywords:</strong> ${positiveScore}<br><strong>Negative Keywords:</strong> ${negativeScore}`;
-        }
-
-        // Helper Functions
-        function showError(message) {
-            const toast = document.createElement('div');
-            toast.textContent = message;
-            toast.style.cssText = 'position:fixed; bottom:15px; left:50%; transform:translateX(-50%); background-color: #d32f2f; color:white; padding:10px 16px; border-radius:18px; z-index:9999; font-weight:500; box-shadow: 0 5px 15px rgba(0,0,0,0.2); font-size: 14px;';
-            document.body.appendChild(toast);
-            setTimeout(() => {
-                toast.style.opacity = '0';
-                toast.remove();
-            }, 4000);
-        }
-
-        // Initialize the app when the page loads
-        document.addEventListener('DOMContentLoaded', init);
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', () => {
+            new GridoraNotesApp();
+        });
     </script>
 </body>
 </html>
