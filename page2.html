@@ -523,9 +523,23 @@
             transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s ease, background 0.3s ease;
         }
 
+        /* Enhanced Glassy Effect for Icons */
+        .dock-icon::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.2) 0%, 
+                rgba(255, 255, 255, 0.1) 50%, 
+                rgba(255, 255, 255, 0.05) 100%);
+            border-radius: inherit;
+            z-index: 1;
+            pointer-events: none;
+        }
 
         /* Liquid Shine Effect */
-        .dock-icon::before {
+        .dock-icon::after {
             content: '';
             position: absolute;
             top: -50%; left: -50%;
@@ -538,9 +552,10 @@
                 transparent);
             transition: opacity 0.8s ease;
             opacity: 0;
+            z-index: 2;
         }
 
-        .dock-icon:hover::before {
+        .dock-icon:hover::after {
             animation: liquid-shine 2s infinite linear;
             opacity: 1;
         }
@@ -582,8 +597,7 @@
         /* End of Dock Animation */
 
         /* Ripple Effect on Click */
-        .dock-icon::after {
-            content: '';
+        .dock-icon .ripple {
             position: absolute;
             top: 50%; left: 50%;
             width: 0; height: 0;
@@ -593,9 +607,10 @@
             transition: width 0.4s ease-out, height 0.4s ease-out, opacity 0.5s ease-out;
             pointer-events: none;
             opacity: 1;
+            z-index: 3;
         }
 
-        .dock-icon:active::after {
+        .dock-icon:active .ripple {
             width: 200%;
             height: 200%;
             opacity: 0;
@@ -619,6 +634,7 @@
             border: 1px solid rgba(255, 255, 255, 0.2);
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
             transform: translateY(10px);
+            z-index: 4;
         }
 
         .dock-icon:hover .dock-icon-label {
@@ -659,7 +675,23 @@
         .dock-study { background: linear-gradient(135deg, #FAD961 0%, #F76B1C 100%); }
         .dock-measure { background: linear-gradient(135deg, #42E695 0%, #3BB2B8 100%); }
         .dock-caffeine { background: linear-gradient(135deg, #A172FF 0%, #6B5CE7 100%); }
-        .dock-researcho { background: linear-gradient(135deg, #4ECDC4 0%, #00CEC9 100%); }
+        .dock-researcho { 
+            background: linear-gradient(135deg, #4ECDC4 0%, #00CEC9 100%); 
+            position: relative;
+            overflow: hidden;
+        }
+        .dock-researcho::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.2) 0%, 
+                rgba(255, 255, 255, 0.1) 50%, 
+                rgba(255, 255, 255, 0.05) 100%);
+            border-radius: inherit;
+            z-index: 1;
+        }
         .dock-typing { background: linear-gradient(135deg, #5EE7DF 0%, #B490CA 100%); }
         .dock-puzzle { background: linear-gradient(135deg, #6A11CB 0%, #2575FC 100%); }
         .dock-research-notes { background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%); }
@@ -674,8 +706,40 @@
         .dock-task { background: linear-gradient(135deg, #2196F3 0%, #673AB7 100%); }
         .dock-chono-copilot { background: linear-gradient(135deg, #4FACFE 0%, #21D4FD 100%); }
         .dock-code-cody { background: linear-gradient(135deg, #00C9FF 0%, #92FE9D 100%); }
-        .dock-ai-detector { background: linear-gradient(135deg, #FF416C 0%, #FF4B2B 100%); }
-        .dock-text-humanizer { background: linear-gradient(135deg, #7F00FF 0%, #E100FF 100%); }
+        .dock-ai-detector { 
+            background: linear-gradient(135deg, #FF416C 0%, #FF4B2B 100%); 
+            position: relative;
+            overflow: hidden;
+        }
+        .dock-ai-detector::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.2) 0%, 
+                rgba(255, 255, 255, 0.1) 50%, 
+                rgba(255, 255, 255, 0.05) 100%);
+            border-radius: inherit;
+            z-index: 1;
+        }
+        .dock-text-humanizer { 
+            background: linear-gradient(135deg, #7F00FF 0%, #E100FF 100%); 
+            position: relative;
+            overflow: hidden;
+        }
+        .dock-text-humanizer::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.2) 0%, 
+                rgba(255, 255, 255, 0.1) 50%, 
+                rgba(255, 255, 255, 0.05) 100%);
+            border-radius: inherit;
+            z-index: 1;
+        }
         .dock-cv-maker { background: linear-gradient(135deg, #6c757d, #343a40); }
 
         /* Enhanced Focus Submenu */
@@ -818,6 +882,7 @@
             flex-direction: column;
             box-shadow: 0 25px 80px rgba(0,0,0,0.6);
             position: relative;
+            overflow-y: auto;
         }
 
         .settings-modal-content h2 {
@@ -859,13 +924,15 @@
             display: flex;
             gap: 10px;
             justify-content: center;
+            flex-wrap: wrap;
         }
         .settings-btn {
             background: rgba(255,255,255,0.1);
             border: 1px solid transparent; color: var(--text-primary);
             padding: 8px 12px; border-radius: 10px; cursor: pointer;
             transition: all 0.3s ease; font-size: clamp(0.8rem, 2vw, 0.9rem);
-            font-weight: 500; flex-grow: 1;
+            font-weight: 500;
+            min-width: 60px;
         }
         .settings-btn:hover { background: rgba(255,255,255,0.2); transform: scale(1.05); }
         .settings-btn.active {
@@ -1295,11 +1362,27 @@
 
     <div class="dock dock-bottom size-medium">
         <!-- New Launchpad Icon -->
-        <div id="launchpad-dock-icon" class="dock-icon dock-launchpad" aria-label="Launchpad"><i class="fas fa-th"></i><div class="dock-icon-label">Launchpad</div></div>
+        <div id="launchpad-dock-icon" class="dock-icon dock-launchpad" aria-label="Launchpad">
+            <i class="fas fa-th"></i>
+            <div class="dock-icon-label">Launchpad</div>
+            <div class="ripple"></div>
+        </div>
 
-        <div class="dock-icon dock-tip" onclick="newTip()" aria-label="New Tip"><i class="fas fa-lightbulb"></i><div class="dock-icon-label">New Tip</div></div>
-        <a href="page12.html" class="dock-icon dock-motivation" aria-label="Motivation"><i class="fas fa-fist-raised"></i><div class="dock-icon-label">Motivation</div></a>
-        <a href="page16.html" class="dock-icon dock-task" aria-label="Tasks"><i class="fas fa-tasks"></i><div class="dock-icon-label">Tasks</div></a>
+        <div class="dock-icon dock-tip" onclick="newTip()" aria-label="New Tip">
+            <i class="fas fa-lightbulb"></i>
+            <div class="dock-icon-label">New Tip</div>
+            <div class="ripple"></div>
+        </div>
+        <a href="page12.html" class="dock-icon dock-motivation" aria-label="Motivation">
+            <i class="fas fa-fist-raised"></i>
+            <div class="dock-icon-label">Motivation</div>
+            <div class="ripple"></div>
+        </a>
+        <a href="page16.html" class="dock-icon dock-task" aria-label="Tasks">
+            <i class="fas fa-tasks"></i>
+            <div class="dock-icon-label">Tasks</div>
+            <div class="ripple"></div>
+        </a>
         <div class="dock-icon dock-focus" onclick="window.location.href='page9.html'" aria-label="Focus Modes">
             <i class="fas fa-bullseye"></i>
             <div class="dock-icon-label">Focus</div>
@@ -1307,25 +1390,86 @@
                 <a href="page13.html" class="focus-submenu-item"><i class="fas fa-hourglass-start"></i> Pomodoro</a>
                 <a href="page9.html" class="focus-submenu-item"><i class="fas fa-brain"></i> Deep Focus</a>
             </div>
+            <div class="ripple"></div>
         </div>
-        <div class="dock-icon dock-study" onclick="openStudyWithMe()" aria-label="Study With Me"><i class="fab fa-youtube"></i><div class="dock-icon-label">Study With Me</div></div>
-        <a href="page10.html" class="dock-icon dock-measure" aria-label="Measure"><i class="fas fa-ruler-combined"></i><div class="dock-icon-label">Measure</div></a>
-        <div class="dock-icon dock-caffeine" onclick="addCaffeine(this)" aria-label="Add Caffeine"><i class="fas fa-coffee"></i><div class="dock-icon-label">Add Caffeine</div></div>
-        <a href="page5.html" class="dock-icon dock-researcho" aria-label="Researcho"><i class="fas fa-search-plus"></i><div class="dock-icon-label">Researcho</div></a>
-        <a href="page6.html" class="dock-icon dock-typing" aria-label="Typing Test"><i class="fas fa-keyboard"></i><div class="dock-icon-label">Typing Test</div></a>
-        <a href="page7.html" class="dock-icon dock-puzzle" aria-label="Puzzles"><i class="fas fa-puzzle-piece"></i><div class="dock-icon-label">Puzzles</div></a>
+        <div class="dock-icon dock-study" onclick="openStudyWithMe()" aria-label="Study With Me">
+            <i class="fab fa-youtube"></i>
+            <div class="dock-icon-label">Study With Me</div>
+            <div class="ripple"></div>
+        </div>
+        <a href="page10.html" class="dock-icon dock-measure" aria-label="Measure">
+            <i class="fas fa-ruler-combined"></i>
+            <div class="dock-icon-label">Measure</div>
+            <div class="ripple"></div>
+        </a>
+        <div class="dock-icon dock-caffeine" onclick="addCaffeine(this)" aria-label="Add Caffeine">
+            <i class="fas fa-coffee"></i>
+            <div class="dock-icon-label">Add Caffeine</div>
+            <div class="ripple"></div>
+        </div>
+        <a href="page5.html" class="dock-icon dock-researcho" aria-label="Researcho">
+            <i class="fas fa-search-plus"></i>
+            <div class="dock-icon-label">Researcho</div>
+            <div class="ripple"></div>
+        </a>
+        <a href="page6.html" class="dock-icon dock-typing" aria-label="Typing Test">
+            <i class="fas fa-keyboard"></i>
+            <div class="dock-icon-label">Typing Test</div>
+            <div class="ripple"></div>
+        </a>
+        <a href="page7.html" class="dock-icon dock-puzzle" aria-label="Puzzles">
+            <i class="fas fa-puzzle-piece"></i>
+            <div class="dock-icon-label">Puzzles</div>
+            <div class="ripple"></div>
+        </a>
         <!-- UPDATED: Research Notes icon -->
-        <a href="page4.html" class="dock-icon dock-research-notes" aria-label="Research Notes"><i class="fas fa-sticky-note"></i><div class="dock-icon-label">Research Notes</div></a>
-        <a href="page8.html" class="dock-icon dock-whiteboard" aria-label="White Board"><i class="fas fa-chalkboard"></i><div class="dock-icon-label">White Board</div></a>
-        <a href="page13.html" class="dock-icon dock-booknest" aria-label="BookNest"><i class="fas fa-book-open-reader"></i><div class="dock-icon-label">BookNest</div></a>
-        <a href="page11.html" class="dock-icon dock-moodly" aria-label="Moodly"><i class="fas fa-smile-beam"></i><div class="dock-icon-label">Moodly</div></a>
+        <a href="page4.html" class="dock-icon dock-research-notes" aria-label="Research Notes">
+            <i class="fas fa-sticky-note"></i>
+            <div class="dock-icon-label">Research Notes</div>
+            <div class="ripple"></div>
+        </a>
+        <a href="page8.html" class="dock-icon dock-whiteboard" aria-label="White Board">
+            <i class="fas fa-chalkboard"></i>
+            <div class="dock-icon-label">White Board</div>
+            <div class="ripple"></div>
+        </a>
+        <a href="page13.html" class="dock-icon dock-booknest" aria-label="BookNest">
+            <i class="fas fa-book-open-reader"></i>
+            <div class="dock-icon-label">BookNest</div>
+            <div class="ripple"></div>
+        </a>
+        <a href="page11.html" class="dock-icon dock-moodly" aria-label="Moodly">
+            <i class="fas fa-smile-beam"></i>
+            <div class="dock-icon-label">Moodly</div>
+            <div class="ripple"></div>
+        </a>
         <!-- ===== NEWLY ADDED PRODUCTIVITY KITTY ICON ===== -->
-        <a href="page20.html" class="dock-icon dock-kitty" aria-label="Productivity Kitty"><i class="fas fa-cat"></i><div class="dock-icon-label">Productivity Kitty</div></a>
-        <a href="page17.html" class="dock-icon dock-code-cody" aria-label="Code Cody"><i class="fas fa-code"></i><div class="dock-icon-label">Code Cody</div></a>
-        <a href="page18.html" class="dock-icon dock-cv-maker" aria-label="CV Maker"><i class="fas fa-id-card"></i><div class="dock-icon-label">CV Maker</div></a>
-        <a href="page19.html" class="dock-icon dock-ai-detector" aria-label="AI Detector"><i class="fas fa-robot"></i><div class="dock-icon-label">AI Detector</div></a>
+        <a href="page20.html" class="dock-icon dock-kitty" aria-label="Productivity Kitty">
+            <i class="fas fa-cat"></i>
+            <div class="dock-icon-label">Productivity Kitty</div>
+            <div class="ripple"></div>
+        </a>
+        <a href="page17.html" class="dock-icon dock-code-cody" aria-label="Code Cody">
+            <i class="fas fa-code"></i>
+            <div class="dock-icon-label">Code Cody</div>
+            <div class="ripple"></div>
+        </a>
+        <a href="page18.html" class="dock-icon dock-cv-maker" aria-label="CV Maker">
+            <i class="fas fa-id-card"></i>
+            <div class="dock-icon-label">CV Maker</div>
+            <div class="ripple"></div>
+        </a>
+        <a href="page19.html" class="dock-icon dock-ai-detector" aria-label="AI Detector">
+            <i class="fas fa-robot"></i>
+            <div class="dock-icon-label">AI Detector</div>
+            <div class="ripple"></div>
+        </a>
         <!-- UPDATED: Text Humanizer icon -->
-        <a href="page24.html" class="dock-icon dock-text-humanizer" aria-label="Text Humanizer"><i class="fas fa-user-friends"></i><div class="dock-icon-label">Text Humanizer</div></a>
+        <a href="page24.html" class="dock-icon dock-text-humanizer" aria-label="Text Humanizer">
+            <i class="fas fa-user-friends"></i>
+            <div class="dock-icon-label">Text Humanizer</div>
+            <div class="ripple"></div>
+        </a>
     </div>
 
     <div class="app">
@@ -1409,8 +1553,17 @@
             <div class="settings-group">
                 <h3>Sound Effects</h3>
                 <div class="settings-options" id="sound-options">
-                    <button class="settings-btn active" data-sound="on">On</button>
-                    <button class="settings-btn" data-sound="off">Off</button>
+                    <button class="settings-btn" data-sound="on">On</button>
+                    <button class="settings-btn active" data-sound="off">Off</button>
+                </div>
+            </div>
+
+            <!-- NEW: Haptics Toggle Option -->
+            <div class="settings-group">
+                <h3>Haptic Feedback</h3>
+                <div class="settings-options" id="haptics-options">
+                    <button class="settings-btn" data-haptics="on">On</button>
+                    <button class="settings-btn active" data-haptics="off">Off</button>
                 </div>
             </div>
 
@@ -1448,6 +1601,7 @@
     const dockAnimButtons = document.querySelectorAll('#dock-anim-options .settings-btn');
     const dockShapeButtons = document.querySelectorAll('#dock-shape-options .settings-btn');
     const soundButtons = document.querySelectorAll('#sound-options .settings-btn');
+    const hapticsButtons = document.querySelectorAll('#haptics-options .settings-btn');
     const themeGridContainer = document.getElementById('theme-grid-container');
 
     // LAUNCHPAD SELECTORS
@@ -1461,7 +1615,8 @@
     let caffeineIntake = 0;
     let calendarVisible = true;
     let launchpadTimeout;
-    let soundsEnabled = true; // NEW: Sound toggle state
+    let soundsEnabled = false; // Default to off
+    let hapticsEnabled = false; // Default to off
 
     const tips = [
         "Break your study time into 25-minute intervals with the Pomodoro Technique.", "Use active recall by testing yourself, not just rereading notes.", "Explain what you've learned to someone else to solidify your understanding.", "Create a dedicated, distraction-free study zone.", "Use flashcards for key terms and concepts.", "Review material consistently, a little bit each day.", "Prioritize sleep; it's crucial for memory consolidation.", "Stay hydrated and eat nutritious brain food.", "Use mind maps to visualize connections between ideas.", "Take short, regular breaks to avoid burnout.", "Teach concepts to an imaginary audience to identify knowledge gaps.", "Use the Feynman Technique: simplify complex topics as if explaining to a child.", "Change study locations occasionally to improve memory retention.", "Practice spaced repetition for long-term memorization.", "Start with the most challenging material when your mind is freshest."
@@ -1486,13 +1641,21 @@
         "serene-teal": { "--primary-glow": "#26a69a", "--secondary-glow": "#00897b", "--tertiary-glow": "#004d40", "--background": "#004d40", "--text-primary": "#e0f2f1", "--glass-bg": "rgba(38, 166, 154, 0.1)", "--glass-border": "rgba(38, 166, 154, 0.2)", "--card-bg": "rgba(0, 77, 64, 0.7)", "--accent": "#80cbc4" },
         "royal-purple": { "--primary-glow": "#673ab7", "--secondary-glow": "#512da8", "--tertiary-glow": "#311b92", "--background": "#1a237e", "--text-primary": "#d1c4e9", "--glass-bg": "rgba(103, 58, 183, 0.1)", "--glass-border": "rgba(103, 58, 183, 0.2)", "--card-bg": "rgba(26, 35, 126, 0.7)", "--accent": "#b39ddb" },
         "sunflower-glow": { "--primary-glow": "#ffc107", "--secondary-glow": "#ffa000", "--tertiary-glow": "#ff6f00", "--background": "#f57f17", "--text-primary": "#3e2723", "--glass-bg": "rgba(255, 193, 7, 0.1)", "--glass-border": "rgba(255, 160, 0, 0.2)", "--card-bg": "rgba(245, 127, 23, 0.7)", "--accent": "#ffd54f" },
-        "deep-space": { "--primary-glow": "#1a237e", "--secondary-glow": "#283593", "--tertiary-glow": "#303f9f", "--background": "#0d47a1", "--text-primary": "#e3f2fd", "--glass-bg": "rgba(26, 35, 126, 0.1)", "--glass-border": "rgba(26, 35, 126, 0.2)", "--card-bg": "rgba(13, 71, 161, 0.7)", "--accent": "#64b5f6" }
+        "deep-space": { "--primary-glow": "#1a237e", "--secondary-glow": "#283593", "--tertiary-glow": "#303f9f", "--background": "#0d47a1", "--text-primary": "#e3f2fd", "--glass-bg": "rgba(26, 35, 126, 0.1)", "--glass-border": "rgba(26, 35, 126, 0.2)", "--card-bg": "rgba(13, 71, 161, 0.7)", "--accent": "#64b5f6" },
+        // NEW THEMES
+        "mint-fresh": { "--primary-glow": "#00d2b8", "--secondary-glow": "#00b894", "--tertiary-glow": "#00a085", "--background": "#00695c", "--text-primary": "#e0f2f1", "--glass-bg": "rgba(0, 210, 184, 0.1)", "--glass-border": "rgba(0, 210, 184, 0.2)", "--card-bg": "rgba(0, 105, 92, 0.7)", "--accent": "#00d2b8" },
+        "berry-smoothie": { "--primary-glow": "#e84393", "--secondary-glow": "#fd79a8", "--tertiary-glow": "#ff7675", "--background": "#6c5ce7", "--text-primary": "#f8f9fa", "--glass-bg": "rgba(232, 67, 147, 0.1)", "--glass-border": "rgba(232, 67, 147, 0.2)", "--card-bg": "rgba(108, 92, 231, 0.7)", "--accent": "#e84393" },
+        "desert-sun": { "--primary-glow": "#e17055", "--secondary-glow": "#fdcb6e", "--tertiary-glow": "#fab1a0", "--background": "#d63031", "--text-primary": "#ffeaa7", "--glass-bg": "rgba(225, 112, 85, 0.1)", "--glass-border": "rgba(225, 112, 85, 0.2)", "--card-bg": "rgba(214, 48, 49, 0.7)", "--accent": "#e17055" },
+        "arctic-ice": { "--primary-glow": "#74b9ff", "--secondary-glow": "#a29bfe", "--tertiary-glow": "#dfe6e9", "--background": "#0984e3", "--text-primary": "#dfe6e9", "--glass-bg": "rgba(116, 185, 255, 0.1)", "--glass-border": "rgba(116, 185, 255, 0.2)", "--card-bg": "rgba(9, 132, 227, 0.7)", "--accent": "#74b9ff" },
+        "forest-mist": { "--primary-glow": "#00b894", "--secondary-glow": "#55efc4", "--tertiary-glow": "#81ecec", "--background": "#00cec9", "--text-primary": "#2d3436", "--glass-bg": "rgba(0, 184, 148, 0.1)", "--glass-border": "rgba(0, 184, 148, 0.2)", "--card-bg": "rgba(0, 206, 201, 0.7)", "--accent": "#00b894" },
+        "midnight-rose": { "--primary-glow": "#6c5ce7", "--secondary-glow": "#a29bfe", "--tertiary-glow": "#fd79a8", "--background": "#2d3436", "--text-primary": "#dfe6e9", "--glass-bg": "rgba(108, 92, 231, 0.1)", "--glass-border": "rgba(108, 92, 231, 0.2)", "--card-bg": "rgba(45, 52, 54, 0.7)", "--accent": "#6c5ce7" },
+        "sunset-orange": { "--primary-glow": "#e17055", "--secondary-glow": "#fdcb6e", "--tertiary-glow": "#fab1a0", "--background": "#d63031", "--text-primary": "#ffeaa7", "--glass-bg": "rgba(225, 112, 85, 0.1)", "--glass-border": "rgba(225, 112, 85, 0.2)", "--card-bg": "rgba(214, 48, 49, 0.7)", "--accent": "#e17055" }
     };
 
     // --- CORE FUNCTIONS ---
 
     function playSound(url) {
-        if (!soundsEnabled) return; // NEW: Check if sounds are enabled
+        if (!soundsEnabled) return; // Check if sounds are enabled
         
         try { 
             const audio = new Audio(url);
@@ -1502,7 +1665,7 @@
     }
 
     function triggerHaptic() {
-        if ('vibrate' in navigator) {
+        if (hapticsEnabled && 'vibrate' in navigator) {
             navigator.vibrate(50);
         }
     }
@@ -1642,7 +1805,7 @@
         triggerHaptic();
     }
 
-    // NEW: Set dock icon shape
+    // Set dock icon shape
     function setDockIconShape(shape) {
         if (!['square', 'round'].includes(shape)) shape = 'square';
         dockElement.classList.remove('icons-round');
@@ -1655,11 +1818,20 @@
         triggerHaptic();
     }
 
-    // NEW: Toggle sounds
+    // Toggle sounds
     function setSoundEnabled(enabled) {
         soundsEnabled = enabled === 'on';
         soundButtons.forEach(btn => btn.classList.toggle('active', btn.dataset.sound === (soundsEnabled ? 'on' : 'off')));
         localStorage.setItem('studyVerseSoundsEnabled', soundsEnabled);
+        playSound('https://www.soundjay.com/buttons/sounds/button-10.mp3');
+        triggerHaptic();
+    }
+
+    // Toggle haptics
+    function setHapticsEnabled(enabled) {
+        hapticsEnabled = enabled === 'on';
+        hapticsButtons.forEach(btn => btn.classList.toggle('active', btn.dataset.haptics === (hapticsEnabled ? 'on' : 'off')));
+        localStorage.setItem('studyVerseHapticsEnabled', hapticsEnabled);
         playSound('https://www.soundjay.com/buttons/sounds/button-10.mp3');
         triggerHaptic();
     }
@@ -1764,12 +1936,16 @@
         setDockSize(localStorage.getItem('studyVerseDockSize') || 'medium');
         setDockAnimation(localStorage.getItem('studyVerseDockAnimationType') || 'none');
         
-        // NEW: Load icon shape preference
+        // Load icon shape preference
         setDockIconShape(localStorage.getItem('studyVerseDockIconShape') || 'square');
         
-        // NEW: Load sound preference
+        // Load sound preference (default to off)
         const savedSoundsEnabled = localStorage.getItem('studyVerseSoundsEnabled');
-        setSoundEnabled(savedSoundsEnabled === 'true' ? 'on' : 'on'); // Default to 'on'
+        setSoundEnabled(savedSoundsEnabled === 'true' ? 'on' : 'off');
+        
+        // Load haptics preference (default to off)
+        const savedHapticsEnabled = localStorage.getItem('studyVerseHapticsEnabled');
+        setHapticsEnabled(savedHapticsEnabled === 'true' ? 'on' : 'off');
         
         generateCalendar();
         
@@ -1801,9 +1977,10 @@
         dockSizeButtons.forEach(btn => btn.addEventListener('click', () => setDockSize(btn.dataset.size)));
         dockAnimButtons.forEach(btn => btn.addEventListener('click', () => setDockAnimation(btn.dataset.anim)));
         
-        // NEW: Add listeners for icon shape and sound options
+        // Add listeners for icon shape and sound options
         dockShapeButtons.forEach(btn => btn.addEventListener('click', () => setDockIconShape(btn.dataset.shape)));
         soundButtons.forEach(btn => btn.addEventListener('click', () => setSoundEnabled(btn.dataset.sound)));
+        hapticsButtons.forEach(btn => btn.addEventListener('click', () => setHapticsEnabled(btn.dataset.haptics)));
 
         // LAUNCHPAD LISTENERS
         launchpadDockIcon.addEventListener('click', toggleLaunchpad);
