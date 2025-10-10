@@ -3,875 +3,778 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Moodly AI - Your Personal Mood Assistant</title>
+    <title>Moodly AI - Your Wellness Companion</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* --- Base & Theme Variables --- */
+        :root {
+            --background-start: #fdf2e1;
+            --background-end: #eaf6f8;
+            --text-primary: #333;
+            --text-secondary: rgba(60, 60, 67, 0.75);
+            --accent-primary: #007AFF;
+            --accent-secondary: #FF9F0A;
+            --accent-red: #FF3B30;
+            --accent-purple: #AF52DE;
+            --glass-background: rgba(255, 255, 255, 0.45);
+            --glass-border-color: rgba(255, 255, 255, 0.2);
+            --glass-blur: 20px;
+            --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+            --border-radius-large: 24px;
+            --border-radius-medium: 18px;
+            --border-radius-small: 12px;
+            --transition-smooth: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        /* Serene Theme */
+        body.theme-serene {
+            --background-start: #e0f2f1;
+            --background-end: #e3f2fd;
+            --text-primary: #1c313a;
+            --accent-primary: #00897b;
+            --accent-secondary: #fbc02d;
+        }
+
+        /* Focus Theme */
+        body.theme-focus {
+            --background-start: #f5f5f5;
+            --background-end: #e0e0e0;
+            --text-primary: #212121;
+            --accent-primary: #d50000;
+            --accent-secondary: #f57f17;
+            --glass-background: rgba(255, 255, 255, 0.6);
+        }
+
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         }
-        
-        :root {
-            --primary-color: rgba(106, 130, 251, 0.8);
-            --secondary-color: rgba(167, 119, 227, 0.8);
-            --glass-bg: rgba(255, 255, 255, 0.15);
-            --glass-border: rgba(255, 255, 255, 0.2);
-            --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
-            --text-light: rgba(255, 255, 255, 0.9);
-            --text-dark: #333;
-        }
-        
+
         body {
-            background: linear-gradient(135deg, #6e8efb, #a777e3);
-            color: var(--text-light);
+            background: linear-gradient(135deg, var(--background-start) 0%, var(--background-end) 100%);
+            color: var(--text-primary);
+            line-height: 1.6;
             min-height: 100vh;
+            padding-bottom: 60px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            padding: 20px 0;
+            text-align: center;
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 20px;
-            overflow-x: hidden;
         }
-        
-        .container {
-            width: 100%;
-            max-width: 900px;
-            background: var(--glass-bg);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border-radius: 20px;
-            border: 1px solid var(--glass-border);
-            box-shadow: var(--glass-shadow);
-            overflow: hidden;
-            margin: 20px 0;
-        }
-        
-        header {
-            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
-            color: white;
-            padding: 30px;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        header::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
-            transform: rotate(30deg);
-        }
-        
+
         .logo {
-            font-size: 2.8rem;
-            font-weight: 700;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-        }
-        
-        .logo i {
-            margin-right: 15px;
-            font-size: 3rem;
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
-        }
-        
-        .tagline {
-            font-size: 1.2rem;
-            opacity: 0.9;
-            position: relative;
-        }
-        
-        .main-content {
-            padding: 30px;
-        }
-        
-        .section {
-            margin-bottom: 30px;
-            display: none;
-        }
-        
-        .active {
-            display: block;
-            animation: fadeIn 0.5s ease;
-        }
-        
-        h2 {
-            color: var(--text-light);
-            margin-bottom: 20px;
-            font-size: 1.8rem;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-        
-        .section p {
-            margin-bottom: 20px;
-            line-height: 1.6;
-        }
-        
-        .mood-options {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-        
-        .mood-option {
-            background: var(--glass-bg);
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
-            border: 1px solid var(--glass-border);
-            border-radius: 16px;
-            padding: 20px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-        }
-        
-        .mood-option:hover {
-            transform: translateY(-5px) scale(1.03);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-            border-color: rgba(255, 255, 255, 0.4);
-            background: rgba(255, 255, 255, 0.25);
-        }
-        
-        .mood-option i {
             font-size: 2.5rem;
-            margin-bottom: 15px;
-            display: block;
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+            font-weight: 700;
+            margin-bottom: 8px;
+            letter-spacing: -1.5px;
+        }
+
+        .tagline {
+            font-size: 1.15rem;
+            color: var(--text-secondary);
+            margin-bottom: 24px;
         }
         
-        .advice-box {
-            background: var(--glass-bg);
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
-            border: 1px solid var(--glass-border);
-            border-radius: 16px;
-            padding: 25px;
-            margin: 20px 0;
-            display: none;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-        }
-        
-        .advice-box.active {
-            display: block;
-            animation: fadeIn 0.5s ease;
-        }
-        
-        .advice-title {
-            font-weight: 600;
-            color: var(--text-light);
-            margin-bottom: 15px;
-            font-size: 1.4rem;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-        
-        .advice-content {
-            line-height: 1.7;
-            white-space: pre-line;
-        }
-        
-        .action-buttons {
-            display: flex;
-            gap: 15px;
-            margin-top: 25px;
-            flex-wrap: wrap;
-        }
-        
-        .btn {
-            padding: 14px 25px;
-            border: none;
-            border-radius: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-        
-        .btn i {
-            margin-right: 8px;
-        }
-        
-        .btn-primary {
-            background: rgba(90, 103, 216, 0.7);
-            color: white;
-        }
-        
-        .btn-primary:hover {
-            background: rgba(76, 81, 191, 0.8);
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-        }
-        
-        .btn-secondary {
-            background: rgba(255, 255, 255, 0.2);
-            color: var(--text-light);
-        }
-        
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-        }
-        
-        .btn-success {
-            background: rgba(72, 187, 120, 0.7);
-            color: white;
-        }
-        
-        .btn-success:hover {
-            background: rgba(56, 161, 105, 0.8);
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-        }
-        
-        .chat-container {
-            background: var(--glass-bg);
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
-            border-radius: 16px;
-            padding: 20px;
-            height: 300px;
-            overflow-y: auto;
-            margin-bottom: 20px;
-            border: 1px solid var(--glass-border);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-        }
-        
-        .message {
-            margin-bottom: 15px;
-            padding: 12px 18px;
-            border-radius: 18px;
-            max-width: 80%;
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
-        
-        .user-message {
-            background: rgba(90, 103, 216, 0.7);
-            color: white;
-            margin-left: auto;
-            border-bottom-right-radius: 5px;
-        }
-        
-        .ai-message {
-            background: rgba(255, 255, 255, 0.2);
-            color: var(--text-light);
-            border-bottom-left-radius: 5px;
-        }
-        
-        .chat-input {
+        /* --- Theme Selector --- */
+        .theme-selector {
             display: flex;
             gap: 10px;
+            background: rgba(255,255,255,0.2);
+            padding: 8px;
+            border-radius: 20px;
+            margin-bottom: 20px;
         }
-        
-        .chat-input input {
-            flex: 1;
-            padding: 14px 18px;
-            background: var(--glass-bg);
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
-            border: 1px solid var(--glass-border);
-            border-radius: 12px;
-            font-size: 1rem;
-            color: var(--text-light);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-        }
-        
-        .chat-input input::placeholder {
-            color: rgba(255, 255, 255, 0.7);
-        }
-        
-        .chat-input button {
-            padding: 14px 20px;
-            background: rgba(90, 103, 216, 0.7);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            cursor: pointer;
-            font-weight: 600;
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-        
-        .chat-input button:hover {
-            background: rgba(76, 81, 191, 0.8);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
-        }
-        
-        .exercise-list {
-            display: grid;
-            gap: 20px;
-        }
-        
-        .exercise-item {
-            background: var(--glass-bg);
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
-            border: 1px solid var(--glass-border);
+
+        .theme-btn {
+            padding: 8px 16px;
+            border: 1px solid transparent;
             border-radius: 16px;
-            padding: 25px;
             cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            background-color: transparent;
+            color: var(--text-secondary);
+            font-weight: 500;
+            transition: var(--transition-smooth);
         }
-        
-        .exercise-item:hover {
+
+        .theme-btn.active, .theme-btn:hover {
+            background-color: var(--glass-background);
+            border-color: var(--glass-border-color);
+            color: var(--accent-primary);
+        }
+
+
+        .glass-card {
+            background: var(--glass-background);
+            border-radius: var(--border-radius-large);
+            padding: 30px;
+            backdrop-filter: blur(var(--glass-blur));
+            -webkit-backdrop-filter: blur(var(--glass-blur));
+            border: 1px solid var(--glass-border-color);
+            box-shadow: var(--glass-shadow);
+            transition: var(--transition-smooth);
+        }
+         .glass-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-            border-color: rgba(255, 255, 255, 0.4);
-            background: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.12);
         }
-        
-        .exercise-title {
-            font-weight: 600;
-            color: var(--text-light);
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            font-size: 1.2rem;
-        }
-        
-        .exercise-title i {
-            margin-right: 12px;
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
-        }
-        
-        .exercise-desc {
-            color: rgba(255, 255, 255, 0.8);
-            font-size: 0.95rem;
-            line-height: 1.5;
-        }
-        
-        .nav-buttons {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 25px;
-        }
-        
+
         footer {
             text-align: center;
-            padding: 20px;
-            color: var(--text-light);
+            color: var(--text-secondary);
+            padding: 40px 0 20px;
             font-size: 0.9rem;
-            opacity: 0.8;
+            border-top: 1px solid rgba(0,0,0,0.05);
+            margin-top: 60px;
         }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+
+        /* --- ENHANCED AI ASSISTANT --- */
+        .ai-assistant { margin: 30px 0; }
+        .ai-assistant-card { padding: 25px; position: relative; }
+        .ai-header { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; }
+        .ai-avatar { width: 50px; height: 50px; background: linear-gradient(135deg, var(--accent-primary), var(--accent-purple)); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem; flex-shrink: 0;}
+        .ai-title { font-size: 1.5rem; color: var(--text-primary); }
+
+        .ai-chatbox {
+            margin-top: 15px; padding: 20px; background: rgba(0, 122, 255, 0.05);
+            border-radius: var(--border-radius-medium); border: 1px solid rgba(0, 122, 255, 0.1);
+            min-height: 140px; line-height: 1.7;
         }
-        
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-            100% { transform: translateY(0px); }
+
+        #ai-response-content strong, #ai-response-content h4 { color: var(--accent-primary); font-weight: 600; margin-bottom: 10px; margin-top: 5px; }
+        #ai-response-content ul { list-style-position: inside; padding-left: 10px; margin-top: 10px;}
+        #ai-response-content li { margin-bottom: 8px; }
+
+        .ai-thinking { display: flex; align-items: center; gap: 10px; color: var(--text-secondary); font-style: italic; }
+        .thinking-dot { width: 8px; height: 8px; background: var(--text-secondary); border-radius: 50%; animation: bounce 1.4s infinite ease-in-out both; }
+        .thinking-dot:nth-child(1) { animation-delay: -0.32s; } .thinking-dot:nth-child(2) { animation-delay: -0.16s; }
+        @keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1.0); } }
+
+        .ai-input-container { position: relative; }
+        .ai-input-area { display: flex; gap: 10px; margin-top: 20px; }
+        #user-input {
+            flex-grow: 1; padding: 15px; border: 1px solid var(--glass-border-color);
+            border-radius: var(--border-radius-medium); font-size: 1rem;
+            background: rgba(255, 255, 255, 0.8); transition: var(--transition-smooth);
         }
-        
-        .floating {
-            animation: float 6s ease-in-out infinite;
+        #user-input:focus { outline: none; box-shadow: 0 0 0 2px var(--accent-primary); background: white; }
+        #send-btn {
+            background: var(--accent-primary); color: white; border: none; padding: 0 25px;
+            border-radius: var(--border-radius-medium); cursor: pointer; font-size: 1rem; font-weight: 500;
+            transition: var(--transition-smooth); box-shadow: 0 4px 10px rgba(0, 122, 255, 0.2);
         }
-        
+        #send-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(0, 122, 255, 0.3); }
+
+        /* Autocomplete Preset Suggestions Styling */
+        #preset-suggestions-list {
+            position: absolute; bottom: 100%; left: 0; right: 0;
+            background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border-color);
+            border-radius: var(--border-radius-medium);
+            max-height: 250px; overflow-y: auto;
+            z-index: 100; opacity: 0; visibility: hidden;
+            transform: translateY(10px); transition: all 0.2s ease;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+        #preset-suggestions-list.visible { opacity: 1; visibility: visible; transform: translateY(-10px); }
+        .suggestion-item { padding: 12px 20px; cursor: pointer; border-bottom: 1px solid var(--glass-border-color); font-size: 0.95rem; color: var(--text-primary); }
+        .suggestion-item:last-child { border-bottom: none; }
+        .suggestion-item:hover { background-color: rgba(0, 122, 255, 0.1); }
+        .suggestion-item mark { background-color: #ff9f0a80; border-radius: 3px; }
+
+        /* --- Other Page Sections Styling --- */
+        .section-title { font-size: 2rem; text-align: center; margin-bottom: 40px; font-weight: 600; }
+        #exercises { margin-bottom: 60px; padding-top: 40px; }
+        .exercise-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; }
+        .exercise-card { padding: 25px; }
+        .exercise-card h3 { font-size: 1.4rem; margin-bottom: 15px; color: var(--accent-primary); }
+
+        /* Breathing Exercise */
+        .breathing-exercise-section { margin: 30px 0 60px; }
+        .circle {
+            width: 180px; height: 180px; background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            border-radius: 50%; margin: 20px auto; display: flex; align-items: center; justify-content: center;
+            color: white; font-size: 24px; font-weight: 500; transition: var(--transition-smooth);
+            box-shadow: 0 8px 30px rgba(0, 122, 255, 0.25); border: 2px solid rgba(255, 255, 255, 0.5);
+            text-align: center;
+            padding: 10px;
+        }
+        .controls { margin-top: 20px; display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; }
+        .controls button, .controls a {
+            background: var(--accent-primary); color: white; border: none; padding: 12px 24px;
+            border-radius: 25px; cursor: pointer; font-size: 1rem; font-weight: 500;
+            transition: var(--transition-smooth); box-shadow: 0 4px 10px rgba(0, 122, 255, 0.2);
+            text-decoration: none; display: inline-block;
+        }
+        .controls button:hover, .controls a:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 122, 255, 0.3);
+        }
+        #stop-breathing { background-color: var(--accent-red); box-shadow: 0 4px 10px rgba(255, 59, 48, 0.2); }
+        #stop-breathing:hover { box-shadow: 0 6px 15px rgba(255, 59, 48, 0.3); }
+        .controls a {
+            background-color: var(--accent-purple);
+            box-shadow: 0 4px 10px rgba(175, 82, 222, 0.2);
+        }
+         .controls a:hover {
+            box-shadow: 0 6px 15px rgba(175, 82, 222, 0.3);
+        }
+
+        /* --- Responsive Design for Phones --- */
         @media (max-width: 768px) {
-            .mood-options {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            
-            .action-buttons {
-                flex-direction: column;
-            }
-            
-            .btn {
-                width: 100%;
-            }
-            
-            .nav-buttons {
-                flex-direction: column;
-                gap: 15px;
-            }
-            
-            .nav-buttons .btn {
-                width: 100%;
-            }
+            .logo { font-size: 2rem; }
+            .tagline { font-size: 1rem; }
+            .section-title { font-size: 1.8rem; }
+            .glass-card { padding: 20px; }
+            .ai-input-area { flex-direction: column; gap: 12px; }
+            #send-btn { padding: 15px; }
+            .exercise-grid { grid-template-columns: 1fr; }
         }
-        
+
         @media (max-width: 480px) {
-            .mood-options {
-                grid-template-columns: 1fr;
-            }
-            
-            .logo {
-                font-size: 2.2rem;
-            }
-            
-            .logo i {
-                font-size: 2.5rem;
-            }
-            
-            .main-content {
-                padding: 20px;
-            }
+            .container { padding: 0 15px; }
+            header { padding: 15px 0; }
+            .ai-header { flex-direction: column; text-align: center; }
+            .circle { width: 150px; height: 150px; font-size: 20px; }
         }
     </style>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <div class="container floating">
+    <div class="container">
         <header>
-            <div class="logo">
-                <i class="fas fa-brain"></i>
-                Moodly AI
+            <div class="logo">moodly AI</div>
+            <p class="tagline">Your intelligent guide to a clearer mind.</p>
+             <div class="theme-selector">
+                <button class="theme-btn active" data-theme="default">Default</button>
+                <button class="theme-btn" data-theme="serene">Serene</button>
+                <button class="theme-btn" data-theme="focus">Focus</button>
             </div>
-            <div class="tagline">Your personal AI mood assistant</div>
         </header>
-        
-        <div class="main-content">
-            <!-- Mood Selection Section -->
-            <div id="mood-selection" class="section active">
-                <h2>How are you feeling today?</h2>
-                <p>Select your current mood to get personalized advice:</p>
-                
-                <div class="mood-options">
-                    <div class="mood-option" data-mood="happy">
-                        <i class="fas fa-laugh-beam"></i>
-                        <span>Happy</span>
+
+        <section class="ai-assistant">
+            <div class="glass-card ai-assistant-card">
+                <div class="ai-header">
+                    <div class="ai-avatar"><i class="fas fa-brain"></i></div>
+                    <h2 class="ai-title">Advanced Wellness Assistant</h2>
+                </div>
+                <p>Hello! I'm an advanced version of Moodly. Tell me what's on your mind. As you type, I can suggest questions you might want to ask.</p>
+                <div class="ai-chatbox" id="ai-chatbox">
+                    <div id="ai-response-content">How can I support you today?</div>
+                    <div class="ai-thinking" id="ai-thinking-indicator" style="display: none;">
+                        <span class="thinking-dot"></span><span class="thinking-dot"></span><span class="thinking-dot"></span>
+                        <span>Moodly is considering...</span>
                     </div>
-                    <div class="mood-option" data-mood="sad">
-                        <i class="fas fa-sad-tear"></i>
-                        <span>Sad</span>
-                    </div>
-                    <div class="mood-option" data-mood="anxious">
-                        <i class="fas fa-flushed"></i>
-                        <span>Anxious</span>
-                    </div>
-                    <div class="mood-option" data-mood="angry">
-                        <i class="fas fa-angry"></i>
-                        <span>Angry</span>
-                    </div>
-                    <div class="mood-option" data-mood="stressed">
-                        <i class="fas fa-tired"></i>
-                        <span>Stressed</span>
-                    </div>
-                    <div class="mood-option" data-mood="tired">
-                        <i class="fas fa-bed"></i>
-                        <span>Tired</span>
+                </div>
+                <div class="ai-input-container">
+                    <div id="preset-suggestions-list"></div>
+                    <div class="ai-input-area">
+                        <input type="text" id="user-input" placeholder="e.g., I'm overwhelmed with studying...">
+                        <button id="send-btn" title="Send message">Ask</button>
                     </div>
                 </div>
             </div>
-            
-            <!-- Advice Section -->
-            <div id="advice-section" class="section">
-                <h2>Here's how to feel better</h2>
-                
-                <div id="advice-box" class="advice-box">
-                    <div class="advice-title" id="advice-title">Advice for your mood</div>
-                    <div id="advice-content" class="advice-content">Advice will appear here based on your selected mood.</div>
-                    
-                    <div class="action-buttons">
-                        <button id="feeling-better" class="btn btn-success">
-                            <i class="fas fa-check"></i> I'm feeling better
-                        </button>
-                        <button id="still-feel-bad" class="btn btn-secondary">
-                            <i class="fas fa-comments"></i> I still feel bad
-                        </button>
-                        <button id="use-mental-exercise" class="btn btn-primary">
-                            <i class="fas fa-brain"></i> Use Mental Exercise
-                        </button>
+        </section>
+
+        <main>
+             <section id="exercises" class="breathing-exercise-section glass-card">
+                <h2 style="text-align: center;">4-7-8 Breathing</h2>
+                <p class="tagline" style="text-align: center;">A simple technique to calm your nerves.</p>
+                <div class="circle" id="breath-circle">Start</div>
+                <div class="controls">
+                    <button id="start-breathing">Begin</button>
+                    <button id="stop-breathing" style="display:none">Pause</button>
+                    <a href="page14.html">Mind Exercise</a>
+                </div>
+            </section>
+
+            <section class="exercises">
+                <h2 class="section-title">Mindful Study Breaks</h2>
+                <div class="exercise-grid">
+                    <div class="glass-card exercise-card">
+                        <h3>Pomodoro Technique</h3>
+                        <p>Study for 25 minutes, then a 5-minute break. After four cycles, take a longer 15-30 minute break.</p>
+                    </div>
+                    <div class="glass-card exercise-card">
+                        <h3>Desk Yoga</h3>
+                        <p>Simple seated yoga poses to release tension in your neck, shoulders, and back during study sessions.</p>
+                    </div>
+                    <div class="glass-card exercise-card">
+                        <h3>Five Senses Scan</h3>
+                        <p>Notice 5 things you can see, 4 you can touch, 3 you can hear, 2 you can smell, and 1 you can taste.</p>
                     </div>
                 </div>
-            </div>
-            
-            <!-- Chat Section -->
-            <div id="chat-section" class="section">
-                <h2>Chat with Moodly AI</h2>
-                <p>Tell me more about how you're feeling. I'm here to listen and help.</p>
-                
-                <div class="chat-container" id="chat-container">
-                    <div class="message ai-message">
-                        Hi there! I'm Moodly AI. I'm here to help you feel better. How can I assist you today?
-                    </div>
-                </div>
-                
-                <div class="chat-input">
-                    <input type="text" id="user-input" placeholder="Type your message here...">
-                    <button id="send-message"><i class="fas fa-paper-plane"></i> Send</button>
-                </div>
-                
-                <div class="nav-buttons">
-                    <button id="back-to-advice" class="btn btn-secondary">
-                        <i class="fas fa-arrow-left"></i> Back to Advice
-                    </button>
-                    <button id="open-miniapp" class="btn btn-primary">
-                        <i class="fas fa-external-link-alt"></i> Open Full Moodly AI
-                    </button>
-                </div>
-            </div>
-            
-            <!-- Mental Exercises Section -->
-            <div id="exercises-section" class="section">
-                <h2>Mental Exercises to Improve Your Mood</h2>
-                <p>Try these exercises to help regulate your emotions and feel better:</p>
-                
-                <div class="exercise-list">
-                    <div class="exercise-item" data-exercise="breathing">
-                        <div class="exercise-title">
-                            <i class="fas fa-wind"></i>
-                            Deep Breathing
-                        </div>
-                        <div class="exercise-desc">
-                            A simple breathing technique to calm your nervous system and reduce stress.
-                        </div>
-                    </div>
-                    <div class="exercise-item" data-exercise="gratitude">
-                        <div class="exercise-title">
-                            <i class="fas fa-heart"></i>
-                            Gratitude Journaling
-                        </div>
-                        <div class="exercise-desc">
-                            Write down three things you're grateful for to shift your focus to positive aspects.
-                        </div>
-                    </div>
-                    <div class="exercise-item" data-exercise="mindfulness">
-                        <div class="exercise-title">
-                            <i class="fas fa-leaf"></i>
-                            5-4-3-2-1 Grounding
-                        </div>
-                        <div class="exercise-desc">
-                            Notice 5 things you see, 4 things you feel, 3 things you hear, 2 things you smell, and 1 thing you taste.
-                        </div>
-                    </div>
-                    <div class="exercise-item" data-exercise="visualization">
-                        <div class="exercise-title">
-                            <i class="fas fa-mountain"></i>
-                            Positive Visualization
-                        </div>
-                        <div class="exercise-desc">
-                            Imagine yourself in a peaceful, happy place to calm your mind and reduce anxiety.
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="nav-buttons">
-                    <button id="back-to-advice-from-exercises" class="btn btn-secondary">
-                        <i class="fas fa-arrow-left"></i> Back to Advice
-                    </button>
-                </div>
-            </div>
-        </div>
+            </section>
+        </main>
     </div>
-    
+
     <footer>
-        <p>Moodly AI by CozyTuStudios | Your mental wellbeing matters</p>
+       <p>© 2025 Moodly AI — Your companion for a clearer mind.</p>
     </footer>
 
     <script>
-        // Mood data with advice
-        const moodData = {
-            happy: {
-                title: "You're feeling happy!",
-                advice: "That's wonderful! To maintain this positive mood:\n\n• Share your happiness with others\n• Engage in activities you enjoy\n• Practice gratitude for what's making you happy\n• Consider doing something kind for someone else"
-            },
-            sad: {
-                title: "You're feeling sad",
-                advice: "I'm sorry you're feeling this way. Here are some suggestions:\n\n• Talk to someone you trust about how you feel\n• Engage in a comforting activity like listening to music\n• Practice self-compassion - it's okay to feel sad sometimes\n• Consider going for a gentle walk in nature"
-            },
-            anxious: {
-                title: "You're feeling anxious",
-                advice: "Anxiety can be challenging. Try these techniques:\n\n• Practice deep breathing (inhale for 4 counts, hold for 4, exhale for 6)\n• Challenge anxious thoughts by asking if they're realistic\n• Focus on what you can control right now\n• Try a grounding exercise to reconnect with the present"
-            },
-            angry: {
-                title: "You're feeling angry",
-                advice: "Anger is a normal emotion. Here's how to manage it:\n\n• Take a timeout - step away from the situation\n• Express your feelings using 'I' statements\n• Channel the energy into physical activity\n• Practice relaxation techniques like progressive muscle relaxation"
-            },
-            stressed: {
-                title: "You're feeling stressed",
-                advice: "Stress can feel overwhelming. Try these strategies:\n\n• Break tasks into smaller, manageable steps\n• Prioritize what needs your attention right now\n• Practice mindfulness to stay present\n• Make sure you're taking breaks and staying hydrated"
-            },
-            tired: {
-                title: "You're feeling tired",
-                advice: "When you're feeling exhausted:\n\n• Listen to your body and rest if possible\n• Stay hydrated and eat nourishing foods\n• Try a short, gentle walk to boost energy\n• Consider if you need to adjust your sleep routine"
-            }
+    // --- COMBINED AND FULLY FUNCTIONAL JAVASCRIPT ---
+
+    // --- Part 1: ADVANCED AI ASSISTANT SCRIPT ---
+    const userInput = document.getElementById('user-input');
+    const sendBtn = document.getElementById('send-btn');
+    const chatboxContent = document.getElementById('ai-response-content');
+    const thinkingIndicator = document.getElementById('ai-thinking-indicator');
+    const suggestionsList = document.getElementById('preset-suggestions-list');
+    
+    // --- THEME SWITCHER LOGIC ---
+    const themeButtons = document.querySelectorAll('.theme-btn');
+    themeButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const theme = button.getAttribute('data-theme');
+            document.body.className = theme === 'default' ? '' : `theme-${theme}`;
+
+            themeButtons.forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+        });
+    });
+
+    let isAIThinking = false;
+    
+    // --- IMPROVED AI: String Similarity Function (Sørensen-Dice coefficient) ---
+    function getStringSimilarity(a, b) {
+        a = a.replace(/\s+/g, '')
+        b = b.replace(/\s+/g, '')
+        
+        if (!a.length && !b.length) return 1;
+        if (!a.length || !b.length) return 0;
+        if (a === b) return 1;
+        if (a.length === 1 && b.length === 1) return 0;
+        if (a.length < 2 || b.length < 2) return 0;
+
+        let firstBigrams = new Map();
+        for (let i = 0; i < a.length - 1; i++) {
+            const bigram = a.substring(i, i + 2);
+            const count = firstBigrams.has(bigram) ? firstBigrams.get(bigram) + 1 : 1;
+            firstBigrams.set(bigram, count);
         };
-        
-        // Exercise instructions
-        const exerciseData = {
-            breathing: {
-                title: "Deep Breathing Exercise",
-                steps: [
-                    "Find a comfortable seated position or lie down",
-                    "Place one hand on your chest and the other on your belly",
-                    "Take a slow, deep breath in through your nose for 4 seconds",
-                    "Feel your belly expand as you breathe in",
-                    "Hold your breath for 4 seconds",
-                    "Slowly exhale through your mouth for 6 seconds",
-                    "Repeat this cycle 5-10 times"
-                ]
-            },
-            gratitude: {
-                title: "Gratitude Journaling",
-                steps: [
-                    "Take out a notebook or open a notes app",
-                    "Write down three things you're grateful for today",
-                    "Be specific - instead of 'my family', try 'the supportive conversation I had with my sister'",
-                    "Reflect on why each thing makes you grateful",
-                    "Notice how you feel after completing this exercise"
-                ]
-            },
-            mindfulness: {
-                title: "5-4-3-2-1 Grounding Technique",
-                steps: [
-                    "Look around and name 5 things you can see",
-                    "Notice 4 things you can feel (your feet on the floor, the texture of your clothes)",
-                    "Listen for 3 things you can hear (distant traffic, a clock ticking)",
-                    "Identify 2 things you can smell (or 2 smells you like)",
-                    "Name 1 thing you can taste (or your favorite taste)"
-                ]
-            },
-            visualization: {
-                title: "Positive Visualization",
-                steps: [
-                    "Close your eyes and take a few deep breaths",
-                    "Imagine a place where you feel completely safe and peaceful",
-                    "Engage all your senses - what do you see, hear, smell, and feel there?",
-                    "Spend a few minutes exploring this place in your mind",
-                    "When you're ready, slowly bring your awareness back to the present"
-                ]
-            }
-        };
-        
-        // DOM Elements
-        const moodSelectionSection = document.getElementById('mood-selection');
-        const adviceSection = document.getElementById('advice-section');
-        const chatSection = document.getElementById('chat-section');
-        const exercisesSection = document.getElementById('exercises-section');
-        
-        const moodOptions = document.querySelectorAll('.mood-option');
-        const adviceBox = document.getElementById('advice-box');
-        const adviceTitle = document.getElementById('advice-title');
-        const adviceContent = document.getElementById('advice-content');
-        
-        const feelingBetterBtn = document.getElementById('feeling-better');
-        const stillFeelBadBtn = document.getElementById('still-feel-bad');
-        const useMentalExerciseBtn = document.getElementById('use-mental-exercise');
-        
-        const backToAdviceBtn = document.getElementById('back-to-advice');
-        const openMiniappBtn = document.getElementById('open-miniapp');
-        const backToAdviceFromExercisesBtn = document.getElementById('back-to-advice-from-exercises');
-        
-        const chatContainer = document.getElementById('chat-container');
-        const userInput = document.getElementById('user-input');
-        const sendMessageBtn = document.getElementById('send-message');
-        
-        const exerciseItems = document.querySelectorAll('.exercise-item');
-        
-        // Current selected mood
-        let currentMood = null;
-        
-        // Event Listeners
-        moodOptions.forEach(option => {
-            option.addEventListener('click', function() {
-                currentMood = this.getAttribute('data-mood');
-                showAdvice(currentMood);
-            });
-        });
-        
-        feelingBetterBtn.addEventListener('click', function() {
-            alert("That's great to hear! Remember you can always come back if you need more support.");
-            resetToMoodSelection();
-        });
-        
-        stillFeelBadBtn.addEventListener('click', function() {
-            showSection(chatSection);
-        });
-        
-        useMentalExerciseBtn.addEventListener('click', function() {
-            showSection(exercisesSection);
-        });
-        
-        backToAdviceBtn.addEventListener('click', function() {
-            showSection(adviceSection);
-        });
-        
-        backToAdviceFromExercisesBtn.addEventListener('click', function() {
-            showSection(adviceSection);
-        });
-        
-        openMiniappBtn.addEventListener('click', function() {
-            window.open('https://miniapps.ai/moodly-ai-by-cozytustudios/', '_blank');
-        });
-        
-        sendMessageBtn.addEventListener('click', sendMessage);
-        userInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                sendMessage();
-            }
-        });
-        
-        exerciseItems.forEach(item => {
-            item.addEventListener('click', function() {
-                const exercise = this.getAttribute('data-exercise');
-                showExerciseInstructions(exercise);
-            });
-        });
-        
-        // Functions
-        function showSection(section) {
-            // Hide all sections
-            document.querySelectorAll('.section').forEach(sec => {
-                sec.classList.remove('active');
-            });
-            
-            // Show the selected section
-            section.classList.add('active');
-        }
-        
-        function showAdvice(mood) {
-            if (moodData[mood]) {
-                adviceTitle.textContent = moodData[mood].title;
-                adviceContent.textContent = moodData[mood].advice;
-                adviceBox.classList.add('active');
-                
-                showSection(adviceSection);
+
+        let intersectionSize = 0;
+        for (let i = 0; i < b.length - 1; i++) {
+            const bigram = b.substring(i, i + 2);
+            const count = firstBigrams.has(bigram) ? firstBigrams.get(bigram) : 0;
+            if (count > 0) {
+                firstBigrams.set(bigram, count - 1);
+                intersectionSize++;
             }
         }
-        
-        function resetToMoodSelection() {
-            showSection(moodSelectionSection);
-            adviceBox.classList.remove('active');
-            currentMood = null;
+        return (2.0 * intersectionSize) / (a.length + b.length - 2);
+    }
+
+    const qa_database = {
+        'exam_stress': {
+            keywords: ['stressed about my exams', 'exam stress', 'overwhelmed with studying', 'study pressure'],
+            title: "Managing Exam Stress",
+            content: "Feeling stressed before exams is a sign that you care, but it can be overwhelming. The key is to manage it. Try the <strong>Pomodoro Technique</strong> to break your study sessions into manageable chunks:<ul><li>Work with intense focus for 25 minutes.</li><li>Take a 5-minute break completely away from your books.</li><li>After four cycles, take a longer 15-30 minute break.</li></ul>This prevents burnout and helps your brain absorb information more effectively."
+        },
+        'panic_attack': {
+            keywords: ['panic attack', 'having a panic attack', 'I think I am having a panic attack'],
+            title: "Grounding Yourself During a Panic Attack",
+            content: "This can feel incredibly scary, but you are safe. Let's pull your focus into the present moment. Use the <strong>5-4-3-2-1 Technique</strong> right now:<ul><li>Name <strong>5</strong> things you can see.</li><li>Name <strong>4</strong> things you can feel (your feet on the floor, your shirt).</li><li>Name <strong>3</strong> things you can hear.</li><li>Name <strong>2</strong> things you can smell.</li><li>Name <strong>1</strong> positive quality about yourself.</li></ul>Focus on your breathing. You will get through this."
+        },
+        'anxiety_focus': {
+            keywords: ['anxiety is making it hard to focus', 'anxious to focus', 'can\'t concentrate due to anxiety'],
+            title: "Breaking the Anxiety-Focus Loop",
+            content: "Anxiety and lack of focus are closely linked. When your mind is racing, it's impossible to concentrate. Let's interrupt that loop with a simple physical task. Stand up and do <strong>10 gentle neck rolls</strong>, five in each direction. Then, get a glass of cold water. This small reset can often provide just enough clarity to get back to your task."
+        },
+        'presentation_calm': {
+            keywords: ['calm down before a presentation', 'presentation anxiety', 'nervous about public speaking'],
+            title: "Calming Pre-Presentation Jitters",
+            content: "It's totally normal to feel nervous! Use that energy. Just before you speak, find a private space and try <strong>'Power Posing'</strong> for 60 seconds (e.g., stand tall with your hands on your hips). Research suggests this can increase feelings of confidence. Also, take three slow, deep belly breaths to calm your nervous system right before you start."
+        },
+        'pressure_succeed': {
+            keywords: ['pressure to succeed'],
+            title: "Easing the Pressure to Succeed",
+            content: "That pressure can be paralyzing. Let's reframe your goal. Instead of focusing on the outcome (like a specific grade), focus on the <strong>process and effort</strong>. Did you put in a reasonable amount of time today? Did you try your best in this session? Celebrating consistent effort, not just flawless results, is a much more sustainable and compassionate way to achieve your goals."
+        },
+        'social_anxiety': {
+            keywords: ['social anxiety', 'anxious about meeting new people'],
+            title: "Navigating Social Anxiety",
+            content: "Social anxiety often stems from focusing inward. A powerful technique is to <strong>shift your focus outward</strong>. When meeting someone, make it your mission to learn one interesting thing about them. Ask open-ended questions (starting with 'what,' 'how,' or 'why'). This takes the spotlight off you and can make conversations feel more natural."
+        },
+        'overthinking': {
+            keywords: ['overthink everything', 'can\'t relax'],
+            title: "Quieting an Overthinking Mind",
+            content: "When you can't stop overthinking, your mind needs a clear instruction. Try this: acknowledge the thought by saying to yourself, 'Okay, I'm having a worried thought,' and then immediately engage your senses. Describe the room you're in to yourself in great detail. 'The wall is white, there's a black lamp...' This is a form of mindfulness that anchors you in the present, away from the spiral of thoughts."
+        },
+        'future_worry': {
+            keywords: ['worried about the future'],
+            title: "Managing Worry About the Future",
+            content: "Worrying about the future pulls you out of the only moment you can control: right now. Do a quick <strong>'Circle of Control'</strong> exercise. Draw a circle on a piece of paper (or in your mind). Inside, list things you can control (your effort today, your attitude). Outside, list things you can't (the exact questions on a test, what others think). Pour your energy only into what's inside the circle."
+        },
+        'heart_racing': {
+            keywords: ['heart is racing'],
+            title: "When Your Heart is Racing",
+            content: "A racing heart can be alarming and is a common sign of anxiety. You can directly influence your heart rate with your breath. Let's try <strong>4-7-8 Breathing</strong>, which stimulates the vagus nerve to calm the body:<ul><li>Breathe in quietly through your nose for <strong>4</strong> seconds.</li><li>Hold your breath for a count of <strong>7</strong> seconds.</li><li>Exhale completely through your mouth, making a whoosh sound, for <strong>8</strong> seconds.</li></ul>Repeat this three times."
+        },
+        'procrastinating': {
+            keywords: ['can\'t stop procrastinating', 'avoiding'],
+            title: "Breaking the Procrastination Cycle",
+            content: "Procrastination is often caused by feeling overwhelmed by the task. Let's trick your brain by using the <strong>'2-Minute Rule'</strong>. Pick the task you're avoiding and commit to doing it for only two minutes. Anyone can do something for just two minutes. Often, starting is the hardest part, and you'll find you can continue for longer."
+        },
+        'unmotivated': {
+            keywords: ['unmotivated to do anything'],
+            title: "Finding a Spark of Motivation",
+            content: "Motivation isn't something you wait for; it's something you create with action. Don't wait to 'feel' like it. Instead, focus on the smallest possible step and <strong>'celebrate the start.'</strong> Your goal isn't to finish the big task. Your goal is simply to open the book or write one sentence. Once you do that, give yourself credit. That small feeling of accomplishment is what builds momentum."
+        },
+        'workload_overwhelm': {
+            keywords: ['overwhelmed by my workload', 'too much to do'],
+            title: "Taming an Overwhelming Workload",
+            content: "When you have too much to do, your brain can freeze. The first step is to get it all out of your head. Do a <strong>'Brain Dump'</strong>: write down every single task you can think of on a piece of paper. Don't organize it, just get it all out. Seeing it all on paper often makes it feel more manageable than the chaotic cloud of 'everything' in your mind. From there, you can pick just ONE thing to start."
+        },
+        'feeling_sad': {
+            keywords: ['feeling sad and don\'t know why', 'feeling down'],
+            title: "When You're Feeling Sad",
+            content: "It's perfectly okay to feel sad, even without a clear reason. Don't fight the feeling; just acknowledge it with kindness. 'I'm feeling sad right now, and that's alright.' Try something gentle on your senses, like putting on a favorite comforting playlist or stepping outside for <strong>five minutes of fresh air</strong>. The goal isn't to force happiness, but to offer yourself a moment of comfort."
+        },
+        'boost_mood': {
+            keywords: ['boost my mood', 'cheer up'],
+            title: "For a Quick Mood Boost",
+            content: "You can influence your mood with your body. Try a technique called <strong>'Smile Therapy.'</strong> Even if you don't feel like it, hold a gentle, genuine smile for 30 seconds. The physical act of using the smiling muscles can send signals to your brain that can help lift your emotional state. Pair it with standing up and stretching your arms high for an extra boost."
+        },
+        'feeling_lonely': {
+            keywords: ['feel lonely'],
+            title: "Navigating Feelings of Loneliness",
+            content: "Loneliness is about a lack of connection, not a lack of people. A powerful antidote is to create a small moment of genuine connection. Think of one person you haven't spoken to in a while and send them a text with a specific question, like 'Hey, saw [this thing] and it made me think of you. How have you been?' Being proactive, even in a small way, can make a big difference."
+        },
+        'self_love': {
+            keywords: ['practice self-love', 'critical of myself'],
+            title: "Practicing Self-Love",
+            content: "Self-love is often about practicing self-compassion. The next time you make a mistake or feel inadequate, ask yourself: <strong>'What would I say to a dear friend in this exact situation?'</strong> You would likely offer kindness, encouragement, and perspective. Now, try to offer those same words to yourself. Treat yourself with the same grace you give to others."
+        },
+        'negative_self_talk': {
+            keywords: ['negative self-talk'],
+            title: "Challenging Negative Self-Talk",
+            content: "Our minds have a habit of negative chatter. To combat it, you need to challenge it like a lawyer. When a negative thought like 'I'm going to fail' appears, ask: <strong>'Where is the evidence for that thought? Is it 100% true?'</strong> Often, you'll find it's an exaggeration or a fear, not a fact. Then, come up with a more balanced, realistic thought, like 'This is challenging, but I am capable and I have prepared.'"
+        },
+        'cant_sleep': {
+            keywords: ['can\'t fall asleep', 'trouble sleeping'],
+            title: "Tips for Falling Asleep",
+            content: "If you're struggling to sleep, creating a 'buffer zone' before bed is crucial. For the last 30-60 minutes of your day, declare a <strong>'No Screens'</strong> policy. The blue light from phones and computers disrupts melatonin, the hormone that signals sleep. Instead, read a physical book, do some light stretching, or listen to calming music to signal to your body and mind that it's time to wind down."
+        },
+        'always_tired': {
+            keywords: ['tired all the time', 'no energy'],
+            title: "On Feeling Tired all the Time",
+            content: "Constant fatigue can be draining. While sleep is a major factor, don't overlook hydration and nutrition. Are you drinking enough water throughout the day? Dehydration is a major cause of fatigue. Also, ensure you're having regular meals to keep your blood sugar stable. A quick <strong>5-minute walk</strong> can also paradoxically boost your energy more effectively than sitting still."
+        },
+        'didnt_work': {
+            keywords: ["didn't work", 'not helping', 'another idea'],
+            title: "Let's Try a Different Approach",
+            content: "I appreciate you telling me that. Not every technique works for everyone in every moment. Let's switch gears. If the last suggestion was more of a mental exercise, let's try something physical. Stand up and shake out your arms and legs for 30 seconds. If the last suggestion was physical, let's try something sensory: find one thing in the room that has a pleasant texture and focus on it for a moment. Sometimes a different pathway is all you need."
+        },
+        'advice': {
+            keywords: ['advice', 'useful tip'],
+            title: "A Generally Useful Tip",
+            content: "Here’s a powerful productivity and wellness tip: the <strong>'One-Minute Rule.'</strong> If a task takes less than a minute to complete—like putting a cup in the dishwasher, replying to a quick text, or writing down a reminder—do it immediately instead of putting it off. This prevents small tasks from piling up and creating a sense of mental clutter and overwhelm."
         }
-        
-        function sendMessage() {
-            const message = userInput.value.trim();
-            if (message === '') return;
-            
-            // Add user message to chat
-            addMessageToChat(message, 'user');
-            
-            // Clear input
-            userInput.value = '';
-            
-            // Generate AI response after a short delay
-            setTimeout(() => {
-                const aiResponse = generateAIResponse(message);
-                addMessageToChat(aiResponse, 'ai');
-            }, 1000);
-        }
-        
-        function addMessageToChat(message, sender) {
-            const messageElement = document.createElement('div');
-            messageElement.classList.add('message');
-            messageElement.classList.add(sender === 'user' ? 'user-message' : 'ai-message');
-            messageElement.textContent = message;
-            
-            chatContainer.appendChild(messageElement);
-            chatContainer.scrollTop = chatContainer.scrollHeight;
-        }
-        
-        function generateAIResponse(userMessage) {
-            const responses = [
-                "I understand how you're feeling. Can you tell me more about what's bothering you?",
-                "Thank you for sharing that with me. It sounds like you're going through a difficult time.",
-                "I'm here to listen. What else is on your mind?",
-                "That sounds challenging. Have you tried any of the exercises we discussed?",
-                "I appreciate you opening up about this. Remember that it's okay to feel this way sometimes.",
-                "Let's work through this together. What's one small thing that might help right now?",
-                "Your feelings are valid. Would you like to try a different approach to feel better?",
-                "I hear you. Sometimes just talking about our feelings can make them feel more manageable."
-            ];
-            
-            // Simple keyword matching for more relevant responses
-            if (userMessage.toLowerCase().includes('anxious') || userMessage.toLowerCase().includes('worry')) {
-                return "Anxiety can feel overwhelming. Have you tried the deep breathing exercise? It can help calm your nervous system.";
-            } else if (userMessage.toLowerCase().includes('sad') || userMessage.toLowerCase().includes('down')) {
-                return "I'm sorry you're feeling this way. Remember that emotions come and go, and it's okay to not feel okay sometimes.";
-            } else if (userMessage.toLowerCase().includes('angry') || userMessage.toLowerCase().includes('mad')) {
-                return "Anger is a powerful emotion. Sometimes taking a break and returning to the situation later can help.";
-            } else if (userMessage.toLowerCase().includes('tired') || userMessage.toLowerCase().includes('exhausted')) {
-                return "It sounds like you could use some rest. Remember that self-care isn't selfish - it's necessary.";
-            }
-            
-            // Return a random response if no keywords match
-            return responses[Math.floor(Math.random() * responses.length)];
-        }
-        
-        function showExerciseInstructions(exercise) {
-            if (exerciseData[exercise]) {
-                let instructionsHTML = `<h3 style="color: var(--text-light); margin-bottom: 20px; text-shadow: 0 2px 4px rgba(0,0,0,0.1);">${exerciseData[exercise].title}</h3>`;
-                instructionsHTML += '<ol style="color: var(--text-light); line-height: 1.7; margin-left: 20px;">';
-                
-                exerciseData[exercise].steps.forEach(step => {
-                    instructionsHTML += `<li style="margin-bottom: 10px;">${step}</li>`;
-                });
-                
-                instructionsHTML += '</ol>';
-                instructionsHTML += '<p style="color: var(--text-light); margin-top: 20px; font-style: italic;">Take your time with this exercise. There\'s no rush.</p>';
-                
-                // Create modal for exercise instructions
-                const modal = document.createElement('div');
-                modal.style.position = 'fixed';
-                modal.style.top = '0';
-                modal.style.left = '0';
-                modal.style.width = '100%';
-                modal.style.height = '100%';
-                modal.style.backgroundColor = 'rgba(0,0,0,0.7)';
-                modal.style.display = 'flex';
-                modal.style.justifyContent = 'center';
-                modal.style.alignItems = 'center';
-                modal.style.zIndex = '1000';
-                
-                const modalContent = document.createElement('div');
-                modalContent.style.backgroundColor = 'rgba(106, 130, 251, 0.9)';
-                modalContent.style.backdropFilter = 'blur(10px)';
-                modalContent.style.webkitBackdropFilter = 'blur(10px)';
-                modalContent.style.border = '1px solid rgba(255, 255, 255, 0.2)';
-                modalContent.style.padding = '30px';
-                modalContent.style.borderRadius = '16px';
-                modalContent.style.maxWidth = '500px';
-                modalContent.style.width = '90%';
-                modalContent.style.maxHeight = '80%';
-                modalContent.style.overflowY = 'auto';
-                modalContent.style.boxShadow = '0 10px 30px rgba(0, 0, 0, 0.3)';
-                modalContent.innerHTML = instructionsHTML;
-                
-                const closeButton = document.createElement('button');
-                closeButton.textContent = 'Close';
-                closeButton.classList.add('btn', 'btn-primary');
-                closeButton.style.marginTop = '20px';
-                closeButton.addEventListener('click', function() {
-                    document.body.removeChild(modal);
-                });
-                
-                modalContent.appendChild(closeButton);
-                modal.appendChild(modalContent);
-                document.body.appendChild(modal);
-                
-                // Close modal when clicking outside
-                modal.addEventListener('click', function(e) {
-                    if (e.target === modal) {
-                        document.body.removeChild(modal);
+    };
+    
+    const tips = [
+        { keywords: ['advice', 'useful tip'], title: "The One-Minute Rule", content: "If a task takes less than a minute—like putting away your shoes or sending a text—do it immediately to prevent clutter and stress." },
+        { keywords: ['focus', 'productivity'], title: "The Two-Minute Rule", content: "If something can be done in under two minutes, handle it now. Quick actions clear mental space for bigger tasks." },
+        { keywords: ['wellness', 'mental health'], title: "Micro-Breaks Matter", content: "Take a 2–3 minute break every hour to stretch, breathe, or look away from your screen. It reduces fatigue and boosts focus." },
+        { keywords: ['organization', 'productivity'], title: "Declutter Desk, Declutter Mind", content: "A tidy workspace reduces distractions and creates mental clarity. Spend 5 minutes each day organizing your desk." },
+        { keywords: ['time management', 'planning'], title: "The Power of Planning Ahead", content: "Spend 5 minutes each evening planning tomorrow’s top 3 priorities. It reduces decision fatigue and increases focus." },
+        { keywords: ['mindfulness', 'focus'], title: "The 5-4-3-2-1 Method", content: "Calm anxiety by naming 5 things you see, 4 you touch, 3 you hear, 2 you smell, and 1 you taste." },
+        { keywords: ['energy', 'health'], title: "Hydration Reminder", content: "Drink a glass of water first thing in the morning. It jumpstarts metabolism and rehydrates your body after sleep." },
+        { keywords: ['study', 'learning'], title: "Pomodoro Technique", content: "Work for 25 minutes, then rest for 5. After four rounds, take a longer break. Great for staying focused and avoiding burnout." },
+        { keywords: ['motivation', 'goals'], title: "Visualize Success", content: "Spend a minute picturing your goal achieved. Visualization boosts motivation and helps align your daily actions with success." },
+        { keywords: ['wellness', 'happiness'], title: "Gratitude Note", content: "Write down one thing you’re grateful for every day. It trains your brain to focus on positives and improves mood." },
+        { keywords: ['productivity', 'decision making'], title: "Limit Daily Decisions", content: "Reduce decision fatigue by automating small choices—like meal prepping or planning outfits in advance." },
+        { keywords: ['mental health', 'stress'], title: "Box Breathing", content: "Breathe in for 4 seconds, hold 4, exhale 4, hold 4. Repeat to calm nerves and sharpen focus." },
+        { keywords: ['time management', 'efficiency'], title: "Batch Similar Tasks", content: "Group similar tasks (emails, calls, errands) together to save time and reduce mental switching." },
+        { keywords: ['study', 'memory'], title: "Teach What You Learn", content: "Explain new knowledge to someone else. Teaching reinforces memory and deepens understanding." },
+        { keywords: ['health', 'energy'], title: "Morning Movement", content: "Start your day with light stretching or a short walk to wake up your body and mind." },
+        { keywords: ['organization', 'planning'], title: "Weekly Reset", content: "Set aside 15 minutes on Sunday to review goals, tidy up, and set intentions for the week." },
+        { keywords: ['happiness', 'relationships'], title: "Send a Kind Message", content: "Text someone a quick note of appreciation. Small acts strengthen bonds and improve mood." },
+        { keywords: ['focus', 'work'], title: "Single-Tasking Wins", content: "Multitasking reduces efficiency. Focus on one task at a time for better results." },
+        { keywords: ['wellness', 'sleep'], title: "No Screens Before Bed", content: "Avoid screens 30 minutes before sleeping. Blue light disrupts melatonin and sleep quality." },
+        { keywords: ['study', 'retention'], title: "Spaced Repetition", content: "Review material over increasing intervals. It strengthens long-term memory better than cramming." },
+        { keywords: ['finance', 'savings'], title: "Automate Savings", content: "Set up an automatic transfer to savings right after payday to build wealth effortlessly." },
+        { keywords: ['motivation', 'growth'], title: "Celebrate Small Wins", content: "Acknowledge progress, no matter how small. Momentum builds motivation." },
+        { keywords: ['productivity', 'focus'], title: "Use Do Not Disturb", content: "Silence notifications during deep work sessions to protect your focus." },
+        { keywords: ['energy', 'health'], title: "Stand and Stretch", content: "Stand up at least once an hour to improve circulation and avoid stiffness." },
+        { keywords: ['learning', 'curiosity'], title: "Ask More Questions", content: "Stay curious—asking questions deepens understanding and sparks creativity." },
+        { keywords: ['stress relief', 'focus'], title: "Quick Walk Reset", content: "When overwhelmed, take a 5-minute walk outside. Movement clears the mind." },
+        { keywords: ['study', 'creativity'], title: "Change Study Spot", content: "A new environment can refresh focus and spark creativity." },
+        { keywords: ['organization', 'decluttering'], title: "One In, One Out Rule", content: "For every new item you bring in, remove one old item. Keeps clutter under control." },
+        { keywords: ['mental health', 'positivity'], title: "Affirmation Practice", content: "Repeat a positive statement daily. It rewires thought patterns over time." },
+        { keywords: ['work', 'efficiency'], title: "Set Time Limits", content: "Give yourself a deadline, even for small tasks. Deadlines create urgency and focus." },
+        { keywords: ['relationships', 'kindness'], title: "Listen Actively", content: "When someone speaks, listen fully without planning your reply. It deepens connections." },
+        { keywords: ['finance', 'budget'], title: "Track Small Expenses", content: "Little purchases add up. Log them to see where your money really goes." },
+        { keywords: ['health', 'fitness'], title: "Stretch Before Sleep", content: "Gentle stretches before bed relax muscles and improve sleep quality." },
+        { keywords: ['focus', 'time management'], title: "Time Blocking", content: "Assign specific blocks of time to tasks. It prevents multitasking and distraction." },
+        { keywords: ['productivity', 'work'], title: "Tackle Hardest Task First", content: "Do your most difficult task in the morning when willpower is strongest." },
+        { keywords: ['mental health', 'stress'], title: "Journaling Release", content: "Write down worries before bed to clear your mind and sleep better." },
+        { keywords: ['study', 'learning'], title: "Mind Map Notes", content: "Use diagrams instead of linear notes. It boosts memory and creativity." },
+        { keywords: ['health', 'diet'], title: "Eat Protein Breakfast", content: "Protein-rich breakfasts keep you fuller and more focused than sugary ones." },
+        { keywords: ['focus', 'productivity'], title: "Set 3 Priorities", content: "Pick your top 3 tasks for the day. Focus beats overwhelming to-do lists." },
+        { keywords: ['motivation', 'growth'], title: "Progress Journal", content: "Track your small wins daily. Seeing progress fuels consistency." },
+        { keywords: ['organization', 'planning'], title: "Night Prep", content: "Lay out clothes, prep meals, and plan tomorrow the night before to reduce stress." },
+        { keywords: ['relationships', 'positivity'], title: "Compliment Someone", content: "Give a genuine compliment today. It brightens both your day and theirs." },
+        { keywords: ['wellness', 'focus'], title: "Digital Detox Hour", content: "Set aside one hour a day screen-free. It refreshes your brain." },
+        { keywords: ['health', 'hydration'], title: "Carry a Water Bottle", content: "Keep water with you at all times to avoid dehydration." },
+        { keywords: ['learning', 'study'], title: "Review Before Sleep", content: "Go over key notes before bed. Your brain consolidates learning overnight." },
+        { keywords: ['productivity', 'organization'], title: "Inbox Zero Habit", content: "Clear your email inbox daily or weekly to avoid digital clutter." },
+        { keywords: ['mental health', 'happiness'], title: "Daily Sunlight", content: "Get at least 10 minutes of natural sunlight to boost mood and vitamin D." },
+        { keywords: ['work', 'motivation'], title: "Reward Yourself", content: "After finishing a task, treat yourself with something small. Rewards build habits." }
+    ];
+    
+    const dailyLifeAdviceDB = {};
+    // Populate the dailyLifeAdviceDB from the tips array
+    tips.forEach(tip => {
+        const key = tip.title.toLowerCase().replace(/\s+/g, '_').replace(/[^\w-]/g, '');
+        dailyLifeAdviceDB[key] = tip;
+    });
+
+    const presetQuestions = [
+        "I'm feeling stressed about my exams.", "How do I stop a panic attack?", "My anxiety is making it hard to focus.",
+        "What's a quick way to calm down before a presentation?", "I feel a lot of pressure to succeed.", "How to deal with social anxiety?",
+        "I overthink everything and can't relax.", "I'm worried about the future.", "My heart is racing, what should I do?",
+        "I can't stop procrastinating.", "I feel so unmotivated to do anything.", "I feel overwhelmed by my workload.",
+        "I'm feeling sad and don't know why.", "How can I boost my mood right now?", "I feel lonely even when I'm around people.",
+        "How can I practice self-love?", "How to stop negative self-talk?", "I can't fall asleep at night.",
+        "I feel tired all the time.", "That suggestion didn't work for me.", "Tell me another idea.", "Give me some advice.",
+        "I'm scared I'll fail my exams.",
+        "How do I calm down when I'm nervous?",
+        "I feel like I'm not good enough.",
+        "Why do I always compare myself to others?",
+        "I can't focus on studying no matter how hard I try.",
+        "How can I stop procrastinating so much?",
+        "I'm nervous about meeting new people.",
+        "I feel like giving up on everything.",
+        "What's a simple way to relax my mind?",
+        "I can't stop thinking about past mistakes.",
+        "How can I motivate myself to get out of bed?",
+        "I feel like everyone expects too much from me.",
+        "How do I stop worrying about things I can't control?",
+        "I'm anxious before job interviews.",
+        "I feel drained even after sleeping.",
+        "What's the best way to calm my racing thoughts?",
+        "I can't handle all this pressure anymore.",
+        "How do I deal with constant overthinking?",
+        "I feel insecure about how I look.",
+        "How can I stop being afraid of failure?",
+        "I'm losing interest in things I used to enjoy.",
+        "Why do I feel so restless all the time?",
+        "I feel nervous when speaking in front of people.",
+        "How do I stop doubting myself?",
+        "I'm stressed out about deadlines.",
+        "I feel like I'm falling behind in life.",
+        "How can I stop my mind from spiraling?",
+        "I'm too tired to be productive.",
+        "I feel like I don't belong anywhere.",
+        "How do I boost my confidence quickly?",
+        "I can't stop thinking negatively.",
+        "I feel overwhelmed when I have too many tasks.",
+        "How can I get motivated when I feel lazy?",
+        "I worry too much about what people think of me.",
+        "I feel anxious at night before sleeping.",
+        "How do I deal with constant stress?",
+        "I feel like I disappoint people.",
+        "Why do I always feel so on edge?",
+        "I can't stop replaying conversations in my head.",
+        "How can I handle rejection better?",
+        "I feel too shy to talk to people.",
+        "I feel like I'm wasting my time.",
+        "Why do I feel empty inside?",
+        "I get nervous when people look at me.",
+        "How do I find inner peace?",
+        "I feel like my thoughts won't slow down.",
+        "How can I stop being so hard on myself?",
+        "I'm scared of making mistakes.",
+        "I feel like I can't trust myself.",
+        "How do I stop caring what others think?",
+        "I get overwhelmed in crowded places.",
+        "I feel like I can't do anything right.",
+        "How can I stay positive during tough times?",
+        "I'm worried I'll let everyone down.",
+        "Why do I feel anxious in the morning?",
+        "I can't stop biting my nails when stressed.",
+        "How do I stop panicking over small things?",
+        "I feel like I have no control over my life.",
+        "What's a quick way to ground myself?",
+        "I feel stuck in the same cycle every day.",
+        "Why do I keep sabotaging myself?",
+        "I can't concentrate on my work.",
+        "I feel like crying for no reason.",
+        "How do I stop doubting my decisions?",
+        "I feel guilty for resting.",
+        "Why do I always expect the worst?",
+        "I can't stop worrying about the future.",
+        "I feel like everyone else has it together but me.",
+        "How do I stop comparing my life to others?",
+        "I feel socially awkward.",
+        "How can I deal with fear of public speaking?",
+        "I can't find motivation to exercise.",
+        "I feel like I'm underperforming.",
+        "How do I stop my hands from shaking when nervous?",
+        "I'm afraid people will judge me.",
+        "I feel drained after socializing.",
+        "How do I stop obsessing over mistakes?",
+        "I feel like a burden to others.",
+        "Why can't I relax even when I have free time?",
+        "I feel pressure to be perfect.",
+        "How do I cope with uncertainty?",
+        "I feel like I can't handle change.",
+        "Why do I feel nervous for no reason?",
+        "I can't stop checking my phone.",
+        "I feel like my mind is never quiet.",
+        "How do I stop feeling restless?",
+        "I feel like I have no motivation for anything.",
+        "Why do I always overthink social situations?",
+        "I feel like my anxiety controls me.",
+        "How do I calm my nerves quickly?",
+        "I feel nervous when I talk to authority figures.",
+        "How do I stop putting things off?",
+        "I feel pressure to always succeed.",
+        "How can I stop being so self-critical?",
+        "I feel like I'm not doing enough.",
+        "How do I manage stress better?",
+        "I feel like I can’t escape my worries.",
+        "Why do I feel anxious even when things are fine?",
+        "How do I stay calm in stressful situations?",
+        "I feel like I'm losing control of my life."
+    ];
+    
+    // --- UPDATED AI RESPONSE LOGIC ---
+    function getAIResponse() {
+        if (isAIThinking) return;
+        const query = userInput.value.toLowerCase().trim();
+        if (query === "") return;
+
+        isAIThinking = true;
+        chatboxContent.style.display = 'none';
+        thinkingIndicator.style.display = 'flex';
+        suggestionsList.classList.remove('visible');
+
+        setTimeout(() => {
+            let bestMatch = null;
+            let highestScore = 0;
+            const combinedDB = {...qa_database, ...dailyLifeAdviceDB};
+
+            for (const id in combinedDB) {
+                const item = combinedDB[id];
+                for (const keyword of item.keywords) {
+                    const currentScore = getStringSimilarity(query, keyword.toLowerCase());
+                    if (currentScore > highestScore) {
+                        highestScore = currentScore;
+                        bestMatch = item;
                     }
-                });
+                }
             }
+
+            let responseHTML = "";
+            const empatheticIntro = "I hear you. It sounds like a tough situation. Here's a thought that might help:";
+            
+            // Set a threshold for what's considered a good match
+            if (bestMatch && highestScore > 0.3) {
+                responseHTML = `${empatheticIntro} <h4>${bestMatch.title}</h4>${bestMatch.content}`;
+            } else {
+                responseHTML = "I'm not sure how to respond to that, but it sounds important. Could you perhaps rephrase it? Otherwise, the breathing exercise below can be a great way to find a moment of calm.";
+            }
+            
+            chatboxContent.innerHTML = responseHTML;
+            userInput.value = '';
+            thinkingIndicator.style.display = 'none';
+            chatboxContent.style.display = 'block';
+            isAIThinking = false;
+        }, 1200);
+    }
+    
+    function displayPresetSuggestions() {
+        const query = userInput.value.toLowerCase();
+        if (query.length < 3) { suggestionsList.classList.remove('visible'); return; }
+        const filtered = presetQuestions.filter(q => q.toLowerCase().includes(query)).slice(0, 5);
+        if (filtered.length > 0) {
+            suggestionsList.innerHTML = filtered.map(q => {
+                const regex = new RegExp(`(${query})`, 'gi');
+                const highlightedQ = q.replace(regex, `<mark>$1</mark>`);
+                return `<div class="suggestion-item">${highlightedQ}</div>`;
+            }).join('');
+            suggestionsList.classList.add('visible');
+        } else {
+            suggestionsList.classList.remove('visible');
         }
+    }
+
+    sendBtn.addEventListener('click', getAIResponse);
+    userInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') getAIResponse(); });
+    userInput.addEventListener('input', displayPresetSuggestions);
+
+    suggestionsList.addEventListener('click', (e) => {
+        if (e.target.classList.contains('suggestion-item')) {
+            userInput.value = e.target.textContent;
+            suggestionsList.classList.remove('visible');
+            userInput.focus();
+            getAIResponse();
+        }
+    });
+    
+    document.addEventListener('click', (e) => { if (!e.target.closest('.ai-input-container')) { suggestionsList.classList.remove('visible'); } });
+    setTimeout(() => { chatboxContent.style.display = 'block'; }, 500);
+
+    // --- Part 2: BREATHING EXERCISE SCRIPT ---
+    const breathCircle = document.getElementById('breath-circle');
+    const startButton = document.getElementById('start-breathing');
+    const stopButton = document.getElementById('stop-breathing');
+    let breathingTimeout;
+    let isBreathing = false;
+    let breathPhaseIndex = 0;
+    const breathingSequence = [
+        { text: "Breathe In", duration: 4000, scale: 1.1, background: "linear-gradient(135deg, #007AFF, #5856D6)" },
+        { text: "Hold", duration: 7000, scale: 1.1, background: "linear-gradient(135deg, #5856D6, #FF9F0A)" },
+        { text: "Breathe Out", duration: 8000, scale: 1.0, background: "linear-gradient(135deg, #FF9F0A, #FF3B30)" }
+    ];
+    function startBreathing() {
+        if (isBreathing) return;
+        isBreathing = true;
+        startButton.style.display = 'none';
+        stopButton.style.display = 'inline-block';
+        breathPhaseIndex = 0;
+        performBreathPhase();
+    }
+    function stopBreathing() {
+        isBreathing = false;
+        clearTimeout(breathingTimeout);
+        startButton.style.display = 'inline-block';
+        stopButton.style.display = 'none';
+        breathCircle.textContent = "Paused";
+        breathCircle.style.transform = 'scale(1)';
+        breathCircle.style.background = 'linear-gradient(135deg, var(--accent-primary), var(--accent-secondary))';
+        breathCircle.style.transition = `all 0.5s cubic-bezier(0.4, 0, 0.2, 1)`;
+    }
+    function performBreathPhase() {
+        if (!isBreathing) return;
+        const phase = breathingSequence[breathPhaseIndex];
+        breathCircle.textContent = phase.text;
+        breathCircle.style.transition = `all ${phase.duration / 1000}s cubic-bezier(0.4, 0, 0.2, 1)`;
+        breathCircle.style.transform = `scale(${phase.scale})`;
+        breathCircle.style.background = phase.background;
+        breathingTimeout = setTimeout(() => {
+            breathPhaseIndex = (breathPhaseIndex + 1) % breathingSequence.length;
+            performBreathPhase();
+        }, phase.duration);
+    }
+    startButton.addEventListener('click', startBreathing);
+    stopButton.addEventListener('click', stopBreathing);
+
     </script>
 </body>
 </html>
