@@ -271,8 +271,7 @@
     }
     
     .cv-preview {
-        width: 100%;
-        max-width: 210mm;
+        width: 210mm;
         min-height: 297mm;
         padding: 20mm;
         margin: 0;
@@ -285,6 +284,7 @@
         box-sizing: border-box;
         overflow: hidden;
         position: relative;
+        page-break-inside: avoid;
     }
     
     .hidden { 
@@ -1692,7 +1692,10 @@
                         html2canvas: { 
                             scale: 2,
                             useCORS: true,
-                            logging: false
+                            logging: false,
+                            width: 794, // A4 width in pixels at 96 DPI
+                            height: 1123, // A4 height in pixels at 96 DPI
+                            windowWidth: 794
                         },
                         jsPDF: { 
                             unit: 'mm', 
@@ -1701,7 +1704,18 @@
                         }
                     };
                     
-                    await html2pdf().set(pdfOptions).from(cvElement).save();
+                    // Create a clone of the CV element to avoid affecting the display
+                    const cvClone = cvElement.cloneNode(true);
+                    cvClone.style.width = '210mm';
+                    cvClone.style.height = '297mm';
+                    document.body.appendChild(cvClone);
+                    cvClone.style.position = 'absolute';
+                    cvClone.style.left = '-9999px';
+                    
+                    await html2pdf().set(pdfOptions).from(cvClone).save();
+                    
+                    // Remove the clone
+                    document.body.removeChild(cvClone);
                     break;
                 
                 case 'png':
@@ -1709,7 +1723,10 @@
                         scale: 2,
                         useCORS: true,
                         logging: false,
-                        backgroundColor: '#ffffff'
+                        backgroundColor: '#ffffff',
+                        width: 794, // A4 width in pixels at 96 DPI
+                        height: 1123, // A4 height in pixels at 96 DPI
+                        windowWidth: 794
                     });
                     
                     canvas.toBlob(blob => {
@@ -1754,4 +1771,5 @@
 </script>
 </body>
 </html>
+
 
