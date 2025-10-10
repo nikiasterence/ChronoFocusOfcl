@@ -23,18 +23,21 @@
             --accent: #BB86FC;
 
             /* Dock size variables, default to medium */
-            --dock-icon-size: 60px;
-            --dock-padding: 12px;
+            --dock-icon-size: 50px;
+            --dock-padding: 10px;
             --app-padding: 30px;
             --mobile-scale: 1; /* Adjust scaling for mobile layout */
+            
+            /* NEW: Round icons toggle variable */
+            --dock-icon-shape: 18px; /* Default is rounded square */
         }
 
         /* Mobile-first approach */
         @media (max-width: 768px) {
             :root {
                 --mobile-scale: 0.95; /* Slightly smaller app on tablets */
-                --dock-icon-size: 55px;
-                --dock-padding: 10px;
+                --dock-icon-size: 45px;
+                --dock-padding: 8px;
                 --app-padding: 25px;
             }
         }
@@ -42,8 +45,8 @@
         @media (max-width: 480px) {
             :root {
                 --mobile-scale: 0.9; /* More scaling for small phones */
-                --dock-icon-size: 50px;
-                --dock-padding: 8px;
+                --dock-icon-size: 40px;
+                --dock-padding: 6px;
                 --app-padding: 20px;
             }
         }
@@ -85,7 +88,7 @@
             flex-direction: column;
             gap: 20px;
             /* Increased padding-bottom to avoid overlap with bottom dock */
-            padding-bottom: 160px; 
+            padding-bottom: 120px;
             transition: background-color 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), padding 0.5s ease;
             overflow-x: hidden;
         }
@@ -152,20 +155,20 @@
 
         /* Enhanced App Container with Liquid Glass Effect */
         .app {
-            width: min(95%, 600px); 
+            width: min(95%, 600px);
             background: var(--card-bg);
             /* --- PERFORMANCE NOTE: backdrop-filter is intensive. This value is a compromise. --- */
             backdrop-filter: blur(20px) saturate(1.8);
             -webkit-backdrop-filter: blur(20px) saturate(1.8);
-            border-radius: 28px; 
-            padding: var(--app-padding); 
-            box-shadow: 
+            border-radius: 28px;
+            padding: var(--app-padding);
+            box-shadow:
                 0 15px 60px var(--shadow-color),
                 inset 0 1px 0 rgba(255, 255, 255, 0.2),
                 inset 0 -1px 0 rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--glass-border); 
+            border: 1px solid var(--glass-border);
             text-align: center;
-            position: relative; 
+            position: relative;
             z-index: 1;
             transform: scale(var(--mobile-scale));
             margin-top: 20px; /* Add margin to avoid top overlap */
@@ -176,8 +179,8 @@
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
             border-radius: 28px;
-            background: linear-gradient(135deg, 
-                rgba(255, 255, 255, 0.1) 0%, 
+            background: linear-gradient(135deg,
+                rgba(255, 255, 255, 0.1) 0%,
                 rgba(255, 255, 255, 0.05) 50%,
                 rgba(255, 255, 255, 0.02) 100%);
             pointer-events: none;
@@ -185,11 +188,11 @@
         }
 
         h1 {
-            font-size: clamp(2rem, 4vw, 2.8rem); 
-            margin-bottom: 25px; 
+            font-size: clamp(2rem, 4vw, 2.8rem);
+            margin-bottom: 25px;
             display: flex;
-            justify-content: center; 
-            align-items: center; 
+            justify-content: center;
+            align-items: center;
             gap: 15px;
             font-weight: 700;
             text-shadow: 0 3px 15px rgba(0, 0, 0, 0.3);
@@ -205,44 +208,44 @@
         .tip-container {
             min-height: 150px; display: flex; flex-direction: column;
             align-items: center; justify-content: center; margin: 20px 0; padding: 20px;
-            background: rgba(0,0,0,0.25); 
+            background: rgba(0,0,0,0.25);
             backdrop-filter: blur(15px);
             border-radius: 24px;
-            box-shadow: 
+            box-shadow:
                 inset 0 0 30px rgba(0, 0, 0, 0.3),
-                0 8px 32px rgba(0, 0, 0, 0.2); 
+                0 8px 32px rgba(0, 0, 0, 0.2);
             transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            border: 1px solid var(--glass-border); 
+            border: 1px solid var(--glass-border);
             position: relative;
         }
 
         .tip-container:hover {
             transform: translateY(-5px);
-            box-shadow: 
+            box-shadow:
                 inset 0 0 30px rgba(0, 0, 0, 0.2),
                 0 15px 45px rgba(0, 0, 0, 0.3);
         }
 
-        #tip { 
-            font-size: clamp(1rem, 2.5vw, 1.1rem); 
-            line-height: 1.6; 
-            text-shadow: 0 2px 8px var(--shadow-color); 
-            font-weight: 400; 
+        #tip {
+            font-size: clamp(1rem, 2.5vw, 1.1rem);
+            line-height: 1.6;
+            text-shadow: 0 2px 8px var(--shadow-color);
+            font-weight: 400;
         }
 
         .copy-tip-btn {
             position: absolute; top: 12px; right: 12px;
-            background: rgba(255,255,255,0.1); 
+            background: rgba(255,255,255,0.1);
             backdrop-filter: blur(10px);
             border: none; color: var(--text-primary);
-            padding: 10px 12px; border-radius: 12px; 
-            cursor: pointer; opacity: 0.6; 
+            padding: 10px 12px; border-radius: 12px;
+            cursor: pointer; opacity: 0.6;
             transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
-        
-        .tip-container:hover .copy-tip-btn { 
-            opacity: 1; 
+
+        .tip-container:hover .copy-tip-btn {
+            opacity: 1;
             transform: scale(1.1);
             background: rgba(255,255,255,0.2);
         }
@@ -264,13 +267,13 @@
 
         /* Enhanced Caffeine Counter */
         .caffeine-counter {
-            margin-top: 20px; padding: 18px; 
+            margin-top: 20px; padding: 18px;
             background: var(--glass-bg);
             backdrop-filter: blur(15px);
-            border-radius: 20px; 
+            border-radius: 20px;
             display: flex; justify-content: space-between;
-            align-items: center; 
-            box-shadow: 
+            align-items: center;
+            box-shadow:
                 inset 0 0 15px rgba(0, 0, 0, 0.2),
                 0 8px 25px rgba(0, 0, 0, 0.1);
             border: 1px solid var(--glass-border);
@@ -279,22 +282,22 @@
 
         .caffeine-counter:hover {
             transform: translateY(-2px);
-            box-shadow: 
+            box-shadow:
                 inset 0 0 15px rgba(0, 0, 0, 0.15),
                 0 12px 35px rgba(0, 0, 0, 0.2);
         }
 
-        .caffeine-display { 
-            font-size: clamp(0.9rem, 2vw, 1rem); 
-            font-weight: 500; 
+        .caffeine-display {
+            font-size: clamp(0.9rem, 2vw, 1rem);
+            font-weight: 500;
         }
-        
-        .caffeine-warning { 
-            color: #ff6b6b; 
-            font-size: clamp(0.75rem, 1.8vw, 0.8rem); 
-            margin-top: 5px; 
-            display: none; 
-            font-weight: bold; 
+
+        .caffeine-warning {
+            color: #ff6b6b;
+            font-size: clamp(0.75rem, 1.8vw, 0.8rem);
+            margin-top: 5px;
+            display: none;
+            font-weight: bold;
             animation: warning-pulse 1s infinite;
         }
 
@@ -302,22 +305,22 @@
             0%, 100% { opacity: 1; }
             50% { opacity: 0.7; }
         }
-        
+
         .reset-btn {
-            padding: 10px 16px; 
-            font-size: clamp(0.75rem, 1.8vw, 0.8rem); 
+            padding: 10px 16px;
+            font-size: clamp(0.75rem, 1.8vw, 0.8rem);
             border-radius: 14px;
-            background: var(--glass-bg); 
+            background: var(--glass-bg);
             backdrop-filter: blur(10px);
             color: var(--text-secondary);
-            border: 1px solid var(--glass-border); 
+            border: 1px solid var(--glass-border);
             cursor: pointer;
             display: flex; align-items: center; gap: 8px;
             transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
-        
-        .reset-btn:hover { 
-            background: rgba(255,255,255,0.15); 
+
+        .reset-btn:hover {
+            background: rgba(255,255,255,0.15);
             color: var(--text-primary);
             transform: scale(1.05);
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
@@ -427,36 +430,41 @@
         }
 
         /* DOCK SIZE STYLES */
-        .dock.size-small { 
-            --dock-icon-size: 48px; 
-            --dock-padding: 8px;
+        .dock.size-small {
+            --dock-icon-size: 40px;
+            --dock-padding: 6px;
             gap: 4px;
         }
-        .dock.size-medium { 
-            --dock-icon-size: 60px;
-            --dock-padding: 12px;
+        .dock.size-medium {
+            --dock-icon-size: 50px;
+            --dock-padding: 10px;
             gap: 6px;
         }
-        .dock.size-large { 
-            --dock-icon-size: 72px;
-            --dock-padding: 16px;
+        .dock.size-large {
+            --dock-icon-size: 60px;
+            --dock-padding: 12px;
             gap: 8px;
         }
-        
+
+        /* NEW: Round icons style */
+        .dock.icons-round {
+            --dock-icon-shape: 50%;
+        }
+
         /* ENHANCED DOCK STYLES */
         .dock {
-            position: fixed; 
+            position: fixed;
             display: flex;
-            align-items: center; 
-            padding: var(--dock-padding); 
+            align-items: center;
+            padding: var(--dock-padding);
             background: rgba(18, 18, 30, 0.85);
-            backdrop-filter: blur(25px) saturate(1.8); 
+            backdrop-filter: blur(25px) saturate(1.8);
             -webkit-backdrop-filter: blur(25px) saturate(1.8);
-            box-shadow: 
+            box-shadow:
                 0 12px 50px var(--shadow-color),
                 inset 0 1px 0 rgba(255, 255, 255, 0.2),
                 inset 0 -1px 0 rgba(0, 0, 0, 0.3);
-            border: 1px solid var(--glass-border); 
+            border: 1px solid var(--glass-border);
             z-index: 100;
             transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
             transform-origin: center;
@@ -464,24 +472,24 @@
 
         /* Enhanced Dock Positions */
         .dock.dock-bottom {
-            bottom: 20px; 
-            left: 50%; 
+            bottom: 20px;
+            left: 50%;
             border-radius: 28px;
-            flex-direction: row; 
+            flex-direction: row;
             transform: translateX(-50%);
         }
 
         .dock.dock-left {
-            left: 15px; 
-            top: 50%; 
+            left: 15px;
+            top: 50%;
             border-radius: 28px;
             flex-direction: column;
             transform: translateY(-50%);
         }
 
         .dock.dock-right {
-            right: 15px; 
-            top: 50%; 
+            right: 15px;
+            top: 50%;
             border-radius: 28px;
             flex-direction: column;
             transform: translateY(-50%);
@@ -491,45 +499,63 @@
         .dock-icon {
             width: var(--dock-icon-size);
             height: var(--dock-icon-size);
-            border-radius: 18px;
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
+            border-radius: var(--dock-icon-shape);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             justify-content: center;
-            cursor: pointer; 
+            cursor: pointer;
             position: relative;
-            color: white; 
+            color: white;
             font-size: calc(var(--dock-icon-size) * 0.45);
-            box-shadow: 
+            box-shadow:
                 0 8px 25px rgba(0, 0, 0, 0.4),
                 inset 0 1px 2px rgba(255,255,255,0.2),
                 inset 0 -1px 2px rgba(0, 0, 0, 0.3);
-            text-decoration: none; 
+            text-decoration: none;
             flex-shrink: 0;
             overflow: hidden;
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.1);
             /* --- PERFORMANCE OPTIMIZATION: Faster transform animations --- */
             will-change: transform;
+            /* --- SMOOTHER DOCK TRANSITION --- */
+            transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s ease, background 0.3s ease;
+        }
+
+        /* Enhanced Glassy Effect for Icons */
+        .dock-icon::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.2) 0%, 
+                rgba(255, 255, 255, 0.1) 50%, 
+                rgba(255, 255, 255, 0.05) 100%);
+            border-radius: inherit;
+            z-index: 1;
+            pointer-events: none;
         }
 
         /* Liquid Shine Effect */
-        .dock-icon::before {
+        .dock-icon::after {
             content: '';
             position: absolute;
             top: -50%; left: -50%;
             width: 200%; height: 200%;
-            background: conic-gradient(from 0deg, 
-                transparent, 
-                rgba(255, 255, 255, 0.3), 
-                transparent, 
-                rgba(255, 255, 255, 0.1), 
+            background: conic-gradient(from 0deg,
+                transparent,
+                rgba(255, 255, 255, 0.3),
+                transparent,
+                rgba(255, 255, 255, 0.1),
                 transparent);
             transition: opacity 0.8s ease;
             opacity: 0;
+            z-index: 2;
         }
 
-        .dock-icon:hover::before {
+        .dock-icon:hover::after {
             animation: liquid-shine 2s infinite linear;
             opacity: 1;
         }
@@ -538,10 +564,10 @@
             from { transform: rotate(0deg); }
             to { transform: rotate(360deg); }
         }
-        
+
         /* JS-controlled hover effect styles */
-        .dock-icon:hover { 
-            box-shadow: 
+        .dock-icon:hover {
+            box-shadow:
                 0 20px 60px rgba(0,0,0,0.6),
                 inset 0 2px 4px rgba(255,255,255,0.3),
                 0 0 30px var(--accent);
@@ -571,8 +597,7 @@
         /* End of Dock Animation */
 
         /* Ripple Effect on Click */
-        .dock-icon::after {
-            content: '';
+        .dock-icon .ripple {
             position: absolute;
             top: 50%; left: 50%;
             width: 0; height: 0;
@@ -582,23 +607,24 @@
             transition: width 0.4s ease-out, height 0.4s ease-out, opacity 0.5s ease-out;
             pointer-events: none;
             opacity: 1;
+            z-index: 3;
         }
 
-        .dock-icon:active::after {
-            width: 200%; 
+        .dock-icon:active .ripple {
+            width: 200%;
             height: 200%;
             opacity: 0;
         }
 
         /* Enhanced Icon Labels */
         .dock-icon-label {
-            position: absolute; 
+            position: absolute;
             font-size: clamp(0.7rem, 1.8vw, 0.8rem);
-            color: var(--text-primary); 
+            color: var(--text-primary);
             text-shadow: 0 2px 10px rgba(0,0,0,0.8);
             opacity: 0;
             transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
-            white-space: nowrap; 
+            white-space: nowrap;
             font-weight: 600;
             background: rgba(0, 0, 0, 0.8);
             backdrop-filter: blur(15px);
@@ -608,14 +634,15 @@
             border: 1px solid rgba(255, 255, 255, 0.2);
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
             transform: translateY(10px);
+            z-index: 4;
         }
 
         .dock-icon:hover .dock-icon-label {
             opacity: 1;
             transform: translateY(0);
         }
-        
-        .dock.dock-bottom .dock-icon-label { 
+
+        .dock.dock-bottom .dock-icon-label {
             bottom: calc(100% + 15px);
             left: 50%;
             transform: translateX(-50%) translateY(10px);
@@ -623,38 +650,55 @@
         .dock.dock-bottom .dock-icon:hover .dock-icon-label {
             transform: translateX(-50%) translateY(0);
         }
-        
-        .dock.dock-left .dock-icon-label { 
+
+        .dock.dock-left .dock-icon-label {
             left: calc(100% + 15px);
-            top: 50%; 
+            top: 50%;
             transform: translateY(-50%) translateX(-10px);
         }
         .dock.dock-left .dock-icon:hover .dock-icon-label {
             transform: translateY(-50%) translateX(0);
         }
-        
-        .dock.dock-right .dock-icon-label { 
-            right: calc(100% + 15px); 
-            top: 50%; 
+
+        .dock.dock-right .dock-icon-label {
+            right: calc(100% + 15px);
+            top: 50%;
             transform: translateY(-50%) translateX(10px);
         }
         .dock.dock-right .dock-icon:hover .dock-icon-label {
             transform: translateY(-50%) translateX(0);
         }
-        
+
         /* Enhanced Dock Icon Gradients */
         .dock-launchpad { background: linear-gradient(135deg, #A7A6A7 0%, #767576 100%);}
         .dock-tip { background: linear-gradient(135deg, #FF9A8B 0%, #FF6A88 50%, #FF99AC 100%); }
         .dock-study { background: linear-gradient(135deg, #FAD961 0%, #F76B1C 100%); }
         .dock-measure { background: linear-gradient(135deg, #42E695 0%, #3BB2B8 100%); }
         .dock-caffeine { background: linear-gradient(135deg, #A172FF 0%, #6B5CE7 100%); }
-        .dock-researcho { background: linear-gradient(135deg, #4ECDC4 0%, #00CEC9 100%); }
+        .dock-researcho { 
+            background: linear-gradient(135deg, #4ECDC4 0%, #00CEC9 100%); 
+            position: relative;
+            overflow: hidden;
+        }
+        .dock-researcho::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.2) 0%, 
+                rgba(255, 255, 255, 0.1) 50%, 
+                rgba(255, 255, 255, 0.05) 100%);
+            border-radius: inherit;
+            z-index: 1;
+        }
         .dock-typing { background: linear-gradient(135deg, #5EE7DF 0%, #B490CA 100%); }
         .dock-puzzle { background: linear-gradient(135deg, #6A11CB 0%, #2575FC 100%); }
-        .dock-draw { background: linear-gradient(135deg, #F5576C 0%, #F093FB 100%); }
+        .dock-research-notes { background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%); }
         .dock-whiteboard { background: linear-gradient(135deg, #4FACFE 0%, #00F2FE 100%); }
         .dock-booknest { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
         .dock-moodly { background: linear-gradient(135deg, #F8B9D6 0%, #E87CC2 100%); }
+        .dock-kitty { background: linear-gradient(135deg, #FF69B4 0%, #FFA07A 100%); }
         .dock-pomodoro { background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%); }
         .dock-deep-focus { background: linear-gradient(135deg, #6577F6 0%, #855CF8 100%); }
         .dock-focus { background: linear-gradient(135deg, #8338EC 0%, #3A86FF 100%); }
@@ -662,11 +706,41 @@
         .dock-task { background: linear-gradient(135deg, #2196F3 0%, #673AB7 100%); }
         .dock-chono-copilot { background: linear-gradient(135deg, #4FACFE 0%, #21D4FD 100%); }
         .dock-code-cody { background: linear-gradient(135deg, #00C9FF 0%, #92FE9D 100%); }
-        .dock-ai-chat { background: linear-gradient(135deg, #00B4DB, #0083B0); }
+        .dock-ai-detector { 
+            background: linear-gradient(135deg, #FF416C 0%, #FF4B2B 100%); 
+            position: relative;
+            overflow: hidden;
+        }
+        .dock-ai-detector::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.2) 0%, 
+                rgba(255, 255, 255, 0.1) 50%, 
+                rgba(255, 255, 255, 0.05) 100%);
+            border-radius: inherit;
+            z-index: 1;
+        }
+        .dock-text-humanizer { 
+            background: linear-gradient(135deg, #7F00FF 0%, #E100FF 100%); 
+            position: relative;
+            overflow: hidden;
+        }
+        .dock-text-humanizer::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.2) 0%, 
+                rgba(255, 255, 255, 0.1) 50%, 
+                rgba(255, 255, 255, 0.05) 100%);
+            border-radius: inherit;
+            z-index: 1;
+        }
         .dock-cv-maker { background: linear-gradient(135deg, #6c757d, #343a40); }
-        .dock-tag-generator { background: linear-gradient(135deg, #20c997, #17a2b8); }
-        .dock-resercho { background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%); }
-        .dock-optichain-ai { background: linear-gradient(135deg, #4FACFE 0%, #21D4FD 100%); }
 
         /* Enhanced Focus Submenu */
         .focus-submenu {
@@ -682,18 +756,18 @@
             opacity: 0;
             visibility: hidden;
             transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
-            box-shadow: 
+            box-shadow:
                 0 15px 50px rgba(0,0,0,0.4),
                 inset 0 1px 0 rgba(255, 255, 255, 0.2);
             z-index: 101;
         }
 
         .dock.dock-bottom .focus-submenu {
-            bottom: 110%; 
+            bottom: 110%;
             left: 50%;
             transform: translateX(-50%) translateY(10px) scale(0.9);
         }
-        
+
         .dock.dock-bottom .dock-icon.dock-focus:hover .focus-submenu {
             opacity: 1;
             visibility: visible;
@@ -705,7 +779,7 @@
             top: 50%;
             transform: translateY(-50%) translateX(-10px) scale(0.9);
         }
-        
+
         .dock.dock-left .dock-icon.dock-focus:hover .focus-submenu {
             opacity: 1;
             visibility: visible;
@@ -717,7 +791,7 @@
             top: 50%;
             transform: translateY(-50%) translateX(10px) scale(0.9);
         }
-        
+
         .dock.dock-right .dock-icon.dock-focus:hover .focus-submenu {
             opacity: 1;
             visibility: visible;
@@ -736,12 +810,12 @@
             font-size: clamp(0.85rem, 2vw, 0.9rem);
             backdrop-filter: blur(5px);
         }
-        
+
         .focus-submenu-item:hover {
             background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
             transform: translateX(5px);
         }
-        
+
         .focus-submenu-item i {
             width: 20px;
             text-align: center;
@@ -750,31 +824,31 @@
 
         /* SETTINGS AND THEME CONTROLS */
         .app-controls {
-            position: absolute; 
-            top: 20px; 
+            position: absolute;
+            top: 20px;
             right: 20px;
-            z-index: 10; 
+            z-index: 10;
         }
-        
-        .control-icon { 
-            font-size: clamp(1.1rem, 2.5vw, 1.3rem); 
-            cursor: pointer; 
-            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55); 
-            text-shadow: 0 3px 10px rgba(0,0,0,0.4); 
+
+        .control-icon {
+            font-size: clamp(1.1rem, 2.5vw, 1.3rem);
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            text-shadow: 0 3px 10px rgba(0,0,0,0.4);
             color: var(--accent);
             padding: 8px;
             border-radius: 12px;
             backdrop-filter: blur(10px);
             background: rgba(255, 255, 255, 0.1);
         }
-        
-        .control-icon:hover {  
-            transform: scale(1.2) rotate(25deg); 
-            color: var(--secondary-glow); 
+
+        .control-icon:hover {
+            transform: scale(1.2) rotate(25deg);
+            color: var(--secondary-glow);
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
         }
-        
-        /* ===== ENHANCED SETTINGS MODAL STYLES ===== */
+
+        /* ===== ENHANCED SETTINGS MODAL STYLES (IMPROVED FOR SCREEN FIT) ===== */
         .settings-modal-overlay {
             position: fixed;
             top: 0; left: 0;
@@ -802,12 +876,15 @@
             border-radius: 28px;
             width: 90%;
             max-width: 500px;
-            max-height: 85vh; /* Added for themes */
-            display: flex; /* Added for themes */
-            flex-direction: column; /* Added for themes */
+            /* --- IMPROVEMENT: Ensures the modal fits on screen and becomes scrollable --- */
+            max-height: 85vh;
+            display: flex;
+            flex-direction: column;
             box-shadow: 0 25px 80px rgba(0,0,0,0.6);
             position: relative;
+            overflow-y: auto;
         }
+
         .settings-modal-content h2 {
             text-align: center;
             margin-bottom: 30px;
@@ -847,33 +924,36 @@
             display: flex;
             gap: 10px;
             justify-content: center;
+            flex-wrap: wrap;
         }
-        .settings-btn { 
-            background: rgba(255,255,255,0.1); 
-            border: 1px solid transparent; color: var(--text-primary); 
-            padding: 8px 12px; border-radius: 10px; cursor: pointer; 
+        .settings-btn {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid transparent; color: var(--text-primary);
+            padding: 8px 12px; border-radius: 10px; cursor: pointer;
             transition: all 0.3s ease; font-size: clamp(0.8rem, 2vw, 0.9rem);
-            font-weight: 500; flex-grow: 1;
+            font-weight: 500;
+            min-width: 60px;
         }
         .settings-btn:hover { background: rgba(255,255,255,0.2); transform: scale(1.05); }
-        .settings-btn.active { 
-            background: linear-gradient(135deg, var(--accent), var(--primary-glow)); 
+        .settings-btn.active {
+            background: linear-gradient(135deg, var(--accent), var(--primary-glow));
             border-color: rgba(255,255,255,0.5); color: var(--background);
             box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
         }
-        
+
         /* Integrated Theme Grid Styles */
         .theme-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(clamp(60px, 12vw, 70px), 1fr));
             gap: 15px;
+            /* --- IMPROVEMENT: Ensures the theme grid scrolls within the modal --- */
             overflow-y: auto;
             padding: 10px;
             border: 1px solid var(--glass-border);
             border-radius: 16px;
             background: rgba(0,0,0,0.1);
         }
-        
+
         .theme-dot {
             width: 100%;
             aspect-ratio: 1 / 1;
@@ -889,13 +969,13 @@
             background-color: transparent;
             position: relative;
         }
-        
+
         .theme-dot:hover {
             transform: scale(1.1) rotate(5deg);
             border-color: var(--accent);
             box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4);
         }
-        
+
         .theme-dot .theme-color-swatch {
             flex: 1;
             height: 100%;
@@ -917,7 +997,7 @@
             text-overflow: ellipsis;
             font-weight: 500;
         }
-        
+
         /* ===== 20x BETTER LAUNCHPAD STYLES (IMPROVEMENT) ===== */
         .launchpad-overlay {
             position: fixed;
@@ -992,13 +1072,13 @@
             transform: translateY(0);
             transition-delay: 0.1s;
         }
-        
+
         #launchpad-search:focus {
             outline: none;
             border-color: var(--accent);
             box-shadow: 0 0 25px rgba(187, 134, 252, 0.5);
         }
-        
+
         .launchpad-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
@@ -1009,7 +1089,7 @@
             max-height: 70vh;
             overflow-y: auto;
         }
-        
+
         .launchpad-item {
             display: flex;
             flex-direction: column;
@@ -1049,7 +1129,7 @@
             from { opacity: 1; transform: scale(1); }
             to { opacity: 0; transform: scale(0.9); }
         }
-        
+
         .launchpad-item .dock-icon {
             width: 80px;
             height: 80px;
@@ -1064,160 +1144,46 @@
             text-shadow: 0 2px 8px var(--shadow-color);
         }
 
-
-        /* ===== ENHANCED CHAT AI STYLES ===== */
-        .chat-window {
+        /* Flash Animation */
+        .flash-animation {
             position: fixed;
-            bottom: 30px;
-            right: 30px;
-            width: clamp(300px, 80vw, 380px);
-            height: clamp(400px, 60vh, 550px);
-            background: var(--card-bg);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
-            border: 1px solid var(--glass-border);
-            border-radius: 24px;
-            box-shadow: 0 20px 60px var(--shadow-color);
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            z-index: 1000;
-            transform: translateY(30px) scale(0.9);
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: white;
             opacity: 0;
-            visibility: hidden;
-            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
-            /* --- PERFORMANCE OPTIMIZATION: Prepare for transform/opacity changes --- */
-            will-change: transform, opacity;
+            z-index: 9999;
+            pointer-events: none;
+            animation: flash 0.5s ease-out;
         }
 
-        .chat-window.open {
-            transform: translateY(0) scale(1);
-            opacity: 1;
-            visibility: visible;
+        @keyframes flash {
+            0% { opacity: 0.8; }
+            100% { opacity: 0; }
         }
 
-        .chat-header {
-            padding: 20px;
-            font-weight: 600;
-            border-bottom: 1px solid var(--glass-border);
-            color: var(--accent);
-            text-align: center;
-            font-size: clamp(1rem, 2.5vw, 1.2rem);
-            flex-shrink: 0;
-            background: rgba(255, 255, 255, 0.05);
-        }
-
-        .chat-messages {
-            flex-grow: 1;
-            padding: 20px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .chat-message {
-            padding: 12px 18px;
-            border-radius: 20px;
-            max-width: 85%;
-            line-height: 1.5;
-            font-size: clamp(0.9rem, 2vw, 1rem);
-            backdrop-filter: blur(10px);
-            animation: message-appear 0.4s ease-out;
-        }
-
-        @keyframes message-appear {
-            from { opacity: 0; transform: translateY(15px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .chat-message.user {
-            background: linear-gradient(135deg, var(--accent), var(--primary-glow));
-            color: var(--background);
-            align-self: flex-end;
-            border-bottom-right-radius: 6px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-        }
-
-        .chat-message.ai {
-            background: var(--glass-bg);
-            backdrop-filter: blur(15px);
-            color: var(--text-secondary);
-            align-self: flex-start;
-            border-bottom-left-radius: 6px;
-            border: 1px solid var(--glass-border);
-        }
-
-        .chat-input-area {
-            display: flex;
-            padding: 18px;
-            border-top: 1px solid var(--glass-border);
-            gap: 12px;
-            flex-shrink: 0;
-            background: rgba(255, 255, 255, 0.03);
-        }
-
-        #chat-input {
-            flex-grow: 1;
-            background: rgba(0,0,0,0.4);
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--glass-border);
-            border-radius: 14px;
-            padding: 0 18px;
-            color: var(--text-primary);
-            font-size: clamp(0.9rem, 2vw, 1rem);
-            height: 45px;
-            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-        }
-
-        #chat-input:focus {
-            outline: none;
-            border-color: var(--accent);
-            box-shadow: 0 0 20px rgba(187, 134, 252, 0.4);
-            background: rgba(0,0,0,0.6);
-        }
-
-        #chat-send-btn {
-            background: linear-gradient(135deg, var(--accent), var(--primary-glow));
-            border: none;
-            color: var(--background);
-            width: 45px;
-            height: 45px;
-            border-radius: 14px;
-            font-size: clamp(1.1rem, 2.5vw, 1.3rem);
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-        }
-
-        #chat-send-btn:hover {
-            transform: scale(1.1) rotate(15deg);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
-        }
-        
         /* ENHANCED RESPONSIVE STYLES */
         @media (max-width: 768px) {
             body {
                 padding: 15px;
-                padding-bottom: 120px;
+                padding-bottom: 100px;
                 gap: 15px; /* Reduce gap on mobile */
             }
-            
+
             .dock.dock-bottom {
                 width: 95%;
-                overflow-x: auto;
+                overflow-x: auto; /* Enable horizontal scrolling */
                 justify-content: flex-start;
                 padding: 10px;
                 -webkit-overflow-scrolling: touch;
             }
             
-            .dock.dock-bottom::-webkit-scrollbar {
-                display: none;
-            }
-            
+            /* REMOVED rule that was hiding the scrollbar */
+
             .dock.dock-left, .dock.dock-right {
                 max-height: 80vh;
-                overflow-y: auto;
+                overflow-y: auto; /* Enable vertical scrolling */
                 padding: 15px 8px;
                 top: 50%;
                 transform: translateY(-50%);
@@ -1227,11 +1193,9 @@
             .dock.dock-left { left: 10px; }
             .dock.dock-right { right: 10px; }
 
+            /* REMOVED rule that was hiding the scrollbar */
 
-            .dock.dock-left::-webkit-scrollbar, .dock.dock-right::-webkit-scrollbar {
-                display: none;
-            }
-            
+
             .calendar-day {
                 height: clamp(28px, 8vw, 35px);
                 font-size: clamp(0.75rem, 2vw, 0.85rem);
@@ -1239,14 +1203,6 @@
 
             .settings-modal-content h2 {
                 font-size: clamp(1.4rem, 5vw, 1.8rem);
-            }
-            
-            .chat-window {
-                width: 95vw;
-                height: 65vh;
-                bottom: 15px;
-                right: 2.5vw;
-                max-width: none;
             }
 
             .launchpad-grid {
@@ -1268,43 +1224,67 @@
             body {
                 padding: 10px;
                 padding-top: 10px;
-                padding-bottom: 100px;
+                padding-bottom: 90px;
                 /* This ensures vertical scrolling for all content */
-                justify-content: flex-start; 
+                justify-content: flex-start;
                 min-height: 100vh;
             }
-            
+
             #launchpad-close-btn {
                 top: 20px; right: 20px;
                 width: 40px; height: 40px;
                 font-size: 1.5rem;
             }
-            
+
             .caffeine-counter {
                 flex-direction: column;
                 gap: 15px;
                 text-align: center;
                 padding: 15px;
             }
-            
+
             .calendar {
                 gap: 4px;
             }
-            
+
             .calendar-day {
                 height: clamp(26px, 8vw, 32px);
                 font-size: clamp(0.7rem, 2vw, 0.8rem);
             }
-            
+
             .app-controls {
                 top: 12px;
                 right: 15px;
                 gap: 8px;
             }
-            
+
             .control-icon {
                 font-size: 1.1rem;
                 padding: 6px;
+            }
+
+            /* Improved mobile settings layout */
+            .settings-modal-content {
+                padding: 20px;
+                width: 95%;
+            }
+
+            .settings-group h3 {
+                font-size: 0.95rem;
+            }
+
+            .settings-options {
+                flex-wrap: wrap;
+            }
+
+            .settings-btn {
+                flex: 1 0 45%;
+                margin-bottom: 8px;
+            }
+
+            .theme-grid {
+                grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+                gap: 12px;
             }
         }
 
@@ -1379,22 +1359,46 @@
         </div>
     </div>
 
-    <!-- UPDATED DOCK WITH NEW ICONS -->
+    <!-- SIMPLIFIED DOCK WITH ONLY 5 OPTIONS -->
     <div class="dock dock-bottom size-small">
-        <a href="page5.html" class="dock-icon dock-resercho" aria-label="Resercho"><i class="fas fa-search"></i><div class="dock-icon-label">Resercho</div></a>
-        <a href="https://shapes.inc/optichain" class="dock-icon dock-optichain-ai" aria-label="Optichain AI" target="_blank"><i class="fas fa-brain"></i><div class="dock-icon-label">Optichain AI</div></a>
-        <a href="page11.html" class="dock-icon dock-moodly" aria-label="Moodly AI"><i class="fas fa-smile-beam"></i><div class="dock-icon-label">Moodly AI</div></a>
-        <div id="chat-ai-dock-icon" class="dock-icon dock-ai-chat" aria-label="Optichain AI"><i class="fas fa-robot"></i><div class="dock-icon-label">Optichain AI</div></div>
-        <a href="page18.html" class="dock-icon dock-cv-maker" aria-label="Cozytustudios AI CV"><i class="fas fa-id-card"></i><div class="dock-icon-label">Cozytustudios AI CV</div></a>
-        <a href="page19.html" class="dock-icon dock-tag-generator" aria-label="Gridora Tag Manager"><i class="fas fa-tags"></i><div class="dock-icon-label">Gridora Tag Manager</div></a>
+        <a href="page10.html" class="dock-icon dock-measure" aria-label="Measure">
+            <i class="fas fa-ruler-combined"></i>
+            <div class="dock-icon-label">Measure</div>
+            <div class="ripple"></div>
+        </a>
+        <a href="page5.html" class="dock-icon dock-researcho" aria-label="Researcho">
+            <i class="fas fa-search-plus"></i>
+            <div class="dock-icon-label">Researcho</div>
+            <div class="ripple"></div>
+        </a>
+        <a href="page4.html" class="dock-icon dock-research-notes" aria-label="Research Notes">
+            <i class="fas fa-sticky-note"></i>
+            <div class="dock-icon-label">Research Notes</div>
+            <div class="ripple"></div>
+        </a>
+        <a href="page18.html" class="dock-icon dock-cv-maker" aria-label="CV Maker">
+            <i class="fas fa-id-card"></i>
+            <div class="dock-icon-label">CV Maker</div>
+            <div class="ripple"></div>
+        </a>
+        <a href="page19.html" class="dock-icon dock-ai-detector" aria-label="AI Detector">
+            <i class="fas fa-robot"></i>
+            <div class="dock-icon-label">AI Detector</div>
+            <div class="ripple"></div>
+        </a>
+        <a href="page24.html" class="dock-icon dock-text-humanizer" aria-label="AI Humanizer">
+            <i class="fas fa-user-friends"></i>
+            <div class="dock-icon-label">AI Humanizer</div>
+            <div class="ripple"></div>
+        </a>
     </div>
 
     <div class="app">
         <div class="app-controls">
-            <!-- MODIFIED: Settings icon removed to disable dock customization -->
+            <i class="fas fa-cog control-icon" id="settings-control-icon" title="Settings"></i>
         </div>
 
-        <h1><i class="fas fa-brain"></i> Optichain ai tools</h1> <!-- MODIFIED APP NAME -->
+        <h1><i class="fas fa-brain"></i> StudyVERSE</h1>
         <div class="tip-container">
             <div class="copy-feedback" id="copy-feedback">Copied!</div>
             <button class="copy-tip-btn" onclick="copyTip()"><i class="fas fa-copy"></i></button>
@@ -1456,7 +1460,34 @@
                     <button class="settings-btn" data-anim="bubble">Bubble</button>
                 </div>
             </div>
-            
+
+            <!-- NEW: Round Icons Option -->
+            <div class="settings-group">
+                <h3>Icon Shape</h3>
+                <div class="settings-options" id="dock-shape-options">
+                    <button class="settings-btn active" data-shape="square">Square</button>
+                    <button class="settings-btn" data-shape="round">Round</button>
+                </div>
+            </div>
+
+            <!-- NEW: Sound Toggle Option -->
+            <div class="settings-group">
+                <h3>Sound Effects</h3>
+                <div class="settings-options" id="sound-options">
+                    <button class="settings-btn" data-sound="on">On</button>
+                    <button class="settings-btn active" data-sound="off">Off</button>
+                </div>
+            </div>
+
+            <!-- NEW: Haptics Toggle Option -->
+            <div class="settings-group">
+                <h3>Haptic Feedback</h3>
+                <div class="settings-options" id="haptics-options">
+                    <button class="settings-btn" data-haptics="on">On</button>
+                    <button class="settings-btn active" data-haptics="off">Off</button>
+                </div>
+            </div>
+
             <!-- NEW INTEGRATED THEME SECTION -->
             <div class="settings-group" style="flex-grow: 1; display: flex; flex-direction: column;">
                 <h3>Choose a Theme</h3>
@@ -1467,17 +1498,9 @@
         </div>
     </div>
 
-    <!-- ===== ENHANCED CHAT AI INTERFACE ===== -->
-    <div class="chat-window" id="chat-window">
-        <div class="chat-header">Optichain AI</div>
-        <div class="chat-messages" id="chat-messages">
-            <!-- Messages will be injected by JavaScript -->
-        </div>
-        <div class="chat-input-area">
-            <input type="text" id="chat-input" placeholder="Ask me something...">
-            <button id="chat-send-btn"><i class="fas fa-paper-plane"></i></button>
-        </div>
-    </div>
+    <!-- Flash Animation Element -->
+    <div class="flash-animation" id="flash-animation"></div>
+
 <script>
     // --- DOM ELEMENT SELECTORS (Cached for performance) ---
     const tipElement = document.getElementById("tip");
@@ -1488,7 +1511,8 @@
     const dayTipElement = document.getElementById("day-tip");
     const calendarToggleIcon = document.getElementById("calendar-toggle-icon");
     const copyFeedbackEl = document.getElementById('copy-feedback');
-    
+    const flashAnimation = document.getElementById('flash-animation');
+
     // SETTINGS MODAL SELECTORS
     const settingsControlIcon = document.getElementById('settings-control-icon');
     const settingsModalOverlay = document.getElementById('settings-modal-overlay');
@@ -1496,17 +1520,12 @@
     const dockPosButtons = document.querySelectorAll('#dock-pos-options .settings-btn');
     const dockSizeButtons = document.querySelectorAll('#dock-size-options .settings-btn');
     const dockAnimButtons = document.querySelectorAll('#dock-anim-options .settings-btn');
+    const dockShapeButtons = document.querySelectorAll('#dock-shape-options .settings-btn');
+    const soundButtons = document.querySelectorAll('#sound-options .settings-btn');
+    const hapticsButtons = document.querySelectorAll('#haptics-options .settings-btn');
     const themeGridContainer = document.getElementById('theme-grid-container');
 
-    // CHAT AI SELECTORS
-    const chatAiDockIcon = document.getElementById('chat-ai-dock-icon');
-    const chatWindow = document.getElementById('chat-window');
-    const chatMessagesContainer = document.getElementById('chat-messages');
-    const chatInput = document.getElementById('chat-input');
-    const chatSendBtn = document.getElementById('chat-send-btn');
-    
     // LAUNCHPAD SELECTORS
-    const launchpadDockIcon = document.getElementById('launchpad-dock-icon');
     const launchpadOverlay = document.getElementById('launchpad-overlay');
     const launchpadGrid = document.getElementById('launchpad-grid');
     const launchpadSearch = document.getElementById('launchpad-search');
@@ -1516,16 +1535,18 @@
     let caffeineIntake = 0;
     let calendarVisible = true;
     let launchpadTimeout;
-    
-    const tips = [ 
+    let soundsEnabled = false; // Default to off
+    let hapticsEnabled = false; // Default to off
+
+    const tips = [
         "Break your study time into 25-minute intervals with the Pomodoro Technique.", "Use active recall by testing yourself, not just rereading notes.", "Explain what you've learned to someone else to solidify your understanding.", "Create a dedicated, distraction-free study zone.", "Use flashcards for key terms and concepts.", "Review material consistently, a little bit each day.", "Prioritize sleep; it's crucial for memory consolidation.", "Stay hydrated and eat nutritious brain food.", "Use mind maps to visualize connections between ideas.", "Take short, regular breaks to avoid burnout.", "Teach concepts to an imaginary audience to identify knowledge gaps.", "Use the Feynman Technique: simplify complex topics as if explaining to a child.", "Change study locations occasionally to improve memory retention.", "Practice spaced repetition for long-term memorization.", "Start with the most challenging material when your mind is freshest."
     ];
-    
+
     // --- THEME DEFINITIONS (CURATED LIST FOR PERFORMANCE) ---
-    const themes = { 
-        "cosmic-dark": { "--primary-glow": "#8A2BE2", "--secondary-glow": "#5D3FD3", "--tertiary-glow": "#9370DB", "--background": "#121212", "--text-primary": "#FFFFFF", "--glass-bg": "rgba(255, 255, 255, 0.08)", "--glass-border": "rgba(255, 255, 255, 0.15)", "--card-bg": "rgba(30, 30, 46, 0.7)", "--accent": "#BB86FC" }, 
-        "midnight-blue": { "--primary-glow": "#0f3460", "--secondary-glow": "#533483", "--tertiary-glow": "#1e90ff", "--background": "#1a1a2e", "--text-primary": "#e0e0e0", "--glass-bg": "rgba(0, 0, 0, 0.2)", "--glass-border": "rgba(255, 255, 255, 0.15)", "--card-bg": "rgba(39, 39, 62, 0.7)", "--accent": "#4cc9f0" }, 
-        "forest-deep": { "--primary-glow": "#0f3b2d", "--secondary-glow": "#1b5e45", "--tertiary-glow": "#2e8b56", "--background": "#0f3b2d", "--text-primary": "#e0f2e9", "--glass-bg": "rgba(0, 0, 0, 0.2)", "--glass-border": "rgba(255, 255, 255, 0.15)", "--card-bg": "rgba(40, 80, 60, 0.7)", "--accent": "#42e695" }, 
+    const themes = {
+        "cosmic-dark": { "--primary-glow": "#8A2BE2", "--secondary-glow": "#5D3FD3", "--tertiary-glow": "#9370DB", "--background": "#121212", "--text-primary": "#FFFFFF", "--glass-bg": "rgba(255, 255, 255, 0.08)", "--glass-border": "rgba(255, 255, 255, 0.15)", "--card-bg": "rgba(30, 30, 46, 0.7)", "--accent": "#BB86FC" },
+        "midnight-blue": { "--primary-glow": "#0f3460", "--secondary-glow": "#533483", "--tertiary-glow": "#1e90ff", "--background": "#1a1a2e", "--text-primary": "#e0e0e0", "--glass-bg": "rgba(0, 0, 0, 0.2)", "--glass-border": "rgba(255, 255, 255, 0.15)", "--card-bg": "rgba(39, 39, 62, 0.7)", "--accent": "#4cc9f0" },
+        "forest-deep": { "--primary-glow": "#0f3b2d", "--secondary-glow": "#1b5e45", "--tertiary-glow": "#2e8b56", "--background": "#0f3b2d", "--text-primary": "#e0f2e9", "--glass-bg": "rgba(0, 0, 0, 0.2)", "--glass-border": "rgba(255, 255, 255, 0.15)", "--card-bg": "rgba(40, 80, 60, 0.7)", "--accent": "#42e695" },
         "synthwave": { "--primary-glow": "#f20089", "--secondary-glow": "#00f5d4", "--tertiary-glow": "#e500a4", "--background": "#2d00f7", "--text-primary": "#ffffff", "--glass-bg": "rgba(0, 0, 0, 0.2)", "--glass-border": "rgba(255, 255, 255, 0.15)", "--card-bg": "rgba(80, 0, 200, 0.7)", "--accent": "#ff00ff" },
         "cozy-mocha": { "--primary-glow": "#c89f7f", "--secondary-glow": "#7c6a59", "--tertiary-glow": "#a5886e", "--background": "#4a3f35", "--text-primary": "#f5f5dc", "--glass-bg": "rgba(245, 245, 220, 0.1)", "--glass-border": "rgba(245, 245, 220, 0.2)", "--card-bg": "rgba(87, 72, 60, 0.7)", "--accent": "#e0cda9" },
         "sunset-peach": { "--primary-glow": "#ffc0cb", "--secondary-glow": "#ffa07a", "--tertiary-glow": "#ffdab9", "--background": "#ffeadb", "--text-primary": "#5c4033", "--glass-bg": "rgba(92, 64, 51, 0.08)", "--glass-border": "rgba(92, 64, 51, 0.15)", "--card-bg": "rgba(255, 237, 224, 0.7)", "--accent": "#ff6b6b" },
@@ -1534,17 +1555,51 @@
         "crimson-study": { "--primary-glow": "#dc2626", "--secondary-glow": "#b91c1c", "--tertiary-glow": "#f87171", "--background": "#7f1d1d", "--text-primary": "#fecaca", "--glass-bg": "rgba(254, 202, 202, 0.08)", "--glass-border": "rgba(254, 202, 202, 0.2)", "--card-bg": "rgba(153, 27, 27, 0.7)", "--accent": "#ef4444" },
         "solarized-light": { "--primary-glow": "#eee8d5", "--secondary-glow": "#b58900", "--tertiary-glow": "#268bd2", "--background": "#fdf6e3", "--text-primary": "#657b83", "--glass-bg": "rgba(101, 123, 131, 0.08)", "--glass-border": "rgba(101, 123, 131, 0.15)", "--card-bg": "rgba(238, 232, 213, 0.7)", "--accent": "#d33682" },
         "liquid-gold": { "--primary-glow": "#FFD700", "--secondary-glow": "#FFA500", "--tertiary-glow": "#B8860B", "--background": "#000000", "--text-primary": "#FFFFFF", "--glass-bg": "rgba(255, 215, 0, 0.1)", "--glass-border": "rgba(255, 215, 0, 0.2)", "--card-bg": "rgba(20, 15, 0, 0.7)", "--accent": "#FFD700" },
-        "hacker-matrix": { "--primary-glow": "#00ff00", "--secondary-glow": "#00dd00", "--tertiary-glow": "#00aa00", "--background": "#000000", "--text-primary": "#00ff00", "--glass-bg": "rgba(0, 255, 0, 0.08)", "--glass-border": "rgba(0, 255, 0, 0.15)", "--card-bg": "rgba(5, 20, 5, 0.7)", "--accent": "#00ff00" }
+        "hacker-matrix": { "--primary-glow": "#00ff00", "--secondary-glow": "#00dd00", "--tertiary-glow": "#00aa00", "--background": "#000000", "--text-primary": "#00ff00", "--glass-bg": "rgba(0, 255, 0, 0.08)", "--glass-border": "rgba(0, 255, 0, 0.15)", "--card-bg": "rgba(5, 20, 5, 0.7)", "--accent": "#00ff00" },
+        "amethyst-dream": { "--primary-glow": "#9b59b6", "--secondary-glow": "#8e44ad", "--tertiary-glow": "#6c3483", "--background": "#2c003e", "--text-primary": "#e8daef", "--glass-bg": "rgba(155, 89, 182, 0.1)", "--glass-border": "rgba(155, 89, 182, 0.2)", "--card-bg": "rgba(44, 0, 62, 0.7)", "--accent": "#bb8fce" },
+        "neon-cyber": { "--primary-glow": "#ff00ff", "--secondary-glow": "#00ffff", "--tertiary-glow": "#ffff00", "--background": "#0a0a0a", "--text-primary": "#ffffff", "--glass-bg": "rgba(255, 0, 255, 0.1)", "--glass-border": "rgba(0, 255, 255, 0.2)", "--card-bg": "rgba(10, 10, 10, 0.7)", "--accent": "#ff00ff" },
+        "serene-teal": { "--primary-glow": "#26a69a", "--secondary-glow": "#00897b", "--tertiary-glow": "#004d40", "--background": "#004d40", "--text-primary": "#e0f2f1", "--glass-bg": "rgba(38, 166, 154, 0.1)", "--glass-border": "rgba(38, 166, 154, 0.2)", "--card-bg": "rgba(0, 77, 64, 0.7)", "--accent": "#80cbc4" },
+        "royal-purple": { "--primary-glow": "#673ab7", "--secondary-glow": "#512da8", "--tertiary-glow": "#311b92", "--background": "#1a237e", "--text-primary": "#d1c4e9", "--glass-bg": "rgba(103, 58, 183, 0.1)", "--glass-border": "rgba(103, 58, 183, 0.2)", "--card-bg": "rgba(26, 35, 126, 0.7)", "--accent": "#b39ddb" },
+        "sunflower-glow": { "--primary-glow": "#ffc107", "--secondary-glow": "#ffa000", "--tertiary-glow": "#ff6f00", "--background": "#f57f17", "--text-primary": "#3e2723", "--glass-bg": "rgba(255, 193, 7, 0.1)", "--glass-border": "rgba(255, 160, 0, 0.2)", "--card-bg": "rgba(245, 127, 23, 0.7)", "--accent": "#ffd54f" },
+        "deep-space": { "--primary-glow": "#1a237e", "--secondary-glow": "#283593", "--tertiary-glow": "#303f9f", "--background": "#0d47a1", "--text-primary": "#e3f2fd", "--glass-bg": "rgba(26, 35, 126, 0.1)", "--glass-border": "rgba(26, 35, 126, 0.2)", "--card-bg": "rgba(13, 71, 161, 0.7)", "--accent": "#64b5f6" },
+        // NEW THEMES
+        "mint-fresh": { "--primary-glow": "#00d2b8", "--secondary-glow": "#00b894", "--tertiary-glow": "#00a085", "--background": "#00695c", "--text-primary": "#e0f2f1", "--glass-bg": "rgba(0, 210, 184, 0.1)", "--glass-border": "rgba(0, 210, 184, 0.2)", "--card-bg": "rgba(0, 105, 92, 0.7)", "--accent": "#00d2b8" },
+        "berry-smoothie": { "--primary-glow": "#e84393", "--secondary-glow": "#fd79a8", "--tertiary-glow": "#ff7675", "--background": "#6c5ce7", "--text-primary": "#f8f9fa", "--glass-bg": "rgba(232, 67, 147, 0.1)", "--glass-border": "rgba(232, 67, 147, 0.2)", "--card-bg": "rgba(108, 92, 231, 0.7)", "--accent": "#e84393" },
+        "desert-sun": { "--primary-glow": "#e17055", "--secondary-glow": "#fdcb6e", "--tertiary-glow": "#fab1a0", "--background": "#d63031", "--text-primary": "#ffeaa7", "--glass-bg": "rgba(225, 112, 85, 0.1)", "--glass-border": "rgba(225, 112, 85, 0.2)", "--card-bg": "rgba(214, 48, 49, 0.7)", "--accent": "#e17055" },
+        "arctic-ice": { "--primary-glow": "#74b9ff", "--secondary-glow": "#a29bfe", "--tertiary-glow": "#dfe6e9", "--background": "#0984e3", "--text-primary": "#dfe6e9", "--glass-bg": "rgba(116, 185, 255, 0.1)", "--glass-border": "rgba(116, 185, 255, 0.2)", "--card-bg": "rgba(9, 132, 227, 0.7)", "--accent": "#74b9ff" },
+        "forest-mist": { "--primary-glow": "#00b894", "--secondary-glow": "#55efc4", "--tertiary-glow": "#81ecec", "--background": "#00cec9", "--text-primary": "#2d3436", "--glass-bg": "rgba(0, 184, 148, 0.1)", "--glass-border": "rgba(0, 184, 148, 0.2)", "--card-bg": "rgba(0, 206, 201, 0.7)", "--accent": "#00b894" },
+        "midnight-rose": { "--primary-glow": "#6c5ce7", "--secondary-glow": "#a29bfe", "--tertiary-glow": "#fd79a8", "--background": "#2d3436", "--text-primary": "#dfe6e9", "--glass-bg": "rgba(108, 92, 231, 0.1)", "--glass-border": "rgba(108, 92, 231, 0.2)", "--card-bg": "rgba(45, 52, 54, 0.7)", "--accent": "#6c5ce7" },
+        "sunset-orange": { "--primary-glow": "#e17055", "--secondary-glow": "#fdcb6e", "--tertiary-glow": "#fab1a0", "--background": "#d63031", "--text-primary": "#ffeaa7", "--glass-bg": "rgba(225, 112, 85, 0.1)", "--glass-border": "rgba(225, 112, 85, 0.2)", "--card-bg": "rgba(214, 48, 49, 0.7)", "--accent": "#e17055" }
     };
 
     // --- CORE FUNCTIONS ---
-    
-    function playSound(url) { 
-        try { new Audio(url).play(); } catch (e) { console.error("Audio playback error:", e); }
+
+    function playSound(url) {
+        if (!soundsEnabled) return; // Check if sounds are enabled
+        
+        try { 
+            const audio = new Audio(url);
+            audio.volume = 0.5;
+            audio.play(); 
+        } catch (e) { console.error("Audio playback error:", e); }
     }
-    
+
+    function triggerHaptic() {
+        if (hapticsEnabled && 'vibrate' in navigator) {
+            navigator.vibrate(50);
+        }
+    }
+
+    function triggerFlash() {
+        flashAnimation.style.animation = 'none';
+        setTimeout(() => {
+            flashAnimation.style.animation = 'flash 0.5s ease-out';
+        }, 10);
+    }
+
     function newTip() {
         playSound('https://www.soundjay.com/buttons/sounds/button-16.mp3');
+        triggerHaptic();
         tipElement.style.opacity = 0;
         setTimeout(() => {
             const newTip = tips[Math.floor(Math.random() * tips.length)];
@@ -1553,10 +1608,11 @@
             tipElement.style.opacity = 1;
         }, 300);
     }
-    
-    function copyTip() { 
-        navigator.clipboard.writeText(tipElement.textContent).then(() => { 
+
+    function copyTip() {
+        navigator.clipboard.writeText(tipElement.textContent).then(() => {
             playSound('https://www.soundjay.com/buttons/sounds/button-7.mp3');
+            triggerHaptic();
             copyFeedbackEl.style.opacity = 1;
             copyFeedbackEl.style.transform = 'translate(-50%, -50%) scale(1)';
             setTimeout(() => {
@@ -1565,43 +1621,54 @@
             }, 1500);
         }).catch(err => console.error('Failed to copy text: ', err));
     }
-    
-    function openStudyWithMe() { 
-        window.open('page3.html', '_blank'); 
+
+    function openStudyWithMe() {
+        triggerFlash();
+        playSound('https://www.soundjay.com/buttons/sounds/button-09.mp3');
+        triggerHaptic();
+        setTimeout(() => {
+            window.open('page3.html', '_blank');
+        }, 500);
     }
 
     function addCaffeine() {
         caffeineIntake += Math.floor(Math.random() * 81) + 40; // Add 40-120mg
         localStorage.setItem('caffeineIntake', caffeineIntake);
         updateCaffeineDisplay();
+        playSound('https://www.soundjay.com/buttons/sounds/button-10.mp3');
+        triggerHaptic();
     }
-    
+
     function resetCaffeine() {
         caffeineIntake = 0;
         localStorage.setItem('caffeineIntake', caffeineIntake);
         updateCaffeineDisplay();
+        playSound('https://www.soundjay.com/buttons/sounds/button-21.mp3');
+        triggerHaptic();
     }
 
     function updateCaffeineDisplay() {
         caffeineCountEl.textContent = caffeineIntake;
         caffeineWarningEl.style.display = 'none';
-        if (caffeineIntake >= 400) { 
-            caffeineWarningEl.style.display = "block"; 
-            caffeineWarningEl.textContent = "⚠️ Daily max exceeded!"; 
-        } else if (caffeineIntake >= 300) { 
-            caffeineWarningEl.style.display = "block"; 
-            caffeineWarningEl.textContent = "Max recommended: 400mg"; 
+        if (caffeineIntake >= 400) {
+            caffeineWarningEl.style.display = "block";
+            caffeineWarningEl.textContent = "⚠️ Daily max exceeded!";
+        } else if (caffeineIntake >= 300) {
+            caffeineWarningEl.style.display = "block";
+            caffeineWarningEl.textContent = "Max recommended: 400mg";
         }
     }
-    
+
     function setTheme(themeName) {
-        const selectedTheme = themes[themeName]; 
+        const selectedTheme = themes[themeName];
         if (!selectedTheme) return false;
-        
-        for (const [key, value] of Object.entries(selectedTheme)) { 
-            document.documentElement.style.setProperty(key, value); 
+
+        for (const [key, value] of Object.entries(selectedTheme)) {
+            document.documentElement.style.setProperty(key, value);
         }
         localStorage.setItem('studyVerseTheme', themeName);
+        playSound('https://www.soundjay.com/buttons/sounds/button-11.mp3');
+        triggerHaptic();
         return true;
     }
 
@@ -1624,31 +1691,71 @@
             themeGridContainer.appendChild(dot);
         }
     }
-    
+
     // --- MODAL FUNCTIONS (SETTINGS) ---
     function openSettingsModal() { 
-        if(settingsModalOverlay) settingsModalOverlay.classList.add('visible'); 
+        settingsModalOverlay.classList.add('visible'); 
+        playSound('https://www.soundjay.com/buttons/sounds/button-09.mp3');
+        triggerHaptic();
     }
+    
     function closeSettingsModal() { 
-        if(settingsModalOverlay) settingsModalOverlay.classList.remove('visible'); 
+        settingsModalOverlay.classList.remove('visible'); 
+        playSound('https://www.soundjay.com/buttons/sounds/button-21.mp3');
+        triggerHaptic();
     }
 
     function setDockPosition(position) {
-        if (!['left', 'bottom', 'right'].includes(position)) position = 'bottom'; 
+        if (!['left', 'bottom', 'right'].includes(position)) position = 'bottom';
         dockElement.classList.remove('dock-left', 'dock-bottom', 'dock-right');
         dockElement.classList.add(`dock-${position}`);
         dockPosButtons.forEach(btn => btn.classList.toggle('active', btn.dataset.pos === position));
         localStorage.setItem('studyVerseDockPosition', position);
+        playSound('https://www.soundjay.com/buttons/sounds/button-10.mp3');
+        triggerHaptic();
     }
 
     function setDockSize(size) {
-        if (!['small', 'medium', 'large'].includes(size)) size = 'medium'; 
+        if (!['small', 'medium', 'large'].includes(size)) size = 'medium';
         dockElement.classList.remove('size-small', 'size-medium', 'size-large');
         dockElement.classList.add(`size-${size}`);
         dockSizeButtons.forEach(btn => btn.classList.toggle('active', btn.dataset.size === size));
         localStorage.setItem('studyVerseDockSize', size);
+        playSound('https://www.soundjay.com/buttons/sounds/button-10.mp3');
+        triggerHaptic();
     }
-    
+
+    // Set dock icon shape
+    function setDockIconShape(shape) {
+        if (!['square', 'round'].includes(shape)) shape = 'square';
+        dockElement.classList.remove('icons-round');
+        if (shape === 'round') {
+            dockElement.classList.add('icons-round');
+        }
+        dockShapeButtons.forEach(btn => btn.classList.toggle('active', btn.dataset.shape === shape));
+        localStorage.setItem('studyVerseDockIconShape', shape);
+        playSound('https://www.soundjay.com/buttons/sounds/button-10.mp3');
+        triggerHaptic();
+    }
+
+    // Toggle sounds
+    function setSoundEnabled(enabled) {
+        soundsEnabled = enabled === 'on';
+        soundButtons.forEach(btn => btn.classList.toggle('active', btn.dataset.sound === (soundsEnabled ? 'on' : 'off')));
+        localStorage.setItem('studyVerseSoundsEnabled', soundsEnabled);
+        playSound('https://www.soundjay.com/buttons/sounds/button-10.mp3');
+        triggerHaptic();
+    }
+
+    // Toggle haptics
+    function setHapticsEnabled(enabled) {
+        hapticsEnabled = enabled === 'on';
+        hapticsButtons.forEach(btn => btn.classList.toggle('active', btn.dataset.haptics === (hapticsEnabled ? 'on' : 'off')));
+        localStorage.setItem('studyVerseHapticsEnabled', hapticsEnabled);
+        playSound('https://www.soundjay.com/buttons/sounds/button-10.mp3');
+        triggerHaptic();
+    }
+
     function generateCalendar() {
         const now = new Date();
         const year = now.getFullYear(), month = now.getMonth();
@@ -1658,7 +1765,7 @@
         for (let i = 0; i < firstDay; i++) { calendarHTML += `<div class="calendar-day empty"></div>`; }
         for (let day = 1; day <= daysInMonth; day++) {
             const isToday = now.getDate() === day;
-            const hasTip = Math.random() > 0.7; 
+            const hasTip = Math.random() > 0.7;
             calendarHTML += `<div class="calendar-day ${isToday ? 'today' : 'normal'} ${hasTip ? 'has-tip' : ''}" data-day="${day}">${day}</div>`;
         }
         calendarElement.innerHTML = calendarHTML;
@@ -1666,22 +1773,26 @@
             day.addEventListener('click', () => showDayTip(day.getAttribute('data-day')));
         });
     }
-    
+
     function showDayTip(day) {
         dayTipElement.textContent = `Tip for day ${day}: ${tips[Math.floor(Math.random() * tips.length)]}`;
         dayTipElement.style.display = 'block';
+        playSound('https://www.soundjay.com/buttons/sounds/button-16.mp3');
+        triggerHaptic();
     }
-    
+
     function toggleCalendar() {
         calendarVisible = !calendarVisible;
         document.getElementById('calendar-content').style.display = calendarVisible ? 'block' : 'none';
         calendarToggleIcon.className = calendarVisible ? 'fas fa-chevron-up' : 'fas fa-chevron-down';
+        playSound('https://www.soundjay.com/buttons/sounds/button-09.mp3');
+        triggerHaptic();
     }
-    
+
     // --- LAUNCHPAD LOGIC ---
     function populateLaunchpad() {
         launchpadGrid.innerHTML = '';
-        const icons = dockElement.querySelectorAll('.dock-icon:not(.dock-launchpad)');
+        const icons = dockElement.querySelectorAll('.dock-icon');
         icons.forEach((icon, index) => {
             const labelText = icon.querySelector('.dock-icon-label')?.textContent || icon.getAttribute('aria-label') || 'App';
             const launchpadItem = document.createElement(icon.tagName.toLowerCase() === 'a' ? 'a' : 'div');
@@ -1691,11 +1802,11 @@
                 if (icon.target === '_blank') launchpadItem.target = '_blank';
             }
             if (icon.onclick) launchpadItem.onclick = icon.onclick;
-            
+
             const iconClone = icon.cloneNode(true);
             iconClone.querySelector('.dock-icon-label')?.remove();
             iconClone.querySelector('.focus-submenu')?.remove();
-            
+
             launchpadItem.innerHTML = `<div class="launchpad-item-label">${labelText}</div>`;
             launchpadItem.prepend(iconClone);
 
@@ -1704,24 +1815,28 @@
             launchpadGrid.appendChild(launchpadItem);
         });
     }
-    
+
     function toggleLaunchpad() {
         clearTimeout(launchpadTimeout);
         if (!launchpadOverlay.classList.contains('visible')) {
             launchpadOverlay.classList.remove('hiding');
-            populateLaunchpad(); 
+            populateLaunchpad();
             launchpadOverlay.classList.add('visible');
-            launchpadSearch.focus(); 
+            launchpadSearch.focus();
+            playSound('https://www.soundjay.com/buttons/sounds/button-09.mp3');
+            triggerHaptic();
         } else {
             launchpadOverlay.classList.add('hiding');
             launchpadTimeout = setTimeout(() => {
                 launchpadOverlay.classList.remove('visible', 'hiding');
-                launchpadSearch.value = ''; 
-                filterLaunchpadApps(''); 
+                launchpadSearch.value = '';
+                filterLaunchpadApps('');
             }, 500);
+            playSound('https://www.soundjay.com/buttons/sounds/button-21.mp3');
+            triggerHaptic();
         }
     }
-    
+
     function filterLaunchpadApps(query) {
         const searchTerm = query.toLowerCase().trim();
         launchpadGrid.querySelectorAll('.launchpad-item').forEach(app => {
@@ -1730,123 +1845,88 @@
         });
     }
 
-    // --- CHAT AI LOGIC ---
-    function setupChatAI() {
-        if(chatAiDockIcon) chatAiDockIcon.addEventListener('click', () => chatWindow.classList.toggle('open'));
-        if(chatSendBtn) chatSendBtn.addEventListener('click', handleUserMessage);
-        if(chatInput) chatInput.addEventListener('keyup', e => { if (e.key === 'Enter') handleUserMessage(); });
-        if(chatMessagesContainer.children.length === 0) {
-            appendAiMessage("Hello! I'm the Optichain AI assistant. How can I help? You can ask me to change the theme or navigate to a page.");
-        }
-    }
-    function handleUserMessage() {
-        const messageText = chatInput.value.trim();
-        if (messageText) {
-            appendUserMessage(messageText);
-            chatInput.value = "";
-            setTimeout(() => processAiCommand(messageText.toLowerCase()), 500 + Math.random() * 400);
-        }
-    }
-    function appendUserMessage(text) { appendMessage(text, 'user'); }
-    function appendAiMessage(text) { appendMessage(text, 'ai'); }
-    function appendMessage(text, type) {
-        const messageEl = document.createElement('div');
-        messageEl.classList.add('chat-message', type);
-        messageEl.textContent = text;
-        chatMessagesContainer.appendChild(messageEl);
-        chatMessagesContainer.scrollTop = chatMessagesContainer.scrollHeight;
-    }
-    function processAiCommand(command) {
-        const themeMatch = command.match(/(change|set) theme to (.+)/);
-        if (themeMatch) {
-            const requestedTheme = themeMatch[2].trim().replace(/\s+/g, '-');
-            const themeDisplayName = requestedTheme.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-            if (setTheme(requestedTheme)) {
-                appendAiMessage(`Of course! I've changed the theme to ${themeDisplayName}.`);
-            } else {
-                appendAiMessage(`I'm sorry, I couldn't find a theme called "${themeDisplayName}". You can pick one from settings, if available.`);
-            }
-            return;
-        }
-
-        const navMatch = command.match(/(go to|open|take me to) (the )?(.+)/);
-        const pageNavigationMap = { 
-            'resercho': 'page5.html', 
-            'optichain ai': 'https://shapes.inc/optichain', 
-            'moodly ai': 'page11.html', 
-            'cozytustudios ai cv': 'page18.html', 
-            'cv maker': 'page18.html', 
-            'gridora tag manager': 'page19.html', 
-            'tag manager': 'page19.html' 
-        };
-        if (navMatch) {
-            const pageQuery = navMatch[3].trim().replace(/ page$/, ''); 
-            if (pageNavigationMap[pageQuery]) {
-                appendAiMessage(`Certainly, heading to the ${pageQuery.charAt(0).toUpperCase() + pageQuery.slice(1)} page now!`);
-                window.location.href = pageNavigationMap[pageQuery];
-            } else {
-                appendAiMessage(`Sorry, I don't know the "${pageQuery}" page.`);
-            }
-            return;
-        }
-
-        appendAiMessage("I'm not sure I understand. You can ask me to 'change theme to...' or 'go to...'.");
-    }
-    
     function loadState() {
         caffeineIntake = parseInt(localStorage.getItem('caffeineIntake'), 10) || 0;
         updateCaffeineDisplay();
         tipElement.textContent = localStorage.getItem('currentTip') || "Welcome! Click the lightbulb for a study tip.";
-        if (themeGridContainer) populateThemeSelector(); 
+        populateThemeSelector();
         const savedTheme = localStorage.getItem('studyVerseTheme');
         setTheme(savedTheme && themes[savedTheme] ? savedTheme : 'cosmic-dark');
-        if (dockPosButtons.length > 0) setDockPosition(localStorage.getItem('studyVerseDockPosition') || 'bottom');
-        if (dockSizeButtons.length > 0) setDockSize(localStorage.getItem('studyVerseDockSize') || 'small');
-        if (dockAnimButtons.length > 0) setDockAnimation(localStorage.getItem('studyVerseDockAnimationType') || 'none');
+        setDockPosition(localStorage.getItem('studyVerseDockPosition') || 'bottom');
+        setDockSize(localStorage.getItem('studyVerseDockSize') || 'small');
+        setDockAnimation(localStorage.getItem('studyVerseDockAnimationType') || 'none');
+        
+        // Load icon shape preference
+        setDockIconShape(localStorage.getItem('studyVerseDockIconShape') || 'square');
+        
+        // Load sound preference (default to off)
+        const savedSoundsEnabled = localStorage.getItem('studyVerseSoundsEnabled');
+        setSoundEnabled(savedSoundsEnabled === 'true' ? 'on' : 'off');
+        
+        // Load haptics preference (default to off)
+        const savedHapticsEnabled = localStorage.getItem('studyVerseHapticsEnabled');
+        setHapticsEnabled(savedHapticsEnabled === 'true' ? 'on' : 'off');
+        
         generateCalendar();
-        setupChatAI();
+        
+        // Trigger flash animation on page load
+        setTimeout(() => {
+            triggerFlash();
+            playSound('https://www.soundjay.com/buttons/sounds/button-09.mp3');
+        }, 300);
     }
-    
+
     // --- OPTIMIZED DOCK ANIMATION LOGIC ---
     function setDockAnimation(type) {
         dockElement.classList.remove('anim-scale', 'anim-bubble');
         if (type === 'scale' || type === 'bubble') dockElement.classList.add(`anim-${type}`);
         localStorage.setItem('studyVerseDockAnimationType', type);
         dockAnimButtons.forEach(btn => btn.classList.toggle('active', btn.dataset.anim === type));
+        playSound('https://www.soundjay.com/buttons/sounds/button-10.mp3');
+        triggerHaptic();
     }
 
     // --- INITIALIZATION ---
     document.addEventListener("DOMContentLoaded", () => {
-        // Setup Settings Modal listeners (if settings icon exists)
-        if (settingsControlIcon) {
-            settingsControlIcon.addEventListener('click', openSettingsModal);
-        }
-        if (settingsModalCloseBtn) {
-            settingsModalCloseBtn.addEventListener('click', closeSettingsModal);
-        }
-        if (settingsModalOverlay) {
-            settingsModalOverlay.addEventListener('click', e => { if (e.target === settingsModalOverlay) closeSettingsModal(); });
-        }
+        // Setup Settings Modal listeners
+        settingsControlIcon.addEventListener('click', openSettingsModal);
+        settingsModalCloseBtn.addEventListener('click', closeSettingsModal);
+        settingsModalOverlay.addEventListener('click', e => { if (e.target === settingsModalOverlay) closeSettingsModal(); });
+
+        dockPosButtons.forEach(btn => btn.addEventListener('click', () => setDockPosition(btn.dataset.pos)));
+        dockSizeButtons.forEach(btn => btn.addEventListener('click', () => setDockSize(btn.dataset.size)));
+        dockAnimButtons.forEach(btn => btn.addEventListener('click', () => setDockAnimation(btn.dataset.anim)));
         
-        if (dockPosButtons) dockPosButtons.forEach(btn => btn.addEventListener('click', () => setDockPosition(btn.dataset.pos)));
-        if (dockSizeButtons) dockSizeButtons.forEach(btn => btn.addEventListener('click', () => setDockSize(btn.dataset.size)));
-        if (dockAnimButtons) dockAnimButtons.forEach(btn => btn.addEventListener('click', () => setDockAnimation(btn.dataset.anim)));
-        
-        // LAUNCHPAD LISTENERS (if launchpad icon exists)
-        if (launchpadDockIcon) {
-            launchpadDockIcon.addEventListener('click', toggleLaunchpad);
-            launchpadCloseBtn.addEventListener('click', toggleLaunchpad);
-            launchpadOverlay.addEventListener('click', e => { if(e.target === launchpadOverlay) toggleLaunchpad(); });
-            launchpadSearch.addEventListener('input', e => filterLaunchpadApps(e.target.value));
-        }
-        
+        // Add listeners for icon shape and sound options
+        dockShapeButtons.forEach(btn => btn.addEventListener('click', () => setDockIconShape(btn.dataset.shape)));
+        soundButtons.forEach(btn => btn.addEventListener('click', () => setSoundEnabled(btn.dataset.sound)));
+        hapticsButtons.forEach(btn => btn.addEventListener('click', () => setHapticsEnabled(btn.dataset.haptics)));
+
+        // LAUNCHPAD LISTENERS
+        launchpadCloseBtn.addEventListener('click', toggleLaunchpad);
+        launchpadOverlay.addEventListener('click', e => { if(e.target === launchpadOverlay) toggleLaunchpad(); });
+        launchpadSearch.addEventListener('input', e => filterLaunchpadApps(e.target.value));
+
         // Close modals with the 'Escape' key
         document.addEventListener('keydown', e => {
             if (e.key === 'Escape') {
-                if (launchpadOverlay && launchpadOverlay.classList.contains('visible')) toggleLaunchpad();
-                if (settingsModalOverlay && settingsModalOverlay.classList.contains('visible')) closeSettingsModal();
-                if (chatWindow && chatWindow.classList.contains('open')) chatWindow.classList.remove('open');
+                if (launchpadOverlay.classList.contains('visible')) toggleLaunchpad();
+                if (settingsModalOverlay.classList.contains('visible')) closeSettingsModal();
             }
+        });
+
+        // Add click effects to all dock icons
+        document.querySelectorAll('.dock-icon').forEach(icon => {
+            icon.addEventListener('click', function(e) {
+                if (this.tagName === 'A') {
+                    triggerFlash();
+                    playSound('https://www.soundjay.com/buttons/sounds/button-09.mp3');
+                    triggerHaptic();
+                } else {
+                    playSound('https://www.soundjay.com/buttons/sounds/button-10.mp3');
+                    triggerHaptic();
+                }
+            });
         });
 
         // Load all user preferences and states
@@ -1855,4 +1935,3 @@
 </script>
 </body>
 </html>
-
