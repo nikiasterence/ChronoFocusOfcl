@@ -25,6 +25,7 @@
         --border-color: rgba(0, 0, 0, 0.08);
         --shadow-color: rgba(0, 0, 0, 0.1);
         --glass-blur: 16px;
+        --ai-color: #10a37f;
     }
 
     * {
@@ -41,6 +42,7 @@
         color: var(--dark-text);
         line-height: 1.6;
         animation: gradientBG 15s ease infinite;
+        overflow-x: hidden;
     }
 
     @keyframes gradientBG {
@@ -72,6 +74,16 @@
     .subtitle { 
         font-size: 1.4rem; 
         opacity: 0.9; 
+    }
+    
+    .powered-by {
+        margin-top: 15px;
+        font-size: 1rem;
+        background: rgba(255,255,255,0.2);
+        padding: 8px 20px;
+        border-radius: 20px;
+        display: inline-block;
+        backdrop-filter: blur(10px);
     }
 
     .step-container {
@@ -194,6 +206,17 @@
         color: var(--primary-color); 
     }
     
+    .btn-ai {
+        background-image: linear-gradient(135deg, var(--ai-color), #0d8b6c);
+        color: white;
+        box-shadow: 0 4px 15px rgba(16, 163, 127, 0.25);
+    }
+    
+    .btn-ai:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 25px rgba(16, 163, 127, 0.35);
+    }
+    
     .btn-group { 
         display: flex; 
         gap: 15px; 
@@ -238,16 +261,18 @@
     .cv-preview-container {
         background: transparent;
         border-radius: 0;
-        padding: 40px 20px;
+        padding: 20px 0;
         box-shadow: none;
         margin-bottom: 30px;
         display: flex;
         justify-content: center;
         overflow: auto;
+        width: 100%;
     }
     
     .cv-preview {
-        width: 210mm;
+        width: 100%;
+        max-width: 210mm;
         min-height: 297mm;
         padding: 20mm;
         margin: 0;
@@ -580,21 +605,151 @@
         to { opacity: 0; }
     }
     
+    /* AI Assistant Styles */
+    .ai-assistant {
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 16px;
+        padding: 20px;
+        margin-top: 20px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(16, 163, 127, 0.2);
+    }
+    
+    .ai-header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 15px;
+    }
+    
+    .ai-icon {
+        color: var(--ai-color);
+        font-size: 1.5rem;
+    }
+    
+    .ai-title {
+        font-weight: 600;
+        color: var(--ai-color);
+    }
+    
+    .ai-options {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 15px;
+    }
+    
+    .ai-option {
+        background: rgba(16, 163, 127, 0.1);
+        border: 1px solid rgba(16, 163, 127, 0.3);
+        border-radius: 20px;
+        padding: 8px 16px;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+    
+    .ai-option:hover {
+        background: rgba(16, 163, 127, 0.2);
+    }
+    
+    .ai-result {
+        background: #f9f9f9;
+        border-radius: 12px;
+        padding: 15px;
+        margin-top: 15px;
+        border-left: 4px solid var(--ai-color);
+        max-height: 200px;
+        overflow-y: auto;
+    }
+    
+    .ai-loading {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: var(--ai-color);
+    }
+    
+    .ai-loading-dots {
+        display: flex;
+        gap: 4px;
+    }
+    
+    .ai-loading-dots span {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--ai-color);
+        animation: pulse 1.5s infinite ease-in-out;
+    }
+    
+    .ai-loading-dots span:nth-child(2) {
+        animation-delay: 0.2s;
+    }
+    
+    .ai-loading-dots span:nth-child(3) {
+        animation-delay: 0.4s;
+    }
+    
+    @keyframes pulse {
+        0%, 100% { transform: scale(0.8); opacity: 0.5; }
+        50% { transform: scale(1.2); opacity: 1; }
+    }
+    
+    /* Floating Elements for Zen Animation */
+    .floating-element {
+        position: fixed;
+        width: 40px;
+        height: 40px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        z-index: -1;
+        animation: float 15s infinite ease-in-out;
+    }
+    
+    @keyframes float {
+        0%, 100% { transform: translateY(0) rotate(0deg); }
+        33% { transform: translateY(-30px) rotate(120deg); }
+        66% { transform: translateY(15px) rotate(240deg); }
+    }
+    
+    /* Photo Enhancement */
+    .photo-enhancement {
+        margin-top: 15px;
+        text-align: center;
+    }
+    
+    .beta-badge {
+        background: #ff9500;
+        color: white;
+        font-size: 0.7rem;
+        padding: 3px 8px;
+        border-radius: 10px;
+        margin-left: 8px;
+        vertical-align: super;
+    }
+    
+    /* Mobile Responsiveness */
     @media (max-width: 768px) {
         h1 { font-size: 2.5rem; } 
         .subtitle { font-size: 1.1rem; } 
         .step-title { font-size: 1.6rem; }
         .form-row, .option-grid { flex-direction: column; grid-template-columns: 1fr; }
         
+        .step-container {
+            padding: 25px;
+        }
+        
         .cv-preview {
             width: 100%;
             min-height: auto;
-            padding: 1.5cm;
+            padding: 15px;
             transform: scale(1);
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
         
         .cv-preview-container {
-             padding: 20px 0;
+             padding: 10px 0;
         }
         
         .cv-preview.layout-two-column,
@@ -602,7 +757,25 @@
         .cv-preview.layout-creative,
         .cv-preview.layout-professional {
             display: block;
-            padding: 1.5cm;
+            padding: 15px;
+        }
+        
+        .cv-preview .personal-info {
+            flex-direction: column;
+            text-align: center;
+            gap: 15px;
+        }
+        
+        .cv-preview .name {
+            font-size: 2rem;
+        }
+        
+        .cv-preview .title {
+            font-size: 1.2rem;
+        }
+        
+        .cv-preview .contact-info {
+            justify-content: center;
         }
         
         .export-options {
@@ -613,14 +786,45 @@
         .btn-group {
             flex-direction: column;
         }
+        
+        .ai-options {
+            flex-direction: column;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .container {
+            padding: 10px;
+        }
+        
+        .step-container {
+            padding: 20px 15px;
+        }
+        
+        .cv-preview {
+            padding: 10px;
+        }
+        
+        .cv-preview .name {
+            font-size: 1.8rem;
+        }
     }
 </style>
 </head>
 <body>
+<!-- Floating Elements for Zen Animation -->
+<div class="floating-element" style="top: 10%; left: 5%; animation-delay: 0s;"></div>
+<div class="floating-element" style="top: 20%; right: 8%; animation-delay: 2s;"></div>
+<div class="floating-element" style="bottom: 15%; left: 10%; animation-delay: 4s;"></div>
+<div class="floating-element" style="bottom: 25%; right: 5%; animation-delay: 6s;"></div>
+<div class="floating-element" style="top: 40%; left: 15%; animation-delay: 8s;"></div>
+<div class="floating-element" style="top: 60%; right: 12%; animation-delay: 10s;"></div>
+
 <div class="container">
     <header>
         <h1>Professional CV Generator</h1>
         <p class="subtitle">Create a standout, professional CV with full customization.</p>
+        <div class="powered-by">Powered by OptiChain 5.0 Ultra AI</div>
     </header>
 
     <!-- Step 1: Personal Information -->
@@ -657,6 +861,28 @@
             <div class="form-group">
                 <label for="careerObjective">Career Objective</label>
                 <textarea id="careerObjective" placeholder="A brief summary of your career goals..."></textarea>
+                
+                <!-- AI Assistant for Career Objective -->
+                <div class="ai-assistant">
+                    <div class="ai-header">
+                        <i class="fas fa-robot ai-icon"></i>
+                        <h3 class="ai-title">AI Writing Assistant</h3>
+                    </div>
+                    <p>Let AI help you craft a compelling career objective:</p>
+                    <div class="ai-options">
+                        <div class="ai-option" onclick="generateCareerObjective('professional')">Professional</div>
+                        <div class="ai-option" onclick="generateCareerObjective('creative')">Creative</div>
+                        <div class="ai-option" onclick="generateCareerObjective('concise')">Concise</div>
+                        <div class="ai-option" onclick="generateCareerObjective('detailed')">Detailed</div>
+                    </div>
+                    <div id="ai-result-container" class="hidden">
+                        <div class="ai-result" id="ai-result"></div>
+                        <div class="btn-group" style="margin-top: 10px;">
+                            <button type="button" class="btn btn-ai" onclick="useAISuggestion()">Use This</button>
+                            <button type="button" class="btn btn-secondary" onclick="hideAIResult()">Try Another</button>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="btn-group">
                 <button type="submit" class="btn btn-primary">Next Step</button>
@@ -841,6 +1067,12 @@
                      <div class="photo-container">
                          <img id="photo-preview" src="" alt="Photo Preview" style="width:130px; height:130px; border-radius:50%; object-fit:cover;">
                      </div>
+                     <div class="photo-enhancement">
+                         <button type="button" class="btn btn-ai" onclick="enhancePhoto()">
+                             <i class="fas fa-magic"></i> Enhance Photo <span class="beta-badge">BETA</span>
+                         </button>
+                         <p style="font-size: 0.8rem; margin-top: 5px; color: #666;">Powered by OptiChain 5.0 Ultra AI</p>
+                     </div>
                 </div>
             </div>
         </div>
@@ -893,6 +1125,7 @@
         }
     };
     let editMode = false;
+    let aiSuggestion = '';
 
     function nextStep(step) {
         if (step === 5) { 
@@ -1037,6 +1270,83 @@
                 });
             }
         });
+    }
+
+    // --- AI Assistant Functions ---
+    function generateCareerObjective(style) {
+        const name = document.getElementById('fullName').value || 'John Doe';
+        const jobTitle = document.getElementById('jobTitle').value || 'Software Engineer';
+        
+        // Show loading state
+        const resultContainer = document.getElementById('ai-result-container');
+        const resultElement = document.getElementById('ai-result');
+        resultElement.innerHTML = `
+            <div class="ai-loading">
+                <div class="ai-loading-dots">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                <span>AI is crafting your career objective...</span>
+            </div>
+        `;
+        resultContainer.classList.remove('hidden');
+        
+        // Simulate AI processing with a delay
+        setTimeout(() => {
+            const objectives = {
+                professional: `Results-driven ${jobTitle} with over 5 years of experience in delivering innovative solutions. Seeking to leverage expertise in strategic planning and project management to drive growth and operational excellence at a forward-thinking organization.`,
+                creative: `Innovative ${jobTitle} passionate about creating impactful solutions that bridge technology and user needs. With a background in creative problem-solving and a track record of successful project delivery, I aim to bring fresh perspectives and dynamic approaches to challenging projects.`,
+                concise: `Experienced ${jobTitle} seeking to apply technical expertise and leadership skills to drive project success and team growth in a collaborative environment.`,
+                detailed: `Accomplished ${jobTitle} with a comprehensive background spanning 8+ years in the industry. Specialized in developing scalable solutions, optimizing workflows, and mentoring cross-functional teams. Proven ability to increase efficiency by 30% while reducing costs by 15%. Seeking a senior role where I can contribute to strategic initiatives and foster innovation.`
+            };
+            
+            aiSuggestion = objectives[style] || objectives['professional'];
+            resultElement.innerHTML = `<p>${aiSuggestion}</p>`;
+        }, 1500);
+    }
+    
+    function useAISuggestion() {
+        document.getElementById('careerObjective').value = aiSuggestion;
+        document.getElementById('ai-result-container').classList.add('hidden');
+    }
+    
+    function hideAIResult() {
+        document.getElementById('ai-result-container').classList.add('hidden');
+    }
+    
+    function enhancePhoto() {
+        if (!cvData.profileImageSrc) {
+            alert('Please upload a photo first.');
+            return;
+        }
+        
+        const previewImg = document.getElementById('photo-preview');
+        
+        // Show loading state
+        const originalSrc = previewImg.src;
+        previewImg.style.filter = 'brightness(0.7)';
+        
+        // Simulate AI enhancement with a delay
+        setTimeout(() => {
+            // In a real implementation, this would call an AI API
+            // For demo purposes, we'll just apply some CSS filters
+            previewImg.style.filter = 'brightness(1.1) contrast(1.1) saturate(1.2)';
+            
+            // Show success message
+            const successMsg = document.createElement('div');
+            successMsg.className = 'download-success';
+            successMsg.innerHTML = '<i class="fas fa-check-circle"></i> Photo enhanced with OptiChain 5.0 Ultra AI!';
+            document.body.appendChild(successMsg);
+            
+            setTimeout(() => {
+                successMsg.remove();
+            }, 3000);
+            
+            // Update the stored image data
+            // In a real implementation, you would get the enhanced image from the API
+            cvData.profileImageSrc = previewImg.src;
+        }, 2000);
     }
 
     // --- CV Generation Logic ---
@@ -1363,38 +1673,54 @@
         }, 100);
         
         try {
+            // Ensure the CV is properly sized for export
+            const originalWidth = cvElement.style.width;
+            const originalHeight = cvElement.style.height;
+            
+            // Set to A4 dimensions for PDF export
+            if (format === 'pdf') {
+                cvElement.style.width = '210mm';
+                cvElement.style.height = '297mm';
+            }
+            
             switch (format) {
                 case 'pdf':
-                    await html2pdf().from(cvElement).set({ 
-                        margin: 0, 
-                        filename: `${fileName}.pdf`, 
-                        image: { type: 'jpeg', quality: 0.98 }, 
+                    const pdfOptions = {
+                        margin: 10,
+                        filename: `${fileName}.pdf`,
+                        image: { type: 'jpeg', quality: 0.98 },
                         html2canvas: { 
-                            scale: 3, 
+                            scale: 2,
                             useCORS: true,
-                            scrollX: 0,
-                            scrollY: 0,
-                            windowWidth: cvElement.scrollWidth,
-                            windowHeight: cvElement.scrollHeight
-                        }, 
-                        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } 
-                    }).save();
+                            logging: false
+                        },
+                        jsPDF: { 
+                            unit: 'mm', 
+                            format: 'a4', 
+                            orientation: 'portrait' 
+                        }
+                    };
+                    
+                    await html2pdf().set(pdfOptions).from(cvElement).save();
                     break;
                 
                 case 'png':
                     const canvas = await html2canvas(cvElement, { 
-                        scale: 3, 
+                        scale: 2,
                         useCORS: true,
-                        scrollX: 0,
-                        scrollY: 0,
-                        width: cvElement.scrollWidth,
-                        height: cvElement.scrollHeight
+                        logging: false,
+                        backgroundColor: '#ffffff'
                     });
+                    
                     canvas.toBlob(blob => {
                         saveAs(blob, `${fileName}.png`);
                     });
                     break;
             }
+            
+            // Reset dimensions
+            cvElement.style.width = originalWidth;
+            cvElement.style.height = originalHeight;
             
             // Complete progress
             progressBarInner.style.width = '100%';
@@ -1428,3 +1754,4 @@
 </script>
 </body>
 </html>
+
