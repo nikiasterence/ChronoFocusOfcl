@@ -6,6 +6,8 @@
     <title>Gridora Notes - Advanced Note Taking</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
             /* Notion-inspired Theme - Default */
@@ -910,6 +912,203 @@
             box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
         }
 
+        /* Excel Reader Section */
+        .excel-reader-container {
+            display: none;
+            padding: 20px 40px;
+            margin-bottom: 20px;
+            animation: fadeIn 0.5s var(--ease-out);
+        }
+
+        .excel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .excel-upload-area {
+            border: 2px dashed var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 20px;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .excel-upload-area:hover {
+            border-color: var(--accent-color);
+            background: var(--bg-tertiary);
+        }
+
+        .excel-upload-area i {
+            font-size: 48px;
+            color: var(--text-light);
+            margin-bottom: 16px;
+        }
+
+        .excel-upload-area h3 {
+            font-size: 18px;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+        }
+
+        .excel-upload-area p {
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+        }
+
+        .excel-data-container {
+            margin-top: 20px;
+            overflow-x: auto;
+        }
+
+        .excel-table {
+            width: 100%;
+            border-collapse: collapse;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .excel-table th, .excel-table td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .excel-table th {
+            background: var(--bg-secondary);
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .excel-table tr:hover {
+            background: var(--bg-tertiary);
+        }
+
+        /* Budget Section */
+        .budget-container {
+            display: none;
+            padding: 20px 40px;
+            margin-bottom: 20px;
+            animation: fadeIn 0.5s var(--ease-out);
+        }
+
+        .budget-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .budget-overview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .budget-card {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+        }
+
+        .budget-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .budget-card h3 {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .budget-card .amount {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .budget-card.income .amount {
+            color: #10b981;
+        }
+
+        .budget-card.expenses .amount {
+            color: #ef4444;
+        }
+
+        .budget-card.savings .amount {
+            color: #3b82f6;
+        }
+
+        .budget-form {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px 14px;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            color: var(--text-primary);
+            font-size: 14px;
+            outline: none;
+            transition: var(--transition);
+        }
+
+        .form-control:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .budget-charts {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-top: 24px;
+        }
+
+        .chart-container {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .chart-container h3 {
+            font-size: 16px;
+            margin-bottom: 16px;
+            color: var(--text-primary);
+        }
+
         /* AI Sidebar */
         .ai-sidebar {
             position: fixed;
@@ -1318,12 +1517,20 @@
                 padding: 0 20px;
             }
 
-            .drawing-container, .journal-container {
+            .drawing-container, .journal-container, .excel-reader-container, .budget-container {
                 padding: 20px;
             }
 
             .settings-panel {
                 padding: 20px;
+            }
+
+            .budget-charts {
+                grid-template-columns: 1fr;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
             }
         }
 
@@ -1557,6 +1764,14 @@
                         <i class="fas fa-pen"></i>
                         <span>Drawing</span>
                     </button>
+                    <button class="sidebar-btn" id="excel-btn">
+                        <i class="fas fa-file-excel"></i>
+                        <span>Excel Reader</span>
+                    </button>
+                    <button class="sidebar-btn" id="budget-btn">
+                        <i class="fas fa-chart-pie"></i>
+                        <span>Monthly Budget</span>
+                    </button>
                     <button class="sidebar-btn" id="ai-assistant-btn">
                         <i class="fas fa-robot"></i>
                         <span>AI Assistant</span>
@@ -1707,6 +1922,112 @@
                     </div>
                     <textarea class="journal-content" id="journal-content" placeholder="Write your thoughts here..."></textarea>
                 </div>
+
+                <!-- Excel Reader Section -->
+                <div class="excel-reader-container" id="excel-reader-container">
+                    <div class="excel-header">
+                        <h2>Excel File Reader</h2>
+                        <button class="create-note-btn" id="export-excel">
+                            <i class="fas fa-download"></i>
+                            Export Data
+                        </button>
+                    </div>
+                    <div class="excel-upload-area" id="excel-upload-area">
+                        <i class="fas fa-file-excel"></i>
+                        <h3>Upload Excel File</h3>
+                        <p>Drag & drop your Excel file here or click to browse</p>
+                        <input type="file" id="excel-file-input" accept=".xlsx, .xls" style="display: none;">
+                        <button class="create-note-btn" id="browse-excel-btn">
+                            <i class="fas fa-folder-open"></i>
+                            Browse Files
+                        </button>
+                    </div>
+                    <div class="excel-data-container" id="excel-data-container" style="display: none;">
+                        <h3>Data Preview</h3>
+                        <div id="excel-table-wrapper"></div>
+                    </div>
+                </div>
+
+                <!-- Budget Section -->
+                <div class="budget-container" id="budget-container">
+                    <div class="budget-header">
+                        <h2>Monthly Budget Planner</h2>
+                        <div>
+                            <button class="create-note-btn" id="save-budget">
+                                <i class="fas fa-save"></i>
+                                Save Budget
+                            </button>
+                            <button class="create-note-btn" id="reset-budget" style="background: var(--bg-tertiary); color: var(--text-primary); margin-left: 10px;">
+                                <i class="fas fa-redo"></i>
+                                Reset
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="budget-overview">
+                        <div class="budget-card income">
+                            <h3>Total Income</h3>
+                            <div class="amount" id="total-income">$0.00</div>
+                        </div>
+                        <div class="budget-card expenses">
+                            <h3>Total Expenses</h3>
+                            <div class="amount" id="total-expenses">$0.00</div>
+                        </div>
+                        <div class="budget-card savings">
+                            <h3>Remaining</h3>
+                            <div class="amount" id="remaining-budget">$0.00</div>
+                        </div>
+                    </div>
+
+                    <div class="budget-form">
+                        <h3>Add Budget Item</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="budget-category">Category</label>
+                                <select id="budget-category" class="form-control">
+                                    <option value="income">Income</option>
+                                    <option value="housing">Housing</option>
+                                    <option value="transportation">Transportation</option>
+                                    <option value="food">Food</option>
+                                    <option value="utilities">Utilities</option>
+                                    <option value="healthcare">Healthcare</option>
+                                    <option value="entertainment">Entertainment</option>
+                                    <option value="personal">Personal</option>
+                                    <option value="debt">Debt</option>
+                                    <option value="savings">Savings</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="budget-amount">Amount ($)</label>
+                                <input type="number" id="budget-amount" class="form-control" placeholder="0.00" step="0.01">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="budget-description">Description</label>
+                            <input type="text" id="budget-description" class="form-control" placeholder="Enter description">
+                        </div>
+                        <button class="create-note-btn" id="add-budget-item">
+                            <i class="fas fa-plus"></i>
+                            Add Item
+                        </button>
+                    </div>
+
+                    <div class="budget-charts">
+                        <div class="chart-container">
+                            <h3>Expense Breakdown</h3>
+                            <canvas id="expense-chart" width="400" height="300"></canvas>
+                        </div>
+                        <div class="chart-container">
+                            <h3>Budget vs Actual</h3>
+                            <canvas id="budget-chart" width="400" height="300"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="budget-list" id="budget-list">
+                        <!-- Budget items will be populated here -->
+                    </div>
+                </div>
             </div>
         </main>
 
@@ -1725,6 +2046,7 @@
             <div class="ai-model-selector">
                 <button class="ai-model-btn" id="ai-model-4">OptiChain 4.0 Pro</button>
                 <button class="ai-model-btn active" id="ai-model-5">OptiChain 5.0 Pro</button>
+                <button class="ai-model-btn" id="ai-model-ultra">OptiChain Ultra</button>
             </div>
 
             <!-- Smart Summary Section -->
@@ -1804,6 +2126,21 @@
                 <h4><i class="fas fa-text-height"></i>Simplify Text</h4>
                 <div id="simplify-output" class="ai-output">Make complex text easier to understand.</div>
                 <button id="simplify-btn" class="ai-button"><i class="fas fa-comment-alt"></i>Simplify</button>
+            </div>
+
+            <!-- Creative Writing Section -->
+            <div class="ai-section">
+                <h4><i class="fas fa-feather"></i>Creative Writing</h4>
+                <div id="creative-output" class="ai-output">Generate creative content based on your text.</div>
+                <button id="creative-btn" class="ai-button"><i class="fas fa-pen-fancy"></i>Generate Content</button>
+            </div>
+
+            <!-- Code Generation Section -->
+            <div class="ai-section">
+                <h4><i class="fas fa-code"></i>Code Generation</h4>
+                <div id="code-output" class="ai-output">Generate code snippets based on your requirements.</div>
+                <input type="text" id="code-input" class="ai-input" placeholder="Describe what you want to code...">
+                <button id="code-btn" class="ai-button"><i class="fas fa-terminal"></i>Generate Code</button>
             </div>
         </aside>
     </div>
@@ -1939,7 +2276,7 @@
                 this.isAiProcessing = false;
                 this.aiModel = '5.0';
                 this.ai = new EnhancedOptiChainAI();
-                this.currentView = 'notes'; // 'notes', 'drawing', 'journal'
+                this.currentView = 'notes'; // 'notes', 'drawing', 'journal', 'excel', 'budget'
                 this.hapticEnabled = localStorage.getItem('gridoranotes_haptic') !== 'false';
                 this.autoSaveEnabled = localStorage.getItem('gridoranotes_autosave') !== 'false';
                 this.animationsEnabled = localStorage.getItem('gridoranotes_animations') !== 'false';
@@ -1949,6 +2286,9 @@
                     color: '#000000',
                     size: 3
                 };
+                this.budgetData = JSON.parse(localStorage.getItem('gridoranotes_budget') || '{"items":[], "monthlyIncome": 0}');
+                this.expenseChart = null;
+                this.budgetChart = null;
                 
                 this.init();
             }
@@ -1962,6 +2302,7 @@
                 this.setupIconSelector();
                 this.setupCoverSelector();
                 this.resetAiOutputs();
+                this.setupBudgetCharts();
                 
                 if (this.notes.length === 0) {
                     this.showEmptyState();
@@ -1975,6 +2316,8 @@
                 document.getElementById('new-note-btn').addEventListener('click', () => this.createNewNote());
                 document.getElementById('journal-btn').addEventListener('click', () => this.showJournal());
                 document.getElementById('drawing-btn').addEventListener('click', () => this.showDrawing());
+                document.getElementById('excel-btn').addEventListener('click', () => this.showExcelReader());
+                document.getElementById('budget-btn').addEventListener('click', () => this.showBudget());
                 document.getElementById('ai-assistant-btn').addEventListener('click', () => this.toggleAiSidebar());
                 document.getElementById('settings-btn').addEventListener('click', () => this.toggleSettings());
 
@@ -2040,6 +2383,18 @@
                 // Journal
                 document.getElementById('save-journal').addEventListener('click', () => this.saveJournal());
 
+                // Excel Reader
+                document.getElementById('browse-excel-btn').addEventListener('click', () => document.getElementById('excel-file-input').click());
+                document.getElementById('excel-file-input').addEventListener('change', (e) => this.handleExcelFile(e));
+                document.getElementById('excel-upload-area').addEventListener('dragover', (e) => this.handleDragOver(e));
+                document.getElementById('excel-upload-area').addEventListener('drop', (e) => this.handleExcelDrop(e));
+                document.getElementById('export-excel').addEventListener('click', () => this.exportExcelData());
+
+                // Budget
+                document.getElementById('add-budget-item').addEventListener('click', () => this.addBudgetItem());
+                document.getElementById('save-budget').addEventListener('click', () => this.saveBudget());
+                document.getElementById('reset-budget').addEventListener('click', () => this.resetBudget());
+
                 // AI functionality
                 this.setupAiEventListeners();
 
@@ -2066,6 +2421,7 @@
                 // AI Model selection
                 document.getElementById('ai-model-4').addEventListener('click', () => this.setAiModel('4.0'));
                 document.getElementById('ai-model-5').addEventListener('click', () => this.setAiModel('5.0'));
+                document.getElementById('ai-model-ultra').addEventListener('click', () => this.setAiModel('ultra'));
 
                 // Summary buttons
                 document.querySelectorAll('[id^="summarize-btn-"]').forEach(btn => {
@@ -2078,7 +2434,7 @@
                 });
 
                 // AI action buttons
-                const aiActions = ['writing', 'grammar', 'keypoints', 'keywords', 'quiz', 'analysis', 'simplify'];
+                const aiActions = ['writing', 'grammar', 'keypoints', 'keywords', 'quiz', 'analysis', 'simplify', 'creative', 'code'];
                 aiActions.forEach(action => {
                     const btn = document.getElementById(`${action}-btn`);
                     if (btn) {
@@ -2092,6 +2448,14 @@
                     if (e.key === 'Enter') {
                         e.preventDefault();
                         this.handleAIAction('qa');
+                    }
+                });
+
+                // Code generation
+                document.getElementById('code-input').addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        this.handleAIAction('code');
                     }
                 });
             }
@@ -2176,6 +2540,63 @@
                     coverOption.addEventListener('click', () => this.selectCover(gradient));
                     coverSelector.appendChild(coverOption);
                 });
+            }
+
+            setupBudgetCharts() {
+                // Initialize charts
+                const expenseCtx = document.getElementById('expense-chart').getContext('2d');
+                const budgetCtx = document.getElementById('budget-chart').getContext('2d');
+                
+                this.expenseChart = new Chart(expenseCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: [],
+                        datasets: [{
+                            data: [],
+                            backgroundColor: [
+                                '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', 
+                                '#9966FF', '#FF9F40', '#8AC926', '#1982C4'
+                            ]
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'bottom'
+                            }
+                        }
+                    }
+                });
+                
+                this.budgetChart = new Chart(budgetCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: [],
+                        datasets: [
+                            {
+                                label: 'Budgeted',
+                                data: [],
+                                backgroundColor: '#36A2EB'
+                            },
+                            {
+                                label: 'Actual',
+                                data: [],
+                                backgroundColor: '#FF6384'
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+                
+                this.updateBudgetCharts();
             }
 
             createNewNote() {
@@ -2332,6 +2753,8 @@
                 document.getElementById('note-editor').style.display = 'none';
                 document.getElementById('drawing-container').style.display = 'none';
                 document.getElementById('journal-container').style.display = 'none';
+                document.getElementById('excel-reader-container').style.display = 'none';
+                document.getElementById('budget-container').style.display = 'none';
                 document.getElementById('current-title').textContent = 'Gridora Notes';
                 this.currentNote = null;
                 this.currentView = 'notes';
@@ -2342,6 +2765,8 @@
                 document.getElementById('note-editor').style.display = 'block';
                 document.getElementById('drawing-container').style.display = 'none';
                 document.getElementById('journal-container').style.display = 'none';
+                document.getElementById('excel-reader-container').style.display = 'none';
+                document.getElementById('budget-container').style.display = 'none';
                 this.currentView = 'notes';
             }
 
@@ -2350,6 +2775,8 @@
                 document.getElementById('note-editor').style.display = 'none';
                 document.getElementById('drawing-container').style.display = 'block';
                 document.getElementById('journal-container').style.display = 'none';
+                document.getElementById('excel-reader-container').style.display = 'none';
+                document.getElementById('budget-container').style.display = 'none';
                 document.getElementById('current-title').textContent = 'Drawing';
                 this.currentView = 'drawing';
                 this.triggerHaptic();
@@ -2360,6 +2787,8 @@
                 document.getElementById('note-editor').style.display = 'none';
                 document.getElementById('drawing-container').style.display = 'none';
                 document.getElementById('journal-container').style.display = 'block';
+                document.getElementById('excel-reader-container').style.display = 'none';
+                document.getElementById('budget-container').style.display = 'none';
                 document.getElementById('current-title').textContent = 'Journal';
                 this.currentView = 'journal';
                 
@@ -2381,6 +2810,31 @@
                     document.getElementById('journal-content').value = '';
                 }
                 
+                this.triggerHaptic();
+            }
+
+            showExcelReader() {
+                document.getElementById('empty-state').style.display = 'none';
+                document.getElementById('note-editor').style.display = 'none';
+                document.getElementById('drawing-container').style.display = 'none';
+                document.getElementById('journal-container').style.display = 'none';
+                document.getElementById('excel-reader-container').style.display = 'block';
+                document.getElementById('budget-container').style.display = 'none';
+                document.getElementById('current-title').textContent = 'Excel Reader';
+                this.currentView = 'excel';
+                this.triggerHaptic();
+            }
+
+            showBudget() {
+                document.getElementById('empty-state').style.display = 'none';
+                document.getElementById('note-editor').style.display = 'none';
+                document.getElementById('drawing-container').style.display = 'none';
+                document.getElementById('journal-container').style.display = 'none';
+                document.getElementById('excel-reader-container').style.display = 'none';
+                document.getElementById('budget-container').style.display = 'block';
+                document.getElementById('current-title').textContent = 'Monthly Budget';
+                this.currentView = 'budget';
+                this.updateBudgetUI();
                 this.triggerHaptic();
             }
 
@@ -2666,6 +3120,289 @@
                 this.triggerHaptic();
             }
 
+            // Excel Reader functionality
+            handleDragOver(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                document.getElementById('excel-upload-area').style.borderColor = 'var(--accent-color)';
+                document.getElementById('excel-upload-area').style.background = 'var(--bg-tertiary)';
+            }
+
+            handleExcelDrop(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                document.getElementById('excel-upload-area').style.borderColor = 'var(--border-color)';
+                document.getElementById('excel-upload-area').style.background = 'var(--bg-primary)';
+                
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    this.processExcelFile(files[0]);
+                }
+            }
+
+            handleExcelFile(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    this.processExcelFile(file);
+                }
+            }
+
+            processExcelFile(file) {
+                const reader = new FileReader();
+                
+                reader.onload = (e) => {
+                    try {
+                        const data = new Uint8Array(e.target.result);
+                        const workbook = XLSX.read(data, { type: 'array' });
+                        
+                        // Get the first worksheet
+                        const worksheetName = workbook.SheetNames[0];
+                        const worksheet = workbook.Sheets[worksheetName];
+                        
+                        // Convert to JSON
+                        const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+                        
+                        // Display the data
+                        this.displayExcelData(jsonData);
+                        
+                        this.showToast('Excel file loaded successfully!', 'success');
+                    } catch (error) {
+                        console.error('Error processing Excel file:', error);
+                        this.showToast('Error processing Excel file. Please try again.', 'error');
+                    }
+                };
+                
+                reader.onerror = () => {
+                    this.showToast('Error reading file. Please try again.', 'error');
+                };
+                
+                reader.readAsArrayBuffer(file);
+            }
+
+            displayExcelData(data) {
+                const container = document.getElementById('excel-data-container');
+                const tableWrapper = document.getElementById('excel-table-wrapper');
+                
+                if (data.length === 0) {
+                    tableWrapper.innerHTML = '<p>No data found in the Excel file.</p>';
+                    container.style.display = 'block';
+                    return;
+                }
+                
+                // Create table
+                let tableHTML = '<table class="excel-table">';
+                
+                // Add headers
+                if (data.length > 0) {
+                    tableHTML += '<thead><tr>';
+                    data[0].forEach(cell => {
+                        tableHTML += `<th>${cell || ''}</th>`;
+                    });
+                    tableHTML += '</tr></thead>';
+                }
+                
+                // Add rows
+                tableHTML += '<tbody>';
+                for (let i = 1; i < data.length; i++) {
+                    tableHTML += '<tr>';
+                    data[i].forEach(cell => {
+                        tableHTML += `<td>${cell || ''}</td>`;
+                    });
+                    tableHTML += '</tr>';
+                }
+                tableHTML += '</tbody></table>';
+                
+                tableWrapper.innerHTML = tableHTML;
+                container.style.display = 'block';
+            }
+
+            exportExcelData() {
+                const tableWrapper = document.getElementById('excel-table-wrapper');
+                const table = tableWrapper.querySelector('table');
+                
+                if (!table) {
+                    this.showToast('No data to export.', 'error');
+                    return;
+                }
+                
+                // Convert table to worksheet
+                const ws = XLSX.utils.table_to_sheet(table);
+                
+                // Create workbook and add the worksheet
+                const wb = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+                
+                // Generate Excel file and trigger download
+                XLSX.writeFile(wb, 'exported_data.xlsx');
+                this.showToast('Data exported to Excel!', 'success');
+                this.triggerHaptic();
+            }
+
+            // Budget functionality
+            addBudgetItem() {
+                const category = document.getElementById('budget-category').value;
+                const amount = parseFloat(document.getElementById('budget-amount').value);
+                const description = document.getElementById('budget-description').value;
+                
+                if (!amount || amount <= 0) {
+                    this.showToast('Please enter a valid amount.', 'error');
+                    return;
+                }
+                
+                if (!description.trim()) {
+                    this.showToast('Please enter a description.', 'error');
+                    return;
+                }
+                
+                const item = {
+                    id: this.generateId(),
+                    category,
+                    amount,
+                    description,
+                    date: new Date().toISOString()
+                };
+                
+                this.budgetData.items.push(item);
+                this.saveBudget();
+                this.updateBudgetUI();
+                
+                // Reset form
+                document.getElementById('budget-amount').value = '';
+                document.getElementById('budget-description').value = '';
+                
+                this.showToast('Budget item added!', 'success');
+                this.triggerHaptic();
+            }
+
+            updateBudgetUI() {
+                // Calculate totals
+                let totalIncome = 0;
+                let totalExpenses = 0;
+                
+                this.budgetData.items.forEach(item => {
+                    if (item.category === 'income') {
+                        totalIncome += item.amount;
+                    } else {
+                        totalExpenses += item.amount;
+                    }
+                });
+                
+                const remaining = totalIncome - totalExpenses;
+                
+                // Update UI
+                document.getElementById('total-income').textContent = `$${totalIncome.toFixed(2)}`;
+                document.getElementById('total-expenses').textContent = `$${totalExpenses.toFixed(2)}`;
+                document.getElementById('remaining-budget').textContent = `$${remaining.toFixed(2)}`;
+                
+                // Update charts
+                this.updateBudgetCharts();
+                
+                // Render budget list
+                this.renderBudgetList();
+            }
+
+            updateBudgetCharts() {
+                // Calculate expense breakdown by category
+                const expenseByCategory = {};
+                
+                this.budgetData.items.forEach(item => {
+                    if (item.category !== 'income') {
+                        if (!expenseByCategory[item.category]) {
+                            expenseByCategory[item.category] = 0;
+                        }
+                        expenseByCategory[item.category] += item.amount;
+                    }
+                });
+                
+                // Update expense chart
+                this.expenseChart.data.labels = Object.keys(expenseByCategory);
+                this.expenseChart.data.datasets[0].data = Object.values(expenseByCategory);
+                this.expenseChart.update();
+                
+                // Update budget vs actual chart
+                // For simplicity, we'll use categories as labels and show budget vs actual
+                // In a real app, you'd have budget targets for each category
+                const categories = Object.keys(expenseByCategory);
+                const actualExpenses = Object.values(expenseByCategory);
+                const budgetedExpenses = actualExpenses.map(expense => expense * (1 + Math.random() * 0.5)); // Simulated budget
+                
+                this.budgetChart.data.labels = categories;
+                this.budgetChart.data.datasets[0].data = budgetedExpenses;
+                this.budgetChart.data.datasets[1].data = actualExpenses;
+                this.budgetChart.update();
+            }
+
+            renderBudgetList() {
+                const budgetList = document.getElementById('budget-list');
+                budgetList.innerHTML = '';
+                
+                if (this.budgetData.items.length === 0) {
+                    budgetList.innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 20px;">No budget items yet</p>';
+                    return;
+                }
+                
+                // Group items by category
+                const itemsByCategory = {};
+                
+                this.budgetData.items.forEach(item => {
+                    if (!itemsByCategory[item.category]) {
+                        itemsByCategory[item.category] = [];
+                    }
+                    itemsByCategory[item.category].push(item);
+                });
+                
+                // Render by category
+                Object.keys(itemsByCategory).forEach(category => {
+                    const categoryDiv = document.createElement('div');
+                    categoryDiv.className = 'budget-category';
+                    categoryDiv.innerHTML = `<h3 style="margin: 20px 0 10px; color: var(--text-primary);">${this.formatCategoryName(category)}</h3>`;
+                    
+                    const itemsList = document.createElement('div');
+                    
+                    itemsByCategory[category].forEach(item => {
+                        const itemDiv = document.createElement('div');
+                        itemDiv.className = 'budget-item';
+                        itemDiv.style.display = 'flex';
+                        itemDiv.style.justifyContent = 'space-between';
+                        itemDiv.style.padding = '10px';
+                        itemDiv.style.borderBottom = '1px solid var(--border-color)';
+                        
+                        itemDiv.innerHTML = `
+                            <div>
+                                <div style="font-weight: 500;">${item.description}</div>
+                                <div style="font-size: 12px; color: var(--text-light);">${new Date(item.date).toLocaleDateString()}</div>
+                            </div>
+                            <div style="font-weight: 600; color: ${category === 'income' ? '#10b981' : '#ef4444'};">${category === 'income' ? '+' : '-'}$${item.amount.toFixed(2)}</div>
+                        `;
+                        
+                        itemsList.appendChild(itemDiv);
+                    });
+                    
+                    categoryDiv.appendChild(itemsList);
+                    budgetList.appendChild(categoryDiv);
+                });
+            }
+
+            formatCategoryName(category) {
+                return category.charAt(0).toUpperCase() + category.slice(1);
+            }
+
+            saveBudget() {
+                localStorage.setItem('gridoranotes_budget', JSON.stringify(this.budgetData));
+                this.showToast('Budget saved!', 'success');
+                this.triggerHaptic();
+            }
+
+            resetBudget() {
+                if (confirm('Are you sure you want to reset all budget data? This cannot be undone.')) {
+                    this.budgetData = { items: [], monthlyIncome: 0 };
+                    this.saveBudget();
+                    this.updateBudgetUI();
+                    this.showToast('Budget reset!', 'info');
+                    this.triggerHaptic();
+                }
+            }
+
             // AI Functionality
             setAiModel(model) {
                 this.aiModel = model;
@@ -2677,6 +3414,8 @@
                 
                 if (model === '4.0') {
                     document.getElementById('ai-model-4').classList.add('active');
+                } else if (model === 'ultra') {
+                    document.getElementById('ai-model-ultra').classList.add('active');
                 } else {
                     document.getElementById('ai-model-5').classList.add('active');
                 }
@@ -2689,7 +3428,7 @@
                 if (this.isAiProcessing) return;
 
                 const text = this.getCurrentText();
-                if (text.trim().length < 10 && action !== 'translate') {
+                if (text.trim().length < 10 && action !== 'translate' && action !== 'code' && action !== 'creative') {
                     this.showToast('Please provide more text for AI analysis.', 'error');
                     return;
                 }
@@ -2704,6 +3443,8 @@
                     quiz: 'quiz-btn',
                     analysis: 'analysis-btn',
                     simplify: 'simplify-btn',
+                    creative: 'creative-btn',
+                    code: 'code-btn',
                     translate: 'translate-en'
                 };
 
@@ -2717,6 +3458,8 @@
                     quiz: 'quiz-output',
                     analysis: 'analysis-output',
                     simplify: 'simplify-output',
+                    creative: 'creative-output',
+                    code: 'code-output',
                     translate: 'translation-output'
                 };
 
@@ -2748,7 +3491,7 @@
 
                 try {
                     let result;
-                    const delay = this.aiModel === '4.0' ? 1500 : 800; // Simulate speed difference
+                    const delay = this.aiModel === '4.0' ? 1500 : this.aiModel === 'ultra' ? 500 : 800;
                     
                     switch (action) {
                         case 'summarize':
@@ -2804,6 +3547,21 @@
                             await this.delayExecution(delay);
                             outputEl.innerHTML = this.formatAiOutput(result);
                             break;
+                        case 'creative':
+                            result = this.ai.generateCreativeContent(text);
+                            await this.delayExecution(delay);
+                            outputEl.innerHTML = this.formatAiOutput(result);
+                            break;
+                        case 'code':
+                            const codePrompt = document.getElementById('code-input').value.trim();
+                            if (!codePrompt) {
+                                this.showToast('Please enter a code description.', 'error');
+                                throw new Error('No Code Prompt');
+                            }
+                            result = this.ai.generateCode(codePrompt);
+                            await this.delayExecution(delay);
+                            outputEl.innerHTML = `<pre><code>${result}</code></pre>`;
+                            break;
                         case 'translate':
                             result = this.ai.translateText(text, options.lang);
                             await this.delayExecution(delay);
@@ -2811,7 +3569,7 @@
                             break;
                     }
                 } catch (error) {
-                    if (error.message !== 'No Question') {
+                    if (error.message !== 'No Question' && error.message !== 'No Code Prompt') {
                         console.error(`AI action '${action}' failed:`, error);
                         outputEl.textContent = 'An error occurred. Please try again.';
                     }
@@ -2883,6 +3641,8 @@
                 document.getElementById('quiz-output').innerHTML = 'Generate a quiz to test your knowledge of the document.';
                 document.getElementById('analysis-output').innerHTML = 'Analyze the sentiment and tone of your document.';
                 document.getElementById('simplify-output').innerHTML = 'Make complex text easier to understand.';
+                document.getElementById('creative-output').innerHTML = 'Generate creative content based on your text.';
+                document.getElementById('code-output').innerHTML = 'Generate code snippets based on your requirements.';
                 document.getElementById('translation-output').innerHTML = 'Translate your text to another language.';
             }
 
@@ -2977,6 +3737,7 @@
                 const data = {
                     notes: this.notes,
                     journal: JSON.parse(localStorage.getItem('gridoranotes_journal') || '{}'),
+                    budget: this.budgetData,
                     exportDate: new Date().toISOString(),
                     version: '1.0'
                 };
@@ -3014,6 +3775,10 @@
                                 this.saveNotes();
                                 if (data.journal) {
                                     localStorage.setItem('gridoranotes_journal', JSON.stringify(data.journal));
+                                }
+                                if (data.budget) {
+                                    this.budgetData = data.budget;
+                                    this.saveBudget();
                                 }
                                 this.renderNotesList();
                                 if (this.notes.length > 0) {
@@ -3364,6 +4129,29 @@
                 }
 
                 return `**Simplified Text:**\n\n${simplified}\n\n**Changes Made:**\n${changes.join('\n')}`;
+            }
+
+            generateCreativeContent(text) {
+                const topics = this.extractKeyWords(text, 5).map(kw => kw.word);
+                const randomTopic = topics[Math.floor(Math.random() * topics.length)] || "creativity";
+                
+                const creativePrompts = [
+                    `Write a short story inspired by the theme "${randomTopic}"`,
+                    `Create a poem about "${randomTopic}"`,
+                    `Imagine a world where "${randomTopic}" is the most important thing`,
+                    `Write a dialogue between two characters discussing "${randomTopic}"`
+                ];
+                
+                const prompt = creativePrompts[Math.floor(Math.random() * creativePrompts.length)];
+                
+                return `**Creative Writing Prompt:**\n\n${prompt}\n\n**Generated Content:**\n\nI'm sorry, but creative content generation requires a more advanced AI model. In a real implementation, this would connect to an AI service like OpenAI's GPT to generate creative writing based on your text.`;
+            }
+
+            generateCode(prompt) {
+                const languages = ['JavaScript', 'Python', 'HTML/CSS', 'Java', 'C++'];
+                const randomLang = languages[Math.floor(Math.random() * languages.length)];
+                
+                return `// Generated ${randomLang} code based on: "${prompt}"\n\n// Note: This is a placeholder. In a real implementation,\n// this would connect to an AI service to generate actual code.\n\nfunction placeholder() {\n  console.log("Code generation would happen here");\n  return "Real code would be generated based on your prompt";\n}`;
             }
 
             translateText(text, lang) {
