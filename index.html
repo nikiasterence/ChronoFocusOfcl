@@ -1,1462 +1,1193 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="icon" href="Chronofocus.png" type="image/x-icon">
-  <title>Chrono Focus — Enter</title>
-  <!-- Google Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <!-- Internal CSS -->
-  <style>
-    :root {
-      /* Enhanced Liquid Glass Theme - Light Mode */
-      --bg-gradient-start: #E9F1F8;
-      --bg-gradient-end: #DDEBF7;
-      --text-primary: #1F2937;
-      --text-secondary: #4B5563;
-      --text-on-accent: #FFFFFF;
-      --header-text: #111827;
-      --glass-bg: rgba(255, 255, 255, 0.3);
-      --glass-border: rgba(200, 215, 230, 0.6);
-      --shadow-color: rgba(100, 116, 139, 0.2);
-      --button-focus: rgba(59, 130, 246, 0.5);
-      --accent-gradient: linear-gradient(135deg, #3B82F6, #1D4ED8);
-      --error-color: #EF4444;
-      --icon-bg: #E0E7FF;
-      --icon-fg: #3730A3;
-      --loader-color: #3B82F6;
-      --liquid-effect: linear-gradient(135deg, rgba(255,255,255,0.15), rgba(255,255,255,0.08));
-      --liquid-border: 1px solid rgba(255, 255, 255, 0.3);
-      --liquid-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.2);
-      
-      /* Custom background colors */
-      --custom-bg-start: #E9F1F8;
-      --custom-bg-end: #DDEBF7;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChronoFocus - Productivity App</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    @media (prefers-color-scheme: dark) {
-      :root {
-        /* Enhanced Liquid Glass Theme - Dark Mode */
-        --bg-gradient-start: #0f172a;
-        --bg-gradient-end: #1e293b;
-        --text-primary: #E2E8F0;
-        --text-secondary: #94A3B8;
-        --text-on-accent: #FFFFFF;
-        --header-text: #FFFFFF;
-        --glass-bg: rgba(30, 41, 59, 0.4);
-        --glass-border: rgba(71, 85, 105, 0.4);
-        --shadow-color: rgba(0, 0, 0, 0.4);
-        --button-focus: rgba(96, 165, 250, 0.6);
-        --accent-gradient: linear-gradient(135deg, #38BDF8, #3B82F6);
-        --error-color: #F87171;
-        --icon-bg: #1E293B;
-        --icon-fg: #7DD3FC;
-        --loader-color: #38BDF8;
-        --liquid-effect: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.04));
-        --liquid-border: 1px solid rgba(255, 255, 255, 0.15);
-        --liquid-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.4);
-        
-        /* Custom background colors for dark mode */
-        --custom-bg-start: #0f172a;
-        --custom-bg-end: #1e293b;
-      }
-    }
+        :root {
+            --primary-color: #667eea;
+            --secondary-color: #764ba2;
+            --accent-color: #f093fb;
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --text-color: #ffffff;
+            --shadow-color: rgba(0, 0, 0, 0.3);
+            --scrollbar-bg: rgba(255, 255, 255, 0.1);
+            --scrollbar-thumb: rgba(255, 255, 255, 0.3);
+        }
 
-    *, *::before, *::after { box-sizing: border-box; }
-    html { height: 100%; -webkit-text-size-adjust: 100%; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(-45deg, var(--primary-color), var(--secondary-color), var(--accent-color), #667eea);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-color);
+            overflow-x: hidden;
+            padding: 20px;
+        }
 
-    body {
-      margin: 0;
-      min-height: 100vh;
-      font-family: 'Inter', sans-serif;
-      color: var(--text-primary);
-      background: linear-gradient(-45deg, var(--custom-bg-start), var(--custom-bg-end), #4A00E0, #8E2DE2);
-      background-size: 400% 400%;
-      animation: gradient 25s ease infinite;
-      display: grid;
-      place-items: center;
-      padding: 1rem;
-      overflow-y: auto;
-      position: relative;
-      transition: background 0.5s ease;
-    }
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
 
-    /* Enhanced Liquid Glass Background Elements */
-    .liquid-bg-element {
-      position: absolute;
-      border-radius: 50%;
-      filter: blur(60px);
-      opacity: 0.5;
-      z-index: 0;
-      animation: float 15s ease-in-out infinite;
-    }
-    .liquid-bg-element:nth-child(1) {
-      width: 400px;
-      height: 400px;
-      background: radial-gradient(circle, rgba(59, 130, 246, 0.4) 0%, rgba(59, 130, 246, 0) 70%);
-      top: 10%;
-      left: 10%;
-      animation-delay: 0s;
-    }
-    .liquid-bg-element:nth-child(2) {
-      width: 500px;
-      height: 500px;
-      background: radial-gradient(circle, rgba(139, 92, 246, 0.4) 0%, rgba(139, 92, 246, 0) 70%);
-      bottom: 10%;
-      right: 10%;
-      animation-delay: -5s;
-    }
-    .liquid-bg-element:nth-child(3) {
-      width: 350px;
-      height: 350px;
-      background: radial-gradient(circle, rgba(14, 165, 233, 0.4) 0%, rgba(14, 165, 233, 0) 70%);
-      top: 50%;
-      left: 80%;
-      animation-delay: -10s;
-    }
-    .liquid-bg-element:nth-child(4) {
-      width: 300px;
-      height: 300px;
-      background: radial-gradient(circle, rgba(236, 72, 153, 0.3) 0%, rgba(236, 72, 153, 0) 70%);
-      top: 70%;
-      left: 20%;
-      animation-delay: -7s;
-    }
-    .liquid-bg-element:nth-child(5) {
-      width: 250px;
-      height: 250px;
-      background: radial-gradient(circle, rgba(34, 197, 94, 0.3) 0%, rgba(34, 197, 94, 0) 70%);
-      top: 20%;
-      left: 70%;
-      animation-delay: -12s;
-    }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
 
-    /* --- Animations --- */
-    @keyframes gradient {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
-    @keyframes shake {
-      0%, 100% { transform: translateX(0); }
-      10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
-      20%, 40%, 60%, 80% { transform: translateX(5px); }
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px) scale(0.98); }
-      to { opacity: 1; transform: translateY(0) scale(1); }
-    }
-    @keyframes fadeOut {
-      from { opacity: 1; transform: translateY(0) scale(1); }
-      to { opacity: 0; transform: translateY(-20px) scale(0.98); }
-    }
-    @keyframes float {
-      0%, 100% { transform: translateY(0) rotate(0deg); }
-      50% { transform: translateY(-20px) rotate(5deg); }
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    @keyframes liquidPulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.02); }
-    }
-    @keyframes liquidBorder {
-      0%, 100% { border-color: rgba(255, 255, 255, 0.3); }
-      50% { border-color: rgba(255, 255, 255, 0.5); }
-    }
-    @keyframes keyPress {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(0.95); }
-    }
-    @keyframes enterSlide {
-      0% { transform: translateY(0); }
-      50% { transform: translateY(-5px); }
-      100% { transform: translateY(0); }
-    }
-    @keyframes pageTransition {
-      0% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.7; transform: scale(1.05); }
-      100% { opacity: 0; transform: scale(0.9); }
-    }
-    @keyframes ripple {
-      0% { transform: scale(0); opacity: 1; }
-      100% { transform: scale(4); opacity: 0; }
-    }
+        ::-webkit-scrollbar-track {
+            background: var(--scrollbar-bg);
+            border-radius: 10px;
+        }
 
-    /* --- Base Container & Modules --- */
-    .container {
-      width: min(95vw, 450px);
-      padding: 40px;
-      background: var(--glass-bg);
-      border-radius: 28px;
-      box-shadow: var(--liquid-shadow);
-      backdrop-filter: blur(30px) saturate(180%);
-      -webkit-backdrop-filter: blur(30px) saturate(180%);
-      border: var(--liquid-border);
-      text-align: center;
-      z-index: 2;
-      opacity: 0;
-      transform: translateY(20px) scale(0.98);
-      visibility: hidden;
-      transition: opacity 0.5s cubic-bezier(0.25, 1, 0.5, 1), transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
-      position: absolute;
-      animation: liquidPulse 8s ease-in-out infinite;
-    }
-    .container::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: var(--liquid-effect);
-      border-radius: 28px;
-      z-index: -1;
-    }
-    .container.active {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-      visibility: visible;
-      animation: fadeIn 0.5s cubic-bezier(0.25, 1, 0.5, 1) forwards, liquidPulse 8s ease-in-out infinite;
-      position: relative;
-    }
-    .hidden { display: none; }
+        ::-webkit-scrollbar-thumb {
+            background: var(--scrollbar-thumb);
+            border-radius: 10px;
+        }
 
-    /* --- Header & Typography --- */
-    header { margin-bottom: 32px; }
-    .logo {
-      width: 70px; height: 70px; border-radius: 20px;
-      background: var(--icon-bg); color: var(--icon-fg);
-      display: inline-flex; align-items: center; justify-content: center;
-      margin-bottom: 20px; font-size: 32px;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.15);
-      transition: transform 0.3s ease-in-out;
-      backdrop-filter: blur(15px);
-      -webkit-backdrop-filter: blur(15px);
-      border: var(--liquid-border);
-    }
-    .logo:hover { transform: scale(1.1) rotate(5deg); }
-    h1 { font-size: 28px; margin: 0; font-weight: 700; color: var(--header-text); }
-    p { margin: 8px 0 0; color: var(--text-secondary); font-size: 16px; line-height: 1.6; }
-    .footer p { margin-top: 32px; font-size: 13px; color: var(--text-secondary); opacity: 0.8; }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
 
-    /* --- Form Elements --- */
-    .form-group { margin-bottom: 22px; text-align: left; }
-    .form-group label { display: block; margin-bottom: 8px; font-weight: 500; color: var(--text-primary); font-size: 14px; }
-    .form-control, .region-select {
-      appearance: none; -webkit-appearance: none;
-      width: 100%;
-      border: var(--liquid-border);
-      border-radius: 14px;
-      padding: 16px; font-size: 16px; font-weight: 500; color: var(--text-primary);
-      background: rgba(255, 255, 255, 0.15);
-      transition: all 0.2s ease-in-out;
-      backdrop-filter: blur(15px);
-      -webkit-backdrop-filter: blur(15px);
-    }
-    .form-control::placeholder { color: var(--text-secondary); }
-    .form-control:focus, .region-select:focus {
-      outline: none;
-      box-shadow: 0 0 0 4px var(--button-focus);
-      border-color: rgba(255, 255, 255, 0.5);
-      background-color: rgba(255,255,255,0.2);
-      animation: liquidBorder 2s infinite;
-    }
-    
-    /* --- Buttons --- */
-    .btn {
-      appearance: none; width: 100%; border: 0; border-radius: 14px; padding: 16px;
-      font-size: 16px; font-weight: 600; color: var(--text-on-accent); cursor: pointer;
-      background: var(--accent-gradient);
-      box-shadow: 0 6px 20px rgba(0,0,0,0.15), 0 3px 8px rgba(0,0,0,0.08);
-      transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.2s cubic-bezier(0.25, 1, 0.5, 1);
-      position: relative;
-      overflow: hidden;
-    }
-    .btn::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-      transition: left 0.5s;
-    }
-    .btn:hover::before {
-      left: 100%;
-    }
-    .btn:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(0,0,0,0.2), 0 6px 15px rgba(0,0,0,0.1); }
-    .btn:active { transform: translateY(-1px); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-    .btn:focus-visible { outline: none; box-shadow: 0 0 0 4px var(--button-focus); }
-    .btn:disabled { cursor: not-allowed; opacity: 0.6; transform: none; box-shadow: none; }
-    .btn.loading { position: relative; color: transparent; }
-    .btn.loading::after {
-      content: '';
-      position: absolute;
-      top: 50%; left: 50%;
-      width: 20px; height: 20px;
-      margin-top: -10px; margin-left: -10px;
-      border: 3px solid rgba(255, 255, 255, 0.5);
-      border-top-color: #fff;
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-    }
+        .floating-particles {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 1;
+            top: 0;
+            left: 0;
+        }
 
-    /* --- Registration Specifics --- */
-    .profile-pic-group { display: flex; flex-direction: column; align-items: center; gap: 12px; margin-bottom: 24px; }
-    #pfp-preview { width: 100px; height: 100px; border-radius: 50%; background: var(--glass-bg); color: var(--text-secondary); display: grid; place-items:center; font-size: 40px; background-size: cover; background-position: center; border: 2px solid var(--glass-border); transition: transform 0.3s ease; backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); }
-    #pfp-upload-label { cursor: pointer; color: #3B82F6; font-weight: 500; font-size: 15px; padding: 10px 18px; border-radius: 10px; background: rgba(59, 130, 246, 0.15); transition: all 0.2s; border: var(--liquid-border); }
-    #pfp-upload-label:hover { background: rgba(59, 130, 246, 0.25); transform: translateY(-2px); }
-    #pfp-upload:focus + #pfp-upload-label { outline: 2px solid var(--button-focus); border-radius: 4px; }
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            animation: float 6s infinite linear;
+        }
 
-    /* --- PIN Lock Screen --- */
-    .pin-display { display: flex; justify-content: center; gap: 16px; margin: 32px 0; transition: transform 0.2s; }
-    .pin-dot { width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--text-secondary); transition: background-color 0.2s, transform 0.2s, border-color 0.2s; }
-    .pin-dot.filled { background-color: var(--header-text); border-color: var(--header-text); transform: scale(1.2); }
-    .pin-display.shake { animation: shake 0.5s ease-in-out; }
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-10vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
 
-    .pin-keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; max-width: 280px; margin: 0 auto; }
-    .pin-keypad button {
-      width: 80px; height: 80px; border-radius: 50%; border: var(--liquid-border); background: rgba(255, 255, 255, 0.15); color: var(--header-text);
-      font-size: 28px; font-weight: 400; cursor: pointer; transition: all 0.2s;
-      display: grid; place-items: center;
-      backdrop-filter: blur(15px);
-      -webkit-backdrop-filter: blur(15px);
-      position: relative;
-      overflow: hidden;
-    }
-    .pin-keypad button::after {
-      content: '';
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 0;
-      height: 0;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.2);
-      transform: translate(-50%, -50%);
-      transition: width 0.3s, height 0.3s;
-    }
-    .pin-keypad button:active::after {
-      width: 100%;
-      height: 100%;
-    }
-    .pin-keypad button:hover { background: rgba(255, 255, 255, 0.25); transform: translateY(-3px); }
-    .pin-keypad button:active { 
-      transform: scale(0.9); 
-      background: var(--glass-border);
-      animation: keyPress 0.2s ease;
-    }
+        .glass-container {
+            position: relative;
+            z-index: 10;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 8px 32px var(--shadow-color);
+            animation: containerPulse 4s ease-in-out infinite;
+            transition: all 0.3s ease;
+            max-width: 450px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
 
-    /* --- Main App Screen --- */
-    .user-profile-header { display: flex; flex-direction: column; align-items: center; gap: 16px; margin-bottom: 28px; }
-    #user-pfp { width: 100px; height: 100px; border-radius: 50%; background-size: cover; background-position: center; border: 3px solid var(--glass-border); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); }
-    #user-greeting { font-size: 26px; font-weight: 600; color: var(--header-text); }
+        @keyframes containerPulse {
+            0%, 100% { box-shadow: 0 8px 32px var(--shadow-color); }
+            50% { box-shadow: 0 12px 48px rgba(0, 0, 0, 0.4); }
+        }
 
-    .select-container { position: relative; width: 100%; }
-    .select-container::after { content: '⌄'; font-size: 20px; line-height: 1; position: absolute; top: 50%; right: 20px; transform: translateY(-50%); color: var(--text-secondary); pointer-events: none; }
-    .success { display: none; margin-top: 16px; font-size: 15px; color: var(--header-text); font-weight: 500; }
-    
-    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
-    
-    .settings-button {
-      position: absolute; top: 16px; right: 16px; background: none; border: none; cursor: pointer;
-      color: var(--text-secondary); font-size: 28px; padding: 8px; border-radius: 50%;
-      transition: background-color 0.2s, color 0.2s, transform 0.2s;
-      backdrop-filter: blur(15px);
-      -webkit-backdrop-filter: blur(15px);
-    }
-    .settings-button:hover { background-color: var(--glass-bg); color: var(--text-primary); transform: rotate(15deg); }
-    
-    /* --- Initial Loader --- */
-    #loader {
-        color: var(--loader-color);
-        font-size: 24px;
-        transition: opacity 0.4s ease;
-        position: absolute;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        z-index: 10;
-    }
-    #loader.hidden { opacity: 0; pointer-events: none; }
+        .glass-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.5);
+        }
 
-    /* --- Version Badge --- */
-    .version-badge {
-      position: absolute;
-      bottom: 16px;
-      left: 16px;
-      font-size: 12px;
-      color: var(--text-secondary);
-      opacity: 0.7;
-      z-index: 1;
-      font-weight: 600;
-      letter-spacing: 0.5px;
-      text-shadow: 0 1px 2px rgba(0,0,0,0.1);
-    }
+        .app-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
 
-    /* --- Toggle Switch --- */
-    .toggle-container {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin: 20px 0;
-      padding: 12px 16px;
-      background: rgba(255, 255, 255, 0.15);
-      border-radius: 14px;
-      border: var(--liquid-border);
-      backdrop-filter: blur(15px);
-      -webkit-backdrop-filter: blur(15px);
-    }
-    .toggle-label {
-      font-weight: 500;
-      color: var(--text-primary);
-      font-size: 15px;
-    }
-    .toggle-switch {
-      position: relative;
-      display: inline-block;
-      width: 50px;
-      height: 26px;
-    }
-    .toggle-switch input {
-      opacity: 0;
-      width: 0;
-      height: 0;
-    }
-    .toggle-slider {
-      position: absolute;
-      cursor: pointer;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-color: rgba(255, 255, 255, 0.2);
-      transition: .4s;
-      border-radius: 34px;
-      border: var(--liquid-border);
-    }
-    .toggle-slider:before {
-      position: absolute;
-      content: "";
-      height: 18px;
-      width: 18px;
-      left: 4px;
-      bottom: 4px;
-      background-color: white;
-      transition: .4s;
-      border-radius: 50%;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-    }
-    input:checked + .toggle-slider {
-      background: var(--accent-gradient);
-    }
-    input:checked + .toggle-slider:before {
-      transform: translateX(24px);
-    }
+        .app-title {
+            font-size: 2.5em;
+            font-weight: bold;
+            background: linear-gradient(45deg, #fff, #f0f0f0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
 
-    /* --- Settings Modal --- */
-    .settings-modal {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.5);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 1000;
-      opacity: 0;
-      visibility: hidden;
-      transition: opacity 0.3s ease, visibility 0.3s ease;
-    }
-    .settings-modal.active {
-      opacity: 1;
-      visibility: visible;
-    }
-    .settings-content {
-      width: min(90vw, 500px);
-      background: var(--glass-bg);
-      border-radius: 24px;
-      padding: 30px;
-      box-shadow: var(--liquid-shadow);
-      backdrop-filter: blur(30px) saturate(180%);
-      -webkit-backdrop-filter: blur(30px) saturate(180%);
-      border: var(--liquid-border);
-      position: relative;
-      transform: translateY(20px);
-      transition: transform 0.3s ease;
-    }
-    .settings-modal.active .settings-content {
-      transform: translateY(0);
-    }
-    .settings-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 24px;
-    }
-    .settings-title {
-      font-size: 22px;
-      font-weight: 700;
-      color: var(--header-text);
-      margin: 0;
-    }
-    .close-settings {
-      background: none;
-      border: none;
-      font-size: 24px;
-      cursor: pointer;
-      color: var(--text-secondary);
-      padding: 8px;
-      border-radius: 50%;
-      transition: all 0.2s;
-    }
-    .close-settings:hover {
-      background: rgba(255, 255, 255, 0.1);
-      color: var(--text-primary);
-    }
-    .settings-section {
-      margin-bottom: 24px;
-      padding-bottom: 20px;
-      border-bottom: 1px solid var(--glass-border);
-    }
-    .settings-section:last-child {
-      border-bottom: none;
-      margin-bottom: 0;
-      padding-bottom: 0;
-    }
-    .settings-section-title {
-      font-size: 18px;
-      font-weight: 600;
-      margin-bottom: 16px;
-      color: var(--header-text);
-    }
-    .color-options {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
-      gap: 12px;
-      margin-top: 12px;
-    }
-    .color-option {
-      width: 60px;
-      height: 60px;
-      border-radius: 12px;
-      cursor: pointer;
-      transition: transform 0.2s, box-shadow 0.2s;
-      border: 2px solid transparent;
-    }
-    .color-option:hover {
-      transform: scale(1.05);
-    }
-    .color-option.active {
-      border-color: var(--header-text);
-      box-shadow: 0 0 0 3px var(--button-focus);
-    }
-    .sound-toggle {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 16px;
-    }
-    .haptic-toggle {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
+        .app-subtitle {
+            font-size: 1.1em;
+            opacity: 0.9;
+            color: #e0e0e0;
+        }
 
-    /* --- Password Change Modal --- */
-    .password-modal {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.5);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 1000;
-      opacity: 0;
-      visibility: hidden;
-      transition: opacity 0.3s ease, visibility 0.3s ease;
-    }
-    .password-modal.active {
-      opacity: 1;
-      visibility: visible;
-    }
-    .password-content {
-      width: min(90vw, 450px);
-      background: var(--glass-bg);
-      border-radius: 24px;
-      padding: 30px;
-      box-shadow: var(--liquid-shadow);
-      backdrop-filter: blur(30px) saturate(180%);
-      -webkit-backdrop-filter: blur(30px) saturate(180%);
-      border: var(--liquid-border);
-      position: relative;
-      transform: translateY(20px);
-      transition: transform 0.3s ease;
-    }
-    .password-modal.active .password-content {
-      transform: translateY(0);
-    }
-    .password-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 24px;
-    }
-    .password-title {
-      font-size: 22px;
-      font-weight: 700;
-      color: var(--header-text);
-      margin: 0;
-    }
-    .close-password {
-      background: none;
-      border: none;
-      font-size: 24px;
-      cursor: pointer;
-      color: var(--text-secondary);
-      padding: 8px;
-      border-radius: 50%;
-      transition: all 0.2s;
-    }
-    .close-password:hover {
-      background: rgba(255, 255, 255, 0.1);
-      color: var(--text-primary);
-    }
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
 
-    /* --- ⭐ RESPONSIVE IMPROVEMENTS FOR MOBILE ⭐ --- */
-    @media (max-width: 480px) {
-      body {
-        padding: 0.5rem;
-        min-height: -webkit-fill-available;
-      }
-      .container {
-        padding: 24px 20px;
-        box-shadow: 0 8px 32px var(--shadow-color);
-      }
-      .container.active {
-        animation: fadeIn 0.5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
-      }
-      h1 { font-size: 22px; }
-      p { font-size: 15px; }
-      .logo { width: 50px; height: 50px; font-size: 24px; margin-bottom: 16px; }
-      header { margin-bottom: 24px; }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #f0f0f0;
+        }
 
-      .form-group { margin-bottom: 18px; }
-      .form-control, .region-select { padding: 14px; }
-      .btn { padding: 15px; }
+        .form-input {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            color: white;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
 
-      .pin-keypad {
-        gap: 12px;
-        max-width: 250px;
-      }
-      .pin-keypad button {
-        width: 65px;
-        height: 65px;
-        font-size: 26px;
-      }
-      #user-greeting { font-size: 21px; }
-      
-      .liquid-bg-element {
-        display: none;
-      }
-      
-      .toggle-container {
-        padding: 10px 14px;
-      }
-      
-      .settings-content, .password-content {
-        padding: 20px;
-      }
-      .color-options {
-        grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
-      }
-      .color-option {
-        width: 50px;
-        height: 50px;
-      }
-    }
-  </style>
+        .form-input:focus {
+            outline: none;
+            border-color: rgba(255, 255, 255, 0.6);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+            transform: scale(1.02);
+        }
+
+        .form-input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .file-input {
+            position: absolute;
+            left: -9999px;
+        }
+
+        .file-input-label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .file-input-label:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: scale(1.02);
+        }
+
+        .profile-pic-preview {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            overflow: hidden;
+        }
+
+        .profile-pic-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(45deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1));
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn:hover {
+            background: linear-gradient(45deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.2));
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            margin-bottom: 15px;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(45deg, #5a6fd8, #6a4190);
+        }
+
+        .profile-section {
+            display: none;
+            text-align: center;
+            animation: fadeInUp 0.6s ease;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .profile-section.active {
+            display: block;
+        }
+
+        .profile-pic-large {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 3px solid rgba(255, 255, 255, 0.4);
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .profile-pic-large img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .welcome-text {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+            color: #f0f0f0;
+        }
+
+        .user-name {
+            font-size: 2em;
+            font-weight: bold;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #fff, #f0f0f0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .settings-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            transition: all 0.3s ease;
+        }
+
+        .settings-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(90deg);
+        }
+
+        .settings-panel {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 350px;
+            height: 100vh;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border-left: 1px solid var(--glass-border);
+            padding: 30px;
+            transition: right 0.4s ease;
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .settings-panel.active {
+            right: 0;
+        }
+
+        .settings-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .settings-title {
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .close-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: rotate(90deg);
+        }
+
+        .setting-item {
+            margin-bottom: 25px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .setting-label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 500;
+            color: #f0f0f0;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 50px;
+            height: 25px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .toggle-switch.active {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+        }
+
+        .toggle-slider {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 21px;
+            height: 21px;
+            background: white;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .toggle-switch.active .toggle-slider {
+            transform: translateX(25px);
+        }
+
+        .color-picker-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .color-option {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .color-option:hover {
+            transform: scale(1.1);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .color-option.active {
+            border-color: white;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+        }
+
+        .passcode-input {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .passcode-digit {
+            width: 40px;
+            height: 40px;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            display: none;
+        }
+
+        .overlay.active {
+            display: block;
+        }
+
+        .login-section {
+            animation: fadeInUp 0.6s ease;
+        }
+
+        /* Passcode Dialer Styles */
+        .passcode-dialer {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 32px var(--shadow-color);
+            z-index: 2000;
+            max-width: 320px;
+            width: 90%;
+            display: none;
+        }
+
+        .passcode-dialer.active {
+            display: block;
+            animation: fadeInUp 0.4s ease;
+        }
+
+        .dialer-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .dialer-title {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+
+        .dialer-display {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .dialer-dot {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .dialer-dot.active {
+            background: white;
+            transform: scale(1.2);
+        }
+
+        .dialer-keypad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .dialer-key {
+            height: 60px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            font-size: 1.5em;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .dialer-key:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: scale(1.05);
+        }
+
+        .dialer-key:active {
+            transform: scale(0.95);
+        }
+
+        .dialer-key.delete {
+            grid-column: span 3;
+            border-radius: 12px;
+            margin-top: 10px;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+                align-items: flex-start;
+            }
+            
+            .glass-container {
+                padding: 30px 20px;
+                margin: 20px 0;
+                max-height: calc(100vh - 40px);
+            }
+            
+            .app-title {
+                font-size: 2em;
+            }
+            
+            .settings-panel {
+                width: 100%;
+                right: -100%;
+            }
+            
+            .passcode-dialer {
+                max-width: 280px;
+            }
+            
+            .dialer-key {
+                height: 50px;
+                font-size: 1.3em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .glass-container {
+                padding: 20px 15px;
+            }
+            
+            .app-title {
+                font-size: 1.8em;
+            }
+            
+            .profile-pic-large {
+                width: 100px;
+                height: 100px;
+            }
+            
+            .user-name {
+                font-size: 1.6em;
+            }
+            
+            .welcome-text {
+                font-size: 1.2em;
+            }
+            
+            .form-input, .btn {
+                padding: 10px 12px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <!-- Enhanced Liquid Glass Background Elements -->
-    <div class="liquid-bg-element"></div>
-    <div class="liquid-bg-element"></div>
-    <div class="liquid-bg-element"></div>
-    <div class="liquid-bg-element"></div>
-    <div class="liquid-bg-element"></div>
+    <div class="floating-particles"></div>
     
-    <!-- Version Badge -->
-    <div class="version-badge">Zenith 1 · Beta 7</div>
-    
-    <div id="loader">Loading...</div>
+    <div class="glass-container">
+        <!-- App Header -->
+        <div class="app-header">
+            <h1 class="app-title">ChronoFocus</h1>
+            <p class="app-subtitle">Your Ultimate Productivity Companion</p>
+        </div>
 
-<div id="registration-container" class="container">
-  <header><div class="logo">🚀</div><h1>Create Your Profile</h1><p>Start your journey to focus and tranquility. This is a one-time setup.</p></header>
-  <form id="registration-form" novalidate>
-    <div class="profile-pic-group">
-        <div id="pfp-preview">👤</div>
-        <input type="file" id="pfp-upload" class="sr-only" accept="image/*">
-        <label for="pfp-upload" id="pfp-upload-label" tabindex="0">Upload a Profile Picture</label>
-    </div>
-    <div class="form-group"><label for="name">Name</label><input type="text" id="name" class="form-control" required placeholder="Enter your name" autofocus></div>
-    <div class="form-group"><label for="email">Email</label><input type="email" id="email" class="form-control" required placeholder="Enter your email"></div>
-    <div class="form-group"><label for="password">Password</label><input type="password" id="password" class="form-control" required placeholder="Create a password"></div>
-    <div class="form-group"><label for="gender">Gender</label><div class="select-container"><select id="gender" class="form-control" required><option value="" disabled selected>Select...</option><option value="Male">Male</option><option value="Female">Female</option><option value="Prefer not to say">Prefer not to say</option></select></div></div>
-    <div class="form-group"><label for="age">Age</label><input type="number" id="age" class="form-control" required min="12" placeholder="Your age (must be 12+)"></div>
-    <button type="submit" class="btn" id="registerBtn">Create Profile</button>
-  </form>
-</div>
+        <!-- Login Section -->
+        <div class="login-section" id="loginSection">
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="profilePic">Profile Picture</label>
+                    <div class="profile-pic-preview" id="profilePicPreview">👤</div>
+                    <div class="file-input-wrapper">
+                        <input type="file" id="profilePic" class="file-input" accept="image/*">
+                        <label for="profilePic" class="file-input-label">
+                            📷 Choose Profile Picture
+                        </label>
+                    </div>
+                </div>
 
-<div id="pin-container" class="container">
-    <header><div class="logo" id="pin-logo">🔒</div><h1 id="pin-title">Set Your 4-Digit PIN</h1><p id="pin-subtitle">For quick and secure access.</p></header>
-    <div class="pin-display" id="pin-display"><div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div></div>
-    <div class="pin-keypad" id="pin-keypad">
-        <button data-key="1">1</button><button data-key="2">2</button><button data-key="3">3</button>
-        <button data-key="4">4</button><button data-key="5">5</button><button data-key="6">6</button>
-        <button data-key="7">7</button><button data-key="8">8</button><button data-key="9">9</button>
-        <span></span><button data-key="0">0</button><button data-key="del">⌫</button>
-    </div>
-    <div class="toggle-container">
-      <span class="toggle-label">Enable Passcode</span>
-      <label class="toggle-switch">
-        <input type="checkbox" id="passcode-toggle" checked>
-        <span class="toggle-slider"></span>
-      </label>
-    </div>
-</div>
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" class="form-input" placeholder="Enter your full name" required>
+                </div>
 
-<main id="main-content" class="container">
-    <button id="settings-btn" class="settings-button" title="Settings" aria-label="Open Settings">⚙️</button>
-    <header class="user-profile-header">
-        <div id="user-pfp"></div><h1 id="user-greeting">Welcome!</h1>
-    </header>
-    <p style="margin-top:0;">Find your flow, peacefully.</p>
-    <div class="region-selector-wrapper" style="margin: 32px 0;">
-        <label for="region-select" class="sr-only">Select Your Region</label>
-        <div class="select-container"><select id="region-select" class="form-control" required><option value="" disabled selected>Choose your region...</option><option value="USA">USA</option><option value="Canada">Canada</option><option value="China">China</option><option value="Bangladesh">Bangladesh</option><option value="UK">United Kingdom</option><option value="Australia">Australia</option><option value="Japan">Japan</option><option value="Germany">Germany</option><option value="India">India</option></select></div>
-    </div>
-    <button class="btn enter" id="enterBtn" disabled>Enter</button>
-    <div id="success" class="success" role="status" aria-live="polite"></div>
-    <footer class="footer"><p>© <span id="year"></span> Chrono Focus · Crafted by CozytuStudios Team</p></footer>
-</main>
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" class="form-input" placeholder="Enter your email" required>
+                </div>
 
-<!-- Settings Modal -->
-<div id="settings-modal" class="settings-modal">
-  <div class="settings-content">
-    <div class="settings-header">
-      <h2 class="settings-title">Settings</h2>
-      <button class="close-settings" id="close-settings">✕</button>
-    </div>
-    
-    <div class="settings-section">
-      <h3 class="settings-section-title">Profile</h3>
-      <div class="profile-pic-group">
-        <div id="settings-pfp-preview">👤</div>
-        <input type="file" id="settings-pfp-upload" class="sr-only" accept="image/*">
-        <label for="settings-pfp-upload" id="settings-pfp-upload-label" tabindex="0">Change Profile Picture</label>
-      </div>
-    </div>
-    
-    <div class="settings-section">
-      <h3 class="settings-section-title">Security</h3>
-      <div class="toggle-container">
-        <span class="toggle-label">Enable Passcode</span>
-        <label class="toggle-switch">
-          <input type="checkbox" id="settings-passcode-toggle">
-          <span class="toggle-slider"></span>
-        </label>
-      </div>
-      <button class="btn" id="change-pin-btn" style="margin-top: 12px;">Change PIN</button>
-      <button class="btn" id="change-password-btn" style="margin-top: 12px;">Change Password</button>
-    </div>
-    
-    <div class="settings-section">
-      <h3 class="settings-section-title">Appearance</h3>
-      <p>Choose your background color:</p>
-      <div class="color-options">
-        <div class="color-option active" data-color="default" style="background: linear-gradient(-45deg, var(--custom-bg-start), var(--custom-bg-end), #4A00E0, #8E2DE2);"></div>
-        <div class="color-option" data-color="blue" style="background: linear-gradient(-45deg, #3B82F6, #1D4ED8, #4A00E0, #8E2DE2);"></div>
-        <div class="color-option" data-color="green" style="background: linear-gradient(-45deg, #10B981, #059669, #047857, #065F46);"></div>
-        <div class="color-option" data-color="purple" style="background: linear-gradient(-45deg, #8B5CF6, #7C3AED, #6D28D9, #5B21B6);"></div>
-        <div class="color-option" data-color="orange" style="background: linear-gradient(-45deg, #F59E0B, #D97706, #B45309, #92400E);"></div>
-        <div class="color-option" data-color="pink" style="background: linear-gradient(-45deg, #EC4899, #DB2777, #BE185D, #9D174D);"></div>
-      </div>
-    </div>
-    
-    <div class="settings-section">
-      <h3 class="settings-section-title">Sound & Haptics</h3>
-      <div class="sound-toggle">
-        <span class="toggle-label">Sound Effects</span>
-        <label class="toggle-switch">
-          <input type="checkbox" id="sound-toggle" checked>
-          <span class="toggle-slider"></span>
-        </label>
-      </div>
-      <div class="haptic-toggle">
-        <span class="toggle-label">Haptic Feedback</span>
-        <label class="toggle-switch">
-          <input type="checkbox" id="haptic-toggle" checked>
-          <span class="toggle-slider"></span>
-        </label>
-      </div>
-    </div>
-  </div>
-</div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" class="form-input" placeholder="Enter your password" required>
+                </div>
 
-<!-- Password Change Modal -->
-<div id="password-modal" class="password-modal">
-  <div class="password-content">
-    <div class="password-header">
-      <h2 class="password-title">Change Password</h2>
-      <button class="close-password" id="close-password">✕</button>
+                <div class="form-group">
+                    <label for="age">Age</label>
+                    <input type="number" id="age" class="form-input" placeholder="Enter your age" min="13" max="120" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="region">Region</label>
+                    <select id="region" class="form-input" required>
+                        <option value="">Select your region</option>
+                        <option value="North America">North America</option>
+                        <option value="South America">South America</option>
+                        <option value="Europe">Europe</option>
+                        <option value="Asia">Asia</option>
+                        <option value="Africa">Africa</option>
+                        <option value="Australia/Oceania">Australia/Oceania</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Create Profile & Enter</button>
+            </form>
+        </div>
+
+        <!-- Profile Section -->
+        <div class="profile-section" id="profileSection">
+            <div class="settings-btn" id="settingsBtn">⚙️</div>
+            
+            <div class="profile-pic-large" id="profilePicLarge">👤</div>
+            <div class="welcome-text">Welcome back,</div>
+            <div class="user-name" id="userName">User</div>
+            
+            <button class="btn btn-primary" id="enterAppBtn">Enter ChronoFocus</button>
+            <button class="btn" id="logoutBtn">Switch Profile</button>
+        </div>
     </div>
-    
-    <form id="password-form">
-      <div class="form-group">
-        <label for="current-password">Current Password</label>
-        <input type="password" id="current-password" class="form-control" required placeholder="Enter your current password">
-      </div>
-      <div class="form-group">
-        <label for="new-password">New Password</label>
-        <input type="password" id="new-password" class="form-control" required placeholder="Enter your new password">
-      </div>
-      <div class="form-group">
-        <label for="confirm-password">Confirm New Password</label>
-        <input type="password" id="confirm-password" class="form-control" required placeholder="Confirm your new password">
-      </div>
-      <button type="submit" class="btn" id="save-password-btn">Save New Password</button>
-    </form>
-  </div>
-</div>
 
-  <script>
-    (function() {
-      'use strict';
-      
-      const USER_DATA_KEY = 'chronoFocus-userData';
-      const USER_PIN_KEY = 'chronoFocus-userPin';
-      const SAVED_REGION_KEY = 'chronoFocus-userRegion';
-      const PASSCODE_ENABLED_KEY = 'chronoFocus-passcodeEnabled';
-      const SOUND_ENABLED_KEY = 'chronoFocus-soundEnabled';
-      const HAPTIC_ENABLED_KEY = 'chronoFocus-hapticEnabled';
-      const BACKGROUND_COLOR_KEY = 'chronoFocus-backgroundColor';
-      const USER_PASSWORD_KEY = 'chronoFocus-userPassword';
-      const VERSION = 'Zenith 1 · Beta 7';
+    <!-- Settings Panel -->
+    <div class="settings-panel" id="settingsPanel">
+        <div class="settings-header">
+            <h2 class="settings-title">Settings</h2>
+            <button class="close-btn" id="closeSettingsBtn">×</button>
+        </div>
 
-      // Global reference to keypad event handler to allow proper removal
-      let pinKeypadHandler = null;
+        <div class="setting-item">
+            <label class="setting-label">Haptics</label>
+            <div class="toggle-switch" id="hapticsToggle">
+                <div class="toggle-slider"></div>
+            </div>
+        </div>
 
-      // Audio elements for sound effects
-      const clickSound = new Audio('data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQQAAAAAAA==');
-      const successSound = new Audio('data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQQAAAAAAA==');
-      const errorSound = new Audio('data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQQAAAAAAA==');
-      
-      // In a real implementation, you would replace these with actual sound files
-      // For now, we'll use these placeholder base64 encoded silent audio
+        <div class="setting-item">
+            <label class="setting-label">Vibration</label>
+            <div class="toggle-switch" id="vibrationToggle">
+                <div class="toggle-slider"></div>
+            </div>
+        </div>
 
-      document.addEventListener('DOMContentLoaded', initialize);
+        <div class="setting-item">
+            <label class="setting-label">Passcode Protection</label>
+            <div class="toggle-switch" id="passcodeToggle">
+                <div class="toggle-slider"></div>
+            </div>
+            <div class="passcode-input hidden" id="passcodeInputs">
+                <input type="password" class="passcode-digit" maxlength="1" pattern="[0-9]">
+                <input type="password" class="passcode-digit" maxlength="1" pattern="[0-9]">
+                <input type="password" class="passcode-digit" maxlength="1" pattern="[0-9]">
+                <input type="password" class="passcode-digit" maxlength="1" pattern="[0-9]">
+            </div>
+        </div>
 
-      function initialize() {
-        document.getElementById('year').textContent = new Date().getFullYear();
-        setTimeout(checkUserState, 200); // Brief delay for smooth rendering
+        <div class="setting-item">
+            <label class="setting-label">Theme Colors</label>
+            <div class="color-picker-grid">
+                <div class="color-option active" style="background: linear-gradient(45deg, #667eea, #764ba2)" data-theme="default"></div>
+                <div class="color-option" style="background: linear-gradient(45deg, #ff6b6b, #ee5a24)" data-theme="red"></div>
+                <div class="color-option" style="background: linear-gradient(45deg, #4ecdc4, #44a08d)" data-theme="teal"></div>
+                <div class="color-option" style="background: linear-gradient(45deg, #f093fb, #f5576c)" data-theme="pink"></div>
+                <div class="color-option" style="background: linear-gradient(45deg, #4facfe, #00f2fe)" data-theme="blue"></div>
+                <div class="color-option" style="background: linear-gradient(45deg, #43e97b, #38f9d7)" data-theme="green"></div>
+                <div class="color-option" style="background: linear-gradient(45deg, #fa709a, #fee140)" data-theme="orange"></div>
+                <div class="color-option" style="background: linear-gradient(45deg, #a8edea, #fed6e3)" data-theme="pastel"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Passcode Dialer -->
+    <div class="passcode-dialer" id="passcodeDialer">
+        <div class="dialer-header">
+            <h3 class="dialer-title">Enter Passcode</h3>
+            <div class="dialer-display" id="dialerDisplay">
+                <div class="dialer-dot"></div>
+                <div class="dialer-dot"></div>
+                <div class="dialer-dot"></div>
+                <div class="dialer-dot"></div>
+            </div>
+        </div>
+        <div class="dialer-keypad">
+            <div class="dialer-key" data-key="1">1</div>
+            <div class="dialer-key" data-key="2">2</div>
+            <div class="dialer-key" data-key="3">3</div>
+            <div class="dialer-key" data-key="4">4</div>
+            <div class="dialer-key" data-key="5">5</div>
+            <div class="dialer-key" data-key="6">6</div>
+            <div class="dialer-key" data-key="7">7</div>
+            <div class="dialer-key" data-key="8">8</div>
+            <div class="dialer-key" data-key="9">9</div>
+            <div class="dialer-key" data-key="0">0</div>
+            <div class="dialer-key delete" id="dialerDelete">Delete</div>
+        </div>
+    </div>
+
+    <div class="overlay" id="overlay"></div>
+
+    <script>
+        // Global variables
+        let userProfile = null;
+        let settings = {
+            haptics: true,
+            vibration: true,
+            passcode: false,
+            passcodeValue: '',
+            theme: 'default'
+        };
         
-        // Add keyboard support for password field
-        document.getElementById('password').addEventListener('keydown', function(e) {
-          // Allow normal typing but prevent form submission on Enter
-          if (e.key === 'Enter') {
+        // Passcode dialer variables
+        let currentPasscode = '';
+        const maxPasscodeLength = 4;
+
+        // Initialize particles
+        function createParticles() {
+            const particleContainer = document.querySelector('.floating-particles');
+            const particleCount = 50;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 6 + 's';
+                particle.style.animationDuration = (Math.random() * 3 + 3) + 's';
+                particleContainer.appendChild(particle);
+            }
+        }
+
+        // Haptic feedback
+        function triggerHaptic() {
+            if (settings.haptics && navigator.vibrate) {
+                navigator.vibrate(50);
+            }
+        }
+
+        // Vibration feedback
+        function triggerVibration() {
+            if (settings.vibration && navigator.vibrate) {
+                navigator.vibrate([100, 50, 100]);
+            }
+        }
+
+        // Load saved data
+        function loadUserData() {
+            const saved = localStorage.getItem('chronofocus_user');
+            const savedSettings = localStorage.getItem('chronofocus_settings');
+            
+            if (saved) {
+                userProfile = JSON.parse(saved);
+                showProfileSection();
+            }
+            
+            if (savedSettings) {
+                settings = { ...settings, ...JSON.parse(savedSettings) };
+                updateSettingsUI();
+                applyTheme(settings.theme);
+            }
+        }
+
+        // Save user data
+        function saveUserData() {
+            localStorage.setItem('chronofocus_user', JSON.stringify(userProfile));
+            localStorage.setItem('chronofocus_settings', JSON.stringify(settings));
+        }
+
+        // Profile picture handling
+        document.getElementById('profilePic').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const preview = document.getElementById('profilePicPreview');
+                    preview.innerHTML = `<img src="${e.target.result}" alt="Profile">`;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Login form submission
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            document.getElementById('registration-form').requestSubmit();
-          }
+            triggerHaptic();
+            
+            const formData = new FormData(e.target);
+            const profilePicSrc = document.querySelector('#profilePicPreview img')?.src || '';
+            
+            userProfile = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                password: document.getElementById('password').value,
+                age: document.getElementById('age').value,
+                region: document.getElementById('region').value,
+                profilePic: profilePicSrc,
+                loginTime: new Date().toISOString()
+            };
+            
+            saveUserData();
+            showProfileSection();
         });
-        
-        // Add Enter key support for region selection
-        document.getElementById('region-select').addEventListener('keydown', function(e) {
-          if (e.key === 'Enter' && !document.getElementById('enterBtn').disabled) {
-            document.getElementById('enterBtn').click();
-          }
-        });
-        
-        // Add Enter key support for Enter button
-        document.getElementById('enterBtn').addEventListener('keydown', function(e) {
-          if (e.key === 'Enter' && !this.disabled) {
-            this.click();
-          }
-        });
-        
-        // Add Enter key support for the entire document to redirect to page1.html
-        document.addEventListener('keydown', function(e) {
-          if (e.key === 'Enter' && document.getElementById('main-content').classList.contains('active')) {
-            if (!document.getElementById('enterBtn').disabled) {
-              document.getElementById('enterBtn').click();
-            }
-          }
-        });
-        
-        // Settings modal functionality
-        document.getElementById('settings-btn').addEventListener('click', openSettings);
-        document.getElementById('close-settings').addEventListener('click', closeSettings);
-        document.getElementById('settings-modal').addEventListener('click', function(e) {
-          if (e.target === this) closeSettings();
-        });
-        
-        // Password modal functionality
-        document.getElementById('change-password-btn').addEventListener('click', openPasswordModal);
-        document.getElementById('close-password').addEventListener('click', closePasswordModal);
-        document.getElementById('password-modal').addEventListener('click', function(e) {
-          if (e.target === this) closePasswordModal();
-        });
-        
-        // Password form submission
-        document.getElementById('password-form').addEventListener('submit', handlePasswordChange);
-        
-        // Settings functionality
-        setupSettings();
-      }
-      
-      // Sound and haptic functions
-      function playSound(sound) {
-        const soundEnabled = localStorage.getItem(SOUND_ENABLED_KEY) !== 'false';
-        if (soundEnabled) {
-          sound.currentTime = 0;
-          sound.play().catch(e => console.log('Sound play failed:', e));
-        }
-      }
-      
-      function triggerHaptic() {
-        const hapticEnabled = localStorage.getItem(HAPTIC_ENABLED_KEY) !== 'false';
-        if (hapticEnabled && 'vibrate' in navigator) {
-          navigator.vibrate(10);
-        }
-      }
-      
-      function playClick() {
-        playSound(clickSound);
-        triggerHaptic();
-      }
-      
-      function playSuccess() {
-        playSound(successSound);
-        triggerHaptic();
-      }
-      
-      function playError() {
-        playSound(errorSound);
-        triggerHaptic();
-      }
-      
-      function checkUserState() {
-        const storedData = localStorage.getItem(USER_DATA_KEY);
-        const userData = storedData ? JSON.parse(storedData) : null;
-        const userPin = localStorage.getItem(USER_PIN_KEY);
-        const passcodeEnabled = localStorage.getItem(PASSCODE_ENABLED_KEY) !== 'false';
-        
-        // Initialize sound and haptic settings if not set
-        if (localStorage.getItem(SOUND_ENABLED_KEY) === null) {
-          localStorage.setItem(SOUND_ENABLED_KEY, 'true');
-        }
-        if (localStorage.getItem(HAPTIC_ENABLED_KEY) === null) {
-          localStorage.setItem(HAPTIC_ENABLED_KEY, 'true');
-        }
-        
-        document.getElementById('loader').classList.add('hidden');
 
-        if (!userData) {
-          showModule('registration-container');
-          setupRegistration();
-        } else if (!userPin && passcodeEnabled) {
-          showModule('pin-container');
-          setupPinScreen('set', userData); 
-        } else {
-          if (passcodeEnabled) {
-            showModule('pin-container');
-            setupPinScreen('login', userData);
-          } else {
-            showMainApp(userData);
-          }
-        }
-      }
-
-      function showModule(moduleId) {
-          const containers = document.querySelectorAll('.container');
-          containers.forEach(c => {
-            if (c.id === moduleId) {
-              c.classList.add('active');
+        // Show profile section
+        function showProfileSection() {
+            document.getElementById('loginSection').style.display = 'none';
+            document.getElementById('profileSection').classList.add('active');
+            
+            // Update profile display
+            document.getElementById('userName').textContent = userProfile.name;
+            const profilePicLarge = document.getElementById('profilePicLarge');
+            
+            if (userProfile.profilePic) {
+                profilePicLarge.innerHTML = `<img src="${userProfile.profilePic}" alt="Profile">`;
             } else {
-              c.classList.remove('active');
+                profilePicLarge.innerHTML = '👤';
             }
-          });
-      }
+        }
 
-      function setupRegistration(isUpdate = false) {
-          const form = document.getElementById('registration-form');
-          const pfpUpload = document.getElementById('pfp-upload');
-          const pfpPreview = document.getElementById('pfp-preview');
-          const nameInput = document.getElementById('name');
-          const emailInput = document.getElementById('email');
-          const passwordInput = document.getElementById('password');
-          const genderInput = document.getElementById('gender');
-          const ageInput = document.getElementById('age');
-          const registerBtn = document.getElementById('registerBtn');
-          let pfpData = null;
+        // Settings panel
+        document.getElementById('settingsBtn').addEventListener('click', function() {
+            triggerHaptic();
+            document.getElementById('settingsPanel').classList.add('active');
+            document.getElementById('overlay').classList.add('active');
+        });
 
-          if (isUpdate) {
-            const userData = JSON.parse(localStorage.getItem(USER_DATA_KEY));
-            pfpData = userData.pfp;
-            if (pfpData) {
-                pfpPreview.style.backgroundImage = `url(${pfpData})`;
-                pfpPreview.textContent = '';
-            }
-            nameInput.value = userData.name;
-            emailInput.value = userData.email;
-            genderInput.value = userData.gender;
-            ageInput.value = userData.age;
-            registerBtn.textContent = 'Update Profile';
-            document.querySelector('#registration-container h1').textContent = 'Update Your Profile';
-            document.querySelector('#registration-container p').textContent = 'Keep your information up to date.';
-          }
+        document.getElementById('closeSettingsBtn').addEventListener('click', closeSettings);
+        document.getElementById('overlay').addEventListener('click', closeSettings);
 
-          pfpUpload.addEventListener('change', (e) => {
-              const file = e.target.files?.[0];
-              if (!file) return;
+        function closeSettings() {
+            triggerHaptic();
+            document.getElementById('settingsPanel').classList.remove('active');
+            document.getElementById('overlay').classList.remove('active');
+        }
 
-              if (file.size > 5 * 1024 * 1024) { // 5MB limit
-                alert('File is too large. Please select an image under 5MB.');
-                return;
-              }
-
-              const reader = new FileReader();
-              reader.onload = (event) => {
-                  pfpData = event.target.result;
-                  pfpPreview.style.backgroundImage = `url(${pfpData})`;
-                  pfpPreview.textContent = '';
-              };
-              reader.onerror = () => {
-                alert('Error reading file. Please try another image.');
-              };
-              reader.readAsDataURL(file);
-          });
-          
-          form.onsubmit = (e) => {
-              e.preventDefault();
-              if (form.checkValidity() === false) {
-                  alert("Please fill out all fields correctly.");
-                  return;
-              }
-              const age = parseInt(ageInput.value, 10);
-              if (age < 12) {
-                  alert("You must be at least 12 years old to register.");
-                  return;
-              }
-              
-              const newUserData = {
-                  pfp: pfpData, 
-                  name: nameInput.value.trim(),
-                  email: emailInput.value.trim(), 
-                  gender: genderInput.value,
-                  age: age
-              };
-              
-              // Store password if it's a new registration
-              if (!isUpdate) {
-                localStorage.setItem(USER_PASSWORD_KEY, passwordInput.value);
-              }
-              
-              localStorage.setItem(USER_DATA_KEY, JSON.stringify(newUserData));
-              playSuccess();
-              
-              if(isUpdate) {
-                alert('Profile updated successfully!');
-                showMainApp(newUserData);
-              } else {
-                const passcodeEnabled = localStorage.getItem(PASSCODE_ENABLED_KEY) !== 'false';
-                if (passcodeEnabled) {
-                  showModule('pin-container');
-                  setupPinScreen('set', newUserData);
-                } else {
-                  showMainApp(newUserData);
+        // Toggle switches
+        document.querySelectorAll('.toggle-switch').forEach(toggle => {
+            toggle.addEventListener('click', function() {
+                triggerHaptic();
+                const isActive = this.classList.contains('active');
+                this.classList.toggle('active');
+                
+                const settingName = this.id.replace('Toggle', '');
+                settings[settingName] = !isActive;
+                
+                // Special handling for passcode
+                if (settingName === 'passcode') {
+                    const passcodeInputs = document.getElementById('passcodeInputs');
+                    if (settings.passcode) {
+                        passcodeInputs.classList.remove('hidden');
+                    } else {
+                        passcodeInputs.classList.add('hidden');
+                        settings.passcodeValue = '';
+                    }
                 }
-              }
-          };
-      }
+                
+                saveUserData();
+            });
+        });
 
-      function setupPinScreen(mode, userData) {
-          let currentPin = "";
-          let tempPin = "";
-          const pinDisplayDots = document.querySelectorAll('#pin-display .pin-dot');
-          const keypad = document.getElementById('pin-keypad');
-          const title = document.getElementById('pin-title');
-          const subtitle = document.getElementById('pin-subtitle');
-          const logo = document.getElementById('pin-logo');
-          const pinDisplay = document.getElementById('pin-display');
-          const passcodeToggle = document.getElementById('passcode-toggle');
-          const savedPin = localStorage.getItem(USER_PIN_KEY);
-          const passcodeEnabled = localStorage.getItem(PASSCODE_ENABLED_KEY) !== 'false';
+        // Passcode input handling
+        const passcodeDigits = document.querySelectorAll('.passcode-digit');
+        passcodeDigits.forEach((input, index) => {
+            input.addEventListener('input', function() {
+                if (this.value.length === 1 && index < passcodeDigits.length - 1) {
+                    passcodeDigits[index + 1].focus();
+                }
+                
+                // Update passcode value
+                settings.passcodeValue = Array.from(passcodeDigits).map(d => d.value).join('');
+                saveUserData();
+            });
+            
+            input.addEventListener('keydown', function(e) {
+                if (e.key === 'Backspace' && this.value === '' && index > 0) {
+                    passcodeDigits[index - 1].focus();
+                }
+            });
+        });
 
-          // Set initial toggle state
-          passcodeToggle.checked = passcodeEnabled;
+        // Theme colors
+        document.querySelectorAll('.color-option').forEach(option => {
+            option.addEventListener('click', function() {
+                triggerHaptic();
+                document.querySelectorAll('.color-option').forEach(o => o.classList.remove('active'));
+                this.classList.add('active');
+                
+                const theme = this.dataset.theme;
+                settings.theme = theme;
+                applyTheme(theme);
+                saveUserData();
+            });
+        });
 
-          // Handle passcode toggle
-          passcodeToggle.addEventListener('change', function() {
-            localStorage.setItem(PASSCODE_ENABLED_KEY, this.checked);
-            if (!this.checked && mode === 'login') {
-              showMainApp(userData);
+        // Apply theme
+        function applyTheme(theme) {
+            const themes = {
+                default: { primary: '#667eea', secondary: '#764ba2', accent: '#f093fb' },
+                red: { primary: '#ff6b6b', secondary: '#ee5a24', accent: '#ff9ff3' },
+                teal: { primary: '#4ecdc4', secondary: '#44a08d', accent: '#96fbc4' },
+                pink: { primary: '#f093fb', secondary: '#f5576c', accent: '#4facfe' },
+                blue: { primary: '#4facfe', secondary: '#00f2fe', accent: '#43e97b' },
+                green: { primary: '#43e97b', secondary: '#38f9d7', accent: '#4facfe' },
+                orange: { primary: '#fa709a', secondary: '#fee140', accent: '#a8edea' },
+                pastel: { primary: '#a8edea', secondary: '#fed6e3', accent: '#ffecd2' }
+            };
+            
+            const colors = themes[theme];
+            if (colors) {
+                document.documentElement.style.setProperty('--primary-color', colors.primary);
+                document.documentElement.style.setProperty('--secondary-color', colors.secondary);
+                document.documentElement.style.setProperty('--accent-color', colors.accent);
             }
-          });
+        }
 
-          const updatePinDisplay = () => pinDisplayDots.forEach((dot, i) => dot.classList.toggle('filled', i < currentPin.length));
-          const resetPinDisplay = () => { currentPin = ""; updatePinDisplay(); };
-          
-          function handleIncorrectPin() {
-              pinDisplay.classList.add('shake');
-              playError();
-              setTimeout(() => {
-                  pinDisplay.classList.remove('shake');
-                  resetPinDisplay();
-              }, 600);
-          }
-
-          const modes = {
-              set: { title: 'Set Your 4-Digit PIN', subtitle: 'This will be used for quick, secure access.', logo: '🔒', next: (newPin) => { localStorage.setItem(USER_PIN_KEY, newPin); playSuccess(); showMainApp(userData); } },
-              login: { title: `Welcome Back, ${userData.name}`, subtitle: 'Please enter your PIN to continue.', logo: '🔑', next: (enteredPin) => (enteredPin === savedPin ? (playSuccess(), showMainApp(userData)) : handleIncorrectPin()) },
-              confirmOld: { title: 'Enter Your Current PIN', subtitle: 'Please confirm your old PIN to proceed.', logo: '🔐', next: (enteredPin) => {
-                  if (enteredPin === savedPin) {
-                    playSuccess();
-                    const action = confirm("Do you want to change your PIN? OK for PIN change, Cancel to edit your profile.");
-                    if(action) { setupPinScreen('setNew', userData); } 
-                    else { showModule('registration-container'); setupRegistration(true); }
-                  } else { handleIncorrectPin(); }
-              }},
-              setNew: { title: 'Set a New PIN', subtitle: 'Enter your new 4-digit PIN.', logo: '🔒', next: (newPin) => { tempPin = newPin; resetPinDisplay(); setupPinScreen('confirmNew', userData); } },
-              confirmNew: { title: 'Confirm Your New PIN', subtitle: 'Please re-enter your new PIN.', logo: '✅', next: (confirmedPin) => (confirmedPin === tempPin ? (localStorage.setItem(USER_PIN_KEY, confirmedPin), playSuccess(), alert('PIN updated successfully!'), showMainApp(userData)) : (playError(), alert('PINs do not match. Please try again.'), setupPinScreen('setNew', userData))) }
-          };
-
-          title.textContent = modes[mode].title;
-          subtitle.textContent = modes[mode].subtitle;
-          logo.textContent = modes[mode].logo;
-          resetPinDisplay();
-
-          if (pinKeypadHandler) { keypad.removeEventListener('click', pinKeypadHandler); }
-          
-          pinKeypadHandler = (e) => {
-              const key = e.target.closest('[data-key]')?.dataset.key;
-              if (!key) return;
-
-              playClick();
-              
-              if (key === 'del') { currentPin = currentPin.slice(0, -1); } 
-              else if (currentPin.length < 4) { currentPin += key; }
-              
-              updatePinDisplay();
-              
-              if (currentPin.length === 4) {
-                  setTimeout(() => modes[mode].next(currentPin), 250); 
-              }
-          };
-          
-          keypad.addEventListener('click', pinKeypadHandler);
-          
-          // Add keyboard support for PIN entry
-          document.addEventListener('keydown', function(e) {
-            if (e.key >= '0' && e.key <= '9' && currentPin.length < 4) {
-              playClick();
-              currentPin += e.key;
-              updatePinDisplay();
-              if (currentPin.length === 4) {
-                setTimeout(() => modes[mode].next(currentPin), 250);
-              }
-            } else if (e.key === 'Backspace') {
-              playClick();
-              currentPin = currentPin.slice(0, -1);
-              updatePinDisplay();
+        // Update settings UI
+        function updateSettingsUI() {
+            Object.keys(settings).forEach(key => {
+                if (key !== 'theme' && key !== 'passcodeValue') {
+                    const toggle = document.getElementById(key + 'Toggle');
+                    if (toggle && settings[key]) {
+                        toggle.classList.add('active');
+                    }
+                }
+            });
+            
+            // Update passcode inputs
+            if (settings.passcode) {
+                document.getElementById('passcodeInputs').classList.remove('hidden');
+                const digits = settings.passcodeValue.split('');
+                passcodeDigits.forEach((input, index) => {
+                    input.value = digits[index] || '';
+                });
             }
-          });
-      }
-      
-      function showMainApp(userData) {
-          showModule('main-content');
-          setupMainApp(userData);
-      }
-      
-      function setupMainApp(userData) {
-        const regionSelect = document.getElementById('region-select');
-        const enterBtn = document.getElementById('enterBtn');
-        const successMsg = document.getElementById('success');
-        const settingsBtn = document.getElementById('settings-btn');
-        
-        // This function enables/disables the 'Enter' button based on selection
-        const validateSelection = () => {
-            enterBtn.disabled = !regionSelect.value;
-        };
+            
+            // Update theme selection
+            document.querySelectorAll('.color-option').forEach(option => {
+                option.classList.remove('active');
+                if (option.dataset.theme === settings.theme) {
+                    option.classList.add('active');
+                }
+            });
+        }
 
-        // This function sets the initial value of the dropdown
-        const loadSavedRegion = () => {
-            // Get the saved region from localStorage
-            const savedRegion = localStorage.getItem(SAVED_REGION_KEY);
-            // If a region was saved, set the dropdown to that value
-            if (savedRegion) {
-                regionSelect.value = savedRegion;
-            }
-            // Check if the button should be enabled initially
-            validateSelection();
-        };
-        
-        const personalizeHeader = () => {
-            document.getElementById('user-greeting').textContent = `Welcome, ${userData.name}`;
-            const userPfp = document.getElementById('user-pfp');
-            if (userData.pfp) {
-                userPfp.style.backgroundImage = `url(${userData.pfp})`;
-                userPfp.textContent = '';
+        // Enter app button
+        document.getElementById('enterAppBtn').addEventListener('click', function() {
+            triggerVibration();
+            
+            if (settings.passcode && settings.passcodeValue.length === 4) {
+                // Show passcode dialer instead of prompt
+                showPasscodeDialer();
             } else {
-                userPfp.style.backgroundImage = '';
-                userPfp.textContent = '👤';
-            }
-        };
-
-        const handleEntry = () => {
-            // Get the *currently selected* value from the dropdown
-            const selectedRegion = regionSelect.value;
-            // Guard against empty selection, just in case
-            if (!selectedRegion) return; 
-
-            enterBtn.disabled = true;
-            enterBtn.classList.add('loading'); 
-            
-            // Add enter animation
-            enterBtn.style.animation = 'enterSlide 0.5s ease';
-            
-            // Save the newly selected region to localStorage
-            localStorage.setItem(SAVED_REGION_KEY, selectedRegion);
-            
-            successMsg.textContent = `✓ Preparing your sanctuary in ${selectedRegion}…`;
-            successMsg.style.display = 'block';
-            
-            // Add page transition animation
-            document.querySelector('.container.active').style.animation = 'pageTransition 0.8s ease forwards';
-            
-            playSuccess();
-            
-            setTimeout(() => {
-                // Redirect to page1.html
+                // Navigate to page1.html
                 window.location.href = 'page1.html';
-            }, 800);
-        };
-        
-        const handleSettings = () => {
-            showModule('pin-container');
-            setupPinScreen('confirmOld', userData);
-        };
-        
-        // Setup event listeners
-        regionSelect.onchange = validateSelection;
-        enterBtn.onclick = handleEntry;
-        settingsBtn.onclick = handleSettings;
-        
-        // Initial setup calls
-        personalizeHeader();
-        loadSavedRegion();
-      }
-      
-      function openSettings() {
-        document.getElementById('settings-modal').classList.add('active');
-        playClick();
-        
-        // Load current settings
-        const userData = JSON.parse(localStorage.getItem(USER_DATA_KEY));
-        if (userData && userData.pfp) {
-          document.getElementById('settings-pfp-preview').style.backgroundImage = `url(${userData.pfp})`;
-          document.getElementById('settings-pfp-preview').textContent = '';
-        }
-        
-        document.getElementById('settings-passcode-toggle').checked = localStorage.getItem(PASSCODE_ENABLED_KEY) !== 'false';
-        document.getElementById('sound-toggle').checked = localStorage.getItem(SOUND_ENABLED_KEY) !== 'false';
-        document.getElementById('haptic-toggle').checked = localStorage.getItem(HAPTIC_ENABLED_KEY) !== 'false';
-        
-        // Set active color
-        const savedColor = localStorage.getItem(BACKGROUND_COLOR_KEY) || 'default';
-        document.querySelectorAll('.color-option').forEach(option => {
-          option.classList.toggle('active', option.dataset.color === savedColor);
-        });
-      }
-      
-      function closeSettings() {
-        document.getElementById('settings-modal').classList.remove('active');
-        playClick();
-      }
-      
-      function openPasswordModal() {
-        document.getElementById('password-modal').classList.add('active');
-        playClick();
-      }
-      
-      function closePasswordModal() {
-        document.getElementById('password-modal').classList.remove('active');
-        playClick();
-        // Clear form
-        document.getElementById('password-form').reset();
-      }
-      
-      function handlePasswordChange(e) {
-        e.preventDefault();
-        
-        const currentPassword = document.getElementById('current-password').value;
-        const newPassword = document.getElementById('new-password').value;
-        const confirmPassword = document.getElementById('confirm-password').value;
-        
-        const storedPassword = localStorage.getItem(USER_PASSWORD_KEY);
-        
-        if (currentPassword !== storedPassword) {
-          alert('Current password is incorrect.');
-          playError();
-          return;
-        }
-        
-        if (newPassword !== confirmPassword) {
-          alert('New passwords do not match.');
-          playError();
-          return;
-        }
-        
-        if (newPassword.length < 6) {
-          alert('New password must be at least 6 characters long.');
-          playError();
-          return;
-        }
-        
-        localStorage.setItem(USER_PASSWORD_KEY, newPassword);
-        playSuccess();
-        alert('Password changed successfully!');
-        closePasswordModal();
-      }
-      
-      function setupSettings() {
-        // Profile picture change in settings
-        document.getElementById('settings-pfp-upload').addEventListener('change', function(e) {
-          const file = e.target.files?.[0];
-          if (!file) return;
-
-          if (file.size > 5 * 1024 * 1024) {
-            alert('File is too large. Please select an image under 5MB.');
-            return;
-          }
-
-          const reader = new FileReader();
-          reader.onload = (event) => {
-            const pfpData = event.target.result;
-            document.getElementById('settings-pfp-preview').style.backgroundImage = `url(${pfpData})`;
-            document.getElementById('settings-pfp-preview').textContent = '';
-            
-            // Update user data
-            const userData = JSON.parse(localStorage.getItem(USER_DATA_KEY));
-            userData.pfp = pfpData;
-            localStorage.setItem(USER_DATA_KEY, JSON.stringify(userData));
-            
-            // Update main app display
-            if (document.getElementById('main-content').classList.contains('active')) {
-              document.getElementById('user-pfp').style.backgroundImage = `url(${pfpData})`;
-              document.getElementById('user-pfp').textContent = '';
             }
-            
-            playSuccess();
-            alert('Profile picture updated successfully!');
-          };
-          reader.onerror = () => {
-            alert('Error reading file. Please try another image.');
-          };
-          reader.readAsDataURL(file);
         });
-        
-        // Passcode toggle in settings
-        document.getElementById('settings-passcode-toggle').addEventListener('change', function() {
-          localStorage.setItem(PASSCODE_ENABLED_KEY, this.checked);
-          playClick();
-        });
-        
-        // Change PIN button
-        document.getElementById('change-pin-btn').addEventListener('click', function() {
-          const userData = JSON.parse(localStorage.getItem(USER_DATA_KEY));
-          closeSettings();
-          showModule('pin-container');
-          setupPinScreen('confirmOld', userData);
-        });
-        
-        // Color options
-        document.querySelectorAll('.color-option').forEach(option => {
-          option.addEventListener('click', function() {
-            document.querySelectorAll('.color-option').forEach(opt => opt.classList.remove('active'));
-            this.classList.add('active');
-            
-            const color = this.dataset.color;
-            localStorage.setItem(BACKGROUND_COLOR_KEY, color);
-            
-            // Apply the color theme
-            applyBackgroundColor(color);
-            playClick();
-          });
-        });
-        
-        // Sound toggle
-        document.getElementById('sound-toggle').addEventListener('change', function() {
-          localStorage.setItem(SOUND_ENABLED_KEY, this.checked);
-          playClick();
-        });
-        
-        // Haptic toggle
-        document.getElementById('haptic-toggle').addEventListener('change', function() {
-          localStorage.setItem(HAPTIC_ENABLED_KEY, this.checked);
-          triggerHaptic(); // Test haptic when toggling
-        });
-        
-        // Apply saved background color on load
-        const savedColor = localStorage.getItem(BACKGROUND_COLOR_KEY) || 'default';
-        applyBackgroundColor(savedColor);
-      }
-      
-      function applyBackgroundColor(color) {
-        const root = document.documentElement;
-        
-        switch(color) {
-          case 'blue':
-            root.style.setProperty('--custom-bg-start', '#3B82F6');
-            root.style.setProperty('--custom-bg-end', '#1D4ED8');
-            break;
-          case 'green':
-            root.style.setProperty('--custom-bg-start', '#10B981');
-            root.style.setProperty('--custom-bg-end', '#059669');
-            break;
-          case 'purple':
-            root.style.setProperty('--custom-bg-start', '#8B5CF6');
-            root.style.setProperty('--custom-bg-end', '#7C3AED');
-            break;
-          case 'orange':
-            root.style.setProperty('--custom-bg-start', '#F59E0B');
-            root.style.setProperty('--custom-bg-end', '#D97706');
-            break;
-          case 'pink':
-            root.style.setProperty('--custom-bg-start', '#EC4899');
-            root.style.setProperty('--custom-bg-end', '#DB2777');
-            break;
-          default:
-            // Reset to default colors based on theme
-            if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-              root.style.setProperty('--custom-bg-start', '#0f172a');
-              root.style.setProperty('--custom-bg-end', '#1e293b');
+
+        // Passcode dialer functions
+        function showPasscodeDialer() {
+            currentPasscode = '';
+            updateDialerDisplay();
+            document.getElementById('passcodeDialer').classList.add('active');
+            document.getElementById('overlay').classList.add('active');
+        }
+
+        function hidePasscodeDialer() {
+            document.getElementById('passcodeDialer').classList.remove('active');
+            document.getElementById('overlay').classList.remove('active');
+        }
+
+        function updateDialerDisplay() {
+            const dots = document.querySelectorAll('.dialer-dot');
+            dots.forEach((dot, index) => {
+                if (index < currentPasscode.length) {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('active');
+                }
+            });
+        }
+
+        function handleDialerKey(key) {
+            if (key === 'delete') {
+                if (currentPasscode.length > 0) {
+                    currentPasscode = currentPasscode.slice(0, -1);
+                    updateDialerDisplay();
+                }
             } else {
-              root.style.setProperty('--custom-bg-start', '#E9F1F8');
-              root.style.setProperty('--custom-bg-end', '#DDEBF7');
+                if (currentPasscode.length < maxPasscodeLength) {
+                    currentPasscode += key;
+                    updateDialerDisplay();
+                    
+                    // Check if passcode is complete
+                    if (currentPasscode.length === maxPasscodeLength) {
+                        if (currentPasscode === settings.passcodeValue) {
+                            // Correct passcode
+                            setTimeout(() => {
+                                hidePasscodeDialer();
+                                window.location.href = 'page1.html';
+                            }, 300);
+                        } else {
+                            // Incorrect passcode
+                            triggerVibration();
+                            currentPasscode = '';
+                            updateDialerDisplay();
+                            alert('Incorrect passcode! Please try again.');
+                        }
+                    }
+                }
             }
         }
-      }
 
-    })();
-  </script>
+        // Passcode dialer event listeners
+        document.querySelectorAll('.dialer-key').forEach(key => {
+            key.addEventListener('click', function() {
+                triggerHaptic();
+                const keyValue = this.dataset.key;
+                if (keyValue) {
+                    handleDialerKey(keyValue);
+                }
+            });
+        });
+
+        document.getElementById('dialerDelete').addEventListener('click', function() {
+            triggerHaptic();
+            handleDialerKey('delete');
+        });
+
+        // Logout button
+        document.getElementById('logoutBtn').addEventListener('click', function() {
+            triggerHaptic();
+            if (confirm('Are you sure you want to switch profile?')) {
+                localStorage.removeItem('chronofocus_user');
+                location.reload();
+            }
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                const activeSection = document.querySelector('.profile-section.active');
+                if (activeSection) {
+                    document.getElementById('enterAppBtn').click();
+                } else {
+                    // Focus on submit button if in login form
+                    const submitBtn = document.querySelector('.btn-primary');
+                    if (submitBtn) {
+                        submitBtn.click();
+                    }
+                }
+            }
+        });
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', function() {
+            createParticles();
+            loadUserData();
+            
+            // Auto-focus first input if no user profile
+            if (!userProfile) {
+                setTimeout(() => {
+                    document.getElementById('name').focus();
+                }, 500);
+            }
+        });
+
+        // Touch and click animations
+        document.querySelectorAll('.btn, .toggle-switch, .color-option, .dialer-key').forEach(element => {
+            element.addEventListener('touchstart', function() {
+                this.style.transform = 'scale(0.95)';
+            });
+            
+            element.addEventListener('touchend', function() {
+                this.style.transform = '';
+            });
+            
+            element.addEventListener('mousedown', function() {
+                this.style.transform = 'scale(0.95)';
+            });
+            
+            element.addEventListener('mouseup', function() {
+                this.style.transform = '';
+            });
+        });
+    </script>
 </body>
 </html>
