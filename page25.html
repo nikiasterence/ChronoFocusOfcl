@@ -1,1 +1,1677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="Chronofocus.png" type="image/x-icon">
+    <title>Chrono Humanizer - Advanced AI Text Humanization</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-dark: #0a0a0a;
+            --secondary-dark: #1a1a1a;
+            --accent-blue: #2563eb;
+            --accent-blue-light: #3b82f6;
+            --accent-blue-dark: #1d4ed8;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --surface: #1e293b;
+            --surface-light: #334155;
+            --border-color: #334155;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --card-border: rgba(51, 65, 85, 0.5);
+            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--secondary-dark) 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px 0;
+        }
+
+        .logo {
+            font-size: clamp(2.5rem, 5vw, 3.5rem);
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-blue-light) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: clamp(1rem, 2.5vw, 1.25rem);
+            color: var(--text-secondary);
+            font-weight: 400;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+        }
+
+        @media (min-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(10px);
+        }
+
+        .card-header {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-title svg {
+            width: 20px;
+            height: 20px;
+            fill: var(--accent-blue);
+        }
+
+        .section {
+            margin-bottom: 24px;
+        }
+
+        .section-title {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .ai-model-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .model-btn {
+            background: var(--surface);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px 12px;
+            color: var(--text-secondary);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .model-btn:hover {
+            border-color: var(--accent-blue);
+            color: var(--text-primary);
+        }
+
+        .model-btn.active {
+            background: rgba(37, 99, 235, 0.1);
+            border-color: var(--accent-blue);
+            color: var(--text-primary);
+            box-shadow: 0 0 0 1px var(--accent-blue);
+        }
+
+        .model-name {
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .model-desc {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .tone-selector {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .tone-btn {
+            background: var(--surface);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 10px 16px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .tone-btn:hover {
+            border-color: var(--accent-blue);
+            color: var(--text-primary);
+        }
+
+        .tone-btn.active {
+            background: rgba(37, 99, 235, 0.1);
+            border-color: var(--accent-blue);
+            color: var(--text-primary);
+        }
+
+        .text-area {
+            width: 100%;
+            min-height: 200px;
+            background: var(--surface);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px;
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            resize: vertical;
+            transition: border-color 0.2s ease;
+        }
+
+        .text-area:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+        }
+
+        .text-area::placeholder {
+            color: var(--text-muted);
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .stat-item {
+            background: var(--surface);
+            border-radius: 10px;
+            padding: 12px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--accent-blue);
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-top: 5px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--accent-blue);
+            color: white;
+            flex: 1;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-blue-light);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: var(--surface);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--surface-light);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .loading {
+            position: relative;
+            color: transparent;
+        }
+
+        .loading::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top: 2px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .score-container {
+            text-align: center;
+            padding: 20px;
+            background: var(--surface);
+            border-radius: 12px;
+            margin-top: 20px;
+        }
+
+        .score-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 15px;
+        }
+
+        .score-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: conic-gradient(var(--accent-blue) 0% 0%, var(--surface-light) 0% 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            position: relative;
+            transition: all 0.5s ease;
+        }
+
+        .score-circle::before {
+            content: '';
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: var(--surface);
+        }
+
+        .score-value {
+            position: relative;
+            z-index: 1;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .feature-item {
+            background: var(--surface);
+            border-radius: 10px;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .feature-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            background: rgba(37, 99, 235, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent-blue);
+            font-size: 1.2rem;
+        }
+
+        .feature-text {
+            font-size: 0.9rem;
+            color: var(--text-primary);
+        }
+
+        .history-container {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 20px;
+        }
+
+        .history-item {
+            background: var(--surface);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-left: 3px solid var(--accent-blue);
+        }
+
+        .history-text {
+            font-size: 0.9rem;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .history-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 10px;
+            color: white;
+            font-weight: 500;
+            z-index: 1000;
+            animation: slideInRight 0.3s ease-out;
+            backdrop-filter: blur(10px);
+            max-width: 350px;
+        }
+
+        .notification.success {
+            background: rgba(16, 185, 129, 0.9);
+        }
+
+        .notification.warning {
+            background: rgba(245, 158, 11, 0.9);
+        }
+
+        .notification.error {
+            background: rgba(239, 68, 68, 0.9);
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideOutRight {
+            from {
+                opacity: 1;
+                transform: translateX(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+        }
+
+        .advanced-options {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .option-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .option-label {
+            font-size: 0.9rem;
+            color: var(--text-primary);
+        }
+
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            width: 60%;
+        }
+
+        .slider {
+            flex: 1;
+            -webkit-appearance: none;
+            height: 6px;
+            border-radius: 3px;
+            background: var(--surface-light);
+            outline: none;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--accent-blue);
+            cursor: pointer;
+        }
+
+        .slider-value {
+            min-width: 30px;
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--text-primary);
+        }
+
+        .toggle {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--surface-light);
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .toggle-slider {
+            background-color: var(--accent-blue);
+        }
+
+        input:checked + .toggle-slider:before {
+            transform: translateX(26px);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .card {
+                padding: 20px;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .ai-model-selector {
+                grid-template-columns: 1fr;
+            }
+            
+            .option-row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .slider-container {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1 class="logo">Chrono Humanizer</h1>
+            <p class="subtitle">Transform AI-generated text into natural, human-like content with advanced AI models</p>
+        </header>
+
+        <div class="main-content">
+            <div class="left-column">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                            </svg>
+                            Input Configuration
+                        </h2>
+                    </div>
+
+                    <div class="section">
+                        <div class="section-title">AI Model</div>
+                        <div class="ai-model-selector">
+                            <div class="model-btn active" data-model="optichain-ai5pro">
+                                <div class="model-name">OptiChain AI 5Pro</div>
+                                <div class="model-desc">Balanced performance</div>
+                            </div>
+                            <div class="model-btn" data-model="optichain-ultra">
+                                <div class="model-name">OptiChain Ultra</div>
+                                <div class="model-desc">Maximum quality</div>
+                            </div>
+                            <div class="model-btn" data-model="chrono-premium">
+                                <div class="model-name">Chrono Premium</div>
+                                <div class="model-desc">Speed optimized</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <div class="section-title">Content Tone</div>
+                        <div class="tone-selector">
+                            <button class="tone-btn active" data-tone="friendly">Friendly</button>
+                            <button class="tone-btn" data-tone="professional">Professional</button>
+                            <button class="tone-btn" data-tone="formal">Formal</button>
+                            <button class="tone-btn" data-tone="casual">Casual</button>
+                            <button class="tone-btn" data-tone="persuasive">Persuasive</button>
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <div class="section-title">Original Text</div>
+                        <textarea class="text-area" id="originalText" placeholder="Paste your AI-generated text here to humanize it..."></textarea>
+                        
+                        <div class="stats-container">
+                            <div class="stat-item">
+                                <div class="stat-value" id="wordCount">0</div>
+                                <div class="stat-label">Words</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value" id="charCount">0</div>
+                                <div class="stat-label">Characters</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value" id="sentenceCount">0</div>
+                                <div class="stat-label">Sentences</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value" id="readabilityScore">0</div>
+                                <div class="stat-label">Readability</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="advanced-options">
+                        <div class="section-title">Advanced Options</div>
+                        
+                        <div class="option-row">
+                            <span class="option-label">Creativity Level</span>
+                            <div class="slider-container">
+                                <input type="range" min="1" max="10" value="7" class="slider" id="creativitySlider">
+                                <span class="slider-value" id="creativityValue">7</span>
+                            </div>
+                        </div>
+                        
+                        <div class="option-row">
+                            <span class="option-label">Formality Adjustment</span>
+                            <div class="slider-container">
+                                <input type="range" min="1" max="10" value="5" class="slider" id="formalitySlider">
+                                <span class="slider-value" id="formalityValue">5</span>
+                            </div>
+                        </div>
+                        
+                        <div class="option-row">
+                            <span class="option-label">Sentence Variation</span>
+                            <div class="slider-container">
+                                <input type="range" min="1" max="10" value="8" class="slider" id="variationSlider">
+                                <span class="slider-value" id="variationValue">8</span>
+                            </div>
+                        </div>
+                        
+                        <div class="option-row">
+                            <span class="option-label">Add Contractions</span>
+                            <label class="toggle">
+                                <input type="checkbox" id="contractionsToggle" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        
+                        <div class="option-row">
+                            <span class="option-label">Fix Repetition</span>
+                            <label class="toggle">
+                                <input type="checkbox" id="repetitionToggle" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="action-buttons">
+                        <button class="btn btn-primary" id="humanizeBtn">
+                            Humanize Text
+                        </button>
+                        <button class="btn btn-secondary" id="clearBtn">
+                            Clear
+                        </button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+                            </svg>
+                            Key Features
+                        </h2>
+                    </div>
+                    
+                    <div class="features-grid">
+                        <div class="feature-item">
+                            <div class="feature-icon">✓</div>
+                            <div class="feature-text">AI Detection Bypass</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-icon">✓</div>
+                            <div class="feature-text">Tone Adjustment</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-icon">✓</div>
+                            <div class="feature-text">Sentence Rewriting</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-icon">✓</div>
+                            <div class="feature-text">Vocabulary Enhancement</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-icon">✓</div>
+                            <div class="feature-text">Readability Improvement</div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-icon">✓</div>
+                            <div class="feature-text">Plagiarism Safe</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="right-column">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                <path d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z"/>
+                            </svg>
+                            Humanized Text
+                        </h2>
+                    </div>
+
+                    <div class="section">
+                        <textarea class="text-area" id="humanizedText" placeholder="Your humanized text will appear here..." readonly></textarea>
+                        
+                        <div class="stats-container">
+                            <div class="stat-item">
+                                <div class="stat-value" id="humanizedWordCount">0</div>
+                                <div class="stat-label">Words</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value" id="humanizedCharCount">0</div>
+                                <div class="stat-label">Characters</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value" id="humanizedSentenceCount">0</div>
+                                <div class="stat-label">Sentences</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value" id="humanizedReadability">0</div>
+                                <div class="stat-label">Readability</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="action-buttons">
+                        <button class="btn btn-secondary" id="copyBtn">
+                            Copy Text
+                        </button>
+                        <button class="btn btn-secondary" id="downloadBtn">
+                            Download
+                        </button>
+                    </div>
+
+                    <div class="score-container" id="scoreContainer" style="display: none;">
+                        <div class="score-label">Humanization Score</div>
+                        <div class="score-circle" id="scoreCircle">
+                            <div class="score-value" id="scoreValue">0%</div>
+                        </div>
+                        <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 10px;">
+                            Higher scores indicate more natural, human-like text
+                        </p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                <path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z"/>
+                            </svg>
+                            History
+                        </h2>
+                    </div>
+                    
+                    <div class="history-container" id="historyContainer">
+                        <!-- History items will be added here dynamically -->
+                        <div class="history-item">
+                            <div class="history-text">No history yet. Your humanized texts will appear here.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class ChronoHumanizer {
+            constructor() {
+                this.selectedModel = 'optichain-ai5pro';
+                this.selectedTone = 'friendly';
+                this.history = JSON.parse(localStorage.getItem('chronoHumanizerHistory')) || [];
+                this.initializeEventListeners();
+                this.updateHistoryDisplay();
+            }
+
+            initializeEventListeners() {
+                // Model selection
+                document.querySelectorAll('.model-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        document.querySelectorAll('.model-btn').forEach(b => b.classList.remove('active'));
+                        e.currentTarget.classList.add('active');
+                        this.selectedModel = e.currentTarget.dataset.model;
+                    });
+                });
+
+                // Tone selection
+                document.querySelectorAll('.tone-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        document.querySelectorAll('.tone-btn').forEach(b => b.classList.remove('active'));
+                        e.target.classList.add('active');
+                        this.selectedTone = e.target.dataset.tone;
+                    });
+                });
+
+                // Text area input tracking
+                document.getElementById('originalText').addEventListener('input', (e) => {
+                    this.updateTextStats(e.target.value, 'original');
+                    this.autoResize(e.target);
+                });
+
+                document.getElementById('humanizedText').addEventListener('input', (e) => {
+                    this.updateTextStats(e.target.value, 'humanized');
+                    this.autoResize(e.target);
+                });
+
+                // Sliders
+                document.querySelectorAll('.slider').forEach(slider => {
+                    slider.addEventListener('input', (e) => {
+                        const valueId = e.target.id.replace('Slider', 'Value');
+                        document.getElementById(valueId).textContent = e.target.value;
+                    });
+                });
+
+                // Buttons
+                document.getElementById('humanizeBtn').addEventListener('click', () => {
+                    this.humanizeText();
+                });
+
+                document.getElementById('clearBtn').addEventListener('click', () => {
+                    this.clearText();
+                });
+
+                document.getElementById('copyBtn').addEventListener('click', () => {
+                    this.copyText();
+                });
+
+                document.getElementById('downloadBtn').addEventListener('click', () => {
+                    this.downloadText();
+                });
+            }
+
+            autoResize(textarea) {
+                textarea.style.height = 'auto';
+                textarea.style.height = textarea.scrollHeight + 'px';
+            }
+
+            updateTextStats(text, type) {
+                const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+                const characters = text.length;
+                const sentences = text.trim() ? text.split(/[.!?]+/).filter(s => s.trim()).length : 0;
+                
+                // Simple readability score (Flesch Reading Ease approximation)
+                const avgWordsPerSentence = words / Math.max(sentences, 1);
+                const avgSyllablesPerWord = this.estimateSyllables(text) / Math.max(words, 1);
+                let readability = 206.835 - (1.015 * avgWordsPerSentence) - (84.6 * avgSyllablesPerWord);
+                readability = Math.max(0, Math.min(100, Math.round(readability)));
+
+                if (type === 'original') {
+                    document.getElementById('wordCount').textContent = words;
+                    document.getElementById('charCount').textContent = characters;
+                    document.getElementById('sentenceCount').textContent = sentences;
+                    document.getElementById('readabilityScore').textContent = readability;
+                } else {
+                    document.getElementById('humanizedWordCount').textContent = words;
+                    document.getElementById('humanizedCharCount').textContent = characters;
+                    document.getElementById('humanizedSentenceCount').textContent = sentences;
+                    document.getElementById('humanizedReadability').textContent = readability;
+                }
+            }
+
+            estimateSyllables(text) {
+                // Simple syllable estimation
+                const words = text.toLowerCase().match(/\b\w+\b/g) || [];
+                let syllableCount = 0;
+                
+                words.forEach(word => {
+                    // Basic syllable counting rules
+                    let count = 0;
+                    const vowels = 'aeiouy';
+                    let prevCharIsVowel = false;
+                    
+                    for (let i = 0; i < word.length; i++) {
+                        const char = word[i];
+                        if (vowels.includes(char) && !prevCharIsVowel) {
+                            count++;
+                            prevCharIsVowel = true;
+                        } else {
+                            prevCharIsVowel = false;
+                        }
+                    }
+                    
+                    // Adjust for common exceptions
+                    if (word.endsWith('e')) count--;
+                    if (count === 0) count = 1;
+                    
+                    syllableCount += count;
+                });
+                
+                return syllableCount;
+            }
+
+            async humanizeText() {
+                const originalText = document.getElementById('originalText').value.trim();
+                const humanizeBtn = document.getElementById('humanizeBtn');
+                const humanizedTextArea = document.getElementById('humanizedText');
+
+                if (!originalText) {
+                    this.showNotification('Please enter some text to humanize', 'warning');
+                    return;
+                }
+
+                // Show loading state
+                humanizeBtn.classList.add('loading');
+                humanizeBtn.disabled = true;
+
+                try {
+                    // Get advanced options
+                    const creativity = parseInt(document.getElementById('creativitySlider').value);
+                    const formality = parseInt(document.getElementById('formalitySlider').value);
+                    const variation = parseInt(document.getElementById('variationSlider').value);
+                    const useContractions = document.getElementById('contractionsToggle').checked;
+                    const fixRepetition = document.getElementById('repetitionToggle').checked;
+
+                    // Simulate API call with realistic processing time based on model
+                    let processingTime = 1500;
+                    if (this.selectedModel === 'optichain-ultra') processingTime = 2500;
+                    else if (this.selectedModel === 'chrono-premium') processingTime = 1000;
+
+                    await new Promise(resolve => setTimeout(resolve, processingTime));
+
+                    const humanizedText = this.processText(
+                        originalText, 
+                        this.selectedTone, 
+                        creativity, 
+                        formality, 
+                        variation, 
+                        useContractions, 
+                        fixRepetition
+                    );
+                    
+                    const humanizationScore = this.calculateHumanizationScore(originalText, humanizedText);
+
+                    humanizedTextArea.value = humanizedText;
+                    this.updateTextStats(humanizedText, 'humanized');
+                    this.updateHumanizationScore(humanizationScore);
+                    this.showScoreContainer();
+
+                    // Add to history
+                    this.addToHistory(originalText, humanizedText, humanizationScore);
+
+                    this.showNotification('Text successfully humanized!', 'success');
+
+                } catch (error) {
+                    console.error(error);
+                    this.showNotification('Error processing text. Please try again.', 'error');
+                } finally {
+                    // Reset button state
+                    humanizeBtn.classList.remove('loading');
+                    humanizeBtn.textContent = 'Humanize Text';
+                    humanizeBtn.disabled = false;
+                }
+            }
+
+            processText(text, tone, creativity, formality, variation, useContractions, fixRepetition) {
+                let humanized = text;
+
+                // Apply tone-specific transformations
+                humanized = this.applyTone(humanized, tone, formality);
+
+                // Apply creativity level
+                humanized = this.applyCreativity(humanized, creativity);
+
+                // Apply sentence variation
+                humanized = this.applySentenceVariation(humanized, variation);
+
+                // Apply contractions if enabled
+                if (useContractions) {
+                    humanized = this.applyContractions(humanized);
+                }
+
+                // Fix repetition if enabled
+                if (fixRepetition) {
+                    humanized = this.fixRepetition(humanized);
+                }
+
+                // Apply model-specific enhancements
+                humanized = this.applyModelEnhancements(humanized, this.selectedModel);
+
+                return humanized;
+            }
+
+            applyTone(text, tone, formality) {
+                let result = text;
+
+                // Base transformations for all tones
+                const baseTransformations = {
+                    'utilize': 'use',
+                    'facilitate': 'help',
+                    'demonstrate': 'show',
+                    'implement': 'put in place',
+                    'optimize': 'improve',
+                    'prioritize': 'focus on',
+                    'conceptualize': 'think about',
+                    'Subsequently,': 'Then,',
+                    'Furthermore,': 'Also,',
+                    'Additionally,': 'Plus,',
+                    'Nevertheless,': 'However,',
+                    'Consequently,': 'So,',
+                    'In conclusion,': 'To wrap up,',
+                    'It is important to note that': 'Keep in mind that',
+                    'It should be emphasized that': 'Remember that'
+                };
+
+                // Apply base transformations
+                for (const [formal, casual] of Object.entries(baseTransformations)) {
+                    const regex = new RegExp(formal, 'gi');
+                    result = result.replace(regex, casual);
+                }
+
+                // Tone-specific transformations
+                switch (tone) {
+                    case 'friendly':
+                        result = this.applyFriendlyTone(result, formality);
+                        break;
+                    case 'professional':
+                        result = this.applyProfessionalTone(result, formality);
+                        break;
+                    case 'formal':
+                        result = this.applyFormalTone(result, formality);
+                        break;
+                    case 'casual':
+                        result = this.applyCasualTone(result, formality);
+                        break;
+                    case 'persuasive':
+                        result = this.applyPersuasiveTone(result, formality);
+                        break;
+                }
+
+                return result;
+            }
+
+            applyFriendlyTone(text, formality) {
+                let friendly = text;
+
+                const friendlyReplacements = {
+                    'You should': 'You might want to',
+                    'It is recommended': 'I\'d suggest',
+                    'One must': 'You\'ll want to',
+                    'This will': 'This\'ll',
+                    'That is': 'That\'s',
+                    'You will': 'You\'ll',
+                    'We will': 'We\'ll',
+                    'Cannot': 'Can\'t',
+                    'Do not': 'Don\'t',
+                    'I recommend': 'I think you\'ll like',
+                    'Please note': 'Just so you know',
+                    'It is necessary': 'You\'ll need to'
+                };
+
+                for (const [formal, casual] of Object.entries(friendlyReplacements)) {
+                    const regex = new RegExp(formal, 'gi');
+                    friendly = friendly.replace(regex, casual);
+                }
+
+                // Adjust based on formality level
+                if (formality > 7) {
+                    // Make slightly more formal
+                    friendly = friendly.replace(/gonna/gi, 'going to')
+                                      .replace(/wanna/gi, 'want to')
+                                      .replace(/kinda/gi, 'somewhat');
+                }
+
+                return friendly;
+            }
+
+            applyProfessionalTone(text, formality) {
+                let professional = text;
+
+                const professionalReplacements = {
+                    'I think': 'In my professional opinion',
+                    'You should': 'It is advisable to',
+                    'You can': 'One may',
+                    'A lot of': 'Numerous',
+                    'Really': 'Significantly',
+                    'Very': 'Extremely'
+                };
+
+                for (const [informal, formal] of Object.entries(professionalReplacements)) {
+                    const regex = new RegExp(informal, 'gi');
+                    professional = professional.replace(regex, formal);
+                }
+
+                // Adjust based on formality level
+                if (formality < 4) {
+                    // Make slightly less formal
+                    professional = professional.replace(/One may/gi, 'You can')
+                                             .replace(/It is advisable to/gi, 'You should');
+                }
+
+                return professional;
+            }
+
+            applyFormalTone(text, formality) {
+                let formalText = text;
+
+                const formalReplacements = {
+                    'get': 'obtain',
+                    'buy': 'purchase',
+                    'help': 'assist',
+                    'start': 'commence',
+                    'show': 'demonstrate',
+                    'need': 'require',
+                    'use': 'utilize',
+                    'make sure': 'ensure',
+                    'find out': 'determine',
+                    'look at': 'examine'
+                };
+
+                for (const [informal, formal] of Object.entries(formalReplacements)) {
+                    const regex = new RegExp(informal, 'gi');
+                    formalText = formalText.replace(regex, formal);
+                }
+
+                return formalText;
+            }
+
+            applyCasualTone(text, formality) {
+                let casual = text;
+
+                const casualReplacements = {
+                    'approximately': 'about',
+                    'therefore': 'so',
+                    'however': 'but',
+                    'additionally': 'also',
+                    'furthermore': 'plus',
+                    'consequently': 'so',
+                    'nevertheless': 'still',
+                    'obtain': 'get',
+                    'purchase': 'buy',
+                    'assist': 'help',
+                    'commence': 'start',
+                    'demonstrate': 'show',
+                    'require': 'need',
+                    'utilize': 'use',
+                    'ensure': 'make sure',
+                    'determine': 'find out',
+                    'examine': 'look at'
+                };
+
+                for (const [formal, casualWord] of Object.entries(casualReplacements)) {
+                    const regex = new RegExp(formal, 'gi');
+                    casual = casual.replace(regex, casualWord);
+                }
+
+                return casual;
+            }
+
+            applyPersuasiveTone(text, formality) {
+                let persuasive = text;
+
+                // Add persuasive language patterns
+                persuasive = persuasive.replace(/(\w+)/g, (match, p1) => {
+                    // Emphasize certain words
+                    const emphasisWords = ['essential', 'important', 'critical', 'valuable', 'beneficial'];
+                    if (emphasisWords.includes(p1.toLowerCase()) && Math.random() > 0.7) {
+                        return `**${p1}**`;
+                    }
+                    return p1;
+                });
+
+                // Add persuasive phrases
+                const sentences = persuasive.split(/[.!?]+/).filter(s => s.trim());
+                persuasive = sentences.map((sentence, index) => {
+                    if (index === 0 && !sentence.toLowerCase().includes('you')) {
+                        return `You'll find that ${sentence.toLowerCase()}`;
+                    }
+                    return sentence;
+                }).join('. ') + '.';
+
+                return persuasive;
+            }
+
+            applyCreativity(text, creativity) {
+                if (creativity < 5) return text;
+
+                let creativeText = text;
+                const sentences = creativeText.split(/[.!?]+/).filter(s => s.trim());
+
+                // Add creative elements based on creativity level
+                if (creativity >= 7) {
+                    // Add metaphors or analogies occasionally
+                    if (Math.random() > 0.7) {
+                        const analogies = [
+                            "It's like finding a needle in a haystack.",
+                            "This is the icing on the cake.",
+                            "Think of it as killing two birds with one stone."
+                        ];
+                        const randomAnalogy = analogies[Math.floor(Math.random() * analogies.length)];
+                        creativeText += ` ${randomAnalogy}`;
+                    }
+                }
+
+                // Vary sentence structure
+                if (creativity >= 5) {
+                    creativeText = sentences.map((sentence, index) => {
+                        if (index > 0 && Math.random() > 0.5) {
+                            const starters = ['Plus,', 'Also,', 'What\'s more,', 'On top of that,'];
+                            const randomStarter = starters[Math.floor(Math.random() * starters.length)];
+                            return `${randomStarter} ${sentence.toLowerCase()}`;
+                        }
+                        return sentence;
+                    }).join('. ') + '.';
+                }
+
+                return creativeText;
+            }
+
+            applySentenceVariation(text, variation) {
+                if (variation < 3) return text;
+
+                let variedText = text;
+                const sentences = variedText.split(/[.!?]+/).filter(s => s.trim());
+
+                // Vary sentence length and structure based on variation level
+                if (variation >= 7) {
+                    // Break up long sentences
+                    variedText = sentences.map(sentence => {
+                        if (sentence.length > 100) {
+                            const parts = sentence.split(/,|;/);
+                            if (parts.length > 1) {
+                                return parts.map(part => part.trim()).join('. ');
+                            }
+                        }
+                        return sentence;
+                    }).join('. ') + '.';
+                }
+
+                // Add sentence variety
+                if (variation >= 5) {
+                    variedText = sentences.map((sentence, index) => {
+                        // Occasionally start with different words
+                        if (index > 0 && Math.random() > 0.6) {
+                            const alternatives = {
+                                'The': ['This', 'Our', 'Your'],
+                                'It': ['This', 'That'],
+                                'We': ['You', 'They']
+                            };
+
+                            for (const [word, replacements] of Object.entries(alternatives)) {
+                                if (sentence.startsWith(word)) {
+                                    const replacement = replacements[Math.floor(Math.random() * replacements.length)];
+                                    return sentence.replace(word, replacement);
+                                }
+                            }
+                        }
+                        return sentence;
+                    }).join('. ') + '.';
+                }
+
+                return variedText;
+            }
+
+            applyContractions(text) {
+                let contracted = text;
+
+                const contractionMap = {
+                    'do not': 'don\'t',
+                    'does not': 'doesn\'t',
+                    'did not': 'didn\'t',
+                    'can not': 'can\'t',
+                    'cannot': 'can\'t',
+                    'could not': 'couldn\'t',
+                    'will not': 'won\'t',
+                    'would not': 'wouldn\'t',
+                    'should not': 'shouldn\'t',
+                    'is not': 'isn\'t',
+                    'are not': 'aren\'t',
+                    'was not': 'wasn\'t',
+                    'were not': 'weren\'t',
+                    'has not': 'hasn\'t',
+                    'have not': 'haven\'t',
+                    'had not': 'hadn\'t',
+                    'it is': 'it\'s',
+                    'he is': 'he\'s',
+                    'she is': 'she\'s',
+                    'that is': 'that\'s',
+                    'what is': 'what\'s',
+                    'who is': 'who\'s',
+                    'where is': 'where\'s',
+                    'when is': 'when\'s',
+                    'why is': 'why\'s',
+                    'how is': 'how\'s',
+                    'I am': 'I\'m',
+                    'you are': 'you\'re',
+                    'we are': 'we\'re',
+                    'they are': 'they\'re',
+                    'there is': 'there\'s',
+                    'there are': 'there\'re',
+                    'I have': 'I\'ve',
+                    'you have': 'you\'ve',
+                    'we have': 'we\'ve',
+                    'they have': 'they\'ve',
+                    'I will': 'I\'ll',
+                    'you will': 'you\'ll',
+                    'he will': 'he\'ll',
+                    'she will': 'she\'ll',
+                    'it will': 'it\'ll',
+                    'we will': 'we\'ll',
+                    'they will': 'they\'ll'
+                };
+
+                for (const [full, contraction] of Object.entries(contractionMap)) {
+                    const regex = new RegExp(full, 'gi');
+                    contracted = contracted.replace(regex, contraction);
+                }
+
+                return contracted;
+            }
+
+            fixRepetition(text) {
+                let fixed = text;
+
+                // Simple repetition fix - replace repeated words with synonyms
+                const synonyms = {
+                    'good': ['great', 'excellent', 'fine', 'superb', 'outstanding'],
+                    'bad': ['poor', 'terrible', 'awful', 'horrible', 'dreadful'],
+                    'big': ['large', 'huge', 'enormous', 'massive', 'gigantic'],
+                    'small': ['tiny', 'little', 'miniature', 'compact', 'petite'],
+                    'important': ['crucial', 'vital', 'essential', 'significant', 'critical'],
+                    'interesting': ['fascinating', 'engaging', 'captivating', 'intriguing', 'compelling']
+                };
+
+                const words = fixed.split(/\s+/);
+                for (let i = 1; i < words.length; i++) {
+                    const word = words[i].toLowerCase().replace(/[^\w]/g, '');
+                    const prevWord = words[i-1].toLowerCase().replace(/[^\w]/g, '');
+                    
+                    if (word === prevWord && synonyms[word]) {
+                        const synonymOptions = synonyms[word];
+                        const randomSynonym = synonymOptions[Math.floor(Math.random() * synonymOptions.length)];
+                        words[i] = words[i].replace(new RegExp(word, 'i'), randomSynonym);
+                    }
+                }
+
+                fixed = words.join(' ');
+
+                return fixed;
+            }
+
+            applyModelEnhancements(text, model) {
+                let enhanced = text;
+
+                switch (model) {
+                    case 'optichain-ultra':
+                        // Ultra model adds more sophisticated transformations
+                        enhanced = this.addNaturalFlow(enhanced);
+                        enhanced = this.enhanceVocabulary(enhanced);
+                        break;
+                    case 'chrono-premium':
+                        // Premium model focuses on speed with good quality
+                        enhanced = this.optimizeForReadability(enhanced);
+                        break;
+                    default:
+                        // Standard model (OptiChain AI 5Pro)
+                        enhanced = this.improveFlowAndReadability(enhanced);
+                }
+
+                return enhanced;
+            }
+
+            addNaturalFlow(text) {
+                // Add conversational elements to make text flow better
+                let natural = text;
+
+                // Add occasional conversational phrases
+                const sentences = natural.split(/[.!?]+/).filter(s => s.trim());
+                if (sentences.length > 2 && Math.random() > 0.7) {
+                    const conversationalPhrases = [
+                        "You know what I mean?",
+                        "Pretty interesting, right?",
+                        "It's really something to think about.",
+                        "I find that fascinating."
+                    ];
+                    const randomPhrase = conversationalPhrases[Math.floor(Math.random() * conversationalPhrases.length)];
+                    natural += ` ${randomPhrase}`;
+                }
+
+                return natural;
+            }
+
+            enhanceVocabulary(text) {
+                // Replace common words with more sophisticated alternatives
+                let enhanced = text;
+
+                const vocabularyEnhancements = {
+                    'good': ['superb', 'excellent', 'outstanding'],
+                    'bad': ['subpar', 'inferior', 'unsatisfactory'],
+                    'big': ['substantial', 'considerable', 'sizable'],
+                    'small': ['modest', 'moderate', 'limited'],
+                    'important': ['paramount', 'crucial', 'essential'],
+                    'interesting': ['intriguing', 'compelling', 'thought-provoking']
+                };
+
+                for (const [common, enhancements] of Object.entries(vocabularyEnhancements)) {
+                    const regex = new RegExp(`\\b${common}\\b`, 'gi');
+                    enhanced = enhanced.replace(regex, () => {
+                        // Only replace sometimes to maintain variety
+                        if (Math.random() > 0.6) {
+                            return enhancements[Math.floor(Math.random() * enhancements.length)];
+                        }
+                        return common;
+                    });
+                }
+
+                return enhanced;
+            }
+
+            optimizeForReadability(text) {
+                // Simplify complex sentences for better readability
+                let optimized = text;
+
+                // Break up long sentences
+                const sentences = optimized.split(/[.!?]+/).filter(s => s.trim());
+                optimized = sentences.map(sentence => {
+                    if (sentence.length > 150) {
+                        // Try to break at conjunctions
+                        const parts = sentence.split(/, and|, but|, or|; however|; therefore/);
+                        if (parts.length > 1) {
+                            return parts.map(part => part.trim()).join('. ');
+                        }
+                    }
+                    return sentence;
+                }).join('. ') + '.';
+
+                return optimized;
+            }
+
+            improveFlowAndReadability(text) {
+                // Standard improvements for better flow
+                return text
+                    .replace(/,\s*which\s+/gi, '. This ')
+                    .replace(/;\s*however,/gi, '. However,')
+                    .replace(/;\s*therefore,/gi, '. Therefore,')
+                    .replace(/\s+/g, ' ')
+                    .replace(/\.\s*\./g, '.')
+                    .trim();
+            }
+
+            calculateHumanizationScore(original, humanized) {
+                // Calculate how much the text has been humanized
+                const originalLength = original.length;
+                const humanizedLength = humanized.length;
+                
+                // Check for various humanization factors
+                let score = 65; // Base score
+                
+                // Contractions increase score
+                const contractions = (humanized.match(/'ll|'ve|'re|'s\s|n't/g) || []).length;
+                score += Math.min(contractions * 2, 10);
+                
+                // Casual language increases score
+                const casualWords = ['you\'ll', 'we\'ll', 'that\'s', 'it\'s', 'don\'t', 'can\'t', 'pretty', 'kind of', 'sort of'];
+                casualWords.forEach(word => {
+                    if (humanized.toLowerCase().includes(word)) score += 1;
+                });
+                
+                // Sentence variety increases score
+                const sentences = humanized.split(/[.!?]+/).filter(s => s.trim());
+                const avgSentenceLength = sentences.reduce((sum, s) => sum + s.length, 0) / sentences.length;
+                if (avgSentenceLength < 120 && avgSentenceLength > 40) score += 10;
+                
+                // Vocabulary diversity increases score
+                const originalWords = original.toLowerCase().match(/\b\w+\b/g) || [];
+                const humanizedWords = humanized.toLowerCase().match(/\b\w+\b/g) || [];
+                const originalUnique = new Set(originalWords).size;
+                const humanizedUnique = new Set(humanizedWords).size;
+                
+                if (humanizedUnique > originalUnique) {
+                    score += Math.min((humanizedUnique - originalUnique) * 0.5, 10);
+                }
+                
+                return Math.min(Math.max(score, 65), 95);
+            }
+
+            updateHumanizationScore(score) {
+                const scoreValue = document.getElementById('scoreValue');
+                const scoreCircle = document.getElementById('scoreCircle');
+                
+                scoreValue.textContent = score + '%';
+                
+                // Update circle progress
+                const percentage = score;
+                const color = score >= 85 ? '#10b981' : score >= 70 ? '#3b82f6' : score >= 60 ? '#f59e0b' : '#ef4444';
+                
+                scoreCircle.style.background = `conic-gradient(${color} 0% ${percentage}%, var(--surface-light) ${percentage}% 100%)`;
+            }
+
+            showScoreContainer() {
+                const container = document.getElementById('scoreContainer');
+                container.style.display = 'block';
+            }
+
+            addToHistory(original, humanized, score) {
+                const historyItem = {
+                    id: Date.now(),
+                    original: original.substring(0, 100) + (original.length > 100 ? '...' : ''),
+                    humanized: humanized.substring(0, 100) + (humanized.length > 100 ? '...' : ''),
+                    score: score,
+                    timestamp: new Date().toLocaleString()
+                };
+
+                this.history.unshift(historyItem);
+                
+                // Keep only last 10 items
+                if (this.history.length > 10) {
+                    this.history = this.history.slice(0, 10);
+                }
+                
+                // Save to localStorage
+                localStorage.setItem('chronoHumanizerHistory', JSON.stringify(this.history));
+                
+                this.updateHistoryDisplay();
+            }
+
+            updateHistoryDisplay() {
+                const historyContainer = document.getElementById('historyContainer');
+                
+                if (this.history.length === 0) {
+                    historyContainer.innerHTML = `
+                        <div class="history-item">
+                            <div class="history-text">No history yet. Your humanized texts will appear here.</div>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                historyContainer.innerHTML = this.history.map(item => `
+                    <div class="history-item">
+                        <div class="history-text">${item.humanized}</div>
+                        <div class="history-meta">
+                            <span>Score: ${item.score}%</span>
+                            <span>${item.timestamp}</span>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            clearText() {
+                document.getElementById('originalText').value = '';
+                document.getElementById('humanizedText').value = '';
+                this.updateTextStats('', 'original');
+                this.updateTextStats('', 'humanized');
+                document.getElementById('scoreContainer').style.display = 'none';
+            }
+
+            copyText() {
+                const humanizedText = document.getElementById('humanizedText');
+                
+                if (!humanizedText.value.trim()) {
+                    this.showNotification('No text to copy', 'warning');
+                    return;
+                }
+                
+                humanizedText.select();
+                document.execCommand('copy');
+                
+                this.showNotification('Text copied to clipboard', 'success');
+            }
+
+            downloadText() {
+                const humanizedText = document.getElementById('humanizedText').value;
+                
+                if (!humanizedText.trim()) {
+                    this.showNotification('No text to download', 'warning');
+                    return;
+                }
+                
+                const blob = new Blob([humanizedText], { type: 'text/plain' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'humanized-text.txt';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                this.showNotification('Text downloaded', 'success');
+            }
+
+            showNotification(message, type = 'info') {
+                // Create and show notification
+                const notification = document.createElement('div');
+                notification.textContent = message;
+                notification.className = `notification ${type}`;
+                
+                document.body.appendChild(notification);
+                
+                setTimeout(() => {
+                    notification.style.animation = 'slideOutRight 0.3s ease-out';
+                    setTimeout(() => notification.remove(), 300);
+                }, 3000);
+            }
+        }
+
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', () => {
+            new ChronoHumanizer();
+        });
+    </script>
+</body>
+</html>
 
