@@ -30,6 +30,9 @@
             
             /* NEW: Round icons toggle variable */
             --dock-icon-shape: 18px; /* Default is rounded square */
+            
+            /* NEW: App drawer mode */
+            --app-drawer-mode: dock; /* dock or drawer */
         }
 
         /* Mobile-first approach */
@@ -429,7 +432,12 @@
             border: 1px solid var(--glass-border);
         }
 
-        /* DOCK SIZE STYLES */
+        /* DOCK SIZE STYLES - ADDED EXTRA SMALL */
+        .dock.size-extra-small {
+            --dock-icon-size: 40px;
+            --dock-padding: 6px;
+            gap: 3px;
+        }
         .dock.size-small {
             --dock-icon-size: 48px;
             --dock-padding: 8px;
@@ -444,6 +452,13 @@
             --dock-icon-size: 72px;
             --dock-padding: 16px;
             gap: 8px;
+        }
+        
+        /* NEW: Extra extra small size */
+        .dock.size-xxs {
+            --dock-icon-size: 32px;
+            --dock-padding: 4px;
+            gap: 2px;
         }
 
         /* NEW: Round icons style */
@@ -575,7 +590,7 @@
         }
 
         /* --- DOCK ANIMATION OPTIMIZATION: Switched to pure CSS for performance --- */
-        .dock.anim-bubble .dock-icon, .dock.anim-scale .dock-icon {
+        .dock.anim-bubble .dock-icon, .dock.anim-scale .dock-icon, .dock.anim-hover .dock-icon {
             transition: transform 0.15s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
         /* Bubble Animation */
@@ -593,6 +608,18 @@
         .dock.anim-scale .dock-icon:hover + .dock-icon + .dock-icon,
         .dock.anim-scale .dock-icon:has(+ .dock-icon + .dock-icon:hover) {
             transform: scale(1.15);
+        }
+        /* NEW: MacBook Hover Animation */
+        .dock.anim-hover .dock-icon:hover {
+            transform: scale(1.5) translateY(-15px);
+        }
+        .dock.anim-hover .dock-icon:hover + .dock-icon,
+        .dock.anim-hover .dock-icon:has(+ .dock-icon:hover) {
+            transform: scale(1.3) translateY(-10px);
+        }
+        .dock.anim-hover .dock-icon:hover + .dock-icon + .dock-icon,
+        .dock.anim-hover .dock-icon:has(+ .dock-icon + .dock-icon:hover) {
+            transform: scale(1.1) translateY(-5px);
         }
         /* End of Dock Animation */
 
@@ -741,6 +768,41 @@
             z-index: 1;
         }
         .dock-cv-maker { background: linear-gradient(135deg, #6c757d, #343a40); }
+        /* NEW: Nano Banana and Gridora icons */
+        .dock-nano-banana { 
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%); 
+            position: relative;
+            overflow: hidden;
+        }
+        .dock-nano-banana::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.2) 0%, 
+                rgba(255, 255, 255, 0.1) 50%, 
+                rgba(255, 255, 255, 0.05) 100%);
+            border-radius: inherit;
+            z-index: 1;
+        }
+        .dock-gridora { 
+            background: linear-gradient(135deg, #00B4DB 0%, #0083B0 100%); 
+            position: relative;
+            overflow: hidden;
+        }
+        .dock-gridora::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.2) 0%, 
+                rgba(255, 255, 255, 0.1) 50%, 
+                rgba(255, 255, 255, 0.05) 100%);
+            border-radius: inherit;
+            z-index: 1;
+        }
 
         /* Enhanced Focus Submenu */
         .focus-submenu {
@@ -1163,6 +1225,190 @@
             100% { opacity: 0; }
         }
 
+        /* NEW: IMPROVED APP DRAWER STYLES (Pixel-like) */
+        .app-drawer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 85%;
+            background: rgba(18, 18, 30, 0.95);
+            backdrop-filter: blur(25px) saturate(1.8);
+            -webkit-backdrop-filter: blur(25px) saturate(1.8);
+            border-top-left-radius: 28px;
+            border-top-right-radius: 28px;
+            z-index: 100;
+            transform: translateY(100%);
+            transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            box-shadow: 0 -15px 50px rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--glass-border);
+            border-bottom: none;
+            overflow: hidden;
+        }
+
+        .app-drawer.open {
+            transform: translateY(0);
+        }
+
+        .app-drawer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .app-drawer-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--accent);
+        }
+
+        .app-drawer-close {
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .app-drawer-close:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: scale(1.1);
+        }
+
+        .app-drawer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 20px;
+            overflow-y: auto;
+            padding: 10px;
+            flex-grow: 1;
+            scrollbar-width: thin;
+            scrollbar-color: var(--accent) rgba(255, 255, 255, 0.1);
+        }
+
+        .app-drawer-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: var(--text-primary);
+            gap: 8px;
+            transition: transform 0.2s ease;
+            padding: 10px;
+            border-radius: 16px;
+        }
+
+        .app-drawer-item:hover {
+            transform: scale(1.05);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .app-drawer-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .app-drawer-icon::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.2) 0%, 
+                rgba(255, 255, 255, 0.1) 50%, 
+                rgba(255, 255, 255, 0.05) 100%);
+            border-radius: inherit;
+            z-index: 1;
+        }
+
+        .app-drawer-label {
+            font-size: 0.75rem;
+            text-align: center;
+            font-weight: 500;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+        }
+
+        /* NEW: App Drawer Handle */
+        .app-drawer-handle {
+            width: 40px;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+            margin: 0 auto 15px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .app-drawer-handle:hover {
+            background: var(--accent);
+        }
+
+        /* NEW: App Drawer Search */
+        .app-drawer-search {
+            width: 100%;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 0 15px;
+            font-size: 1rem;
+            color: var(--text-primary);
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .app-drawer-search:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 15px rgba(187, 134, 252, 0.3);
+        }
+
+        /* NEW: App Drawer Settings Button */
+        .app-drawer-settings {
+            position: absolute;
+            top: 20px;
+            right: 60px;
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 1.3rem;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .app-drawer-settings:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: scale(1.1) rotate(30deg);
+        }
+
         /* ENHANCED RESPONSIVE STYLES */
         @media (max-width: 768px) {
             body {
@@ -1217,6 +1463,21 @@
             }
             .launchpad-item .launchpad-item-label {
                 font-size: 0.85rem;
+            }
+
+            .app-drawer {
+                height: 80%;
+            }
+            
+            .app-drawer-grid {
+                grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+                gap: 15px;
+            }
+            
+            .app-drawer-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 20px;
             }
         }
 
@@ -1285,6 +1546,26 @@
             .theme-grid {
                 grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
                 gap: 12px;
+            }
+
+            .app-drawer {
+                height: 75%;
+                padding: 15px;
+            }
+            
+            .app-drawer-grid {
+                grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+                gap: 12px;
+            }
+
+            .app-drawer-icon {
+                width: 45px;
+                height: 45px;
+                font-size: 18px;
+            }
+
+            .app-drawer-label {
+                font-size: 0.7rem;
             }
         }
 
@@ -1359,6 +1640,21 @@
         </div>
     </div>
 
+    <!-- NEW: IMPROVED APP DRAWER (Pixel-like) -->
+    <div class="app-drawer" id="app-drawer">
+        <div class="app-drawer-handle" id="app-drawer-handle"></div>
+        <div class="app-drawer-header">
+            <div class="app-drawer-title">Apps</div>
+            <button class="app-drawer-settings" id="app-drawer-settings" title="Settings">
+                <i class="fas fa-cog"></i>
+            </button>
+            <button class="app-drawer-close" id="app-drawer-close">&times;</button>
+        </div>
+        <input type="text" class="app-drawer-search" id="app-drawer-search" placeholder="Search apps...">
+        <div class="app-drawer-grid" id="app-drawer-grid">
+            <!-- App icons will be dynamically inserted here by JavaScript -->
+        </div>
+    </div>
 
     <div class="dock dock-bottom size-medium">
         <!-- New Launchpad Icon -->
@@ -1449,6 +1745,19 @@
             <div class="dock-icon-label">Productivity Kitty</div>
             <div class="ripple"></div>
         </a>
+        <!-- ===== IMPROVED NANO BANANA ICON ===== -->
+        <div class="dock-icon dock-nano-banana" onclick="openNanoBanana()" aria-label="Nano Banana">
+            <!-- Using a better icon for banana -->
+            <i class="fas fa-seedling"></i>
+            <div class="dock-icon-label">Nano Banana</div>
+            <div class="ripple"></div>
+        </div>
+        <!-- ===== NEWLY ADDED GRIDORA ICON ===== -->
+        <a href="page24.html" class="dock-icon dock-gridora" aria-label="Gridora">
+            <i class="fas fa-th-large"></i>
+            <div class="dock-icon-label">Gridora</div>
+            <div class="ripple"></div>
+        </a>
         <a href="page17.html" class="dock-icon dock-code-cody" aria-label="Code Cody">
             <i class="fas fa-code"></i>
             <div class="dock-icon-label">Code Cody</div>
@@ -1513,6 +1822,15 @@
             <button class="settings-modal-close-btn" id="settings-modal-close-btn">&times;</button>
             <h2>Settings</h2>
 
+            <!-- NEW: App Drawer vs Dock Toggle -->
+            <div class="settings-group">
+                <h3>Navigation Style</h3>
+                <div class="settings-options" id="nav-style-options">
+                    <button class="settings-btn active" data-nav-style="dock">Dock</button>
+                    <button class="settings-btn" data-nav-style="drawer">App Drawer</button>
+                </div>
+            </div>
+
             <div class="settings-group">
                 <h3>Dock Position</h3>
                 <div class="settings-options" id="dock-pos-options">
@@ -1525,6 +1843,8 @@
             <div class="settings-group">
                 <h3>Dock Size</h3>
                 <div class="settings-options" id="dock-size-options">
+                    <button class="settings-btn" data-size="xxs">XXS</button>
+                    <button class="settings-btn" data-size="extra-small">XS</button>
                     <button class="settings-btn" data-size="small">S</button>
                     <button class="settings-btn active" data-size="medium">M</button>
                     <button class="settings-btn" data-size="large">L</button>
@@ -1537,6 +1857,7 @@
                     <button class="settings-btn active" data-anim="none">Off</button>
                     <button class="settings-btn" data-anim="scale">Scale</button>
                     <button class="settings-btn" data-anim="bubble">Bubble</button>
+                    <button class="settings-btn" data-anim="hover">Hover</button>
                 </div>
             </div>
 
@@ -1596,6 +1917,7 @@
     const settingsControlIcon = document.getElementById('settings-control-icon');
     const settingsModalOverlay = document.getElementById('settings-modal-overlay');
     const settingsModalCloseBtn = document.getElementById('settings-modal-close-btn');
+    const navStyleButtons = document.querySelectorAll('#nav-style-options .settings-btn');
     const dockPosButtons = document.querySelectorAll('#dock-pos-options .settings-btn');
     const dockSizeButtons = document.querySelectorAll('#dock-size-options .settings-btn');
     const dockAnimButtons = document.querySelectorAll('#dock-anim-options .settings-btn');
@@ -1611,12 +1933,22 @@
     const launchpadSearch = document.getElementById('launchpad-search');
     const launchpadCloseBtn = document.getElementById('launchpad-close-btn');
 
+    // APP DRAWER SELECTORS
+    const appDrawer = document.getElementById('app-drawer');
+    const appDrawerClose = document.getElementById('app-drawer-close');
+    const appDrawerGrid = document.getElementById('app-drawer-grid');
+    const appDrawerHandle = document.getElementById('app-drawer-handle');
+    const appDrawerSettings = document.getElementById('app-drawer-settings');
+    const appDrawerSearch = document.getElementById('app-drawer-search');
+
     // --- APP STATE ---
     let caffeineIntake = 0;
     let calendarVisible = true;
     let launchpadTimeout;
     let soundsEnabled = false; // Default to off
     let hapticsEnabled = false; // Default to off
+    let appDrawerMode = 'dock'; // Default to dock
+    let appDrawerOpen = false;
 
     const tips = [
         "Break your study time into 25-minute intervals with the Pomodoro Technique.", "Use active recall by testing yourself, not just rereading notes.", "Explain what you've learned to someone else to solidify your understanding.", "Create a dedicated, distraction-free study zone.", "Use flashcards for key terms and concepts.", "Review material consistently, a little bit each day.", "Prioritize sleep; it's crucial for memory consolidation.", "Stay hydrated and eat nutritious brain food.", "Use mind maps to visualize connections between ideas.", "Take short, regular breaks to avoid burnout.", "Teach concepts to an imaginary audience to identify knowledge gaps.", "Use the Feynman Technique: simplify complex topics as if explaining to a child.", "Change study locations occasionally to improve memory retention.", "Practice spaced repetition for long-term memorization.", "Start with the most challenging material when your mind is freshest."
@@ -1649,7 +1981,10 @@
         "arctic-ice": { "--primary-glow": "#74b9ff", "--secondary-glow": "#a29bfe", "--tertiary-glow": "#dfe6e9", "--background": "#0984e3", "--text-primary": "#dfe6e9", "--glass-bg": "rgba(116, 185, 255, 0.1)", "--glass-border": "rgba(116, 185, 255, 0.2)", "--card-bg": "rgba(9, 132, 227, 0.7)", "--accent": "#74b9ff" },
         "forest-mist": { "--primary-glow": "#00b894", "--secondary-glow": "#55efc4", "--tertiary-glow": "#81ecec", "--background": "#00cec9", "--text-primary": "#2d3436", "--glass-bg": "rgba(0, 184, 148, 0.1)", "--glass-border": "rgba(0, 184, 148, 0.2)", "--card-bg": "rgba(0, 206, 201, 0.7)", "--accent": "#00b894" },
         "midnight-rose": { "--primary-glow": "#6c5ce7", "--secondary-glow": "#a29bfe", "--tertiary-glow": "#fd79a8", "--background": "#2d3436", "--text-primary": "#dfe6e9", "--glass-bg": "rgba(108, 92, 231, 0.1)", "--glass-border": "rgba(108, 92, 231, 0.2)", "--card-bg": "rgba(45, 52, 54, 0.7)", "--accent": "#6c5ce7" },
-        "sunset-orange": { "--primary-glow": "#e17055", "--secondary-glow": "#fdcb6e", "--tertiary-glow": "#fab1a0", "--background": "#d63031", "--text-primary": "#ffeaa7", "--glass-bg": "rgba(225, 112, 85, 0.1)", "--glass-border": "rgba(225, 112, 85, 0.2)", "--card-bg": "rgba(214, 48, 49, 0.7)", "--accent": "#e17055" }
+        "sunset-orange": { "--primary-glow": "#e17055", "--secondary-glow": "#fdcb6e", "--tertiary-glow": "#fab1a0", "--background": "#d63031", "--text-primary": "#ffeaa7", "--glass-bg": "rgba(225, 112, 85, 0.1)", "--glass-border": "rgba(225, 112, 85, 0.2)", "--card-bg": "rgba(214, 48, 49, 0.7)", "--accent": "#e17055" },
+        // NEW: Cozy and Zeen themes
+        "cozy": { "--primary-glow": "#FFB6C1", "--secondary-glow": "#FFDAB9", "--tertiary-glow": "#E6E6FA", "--background": "#FFF5EE", "--text-primary": "#654321", "--glass-bg": "rgba(255, 182, 193, 0.1)", "--glass-border": "rgba(255, 182, 193, 0.2)", "--card-bg": "rgba(255, 245, 238, 0.7)", "--accent": "#FF69B4" },
+        "zeen": { "--primary-glow": "#00CED1", "--secondary-glow": "#20B2AA", "--tertiary-glow": "#48D1CC", "--background": "#2F4F4F", "--text-primary": "#F0FFF0", "--glass-bg": "rgba(0, 206, 209, 0.1)", "--glass-border": "rgba(0, 206, 209, 0.2)", "--card-bg": "rgba(47, 79, 79, 0.7)", "--accent": "#00CED1" }
     };
 
     // --- CORE FUNCTIONS ---
@@ -1708,6 +2043,15 @@
         triggerHaptic();
         setTimeout(() => {
             window.open('page3.html', '_blank');
+        }, 500);
+    }
+
+    function openNanoBanana() {
+        triggerFlash();
+        playSound('https://www.soundjay.com/buttons/sounds/button-09.mp3');
+        triggerHaptic();
+        setTimeout(() => {
+            window.open('https://aistudio.google.com/prompts/new_chat?model=gemini-2.5-flash-image&prompt=Generate+an+image+of+a+Cozytustudios+wearing+a+costume.', '_blank');
         }, 500);
     }
 
@@ -1785,6 +2129,29 @@
         triggerHaptic();
     }
 
+    // Set navigation style (dock or drawer)
+    function setNavigationStyle(style) {
+        appDrawerMode = style;
+        navStyleButtons.forEach(btn => btn.classList.toggle('active', btn.dataset.navStyle === style));
+        localStorage.setItem('studyVerseNavigationStyle', style);
+        
+        // Update UI based on selection
+        if (style === 'dock') {
+            dockElement.style.display = 'flex';
+            // Hide app drawer if open
+            appDrawer.classList.remove('open');
+            appDrawerOpen = false;
+        } else {
+            dockElement.style.display = 'none';
+            // Show app drawer
+            appDrawer.classList.add('open');
+            appDrawerOpen = true;
+        }
+        
+        playSound('https://www.soundjay.com/buttons/sounds/button-10.mp3');
+        triggerHaptic();
+    }
+
     function setDockPosition(position) {
         if (!['left', 'bottom', 'right'].includes(position)) position = 'bottom';
         dockElement.classList.remove('dock-left', 'dock-bottom', 'dock-right');
@@ -1796,8 +2163,8 @@
     }
 
     function setDockSize(size) {
-        if (!['small', 'medium', 'large'].includes(size)) size = 'medium';
-        dockElement.classList.remove('size-small', 'size-medium', 'size-large');
+        if (!['xxs', 'extra-small', 'small', 'medium', 'large'].includes(size)) size = 'medium';
+        dockElement.classList.remove('size-xxs', 'size-extra-small', 'size-small', 'size-medium', 'size-large');
         dockElement.classList.add(`size-${size}`);
         dockSizeButtons.forEach(btn => btn.classList.toggle('active', btn.dataset.size === size));
         localStorage.setItem('studyVerseDockSize', size);
@@ -1925,6 +2292,59 @@
         });
     }
 
+    // --- APP DRAWER LOGIC ---
+    function populateAppDrawer() {
+        appDrawerGrid.innerHTML = '';
+        const icons = dockElement.querySelectorAll('.dock-icon:not(.dock-launchpad)');
+        icons.forEach((icon, index) => {
+            const labelText = icon.querySelector('.dock-icon-label')?.textContent || icon.getAttribute('aria-label') || 'App';
+            const appDrawerItem = document.createElement(icon.tagName.toLowerCase() === 'a' ? 'a' : 'div');
+            appDrawerItem.className = 'app-drawer-item';
+            if(icon.tagName === 'A') {
+                appDrawerItem.href = icon.href;
+                if (icon.target === '_blank') appDrawerItem.target = '_blank';
+            }
+            if (icon.onclick) appDrawerItem.onclick = icon.onclick;
+
+            // Create a round icon for the app drawer
+            const iconClass = Array.from(icon.classList).find(cls => cls.startsWith('dock-'));
+            const appDrawerIcon = document.createElement('div');
+            appDrawerIcon.className = `app-drawer-icon ${iconClass}`;
+            appDrawerIcon.innerHTML = icon.innerHTML.split('<div')[0]; // Get only the icon HTML
+            
+            appDrawerItem.innerHTML = `
+                ${appDrawerIcon.outerHTML}
+                <div class="app-drawer-label">${labelText}</div>
+            `;
+            
+            appDrawerGrid.appendChild(appDrawerItem);
+        });
+    }
+
+    function toggleAppDrawer() {
+        if (appDrawerMode === 'drawer') {
+            if (appDrawerOpen) {
+                appDrawer.classList.remove('open');
+                appDrawerOpen = false;
+                playSound('https://www.soundjay.com/buttons/sounds/button-21.mp3');
+            } else {
+                populateAppDrawer();
+                appDrawer.classList.add('open');
+                appDrawerOpen = true;
+                playSound('https://www.soundjay.com/buttons/sounds/button-09.mp3');
+            }
+            triggerHaptic();
+        }
+    }
+
+    function filterAppDrawerApps(query) {
+        const searchTerm = query.toLowerCase().trim();
+        appDrawerGrid.querySelectorAll('.app-drawer-item').forEach(app => {
+            const label = app.querySelector('.app-drawer-label').textContent.toLowerCase();
+            app.style.display = label.includes(searchTerm) ? 'flex' : 'none';
+        });
+    }
+
     function loadState() {
         caffeineIntake = parseInt(localStorage.getItem('caffeineIntake'), 10) || 0;
         updateCaffeineDisplay();
@@ -1932,6 +2352,11 @@
         populateThemeSelector();
         const savedTheme = localStorage.getItem('studyVerseTheme');
         setTheme(savedTheme && themes[savedTheme] ? savedTheme : 'cosmic-dark');
+        
+        // Load navigation style preference
+        const savedNavStyle = localStorage.getItem('studyVerseNavigationStyle');
+        setNavigationStyle(savedNavStyle || 'dock');
+        
         setDockPosition(localStorage.getItem('studyVerseDockPosition') || 'bottom');
         setDockSize(localStorage.getItem('studyVerseDockSize') || 'medium');
         setDockAnimation(localStorage.getItem('studyVerseDockAnimationType') || 'none');
@@ -1958,8 +2383,8 @@
 
     // --- OPTIMIZED DOCK ANIMATION LOGIC ---
     function setDockAnimation(type) {
-        dockElement.classList.remove('anim-scale', 'anim-bubble');
-        if (type === 'scale' || type === 'bubble') dockElement.classList.add(`anim-${type}`);
+        dockElement.classList.remove('anim-scale', 'anim-bubble', 'anim-hover');
+        if (type === 'scale' || type === 'bubble' || type === 'hover') dockElement.classList.add(`anim-${type}`);
         localStorage.setItem('studyVerseDockAnimationType', type);
         dockAnimButtons.forEach(btn => btn.classList.toggle('active', btn.dataset.anim === type));
         playSound('https://www.soundjay.com/buttons/sounds/button-10.mp3');
@@ -1973,6 +2398,9 @@
         settingsModalCloseBtn.addEventListener('click', closeSettingsModal);
         settingsModalOverlay.addEventListener('click', e => { if (e.target === settingsModalOverlay) closeSettingsModal(); });
 
+        // Add navigation style option listeners
+        navStyleButtons.forEach(btn => btn.addEventListener('click', () => setNavigationStyle(btn.dataset.navStyle)));
+        
         dockPosButtons.forEach(btn => btn.addEventListener('click', () => setDockPosition(btn.dataset.pos)));
         dockSizeButtons.forEach(btn => btn.addEventListener('click', () => setDockSize(btn.dataset.size)));
         dockAnimButtons.forEach(btn => btn.addEventListener('click', () => setDockAnimation(btn.dataset.anim)));
@@ -1988,11 +2416,44 @@
         launchpadOverlay.addEventListener('click', e => { if(e.target === launchpadOverlay) toggleLaunchpad(); });
         launchpadSearch.addEventListener('input', e => filterLaunchpadApps(e.target.value));
 
+        // APP DRAWER LISTENERS
+        appDrawerClose.addEventListener('click', () => {
+            appDrawer.classList.remove('open');
+            appDrawerOpen = false;
+            playSound('https://www.soundjay.com/buttons/sounds/button-21.mp3');
+            triggerHaptic();
+        });
+        
+        // App drawer handle for opening/closing
+        appDrawerHandle.addEventListener('click', toggleAppDrawer);
+        
+        // App drawer settings button
+        appDrawerSettings.addEventListener('click', openSettingsModal);
+        
+        // App drawer search functionality
+        appDrawerSearch.addEventListener('input', e => filterAppDrawerApps(e.target.value));
+        
+        // Close app drawer when clicking outside
+        appDrawer.addEventListener('click', e => {
+            if (e.target === appDrawer) {
+                appDrawer.classList.remove('open');
+                appDrawerOpen = false;
+                playSound('https://www.soundjay.com/buttons/sounds/button-21.mp3');
+                triggerHaptic();
+            }
+        });
+
         // Close modals with the 'Escape' key
         document.addEventListener('keydown', e => {
             if (e.key === 'Escape') {
                 if (launchpadOverlay.classList.contains('visible')) toggleLaunchpad();
                 if (settingsModalOverlay.classList.contains('visible')) closeSettingsModal();
+                if (appDrawer.classList.contains('open')) {
+                    appDrawer.classList.remove('open');
+                    appDrawerOpen = false;
+                    playSound('https://www.soundjay.com/buttons/sounds/button-21.mp3');
+                    triggerHaptic();
+                }
             }
         });
 
