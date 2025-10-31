@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1225,7 +1226,7 @@
             100% { opacity: 0; }
         }
 
-        /* NEW: IMPROVED APP DRAWER STYLES (Pixel-like) */
+        /* NEW: PIXEL-STYLE APP DRAWER STYLES */
         .app-drawer {
             position: fixed;
             bottom: 0;
@@ -1407,6 +1408,20 @@
         .app-drawer-settings:hover {
             background: rgba(255, 255, 255, 0.1);
             transform: scale(1.1) rotate(30deg);
+        }
+
+        /* NEW: App Drawer Recent Apps Section */
+        .app-drawer-section {
+            margin-bottom: 25px;
+        }
+
+        .app-drawer-section-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--accent);
+            margin-bottom: 15px;
+            text-align: left;
+            padding-left: 5px;
         }
 
         /* ENHANCED RESPONSIVE STYLES */
@@ -1640,7 +1655,7 @@
         </div>
     </div>
 
-    <!-- NEW: IMPROVED APP DRAWER (Pixel-like) -->
+    <!-- NEW: PIXEL-STYLE APP DRAWER -->
     <div class="app-drawer" id="app-drawer">
         <div class="app-drawer-handle" id="app-drawer-handle"></div>
         <div class="app-drawer-header">
@@ -1651,8 +1666,21 @@
             <button class="app-drawer-close" id="app-drawer-close">&times;</button>
         </div>
         <input type="text" class="app-drawer-search" id="app-drawer-search" placeholder="Search apps...">
-        <div class="app-drawer-grid" id="app-drawer-grid">
-            <!-- App icons will be dynamically inserted here by JavaScript -->
+        
+        <!-- NEW: Recent Apps Section -->
+        <div class="app-drawer-section">
+            <div class="app-drawer-section-title">Recently Used</div>
+            <div class="app-drawer-grid" id="app-drawer-recent">
+                <!-- Recent apps will be dynamically inserted here by JavaScript -->
+            </div>
+        </div>
+        
+        <!-- NEW: All Apps Section -->
+        <div class="app-drawer-section">
+            <div class="app-drawer-section-title">All Apps</div>
+            <div class="app-drawer-grid" id="app-drawer-all">
+                <!-- All apps will be dynamically inserted here by JavaScript -->
+            </div>
         </div>
     </div>
 
@@ -1936,7 +1964,8 @@
     // APP DRAWER SELECTORS
     const appDrawer = document.getElementById('app-drawer');
     const appDrawerClose = document.getElementById('app-drawer-close');
-    const appDrawerGrid = document.getElementById('app-drawer-grid');
+    const appDrawerRecent = document.getElementById('app-drawer-recent');
+    const appDrawerAll = document.getElementById('app-drawer-all');
     const appDrawerHandle = document.getElementById('app-drawer-handle');
     const appDrawerSettings = document.getElementById('app-drawer-settings');
     const appDrawerSearch = document.getElementById('app-drawer-search');
@@ -1949,6 +1978,7 @@
     let hapticsEnabled = false; // Default to off
     let appDrawerMode = 'dock'; // Default to dock
     let appDrawerOpen = false;
+    let recentApps = []; // Track recently used apps
 
     const tips = [
         "Break your study time into 25-minute intervals with the Pomodoro Technique.", "Use active recall by testing yourself, not just rereading notes.", "Explain what you've learned to someone else to solidify your understanding.", "Create a dedicated, distraction-free study zone.", "Use flashcards for key terms and concepts.", "Review material consistently, a little bit each day.", "Prioritize sleep; it's crucial for memory consolidation.", "Stay hydrated and eat nutritious brain food.", "Use mind maps to visualize connections between ideas.", "Take short, regular breaks to avoid burnout.", "Teach concepts to an imaginary audience to identify knowledge gaps.", "Use the Feynman Technique: simplify complex topics as if explaining to a child.", "Change study locations occasionally to improve memory retention.", "Practice spaced repetition for long-term memorization.", "Start with the most challenging material when your mind is freshest."
@@ -1984,7 +2014,14 @@
         "sunset-orange": { "--primary-glow": "#e17055", "--secondary-glow": "#fdcb6e", "--tertiary-glow": "#fab1a0", "--background": "#d63031", "--text-primary": "#ffeaa7", "--glass-bg": "rgba(225, 112, 85, 0.1)", "--glass-border": "rgba(225, 112, 85, 0.2)", "--card-bg": "rgba(214, 48, 49, 0.7)", "--accent": "#e17055" },
         // NEW: Cozy and Zeen themes
         "cozy": { "--primary-glow": "#FFB6C1", "--secondary-glow": "#FFDAB9", "--tertiary-glow": "#E6E6FA", "--background": "#FFF5EE", "--text-primary": "#654321", "--glass-bg": "rgba(255, 182, 193, 0.1)", "--glass-border": "rgba(255, 182, 193, 0.2)", "--card-bg": "rgba(255, 245, 238, 0.7)", "--accent": "#FF69B4" },
-        "zeen": { "--primary-glow": "#00CED1", "--secondary-glow": "#20B2AA", "--tertiary-glow": "#48D1CC", "--background": "#2F4F4F", "--text-primary": "#F0FFF0", "--glass-bg": "rgba(0, 206, 209, 0.1)", "--glass-border": "rgba(0, 206, 209, 0.2)", "--card-bg": "rgba(47, 79, 79, 0.7)", "--accent": "#00CED1" }
+        "zeen": { "--primary-glow": "#00CED1", "--secondary-glow": "#20B2AA", "--tertiary-glow": "#48D1CC", "--background": "#2F4F4F", "--text-primary": "#F0FFF0", "--glass-bg": "rgba(0, 206, 209, 0.1)", "--glass-border": "rgba(0, 206, 209, 0.2)", "--card-bg": "rgba(47, 79, 79, 0.7)", "--accent": "#00CED1" },
+        // NEW: Additional themes
+        "aqua-marine": { "--primary-glow": "#00FFFF", "--secondary-glow": "#20B2AA", "--tertiary-glow": "#40E0D0", "--background": "#008080", "--text-primary": "#E0FFFF", "--glass-bg": "rgba(0, 255, 255, 0.1)", "--glass-border": "rgba(0, 255, 255, 0.2)", "--card-bg": "rgba(0, 128, 128, 0.7)", "--accent": "#00FFFF" },
+        "rose-gold": { "--primary-glow": "#FFD700", "--secondary-glow": "#FF69B4", "--tertiary-glow": "#FFB6C1", "--background": "#FFE4E1", "--text-primary": "#8B4513", "--glass-bg": "rgba(255, 215, 0, 0.1)", "--glass-border": "rgba(255, 105, 180, 0.2)", "--card-bg": "rgba(255, 228, 225, 0.7)", "--accent": "#FF69B4" },
+        "midnight-forest": { "--primary-glow": "#228B22", "--secondary-glow": "#006400", "--tertiary-glow": "#32CD32", "--background": "#013220", "--text-primary": "#F0FFF0", "--glass-bg": "rgba(34, 139, 34, 0.1)", "--glass-border": "rgba(34, 139, 34, 0.2)", "--card-bg": "rgba(1, 50, 32, 0.7)", "--accent": "#32CD32" },
+        "sunrise-glow": { "--primary-glow": "#FF4500", "--secondary-glow": "#FF8C00", "--tertiary-glow": "#FFA500", "--background": "#FFD700", "--text-primary": "#8B4513", "--glass-bg": "rgba(255, 69, 0, 0.1)", "--glass-border": "rgba(255, 69, 0, 0.2)", "--card-bg": "rgba(255, 215, 0, 0.7)", "--accent": "#FF4500" },
+        "galaxy-purple": { "--primary-glow": "#8A2BE2", "--secondary-glow": "#4B0082", "--tertiary-glow": "#9370DB", "--background": "#191970", "--text-primary": "#E6E6FA", "--glass-bg": "rgba(138, 43, 226, 0.1)", "--glass-border": "rgba(138, 43, 226, 0.2)", "--card-bg": "rgba(25, 25, 112, 0.7)", "--accent": "#9370DB" },
+        "moonlight-silver": { "--primary-glow": "#C0C0C0", "--secondary-glow": "#A9A9A9", "--tertiary-glow": "#D3D3D3", "--background": "#2F4F4F", "--text-primary": "#F5F5F5", "--glass-bg": "rgba(192, 192, 192, 0.1)", "--glass-border": "rgba(192, 192, 192, 0.2)", "--card-bg": "rgba(47, 79, 79, 0.7)", "--accent": "#C0C0C0" }
     };
 
     // --- CORE FUNCTIONS ---
@@ -2294,31 +2331,85 @@
 
     // --- APP DRAWER LOGIC ---
     function populateAppDrawer() {
-        appDrawerGrid.innerHTML = '';
+        appDrawerRecent.innerHTML = '';
+        appDrawerAll.innerHTML = '';
+        
+        // Get recently used apps from localStorage
+        recentApps = JSON.parse(localStorage.getItem('studyVerseRecentApps') || '[]');
+        
         const icons = dockElement.querySelectorAll('.dock-icon:not(.dock-launchpad)');
-        icons.forEach((icon, index) => {
-            const labelText = icon.querySelector('.dock-icon-label')?.textContent || icon.getAttribute('aria-label') || 'App';
-            const appDrawerItem = document.createElement(icon.tagName.toLowerCase() === 'a' ? 'a' : 'div');
-            appDrawerItem.className = 'app-drawer-item';
-            if(icon.tagName === 'A') {
-                appDrawerItem.href = icon.href;
-                if (icon.target === '_blank') appDrawerItem.target = '_blank';
+        
+        // Populate recent apps section
+        recentApps.forEach(appName => {
+            const icon = Array.from(icons).find(icon => {
+                const label = icon.querySelector('.dock-icon-label')?.textContent || icon.getAttribute('aria-label');
+                return label === appName;
+            });
+            
+            if (icon) {
+                createAppDrawerItem(icon, appDrawerRecent);
             }
-            if (icon.onclick) appDrawerItem.onclick = icon.onclick;
-
-            // Create a round icon for the app drawer
-            const iconClass = Array.from(icon.classList).find(cls => cls.startsWith('dock-'));
-            const appDrawerIcon = document.createElement('div');
-            appDrawerIcon.className = `app-drawer-icon ${iconClass}`;
-            appDrawerIcon.innerHTML = icon.innerHTML.split('<div')[0]; // Get only the icon HTML
-            
-            appDrawerItem.innerHTML = `
-                ${appDrawerIcon.outerHTML}
-                <div class="app-drawer-label">${labelText}</div>
-            `;
-            
-            appDrawerGrid.appendChild(appDrawerItem);
         });
+        
+        // Populate all apps section
+        icons.forEach(icon => {
+            createAppDrawerItem(icon, appDrawerAll);
+        });
+    }
+
+    function createAppDrawerItem(icon, container) {
+        const labelText = icon.querySelector('.dock-icon-label')?.textContent || icon.getAttribute('aria-label') || 'App';
+        const appDrawerItem = document.createElement(icon.tagName.toLowerCase() === 'a' ? 'a' : 'div');
+        appDrawerItem.className = 'app-drawer-item';
+        
+        if(icon.tagName === 'A') {
+            appDrawerItem.href = icon.href;
+            if (icon.target === '_blank') appDrawerItem.target = '_blank';
+        }
+        
+        if (icon.onclick) {
+            appDrawerItem.onclick = function() {
+                // Add to recent apps
+                addToRecentApps(labelText);
+                // Call original onclick
+                icon.onclick.call(this);
+            };
+        } else if (icon.tagName === 'A') {
+            appDrawerItem.onclick = function() {
+                // Add to recent apps
+                addToRecentApps(labelText);
+            };
+        }
+
+        // Create a round icon for the app drawer
+        const iconClass = Array.from(icon.classList).find(cls => cls.startsWith('dock-'));
+        const appDrawerIcon = document.createElement('div');
+        appDrawerIcon.className = `app-drawer-icon ${iconClass}`;
+        
+        // Special handling for Nano Banana icon
+        if (iconClass === 'dock-nano-banana') {
+            appDrawerIcon.innerHTML = '<i class="fas fa-banana" style="color: #FFD700;"></i>';
+        } else {
+            appDrawerIcon.innerHTML = icon.innerHTML.split('<div')[0]; // Get only the icon HTML
+        }
+        
+        appDrawerItem.innerHTML = `
+            ${appDrawerIcon.outerHTML}
+            <div class="app-drawer-label">${labelText}</div>
+        `;
+        
+        container.appendChild(appDrawerItem);
+    }
+
+    function addToRecentApps(appName) {
+        // Remove if already exists
+        recentApps = recentApps.filter(app => app !== appName);
+        // Add to beginning
+        recentApps.unshift(appName);
+        // Keep only the 6 most recent
+        recentApps = recentApps.slice(0, 6);
+        // Save to localStorage
+        localStorage.setItem('studyVerseRecentApps', JSON.stringify(recentApps));
     }
 
     function toggleAppDrawer() {
@@ -2339,7 +2430,13 @@
 
     function filterAppDrawerApps(query) {
         const searchTerm = query.toLowerCase().trim();
-        appDrawerGrid.querySelectorAll('.app-drawer-item').forEach(app => {
+        appDrawerAll.querySelectorAll('.app-drawer-item').forEach(app => {
+            const label = app.querySelector('.app-drawer-label').textContent.toLowerCase();
+            app.style.display = label.includes(searchTerm) ? 'flex' : 'none';
+        });
+        
+        // Also filter recent apps
+        appDrawerRecent.querySelectorAll('.app-drawer-item').forEach(app => {
             const label = app.querySelector('.app-drawer-label').textContent.toLowerCase();
             app.style.display = label.includes(searchTerm) ? 'flex' : 'none';
         });
@@ -2467,6 +2564,14 @@
                 } else {
                     playSound('https://www.soundjay.com/buttons/sounds/button-10.mp3');
                     triggerHaptic();
+                }
+                
+                // Add to recent apps if it's not the launchpad
+                if (!this.classList.contains('dock-launchpad')) {
+                    const labelText = this.querySelector('.dock-icon-label')?.textContent || this.getAttribute('aria-label');
+                    if (labelText) {
+                        addToRecentApps(labelText);
+                    }
                 }
             });
         });
