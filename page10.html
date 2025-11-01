@@ -887,6 +887,10 @@
             .ai-tabs {
                 padding-bottom: 12px;
             }
+            
+            .ai-input-group {
+                flex-direction: column;
+            }
         }
 
         @media (max-width: 480px) {
@@ -931,6 +935,10 @@
                 flex: 1;
                 min-width: 100px;
                 text-align: center;
+            }
+            
+            .ai-features {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -1197,6 +1205,7 @@
                                 <option value="CHF">CHF - Swiss Franc</option>
                                 <option value="CNY">CNY - Chinese Yuan</option>
                                 <option value="INR">INR - Indian Rupee</option>
+                                <option value="BDT">BDT - Bangladeshi Taka</option>
                             </select>
                         </div>
                         <div class="form-group">
@@ -1211,6 +1220,7 @@
                                 <option value="CHF">CHF - Swiss Franc</option>
                                 <option value="CNY">CNY - Chinese Yuan</option>
                                 <option value="INR">INR - Indian Rupee</option>
+                                <option value="BDT">BDT - Bangladeshi Taka</option>
                             </select>
                         </div>
                     </div>
@@ -1885,7 +1895,7 @@
             // Currency conversion
             if (query.includes('convert') && (query.includes('usd') || query.includes('eur') || query.includes('gbp') || 
                 query.includes('jpy') || query.includes('cad') || query.includes('aud') || query.includes('chf') || 
-                query.includes('cny') || query.includes('inr'))) {
+                query.includes('cny') || query.includes('inr') || query.includes('bdt') || query.includes('taka'))) {
                 return convertCurrencyFromQuery(query);
             }
             
@@ -2117,8 +2127,8 @@
         // Finance calculations
         function convertCurrencyFromQuery(query) {
             // Extract amount and currencies from query
-            const amountMatch = query.match(/(\d+(?:\.\d+)?)\s*(usd|eur|gbp|jpy|cad|aud|chf|cny|inr)/i);
-            const toCurrencyMatch = query.match(/to\s*(usd|eur|gbp|jpy|cad|aud|chf|cny|inr)/i);
+            const amountMatch = query.match(/(\d+(?:\.\d+)?)\s*(usd|eur|gbp|jpy|cad|aud|chf|cny|inr|bdt)/i);
+            const toCurrencyMatch = query.match(/to\s*(usd|eur|gbp|jpy|cad|aud|chf|cny|inr|bdt)/i);
             
             if (!amountMatch || !toCurrencyMatch) return null;
             
@@ -2136,7 +2146,8 @@
                 'AUD': 1.35,
                 'CHF': 0.92,
                 'CNY': 6.45,
-                'INR': 74.5
+                'INR': 74.5,
+                'BDT': 109.5 // Bangladeshi Taka
             };
             
             if (!exchangeRates[fromCurrency] || !exchangeRates[toCurrency]) return null;
@@ -2172,7 +2183,8 @@
                 'AUD': 1.35,
                 'CHF': 0.92,
                 'CNY': 6.45,
-                'INR': 74.5
+                'INR': 74.5,
+                'BDT': 109.5 // Bangladeshi Taka
             };
             
             const convertedAmount = amount * (exchangeRates[toCurrency] / exchangeRates[fromCurrency]);
@@ -2911,7 +2923,7 @@
                     queryInput.value = "Ideal weight for 175cm male";
                     break;
                 case 'currency':
-                    queryInput.value = "Convert 100 USD to EUR";
+                    queryInput.value = "Convert 100 USD to BDT";
                     break;
                 case 'loan':
                     queryInput.value = "Calculate loan for $10000 at 5% for 5 years";
