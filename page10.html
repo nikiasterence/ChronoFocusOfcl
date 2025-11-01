@@ -644,19 +644,22 @@
             color: var(--on-surface-variant);
         }
 
-        /* AI Section Styles */
+        /* AI Section Styles - FIXED LAYOUT */
         .ai-section {
             margin-top: 24px;
             padding: 16px;
             border-radius: var(--border-radius-lg);
             background: var(--surface-variant);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
         }
         
         .ai-section-header {
             display: flex;
             align-items: center;
             gap: 12px;
-            margin-bottom: 16px;
+            margin-bottom: 0;
         }
         
         .ai-section-icon {
@@ -682,11 +685,46 @@
             opacity: 0.7;
         }
         
+        .ai-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 0;
+            overflow-x: auto;
+            padding-bottom: 8px;
+        }
+        
+        .ai-tab {
+            padding: 10px 16px;
+            border-radius: var(--border-radius-md);
+            background: var(--surface);
+            color: var(--on-surface);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+        
+        .ai-tab.active {
+            background: var(--primary);
+            color: var(--on-primary);
+        }
+        
+        .ai-tab-content {
+            display: none;
+            flex-direction: column;
+            gap: 16px;
+        }
+        
+        .ai-tab-content.active {
+            display: flex;
+        }
+        
         .ai-features {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
             gap: 14px;
-            margin-bottom: 20px;
+            margin-bottom: 0;
         }
         
         .ai-feature {
@@ -721,12 +759,13 @@
         }
         
         .ai-results {
-            margin-top: 20px;
+            margin-top: 0;
             padding: 16px;
             border-radius: var(--border-radius-md);
             background: var(--surface);
             color: var(--on-surface);
             min-height: 100px;
+            flex-grow: 1;
         }
         
         .ai-results h4 {
@@ -765,39 +804,6 @@
         }
 
         /* New AI Features */
-        .ai-tabs {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 20px;
-            overflow-x: auto;
-            padding-bottom: 8px;
-        }
-        
-        .ai-tab {
-            padding: 10px 16px;
-            border-radius: var(--border-radius-md);
-            background: var(--surface);
-            color: var(--on-surface);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            white-space: nowrap;
-            font-size: 0.875rem;
-            font-weight: 500;
-        }
-        
-        .ai-tab.active {
-            background: var(--primary);
-            color: var(--on-primary);
-        }
-        
-        .ai-tab-content {
-            display: none;
-        }
-        
-        .ai-tab-content.active {
-            display: block;
-        }
-        
         .ai-form {
             display: flex;
             flex-direction: column;
@@ -820,6 +826,28 @@
             font-size: 0.875rem;
             font-weight: 500;
             color: var(--on-surface-variant);
+        }
+
+        /* AI Section Layout Fix */
+        .ai-section-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            height: 100%;
+        }
+        
+        .ai-tab-container {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            flex-grow: 1;
+        }
+        
+        .ai-results-container {
+            margin-top: 16px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
         }
 
         @keyframes fadeIn {
@@ -1107,7 +1135,7 @@
         <div class="credit">Made with ❤️ by cozytustudios</div>
     </div>
 
-    <!-- AI Section Page -->
+    <!-- AI Section Page - FIXED LAYOUT -->
     <div id="page4" class="page card liquid-glass">
         <div class="card-header">
              <div class="header-back-btn">
@@ -1131,222 +1159,228 @@
         <h2>OptiChain 6 Pro Lite</h2>
         
         <div class="ai-section">
-            <div class="ai-section-header">
-                <div class="ai-section-icon">
-                    <i class="fas fa-brain"></i>
-                </div>
-                <div>
-                    <div class="ai-section-title">Advanced AI Calculations</div>
-                    <div class="ai-section-subtitle">BMI, BMR, Currency, Nutrition and more</div>
-                </div>
-            </div>
-            
-            <div class="ai-tabs">
-                <div class="ai-tab active" onclick="switchAITab('health')">Health</div>
-                <div class="ai-tab" onclick="switchAITab('finance')">Finance</div>
-                <div class="ai-tab" onclick="switchAITab('nutrition')">Nutrition</div>
-                <div class="ai-tab" onclick="switchAITab('engineering')">Engineering</div>
-                <div class="ai-tab" onclick="switchAITab('custom')">Custom Query</div>
-            </div>
-            
-            <!-- Health Tab -->
-            <div class="ai-tab-content active" id="health-tab">
-                <div class="ai-input-group">
-                    <input type="text" class="ai-input" id="health-query" placeholder="Ask me anything: 'BMI for 180cm and 75kg', 'BMR for male 30 years 70kg 175cm'">
-                    <button class="btn btn-primary" onclick="processHealthQuery()">Analyze</button>
+            <div class="ai-section-container">
+                <div class="ai-section-header">
+                    <div class="ai-section-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <div>
+                        <div class="ai-section-title">Advanced AI Calculations</div>
+                        <div class="ai-section-subtitle">BMI, BMR, Currency, Nutrition and more</div>
+                    </div>
                 </div>
                 
-                <div class="ai-features">
-                    <div class="ai-feature" onclick="quickAction('bmi')">
-                        <i class="fas fa-weight"></i>
-                        <div class="ai-feature-title">BMI Calculator</div>
-                        <div class="ai-feature-description">Calculate Body Mass Index</div>
-                    </div>
-                    <div class="ai-feature" onclick="quickAction('bmr')">
-                        <i class="fas fa-fire"></i>
-                        <div class="ai-feature-title">BMR Calculator</div>
-                        <div class="ai-feature-description">Basal Metabolic Rate</div>
-                    </div>
-                    <div class="ai-feature" onclick="quickAction('bodyfat')">
-                        <i class="fas fa-percentage"></i>
-                        <div class="ai-feature-title">Body Fat %</div>
-                        <div class="ai-feature-description">Estimate body fat percentage</div>
-                    </div>
-                    <div class="ai-feature" onclick="quickAction('idealweight')">
-                        <i class="fas fa-balance-scale"></i>
-                        <div class="ai-feature-title">Ideal Weight</div>
-                        <div class="ai-feature-description">Calculate healthy weight range</div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Finance Tab -->
-            <div class="ai-tab-content" id="finance-tab">
-                <div class="ai-input-group">
-                    <input type="text" class="ai-input" id="finance-query" placeholder="Ask me: 'Convert 100 USD to EUR', 'Calculate loan for $10000 at 5% for 5 years'">
-                    <button class="btn btn-primary" onclick="processFinanceQuery()">Analyze</button>
+                <div class="ai-tabs">
+                    <div class="ai-tab active" onclick="switchAITab('health')">Health</div>
+                    <div class="ai-tab" onclick="switchAITab('finance')">Finance</div>
+                    <div class="ai-tab" onclick="switchAITab('nutrition')">Nutrition</div>
+                    <div class="ai-tab" onclick="switchAITab('engineering')">Engineering</div>
+                    <div class="ai-tab" onclick="switchAITab('custom')">Custom Query</div>
                 </div>
                 
-                <div class="ai-form">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="currency-amount">Amount</label>
-                            <input type="number" id="currency-amount" placeholder="Enter amount">
+                <div class="ai-tab-container">
+                    <!-- Health Tab -->
+                    <div class="ai-tab-content active" id="health-tab">
+                        <div class="ai-input-group">
+                            <input type="text" class="ai-input" id="health-query" placeholder="Ask me anything: 'BMI for 180cm and 75kg', 'BMR for male 30 years 70kg 175cm'">
+                            <button class="btn btn-primary" onclick="processHealthQuery()">Analyze</button>
                         </div>
-                        <div class="form-group">
-                            <label for="currency-from">From</label>
-                            <select id="currency-from">
-                                <option value="USD">USD - US Dollar</option>
-                                <option value="EUR">EUR - Euro</option>
-                                <option value="GBP">GBP - British Pound</option>
-                                <option value="JPY">JPY - Japanese Yen</option>
-                                <option value="CAD">CAD - Canadian Dollar</option>
-                                <option value="AUD">AUD - Australian Dollar</option>
-                                <option value="CHF">CHF - Swiss Franc</option>
-                                <option value="CNY">CNY - Chinese Yuan</option>
-                                <option value="INR">INR - Indian Rupee</option>
-                                <option value="BDT">BDT - Bangladeshi Taka</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="currency-to">To</label>
-                            <select id="currency-to">
-                                <option value="EUR">EUR - Euro</option>
-                                <option value="USD">USD - US Dollar</option>
-                                <option value="GBP">GBP - British Pound</option>
-                                <option value="JPY">JPY - Japanese Yen</option>
-                                <option value="CAD">CAD - Canadian Dollar</option>
-                                <option value="AUD">AUD - Australian Dollar</option>
-                                <option value="CHF">CHF - Swiss Franc</option>
-                                <option value="CNY">CNY - Chinese Yuan</option>
-                                <option value="INR">INR - Indian Rupee</option>
-                                <option value="BDT">BDT - Bangladeshi Taka</option>
-                            </select>
+                        
+                        <div class="ai-features">
+                            <div class="ai-feature" onclick="quickAction('bmi')">
+                                <i class="fas fa-weight"></i>
+                                <div class="ai-feature-title">BMI Calculator</div>
+                                <div class="ai-feature-description">Calculate Body Mass Index</div>
+                            </div>
+                            <div class="ai-feature" onclick="quickAction('bmr')">
+                                <i class="fas fa-fire"></i>
+                                <div class="ai-feature-title">BMR Calculator</div>
+                                <div class="ai-feature-description">Basal Metabolic Rate</div>
+                            </div>
+                            <div class="ai-feature" onclick="quickAction('bodyfat')">
+                                <i class="fas fa-percentage"></i>
+                                <div class="ai-feature-title">Body Fat %</div>
+                                <div class="ai-feature-description">Estimate body fat percentage</div>
+                            </div>
+                            <div class="ai-feature" onclick="quickAction('idealweight')">
+                                <i class="fas fa-balance-scale"></i>
+                                <div class="ai-feature-title">Ideal Weight</div>
+                                <div class="ai-feature-description">Calculate healthy weight range</div>
+                            </div>
                         </div>
                     </div>
-                    <button class="btn btn-primary" onclick="convertCurrency()">Convert Currency</button>
+                    
+                    <!-- Finance Tab -->
+                    <div class="ai-tab-content" id="finance-tab">
+                        <div class="ai-input-group">
+                            <input type="text" class="ai-input" id="finance-query" placeholder="Ask me: 'Convert 100 USD to EUR', 'Calculate loan for $10000 at 5% for 5 years'">
+                            <button class="btn btn-primary" onclick="processFinanceQuery()">Analyze</button>
+                        </div>
+                        
+                        <div class="ai-form">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="currency-amount">Amount</label>
+                                    <input type="number" id="currency-amount" placeholder="Enter amount">
+                                </div>
+                                <div class="form-group">
+                                    <label for="currency-from">From</label>
+                                    <select id="currency-from">
+                                        <option value="USD">USD - US Dollar</option>
+                                        <option value="EUR">EUR - Euro</option>
+                                        <option value="GBP">GBP - British Pound</option>
+                                        <option value="JPY">JPY - Japanese Yen</option>
+                                        <option value="CAD">CAD - Canadian Dollar</option>
+                                        <option value="AUD">AUD - Australian Dollar</option>
+                                        <option value="CHF">CHF - Swiss Franc</option>
+                                        <option value="CNY">CNY - Chinese Yuan</option>
+                                        <option value="INR">INR - Indian Rupee</option>
+                                        <option value="BDT">BDT - Bangladeshi Taka</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="currency-to">To</label>
+                                    <select id="currency-to">
+                                        <option value="EUR">EUR - Euro</option>
+                                        <option value="USD">USD - US Dollar</option>
+                                        <option value="GBP">GBP - British Pound</option>
+                                        <option value="JPY">JPY - Japanese Yen</option>
+                                        <option value="CAD">CAD - Canadian Dollar</option>
+                                        <option value="AUD">AUD - Australian Dollar</option>
+                                        <option value="CHF">CHF - Swiss Franc</option>
+                                        <option value="CNY">CNY - Chinese Yuan</option>
+                                        <option value="INR">INR - Indian Rupee</option>
+                                        <option value="BDT">BDT - Bangladeshi Taka</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <button class="btn btn-primary" onclick="convertCurrency()">Convert Currency</button>
+                        </div>
+                        
+                        <div class="ai-features">
+                            <div class="ai-feature" onclick="quickAction('currency')">
+                                <i class="fas fa-money-bill-wave"></i>
+                                <div class="ai-feature-title">Currency Converter</div>
+                                <div class="ai-feature-description">Convert between currencies</div>
+                            </div>
+                            <div class="ai-feature" onclick="quickAction('loan')">
+                                <i class="fas fa-hand-holding-usd"></i>
+                                <div class="ai-feature-title">Loan Calculator</div>
+                                <div class="ai-feature-description">Calculate loan payments</div>
+                            </div>
+                            <div class="ai-feature" onclick="quickAction('investment')">
+                                <i class="fas fa-chart-line"></i>
+                                <div class="ai-feature-title">Investment Growth</div>
+                                <div class="ai-feature-description">Project investment returns</div>
+                            </div>
+                            <div class="ai-feature" onclick="quickAction('retirement')">
+                                <i class="fas fa-piggy-bank"></i>
+                                <div class="ai-feature-title">Retirement Planning</div>
+                                <div class="ai-feature-description">Estimate retirement savings</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Nutrition Tab -->
+                    <div class="ai-tab-content" id="nutrition-tab">
+                        <div class="ai-input-group">
+                            <input type="text" class="ai-input" id="nutrition-query" placeholder="Ask me: 'Calories in 200g chicken breast', 'Macros for 1500 calorie diet'">
+                            <button class="btn btn-primary" onclick="processNutritionQuery()">Analyze</button>
+                        </div>
+                        
+                        <div class="ai-features">
+                            <div class="ai-feature" onclick="quickAction('calories')">
+                                <i class="fas fa-apple-alt"></i>
+                                <div class="ai-feature-title">Calorie Calculator</div>
+                                <div class="ai-feature-description">Calculate daily calorie needs</div>
+                            </div>
+                            <div class="ai-feature" onclick="quickAction('macros')">
+                                <i class="fas fa-utensils"></i>
+                                <div class="ai-feature-title">Macronutrients</div>
+                                <div class="ai-feature-description">Calculate protein, carbs, fat</div>
+                            </div>
+                            <div class="ai-feature" onclick="quickAction('water')">
+                                <i class="fas fa-tint"></i>
+                                <div class="ai-feature-title">Hydration</div>
+                                <div class="ai-feature-description">Calculate daily water needs</div>
+                            </div>
+                            <div class="ai-feature" onclick="quickAction('mealplan')">
+                                <i class="fas fa-clipboard-list"></i>
+                                <div class="ai-feature-title">Meal Planning</div>
+                                <div class="ai-feature-description">Create balanced meal plans</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Engineering Tab -->
+                    <div class="ai-tab-content" id="engineering-tab">
+                        <div class="ai-input-group">
+                            <input type="text" class="ai-input" id="engineering-query" placeholder="Ask me: 'Calculate stress on beam', 'Convert 5000 psi to MPa'">
+                            <button class="btn btn-primary" onclick="processEngineeringQuery()">Analyze</button>
+                        </div>
+                        
+                        <div class="ai-features">
+                            <div class="ai-feature" onclick="quickAction('stress')">
+                                <i class="fas fa-compress-arrows-alt"></i>
+                                <div class="ai-feature-title">Stress Analysis</div>
+                                <div class="ai-feature-description">Calculate material stress</div>
+                            </div>
+                            <div class="ai-feature" onclick="quickAction('fluid')">
+                                <i class="fas fa-tint"></i>
+                                <div class="ai-feature-title">Fluid Dynamics</div>
+                                <div class="ai-feature-description">Calculate flow rates, pressure</div>
+                            </div>
+                            <div class="ai-feature" onclick="quickAction('electrical')">
+                                <i class="fas fa-bolt"></i>
+                                <div class="ai-feature-title">Electrical Calculations</div>
+                                <div class="ai-feature-description">Ohm's law, power calculations</div>
+                            </div>
+                            <div class="ai-feature" onclick="quickAction('structural')">
+                                <i class="fas fa-ruler-combined"></i>
+                                <div class="ai-feature-title">Structural Analysis</div>
+                                <div class="ai-feature-description">Beam deflection, load capacity</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Custom Query Tab -->
+                    <div class="ai-tab-content" id="custom-tab">
+                        <div class="ai-input-group">
+                            <input type="text" class="ai-input" id="advanced-ai-query" placeholder="Ask me anything: 'BMI for 180cm and 75kg', 'Convert 500 grams to pounds', 'Calculate loan for $10000'">
+                            <button class="btn btn-primary" onclick="processAdvancedAIQuery()">Analyze</button>
+                        </div>
+                        
+                        <div class="ai-features">
+                            <div class="ai-feature" onclick="quickAction('bmi')">
+                                <i class="fas fa-weight"></i>
+                                <div class="ai-feature-title">BMI Calculator</div>
+                                <div class="ai-feature-description">Calculate Body Mass Index</div>
+                            </div>
+                            <div class="ai-feature" onclick="quickAction('currency')">
+                                <i class="fas fa-money-bill-wave"></i>
+                                <div class="ai-feature-title">Currency Converter</div>
+                                <div class="ai-feature-description">Convert between currencies</div>
+                            </div>
+                            <div class="ai-feature" onclick="quickAction('calories')">
+                                <i class="fas fa-apple-alt"></i>
+                                <div class="ai-feature-title">Calorie Calculator</div>
+                                <div class="ai-feature-description">Calculate daily calorie needs</div>
+                            </div>
+                            <div class="ai-feature" onclick="quickAction('loan')">
+                                <i class="fas fa-hand-holding-usd"></i>
+                                <div class="ai-feature-title">Loan Calculator</div>
+                                <div class="ai-feature-description">Calculate loan payments</div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 
-                <div class="ai-features">
-                    <div class="ai-feature" onclick="quickAction('currency')">
-                        <i class="fas fa-money-bill-wave"></i>
-                        <div class="ai-feature-title">Currency Converter</div>
-                        <div class="ai-feature-description">Convert between currencies</div>
-                    </div>
-                    <div class="ai-feature" onclick="quickAction('loan')">
-                        <i class="fas fa-hand-holding-usd"></i>
-                        <div class="ai-feature-title">Loan Calculator</div>
-                        <div class="ai-feature-description">Calculate loan payments</div>
-                    </div>
-                    <div class="ai-feature" onclick="quickAction('investment')">
-                        <i class="fas fa-chart-line"></i>
-                        <div class="ai-feature-title">Investment Growth</div>
-                        <div class="ai-feature-description">Project investment returns</div>
-                    </div>
-                    <div class="ai-feature" onclick="quickAction('retirement')">
-                        <i class="fas fa-piggy-bank"></i>
-                        <div class="ai-feature-title">Retirement Planning</div>
-                        <div class="ai-feature-description">Estimate retirement savings</div>
+                <div class="ai-results-container">
+                    <div class="ai-results" id="advanced-ai-results">
+                        <h4>Analysis Results</h4>
+                        <p>Enter your query or select a quick action to see results here.</p>
                     </div>
                 </div>
-            </div>
-            
-            <!-- Nutrition Tab -->
-            <div class="ai-tab-content" id="nutrition-tab">
-                <div class="ai-input-group">
-                    <input type="text" class="ai-input" id="nutrition-query" placeholder="Ask me: 'Calories in 200g chicken breast', 'Macros for 1500 calorie diet'">
-                    <button class="btn btn-primary" onclick="processNutritionQuery()">Analyze</button>
-                </div>
-                
-                <div class="ai-features">
-                    <div class="ai-feature" onclick="quickAction('calories')">
-                        <i class="fas fa-apple-alt"></i>
-                        <div class="ai-feature-title">Calorie Calculator</div>
-                        <div class="ai-feature-description">Calculate daily calorie needs</div>
-                    </div>
-                    <div class="ai-feature" onclick="quickAction('macros')">
-                        <i class="fas fa-utensils"></i>
-                        <div class="ai-feature-title">Macronutrients</div>
-                        <div class="ai-feature-description">Calculate protein, carbs, fat</div>
-                    </div>
-                    <div class="ai-feature" onclick="quickAction('water')">
-                        <i class="fas fa-tint"></i>
-                        <div class="ai-feature-title">Hydration</div>
-                        <div class="ai-feature-description">Calculate daily water needs</div>
-                    </div>
-                    <div class="ai-feature" onclick="quickAction('mealplan')">
-                        <i class="fas fa-clipboard-list"></i>
-                        <div class="ai-feature-title">Meal Planning</div>
-                        <div class="ai-feature-description">Create balanced meal plans</div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Engineering Tab -->
-            <div class="ai-tab-content" id="engineering-tab">
-                <div class="ai-input-group">
-                    <input type="text" class="ai-input" id="engineering-query" placeholder="Ask me: 'Calculate stress on beam', 'Convert 5000 psi to MPa'">
-                    <button class="btn btn-primary" onclick="processEngineeringQuery()">Analyze</button>
-                </div>
-                
-                <div class="ai-features">
-                    <div class="ai-feature" onclick="quickAction('stress')">
-                        <i class="fas fa-compress-arrows-alt"></i>
-                        <div class="ai-feature-title">Stress Analysis</div>
-                        <div class="ai-feature-description">Calculate material stress</div>
-                    </div>
-                    <div class="ai-feature" onclick="quickAction('fluid')">
-                        <i class="fas fa-tint"></i>
-                        <div class="ai-feature-title">Fluid Dynamics</div>
-                        <div class="ai-feature-description">Calculate flow rates, pressure</div>
-                    </div>
-                    <div class="ai-feature" onclick="quickAction('electrical')">
-                        <i class="fas fa-bolt"></i>
-                        <div class="ai-feature-title">Electrical Calculations</div>
-                        <div class="ai-feature-description">Ohm's law, power calculations</div>
-                    </div>
-                    <div class="ai-feature" onclick="quickAction('structural')">
-                        <i class="fas fa-ruler-combined"></i>
-                        <div class="ai-feature-title">Structural Analysis</div>
-                        <div class="ai-feature-description">Beam deflection, load capacity</div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Custom Query Tab -->
-            <div class="ai-tab-content" id="custom-tab">
-                <div class="ai-input-group">
-                    <input type="text" class="ai-input" id="advanced-ai-query" placeholder="Ask me anything: 'BMI for 180cm and 75kg', 'Convert 500 grams to pounds', 'Calculate loan for $10000'">
-                    <button class="btn btn-primary" onclick="processAdvancedAIQuery()">Analyze</button>
-                </div>
-                
-                <div class="ai-features">
-                    <div class="ai-feature" onclick="quickAction('bmi')">
-                        <i class="fas fa-weight"></i>
-                        <div class="ai-feature-title">BMI Calculator</div>
-                        <div class="ai-feature-description">Calculate Body Mass Index</div>
-                    </div>
-                    <div class="ai-feature" onclick="quickAction('currency')">
-                        <i class="fas fa-money-bill-wave"></i>
-                        <div class="ai-feature-title">Currency Converter</div>
-                        <div class="ai-feature-description">Convert between currencies</div>
-                    </div>
-                    <div class="ai-feature" onclick="quickAction('calories')">
-                        <i class="fas fa-apple-alt"></i>
-                        <div class="ai-feature-title">Calorie Calculator</div>
-                        <div class="ai-feature-description">Calculate daily calorie needs</div>
-                    </div>
-                    <div class="ai-feature" onclick="quickAction('loan')">
-                        <i class="fas fa-hand-holding-usd"></i>
-                        <div class="ai-feature-title">Loan Calculator</div>
-                        <div class="ai-feature-description">Calculate loan payments</div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="ai-results" id="advanced-ai-results">
-                <h4>Analysis Results</h4>
-                <p>Enter your query or select a quick action to see results here.</p>
             </div>
         </div>
         
