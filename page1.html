@@ -47,6 +47,112 @@
     --haptics-enabled: 1;
 }
 
+/* --- NEW: Floating Particles Background --- */
+.particles-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    overflow: hidden;
+}
+
+.particle {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(var(--primary-rgb), 0.1);
+    animation: float 20s infinite linear;
+}
+
+@keyframes float {
+    0% {
+        transform: translateY(0) translateX(0) rotate(0deg);
+        opacity: 0.2;
+    }
+    50% {
+        transform: translateY(-20px) translateX(10px) rotate(180deg);
+        opacity: 0.5;
+    }
+    100% {
+        transform: translateY(0) translateX(0) rotate(360deg);
+        opacity: 0.2;
+    }
+}
+
+/* --- NEW: Dynamic Gradient Background --- */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, var(--background) 0%, rgba(var(--primary-rgb), 0.05) 100%);
+    z-index: -2;
+    transition: background 0.5s ease;
+}
+
+/* --- NEW: Split Screen Feature --- */
+.split-screen-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(10px);
+    z-index: 2000;
+    display: none;
+    flex-direction: column;
+    padding: 20px;
+}
+
+.split-screen-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 0;
+    color: white;
+}
+
+.split-screen-content {
+    display: flex;
+    flex: 1;
+    gap: 10px;
+}
+
+.split-screen-panel {
+    flex: 1;
+    background: white;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    position: relative;
+}
+
+.split-screen-panel iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+.split-screen-divider {
+    width: 10px;
+    background: rgba(255, 255, 255, 0.2);
+    cursor: col-resize;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.split-screen-divider::after {
+    content: '';
+    width: 4px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 2px;
+}
+
 /* --- THEME PALETTES --- */
 /* Cozy */
 body.theme-sage { --background: #F1F5F1; --primary: #799975; --primary-rgb: 121, 153, 117; --primary-light: #E6EEE5; --text-primary: #445742; --text-secondary: #7E8C7D; --border-color: #E3E9E2; }
@@ -128,6 +234,13 @@ body.theme-liquid-glass-zenith { --background: #0a0a1a; --surface: rgba(20, 20, 
 body.theme-liquid-glass-cyber { --background: #0a0f1a; --surface: rgba(15, 20, 35, 0.6); --primary: #00FF9D; --primary-rgb: 0, 255, 157; --primary-light: rgba(0, 255, 157, 0.15); --secondary: #FF00FF; --text-primary: #E0F5FF; --text-secondary: #A0B8D0; --border-color: rgba(0, 255, 157, 0.3); background: linear-gradient(135deg, #0a0f1a, #003366, #00FF9D); }
 body.theme-liquid-glass-solar { --background: #1a0f0f; --surface: rgba(35, 20, 20, 0.6); --primary: #FF5722; --primary-rgb: 255, 87, 34; --primary-light: rgba(255, 87, 34, 0.15); --secondary: #FFEB3B; --text-primary: #FFEBEE; --text-secondary: #E1BEE7; --border-color: rgba(255, 87, 34, 0.3); background: linear-gradient(135deg, #1a0f0f, #8B0000, #FF5722); }
 
+/* NEW: BETA 8 THEMES */
+body.theme-holographic { --background: #0a0a1a; --surface: rgba(20, 20, 40, 0.9); --primary: #FF00FF; --primary-rgb: 255, 0, 255; --primary-light: rgba(255, 0, 255, 0.15); --text-primary: #E6E0FF; --text-secondary: #9E93B3; --border-color: rgba(255, 0, 255, 0.3); background: linear-gradient(-45deg, #0a0a1a, #4B0082, #FF00FF, #00FFFF); background-size: 400% 400%; animation: auroraGradient 15s ease infinite; }
+body.theme-synthwave { --background: #1a0033; --surface: rgba(40, 0, 80, 0.9); --primary: #FF00FF; --primary-rgb: 255, 0, 255; --primary-light: rgba(255, 0, 255, 0.15); --text-primary: #FFD700; --text-secondary: #E1BEE7; --border-color: rgba(255, 0, 255, 0.3); background: linear-gradient(-45deg, #1a0033, #660066, #CC00CC, #FF00FF); background-size: 400% 400%; animation: auroraGradient 12s ease infinite; }
+body.theme-matrix { --background: #000000; --surface: rgba(0, 20, 0, 0.9); --primary: #00FF41; --primary-rgb: 0, 255, 65; --primary-light: rgba(0, 255, 65, 0.15); --text-primary: #00FF41; --text-secondary: #00CC33; --border-color: rgba(0, 255, 65, 0.3); background: linear-gradient(-45deg, #000000, #003300, #006600, #009900); background-size: 400% 400%; animation: auroraGradient 20s ease infinite; }
+body.theme-cyber-matrix { --background: #0a0f1a; --surface: rgba(15, 20, 35, 0.9); --primary: #00FF9D; --primary-rgb: 0, 255, 157; --primary-light: rgba(0, 255, 157, 0.15); --text-primary: #00FF9D; --text-secondary: #00CC7D; --border-color: rgba(0, 255, 157, 0.3); background: linear-gradient(-45deg, #0a0f1a, #003366, #0066CC, #00FF9D); background-size: 400% 400%; animation: auroraGradient 18s ease infinite; }
+body.theme-neon-noir { --background: #0a0a1a; --surface: rgba(20, 20, 40, 0.9); --primary: #FF00FF; --primary-rgb: 255, 0, 255; --primary-light: rgba(255, 0, 255, 0.15); --text-primary: #FFFFFF; --text-secondary: #CCCCCC; --border-color: rgba(255, 0, 255, 0.3); background: linear-gradient(-45deg, #0a0a1a, #4B0082, #8A2BE2, #1A237E); background-size: 400% 400%; animation: auroraGradient 20s ease infinite; }
+
 /* This is the key style for the glass effect. It applies to any theme class that STARTS with "theme-liquid-glass" */
 [class*="theme-liquid-glass"] .section,
 [class*="theme-liquid-glass"] .dock-button,
@@ -184,9 +297,40 @@ body { background-color: var(--background); color: var(--text-primary); min-heig
 .content-grid { animation-delay: 0.4s; }
 .app-footer { animation-delay: 0.6s; }
 
-.app-header { text-align: center; margin-bottom: 20px; }
-.app-header h1 { font-size: 3.5rem; font-weight: 700; color: var(--text-primary); letter-spacing: -2px; background: linear-gradient(135deg, var(--primary), var(--text-primary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-.app-header p { color: var(--text-secondary); font-size: 1.25rem; margin-top: 5px; }
+.app-header { text-align: center; margin-bottom: 20px; position: relative; }
+.app-header h1 { font-size: 3.5rem; font-weight: 700; color: var(--text-primary); letter-spacing: -2px; background: linear-gradient(135deg, var(--primary), var(--text-primary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; position: relative; z-index: 1; }
+.app-header p { color: var(--text-secondary); font-size: 1.25rem; margin-top: 5px; position: relative; z-index: 1; }
+
+/* NEW: Animated Logo */
+.logo-container {
+    position: relative;
+    display: inline-block;
+    margin-bottom: 20px;
+}
+
+.logo {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary), var(--text-primary));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    position: relative;
+    animation: logoPulse 4s infinite ease-in-out;
+    box-shadow: 0 0 30px rgba(var(--primary-rgb), 0.5);
+}
+
+.logo i {
+    font-size: 2.5rem;
+    color: white;
+}
+
+@keyframes logoPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); box-shadow: 0 0 40px rgba(var(--primary-rgb), 0.7); }
+}
 
 /* LAYOUT ENHANCEMENT: A grid for secondary sections to sit side-by-side on desktop */
 .content-grid {
@@ -216,17 +360,51 @@ body { background-color: var(--background); color: var(--text-primary); min-heig
 .dock-button h2 { font-size: 1.2rem; font-weight: 600; margin: 0; }
 .dock-button p { font-size: 0.9rem; color: var(--text-secondary); }
 
+/* NEW: Split Screen Button */
+.split-screen-btn {
+    position: relative;
+    overflow: hidden;
+}
+
+.split-screen-btn::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    transition: left 0.5s;
+}
+
+.split-screen-btn:hover::after {
+    left: 100%;
+}
+
 /* Glow Effect */
 .study-tools { animation: pulseGlow 2.5s infinite ease-out; }
 @keyframes pulseGlow { 0%, 100% { box-shadow: var(--shadow-md); } 50% { box-shadow: 0 0 30px 10px rgba(var(--primary-rgb), 0.35); } }
 
 /* Section Styling */
-.section { background: var(--surface); backdrop-filter: blur(12px); padding: 40px; border-radius: var(--border-radius); border: 1px solid var(--border-color); box-shadow: var(--shadow-md); transition: var(--transition); }
+.section { background: var(--surface); backdrop-filter: blur(12px); padding: 40px; border-radius: var(--border-radius); border: 1px solid var(--border-color); box-shadow: var(--shadow-md); transition: var(--transition); position: relative; overflow: hidden; }
+.section::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 5px; background: linear-gradient(90deg, var(--primary), transparent); }
 .section-header { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 15px; margin-bottom: 30px; }
 .section-header h2 { color: var(--text-primary); font-size: 1.8rem; display: flex; align-items: center; gap: 15px; font-weight: 600; margin:0; }
 
+/* NEW: Animated Section Headers */
+.section-header h2 i {
+    animation: iconFloat 3s infinite ease-in-out;
+}
+
+@keyframes iconFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+}
+
 /* Buttons & Inputs */
-button { padding: 14px 25px; background: var(--primary); color: #fff; border: none; border-radius: 18px; cursor: pointer; font-weight: 500; font-size: 1rem; transition: var(--transition); display: inline-flex; align-items: center; justify-content: center; gap: 8px; box-shadow: var(--shadow-sm); }
+button { padding: 14px 25px; background: var(--primary); color: #fff; border: none; border-radius: 18px; cursor: pointer; font-weight: 500; font-size: 1rem; transition: var(--transition); display: inline-flex; align-items: center; justify-content: center; gap: 8px; box-shadow: var(--shadow-sm); position: relative; overflow: hidden; }
+button::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent); transition: left 0.5s; }
+button:hover::before { left: 100%; }
 button:hover:not(:disabled) { background: var(--text-primary); box-shadow: var(--shadow-lg); transform: translateY(-4px); }
 button:active:not(:disabled) { transform: translateY(-1px) scale(0.98); }
 button:disabled { opacity: 0.6; cursor: not-allowed; }
@@ -244,7 +422,7 @@ select { background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xml
 .task-filters button:hover { background-color: var(--primary-light); color: var(--primary); }
 .task-filters button.active { background: var(--primary); color: #fff; border-color: var(--primary); }
 #taskList { list-style-type: none; }
-#taskList li { display: flex; align-items: center; padding: 18px; border-radius: 20px; margin-bottom: 15px; border: 1px solid var(--border-color); border-left: 6px solid transparent; transition: all 0.4s ease; gap: 18px; background: rgba(var(--primary-rgb), 0.02); overflow: hidden; opacity: 0; }
+#taskList li { display: flex; align-items: center; padding: 18px; border-radius: 20px; margin-bottom: 15px; border: 1px solid var(--border-color); border-left: 6px solid transparent; transition: all 0.4s ease; gap: 18px; background: rgba(var(--primary-rgb), 0.02); overflow: hidden; opacity: 0; position: relative; }
 #taskList li { animation: slideFadeIn 0.5s cubic-bezier(0.165, 0.84, 0.44, 1) forwards; }
 #taskList li:nth-child(1) { animation-delay: 0.05s; }
 #taskList li:nth-child(2) { animation-delay: 0.1s; }
@@ -264,6 +442,17 @@ li.deleting { animation: fadeOutShrink 0.5s ease forwards; }
 .task-actions .complete-btn:hover { background: rgba(var(--success), 0.1); color: var(--success); }
 .task-actions .edit-btn:hover { background: var(--primary-light); color: var(--primary); }
 .task-actions .delete-btn:hover { background: rgba(var(--danger), 0.1); color: var(--danger); }
+
+/* NEW: Task Completion Animation */
+@keyframes taskComplete {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); background: rgba(var(--success), 0.1); }
+    100% { transform: scale(1); }
+}
+
+.task-completed {
+    animation: taskComplete 0.5s ease;
+}
 
 /* Calendar */
 .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 12px; }
@@ -425,9 +614,35 @@ li.deleting { animation: fadeOutShrink 0.5s ease forwards; }
 <!-- THEME ENHANCEMENT: Set the new "best in the world" default theme to Zenith Ultra -->
 <body class="theme-zenith-ultra icons-default">
 
+<!-- NEW: Floating Particles Background -->
+<div class="particles-container" id="particlesContainer"></div>
+
+<!-- NEW: Split Screen Feature -->
+<div class="split-screen-container" id="splitScreenContainer">
+    <div class="split-screen-header">
+        <h2>Split Screen Mode</h2>
+        <button id="closeSplitScreen" class="close-modal-btn">&times;</button>
+    </div>
+    <div class="split-screen-content">
+        <div class="split-screen-panel" id="leftPanel">
+            <iframe src="page1.html" id="leftFrame"></iframe>
+        </div>
+        <div class="split-screen-divider" id="splitDivider"></div>
+        <div class="split-screen-panel" id="rightPanel">
+            <iframe src="page2.html" id="rightFrame"></iframe>
+        </div>
+    </div>
+</div>
+
 <div class="app">
 
     <header class="app-header">
+        <!-- NEW: Animated Logo -->
+        <div class="logo-container">
+            <div class="logo">
+                <i class="fa-solid fa-clock"></i>
+            </div>
+        </div>
         <h1>Chrono Focus</h1>
         <p>Your calm and cozy productivity partner.</p>
     </header>
@@ -455,11 +670,12 @@ li.deleting { animation: fadeOutShrink 0.5s ease forwards; }
                 <p>Boost Your Workflow</p>
             </div>
         </a>
-        <a href="page9.html" class="dock-button">
-            <i class="fa-solid fa-brain"></i>
+        <!-- NEW: Split Screen Button -->
+        <a href="#" class="dock-button split-screen-btn" id="splitScreenBtn">
+            <i class="fa-solid fa-columns"></i>
             <div>
-                <h2>Deep Focus</h2>
-                <p>Zen Mode</p>
+                <h2>Split Screen</h2>
+                <p>Multi-Task Mode</p>
             </div>
         </a>
     </nav>
@@ -547,7 +763,7 @@ li.deleting { animation: fadeOutShrink 0.5s ease forwards; }
    
     <footer class="app-footer">
         <p>Your journey to focus begins now.</p>
-        <span>Zenith 2 Ultra - Beta 7</span>
+        <span>Zenith 2 Ultra - Beta 8</span>
     </footer>
 
 </div>
@@ -625,7 +841,14 @@ class ChronoFocusApp {
             themeModalBody: document.getElementById('theme-modal-body'),
             toast: document.getElementById('toast'),
             iconStyleInputs: document.querySelectorAll('input[name="icon-style"]'),
-            hapticsInput: document.getElementById('haptics-enabled')
+            hapticsInput: document.getElementById('haptics-enabled'),
+            splitScreenBtn: document.getElementById('splitScreenBtn'),
+            splitScreenContainer: document.getElementById('splitScreenContainer'),
+            closeSplitScreen: document.getElementById('closeSplitScreen'),
+            splitDivider: document.getElementById('splitDivider'),
+            leftPanel: document.getElementById('leftPanel'),
+            rightPanel: document.getElementById('rightPanel'),
+            particlesContainer: document.getElementById('particlesContainer')
         };
 
         if (this.dom.progressRing) {
@@ -647,7 +870,11 @@ class ChronoFocusApp {
                 isRunning: false,
                 modes: { pomodoro: 25 * 60, shortBreak: 5 * 60, longBreak: 15 * 60 }
             },
-            hapticsEnabled: true
+            hapticsEnabled: true,
+            splitScreen: {
+                isResizing: false,
+                leftWidth: 50
+            }
         };
 
         this.finishSound = new Audio('https://cdn.jsdelivr.net/gh/k-fari/sounds/notification.mp3');
@@ -662,7 +889,36 @@ class ChronoFocusApp {
         this.loadTasks();
         this.updatePomodoroDisplay();
         this.loadSettings();
-        console.log("Chrono Focus Zenith 2 Ultra Initialized!");
+        this.createParticles();
+        console.log("Chrono Focus Zenith 2 Ultra Beta 8 Initialized!");
+    }
+   
+    // --- NEW: Create Floating Particles ---
+    createParticles() {
+        const particlesContainer = this.dom.particlesContainer;
+        const particleCount = 30;
+        
+        for (let i = 0; i < particleCount; i++) {
+            const particle = document.createElement('div');
+            particle.classList.add('particle');
+            
+            // Random size between 3px and 8px
+            const size = Math.random() * 5 + 3;
+            particle.style.width = `${size}px`;
+            particle.style.height = `${size}px`;
+            
+            // Random position
+            particle.style.left = `${Math.random() * 100}%`;
+            particle.style.top = `${Math.random() * 100}%`;
+            
+            // Random animation delay and duration
+            const delay = Math.random() * 20;
+            const duration = Math.random() * 10 + 15;
+            particle.style.animationDelay = `${delay}s`;
+            particle.style.animationDuration = `${duration}s`;
+            
+            particlesContainer.appendChild(particle);
+        }
     }
    
     // --- THEME MANAGEMENT ---
@@ -675,6 +931,13 @@ class ChronoFocusApp {
             { id: 'theme-galactic', name: 'Galactic', gradient: 'linear-gradient(-45deg, #0a0a1a, #4A148C, #9C27B0)', group: 'zenith' },
             { id: 'theme-deep-space', name: 'Deep Space', gradient: 'linear-gradient(-45deg, #000000, #0D47A1, #2196F3)', group: 'zenith' },
             { id: 'theme-neon-dream', name: 'Neon Dream', gradient: 'linear-gradient(-45deg, #1a0033, #660066, #FF00FF)', group: 'zenith' },
+            
+            // NEW: Beta 8 Themes
+            { id: 'theme-holographic', name: 'Holographic', gradient: 'linear-gradient(-45deg, #0a0a1a, #4B0082, #FF00FF, #00FFFF)', group: 'zenith' },
+            { id: 'theme-synthwave', name: 'Synthwave', gradient: 'linear-gradient(-45deg, #1a0033, #660066, #CC00CC, #FF00FF)', group: 'zenith' },
+            { id: 'theme-matrix', name: 'Matrix', gradient: 'linear-gradient(-45deg, #000000, #003300, #006600, #009900)', group: 'zenith' },
+            { id: 'theme-cyber-matrix', name: 'Cyber Matrix', gradient: 'linear-gradient(-45deg, #0a0f1a, #003366, #0066CC, #00FF9D)', group: 'zenith' },
+            { id: 'theme-neon-noir', name: 'Neon Noir', gradient: 'linear-gradient(-45deg, #0a0a1a, #4B0082, #8A2BE2, #1A237E)', group: 'zenith' },
             
             // Liquid Glass Themes
             { id: 'theme-liquid-glass-zenith', name: 'Zenith Glass', gradient: 'linear-gradient(135deg, #0a0a1a, #4B0082, #8A2BE2)', group: 'liquid-glass' },
@@ -918,7 +1181,17 @@ class ChronoFocusApp {
             this.saveTasks(tasks);
             this.loadTasks();
             this.triggerHapticFeedback();
-            if (task.completed) this.showToast('Task completed! Great job! 🎉');
+            if (task.completed) {
+                this.showToast('Task completed! Great job! 🎉');
+                // Add completion animation
+                const taskElement = document.querySelector(`[data-id="${taskId}"]`);
+                if (taskElement) {
+                    taskElement.classList.add('task-completed');
+                    setTimeout(() => {
+                        taskElement.classList.remove('task-completed');
+                    }, 500);
+                }
+            }
         }
     }
 
@@ -1047,6 +1320,61 @@ class ChronoFocusApp {
         this.triggerHapticFeedback();
     }
    
+    // --- SPLIT SCREEN FEATURE ---
+    initSplitScreen() {
+        this.dom.splitScreenBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            this.openSplitScreen();
+        });
+        
+        this.dom.closeSplitScreen.addEventListener('click', () => {
+            this.closeSplitScreen();
+        });
+        
+        // Split screen resizing
+        this.dom.splitDivider.addEventListener('mousedown', (e) => {
+            this.state.splitScreen.isResizing = true;
+            document.addEventListener('mousemove', this.handleSplitResize.bind(this));
+            document.addEventListener('mouseup', this.stopSplitResize.bind(this));
+        });
+    }
+    
+    openSplitScreen() {
+        this.dom.splitScreenContainer.style.display = 'flex';
+        this.updateSplitScreenLayout();
+        this.triggerHapticFeedback();
+    }
+    
+    closeSplitScreen() {
+        this.dom.splitScreenContainer.style.display = 'none';
+        this.triggerHapticFeedback();
+    }
+    
+    handleSplitResize(e) {
+        if (!this.state.splitScreen.isResizing) return;
+        
+        const containerRect = this.dom.splitScreenContainer.getBoundingClientRect();
+        const containerWidth = containerRect.width;
+        const mouseX = e.clientX - containerRect.left;
+        
+        // Calculate new width percentage
+        const newWidth = Math.max(20, Math.min(80, (mouseX / containerWidth) * 100));
+        this.state.splitScreen.leftWidth = newWidth;
+        
+        this.updateSplitScreenLayout();
+    }
+    
+    stopSplitResize() {
+        this.state.splitScreen.isResizing = false;
+        document.removeEventListener('mousemove', this.handleSplitResize.bind(this));
+        document.removeEventListener('mouseup', this.stopSplitResize.bind(this));
+    }
+    
+    updateSplitScreenLayout() {
+        this.dom.leftPanel.style.flex = `0 0 ${this.state.splitScreen.leftWidth}%`;
+        this.dom.rightPanel.style.flex = `0 0 ${100 - this.state.splitScreen.leftWidth}%`;
+    }
+   
     // --- UI & HELPERS ---
     showToast(message, duration = 3000) {
         this.dom.toast.textContent = message;
@@ -1153,6 +1481,9 @@ class ChronoFocusApp {
         this.dom.hapticsInput.addEventListener('change', () => {
             this.triggerHapticFeedback();
         });
+        
+        // Initialize split screen
+        this.initSplitScreen();
     }
 }
 
