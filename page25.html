@@ -13,18 +13,21 @@
             --accent-blue: #2563eb;
             --accent-blue-light: #3b82f6;
             --accent-blue-dark: #1d4ed8;
+            --accent-purple: #8b5cf6;
+            --accent-cyan: #06b6d4;
             --text-primary: #f8fafc;
             --text-secondary: #94a3b8;
             --text-muted: #64748b;
-            --surface: #1e293b;
-            --surface-light: #334155;
-            --border-color: #334155;
+            --surface: rgba(30, 41, 59, 0.5);
+            --surface-light: rgba(51, 65, 85, 0.3);
+            --border-color: rgba(255, 255, 255, 0.1);
             --success: #10b981;
             --warning: #f59e0b;
             --error: #ef4444;
-            --card-bg: rgba(30, 41, 59, 0.7);
-            --card-border: rgba(51, 65, 85, 0.5);
-            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+            --card-bg: rgba(30, 41, 59, 0.25);
+            --card-border: rgba(255, 255, 255, 0.1);
+            --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.36);
+            --glow: 0 0 20px rgba(37, 99, 235, 0.3);
         }
 
         * {
@@ -35,10 +38,25 @@
 
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--secondary-dark) 100%);
+            background: linear-gradient(135deg, var(--primary-dark) 0%, #0f172a 100%);
             color: var(--text-primary);
             min-height: 100vh;
             line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 10% 20%, rgba(37, 99, 235, 0.15) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(139, 92, 246, 0.15) 0%, transparent 20%),
+                radial-gradient(circle at 50% 50%, rgba(6, 182, 212, 0.1) 0%, transparent 30%);
+            z-index: -1;
         }
 
         .container {
@@ -51,16 +69,29 @@
             text-align: center;
             margin-bottom: 40px;
             padding: 20px 0;
+            position: relative;
         }
 
         .logo {
             font-size: clamp(2.5rem, 5vw, 3.5rem);
             font-weight: 700;
-            background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-blue-light) 100%);
+            background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-purple) 100%);
             -webkit-background-clip: text;
             background-clip: text;
             -webkit-text-fill-color: transparent;
             margin-bottom: 10px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .logo::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent-blue), transparent);
         }
 
         .subtitle {
@@ -86,16 +117,38 @@
         .card {
             background: var(--card-bg);
             border: 1px solid var(--card-border);
-            border-radius: 16px;
+            border-radius: 20px;
             padding: 24px;
             box-shadow: var(--shadow);
             backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow), var(--glow);
         }
 
         .card-header {
             margin-bottom: 20px;
             padding-bottom: 15px;
             border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
 
         .card-title {
@@ -147,18 +200,36 @@
             flex-direction: column;
             align-items: center;
             gap: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .model-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .model-btn:hover::before {
+            left: 100%;
         }
 
         .model-btn:hover {
             border-color: var(--accent-blue);
             color: var(--text-primary);
+            transform: translateY(-2px);
         }
 
         .model-btn.active {
-            background: rgba(37, 99, 235, 0.1);
+            background: rgba(37, 99, 235, 0.15);
             border-color: var(--accent-blue);
             color: var(--text-primary);
-            box-shadow: 0 0 0 1px var(--accent-blue);
+            box-shadow: 0 0 0 1px var(--accent-blue), 0 0 15px rgba(37, 99, 235, 0.3);
         }
 
         .model-name {
@@ -187,17 +258,36 @@
             font-weight: 500;
             cursor: pointer;
             transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tone-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .tone-btn:hover::before {
+            left: 100%;
         }
 
         .tone-btn:hover {
             border-color: var(--accent-blue);
             color: var(--text-primary);
+            transform: translateY(-2px);
         }
 
         .tone-btn.active {
-            background: rgba(37, 99, 235, 0.1);
+            background: rgba(37, 99, 235, 0.15);
             border-color: var(--accent-blue);
             color: var(--text-primary);
+            box-shadow: 0 0 0 1px var(--accent-blue);
         }
 
         .text-area {
@@ -211,7 +301,8 @@
             font-family: 'Inter', sans-serif;
             font-size: 0.95rem;
             resize: vertical;
-            transition: border-color 0.2s ease;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
         }
 
         .text-area:focus {
@@ -236,6 +327,13 @@
             border-radius: 10px;
             padding: 12px;
             text-align: center;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+        }
+
+        .stat-item:hover {
+            border-color: var(--accent-blue);
+            transform: translateY(-2px);
         }
 
         .stat-value {
@@ -268,17 +366,35 @@
             align-items: center;
             justify-content: center;
             gap: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
         }
 
         .btn-primary {
-            background: var(--accent-blue);
+            background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-purple) 100%);
             color: white;
             flex: 1;
+            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
         }
 
         .btn-primary:hover {
-            background: var(--accent-blue-light);
             transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
         }
 
         .btn-secondary {
@@ -289,6 +405,7 @@
 
         .btn-secondary:hover {
             background: var(--surface-light);
+            transform: translateY(-2px);
         }
 
         .btn:disabled {
@@ -323,6 +440,13 @@
             background: var(--surface);
             border-radius: 12px;
             margin-top: 20px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .score-container:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
         }
 
         .score-label {
@@ -342,6 +466,7 @@
             margin: 0 auto 15px;
             position: relative;
             transition: all 0.5s ease;
+            box-shadow: 0 0 20px rgba(37, 99, 235, 0.3);
         }
 
         .score-circle::before {
@@ -375,6 +500,13 @@
             display: flex;
             align-items: center;
             gap: 12px;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+        }
+
+        .feature-item:hover {
+            border-color: var(--accent-blue);
+            transform: translateY(-2px);
         }
 
         .feature-icon {
@@ -406,6 +538,13 @@
             padding: 15px;
             margin-bottom: 10px;
             border-left: 3px solid var(--accent-blue);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .history-item:hover {
+            transform: translateX(5px);
+            background: var(--surface-light);
         }
 
         .history-text {
@@ -437,6 +576,8 @@
             animation: slideInRight 0.3s ease-out;
             backdrop-filter: blur(10px);
             max-width: 350px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .notification.success {
@@ -514,6 +655,7 @@
             border-radius: 50%;
             background: var(--accent-blue);
             cursor: pointer;
+            box-shadow: 0 0 10px rgba(37, 99, 235, 0.5);
         }
 
         .slider-value {
@@ -568,6 +710,52 @@
             transform: translateX(26px);
         }
 
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: var(--surface-light);
+            border-radius: 2px;
+            margin-top: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple));
+            border-radius: 2px;
+            transition: width 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .model-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--accent-blue);
+            color: white;
+            font-size: 0.7rem;
+            padding: 3px 8px;
+            border-radius: 10px;
+        }
+
         @media (max-width: 768px) {
             .container {
                 padding: 15px;
@@ -594,6 +782,20 @@
             .slider-container {
                 width: 100%;
             }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .tone-selector {
+                justify-content: center;
+            }
+            
+            .card-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
         }
     </style>
 </head>
@@ -614,6 +816,7 @@
                             </svg>
                             Input Configuration
                         </h2>
+                        <div class="model-badge" id="currentModel">OptiChain AI 5Pro</div>
                     </div>
 
                     <div class="section">
@@ -713,11 +916,27 @@
                         </div>
                     </div>
 
+                    <div class="progress-bar" id="progressBar" style="display: none;">
+                        <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                    </div>
+
                     <div class="action-buttons">
                         <button class="btn btn-primary" id="humanizeBtn">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 19l7-7 3 3-7 7-3-3z"></path>
+                                <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path>
+                                <path d="M2 2l7.586 7.586"></path>
+                                <circle cx="11" cy="11" r="2"></circle>
+                            </svg>
                             Humanize Text
                         </button>
                         <button class="btn btn-secondary" id="clearBtn">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="3 6 5 6 21 6"></polyline>
+                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                <line x1="10" y1="11" x2="10" y2="17"></line>
+                                <line x1="14" y1="11" x2="14" y2="17"></line>
+                            </svg>
                             Clear
                         </button>
                     </div>
@@ -798,9 +1017,18 @@
 
                     <div class="action-buttons">
                         <button class="btn btn-secondary" id="copyBtn">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                            </svg>
                             Copy Text
                         </button>
                         <button class="btn btn-secondary" id="downloadBtn">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="7 10 12 15 17 10"></polyline>
+                                <line x1="12" y1="15" x2="12" y2="3"></line>
+                            </svg>
                             Download
                         </button>
                     </div>
@@ -854,6 +1082,7 @@
                         document.querySelectorAll('.model-btn').forEach(b => b.classList.remove('active'));
                         e.currentTarget.classList.add('active');
                         this.selectedModel = e.currentTarget.dataset.model;
+                        document.getElementById('currentModel').textContent = e.currentTarget.querySelector('.model-name').textContent;
                     });
                 });
 
@@ -900,6 +1129,14 @@
 
                 document.getElementById('downloadBtn').addEventListener('click', () => {
                     this.downloadText();
+                });
+
+                // History item click
+                document.getElementById('historyContainer').addEventListener('click', (e) => {
+                    const historyItem = e.target.closest('.history-item');
+                    if (historyItem && historyItem.dataset.id) {
+                        this.loadHistoryItem(historyItem.dataset.id);
+                    }
                 });
             }
 
@@ -967,6 +1204,8 @@
                 const originalText = document.getElementById('originalText').value.trim();
                 const humanizeBtn = document.getElementById('humanizeBtn');
                 const humanizedTextArea = document.getElementById('humanizedText');
+                const progressBar = document.getElementById('progressBar');
+                const progressFill = document.getElementById('progressFill');
 
                 if (!originalText) {
                     this.showNotification('Please enter some text to humanize', 'warning');
@@ -976,6 +1215,8 @@
                 // Show loading state
                 humanizeBtn.classList.add('loading');
                 humanizeBtn.disabled = true;
+                progressBar.style.display = 'block';
+                progressFill.style.width = '0%';
 
                 try {
                     // Get advanced options
@@ -990,7 +1231,18 @@
                     if (this.selectedModel === 'optichain-ultra') processingTime = 2500;
                     else if (this.selectedModel === 'chrono-premium') processingTime = 1000;
 
+                    // Simulate progress
+                    const progressInterval = setInterval(() => {
+                        const currentWidth = parseInt(progressFill.style.width) || 0;
+                        if (currentWidth < 90) {
+                            progressFill.style.width = (currentWidth + 10) + '%';
+                        }
+                    }, processingTime / 10);
+
                     await new Promise(resolve => setTimeout(resolve, processingTime));
+
+                    clearInterval(progressInterval);
+                    progressFill.style.width = '100%';
 
                     const humanizedText = this.processText(
                         originalText, 
@@ -1019,9 +1271,12 @@
                     this.showNotification('Error processing text. Please try again.', 'error');
                 } finally {
                     // Reset button state
-                    humanizeBtn.classList.remove('loading');
-                    humanizeBtn.textContent = 'Humanize Text';
-                    humanizeBtn.disabled = false;
+                    setTimeout(() => {
+                        humanizeBtn.classList.remove('loading');
+                        humanizeBtn.textContent = 'Humanize Text';
+                        humanizeBtn.disabled = false;
+                        progressBar.style.display = 'none';
+                    }, 500);
                 }
             }
 
@@ -1567,8 +1822,8 @@
             addToHistory(original, humanized, score) {
                 const historyItem = {
                     id: Date.now(),
-                    original: original.substring(0, 100) + (original.length > 100 ? '...' : ''),
-                    humanized: humanized.substring(0, 100) + (humanized.length > 100 ? '...' : ''),
+                    original: original,
+                    humanized: humanized,
                     score: score,
                     timestamp: new Date().toLocaleString()
                 };
@@ -1599,8 +1854,8 @@
                 }
                 
                 historyContainer.innerHTML = this.history.map(item => `
-                    <div class="history-item">
-                        <div class="history-text">${item.humanized}</div>
+                    <div class="history-item" data-id="${item.id}">
+                        <div class="history-text">${item.humanized.substring(0, 100)}${item.humanized.length > 100 ? '...' : ''}</div>
                         <div class="history-meta">
                             <span>Score: ${item.score}%</span>
                             <span>${item.timestamp}</span>
@@ -1609,12 +1864,26 @@
                 `).join('');
             }
 
+            loadHistoryItem(id) {
+                const item = this.history.find(h => h.id == id);
+                if (item) {
+                    document.getElementById('originalText').value = item.original;
+                    document.getElementById('humanizedText').value = item.humanized;
+                    this.updateTextStats(item.original, 'original');
+                    this.updateTextStats(item.humanized, 'humanized');
+                    this.updateHumanizationScore(item.score);
+                    this.showScoreContainer();
+                    this.showNotification('History item loaded', 'success');
+                }
+            }
+
             clearText() {
                 document.getElementById('originalText').value = '';
                 document.getElementById('humanizedText').value = '';
                 this.updateTextStats('', 'original');
                 this.updateTextStats('', 'humanized');
                 document.getElementById('scoreContainer').style.display = 'none';
+                this.showNotification('Text cleared', 'success');
             }
 
             copyText() {
@@ -1674,4 +1943,3 @@
     </script>
 </body>
 </html>
-
