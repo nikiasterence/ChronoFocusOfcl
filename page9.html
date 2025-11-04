@@ -7,417 +7,1051 @@
     <title>ChronoFocus</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            /* --- Default Cozy Mocha Palette --- */
-            --background: #F9F5F0;
-            --surface: rgba(255, 255, 255, 0.65);
-            --primary: #8D6E63;
-            --primary-rgb: 141, 110, 99;
-            --primary-light: #EFEBE9;
-            --secondary: #BCAAA4;
-            --text-primary: #5D4037;
-            --text-secondary: #776B66;
-            --border-color: rgba(231, 224, 217, 0.7);
-            --success: #66BB6A;
-            --danger: #EF5350;
-            --border-radius: 22px; /* Increased for a softer look */
-            --blur-effect: blur(20px);
-            --shadow-color: rgba(93, 64, 55, 0.15);
+            /* --- Default Zenith Theme --- */
+            --background: #0F1419;
+            --surface: rgba(30, 35, 42, 0.85);
+            --primary: #7B61FF;
+            --primary-rgb: 123, 97, 255;
+            --primary-light: rgba(123, 97, 255, 0.15);
+            --secondary: #8B9CB1;
+            --text-primary: #E6E9EC;
+            --text-secondary: #A0A8B4;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --success: #4ECDC4;
+            --danger: #FF6B6B;
+            --warning: #FFD166;
+            --border-radius: 20px;
+            --blur-effect: blur(25px);
+            --shadow-color: rgba(0, 0, 0, 0.25);
             --transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --card-padding: 24px;
         }
 
-        /* --- Dark Mode Palette --- */
-        --dark-background: #1A1A2E;
-        --dark-surface: rgba(26, 26, 46, 0.7);
-        --dark-primary: #CBA6F7;
-        --dark-primary-rgb: 203, 166, 247;
-        --dark-primary-light: rgba(203, 166, 247, 0.1);
-        --dark-text-primary: #E0E0FF;
-        --dark-text-secondary: #A6ADC8;
-        --dark-border-color: rgba(203, 166, 247, 0.2);
-        --dark-shadow-color: rgba(0, 0, 0, 0.4);
+        /* --- Theme System --- */
+        body.theme-zenith { /* Default theme, already set above */ }
+        body.theme-zenith-light { --background: #F5F7FA; --surface: rgba(255, 255, 255, 0.85); --primary: #7B61FF; --primary-rgb: 123, 97, 255; --primary-light: rgba(123, 97, 255, 0.1); --text-primary: #2D3748; --text-secondary: #718096; --border-color: rgba(0, 0, 0, 0.08); --shadow-color: rgba(0, 0, 0, 0.1); }
+        body.theme-aurora { --background: #0A0E17; --surface: rgba(22, 28, 45, 0.85); --primary: #00F5FF; --primary-rgb: 0, 245, 255; --primary-light: rgba(0, 245, 255, 0.15); --text-primary: #E1F5FE; --text-secondary: #81D4FA; --border-color: rgba(0, 245, 255, 0.15); }
+        body.theme-solar { --background: #1A1A2E; --surface: rgba(37, 37, 65, 0.85); --primary: #FF9A3D; --primary-rgb: 255, 154, 61; --primary-light: rgba(255, 154, 61, 0.15); --text-primary: #F8F8F8; --text-secondary: #C5C5C5; --border-color: rgba(255, 154, 61, 0.15); }
+        body.theme-forest { --background: #0D1B1E; --surface: rgba(30, 52, 56, 0.85); --primary: #4ECDC4; --primary-rgb: 78, 205, 196; --primary-light: rgba(78, 205, 196, 0.15); --text-primary: #E0F2F1; --text-secondary: #80CBC4; --border-color: rgba(78, 205, 196, 0.15); }
+        body.theme-blossom { --background: #1A0B2E; --surface: rgba(45, 25, 70, 0.85); --primary: #E83D84; --primary-rgb: 232, 61, 132; --primary-light: rgba(232, 61, 132, 0.15); --text-primary: #FCE4EC; --text-secondary: #F8BBD0; --border-color: rgba(232, 61, 132, 0.15); }
+        body.theme-midnight { --background: #000000; --surface: rgba(20, 20, 20, 0.9); --primary: #FFFFFF; --primary-rgb: 255, 255, 255; --primary-light: rgba(255, 255, 255, 0.1); --text-primary: #FFFFFF; --text-secondary: #AAAAAA; --border-color: rgba(255, 255, 255, 0.1); }
+        body.theme-cotton-candy { --background: #F8F4FF; --surface: rgba(255, 255, 255, 0.85); --primary: #FF6B9D; --primary-rgb: 255, 107, 157; --primary-light: rgba(255, 107, 157, 0.1); --text-primary: #4A4453; --text-secondary: #7A7585; --border-color: rgba(255, 107, 157, 0.15); }
+        body.theme-ocean { --background: #001F3F; --surface: rgba(0, 55, 107, 0.85); --primary: #00C9FF; --primary-rgb: 0, 201, 255; --primary-light: rgba(0, 201, 255, 0.15); --text-primary: #E6F7FF; --text-secondary: #99E0FF; --border-color: rgba(0, 201, 255, 0.15); }
+        body.theme-sunset { --background: #2D1B69; --surface: rgba(70, 40, 150, 0.85); --primary: #FF8E53; --primary-rgb: 255, 142, 83; --primary-light: rgba(255, 142, 83, 0.15); --text-primary: #FFF5E6; --text-secondary: #FFD8B8; --border-color: rgba(255, 142, 83, 0.15); }
+        body.theme-emerald { --background: #0C2D1F; --surface: rgba(25, 68, 49, 0.85); --primary: #10B981; --primary-rgb: 16, 185, 129; --primary-light: rgba(16, 185, 129, 0.15); --text-primary: #ECFDF5; --text-secondary: #A7F3D0; --border-color: rgba(16, 185, 129, 0.15); }
+        /* --- NEW COZY & ZEN THEMES --- */
+        body.theme-cozy { --background: #2D1F2B; --surface: rgba(70, 50, 65, 0.85); --primary: #E6AACE; --primary-rgb: 230, 170, 206; --primary-light: rgba(230, 170, 206, 0.15); --text-primary: #F5E6F0; --text-secondary: #D4B8CA; --border-color: rgba(230, 170, 206, 0.2); }
+        body.theme-zen-garden { --background: #1A2F1A; --surface: rgba(40, 70, 40, 0.85); --primary: #A3D9A5; --primary-rgb: 163, 217, 165; --primary-light: rgba(163, 217, 165, 0.15); --text-primary: #E8F5E8; --text-secondary: #C1E2C1; --border-color: rgba(163, 217, 165, 0.2); }
+        body.theme-serene { --background: #1A2B3C; --surface: rgba(40, 60, 80, 0.85); --primary: #89C2D9; --primary-rgb: 137, 194, 217; --primary-light: rgba(137, 194, 217, 0.15); --text-primary: #E1F5FE; --text-secondary: #B3E5FC; --border-color: rgba(137, 194, 217, 0.2); }
+        body.theme-warmth { --background: #3C2A1F; --surface: rgba(80, 60, 45, 0.85); --primary: #D4A574; --primary-rgb: 212, 165, 116; --primary-light: rgba(212, 165, 116, 0.15); --text-primary: #F5EDE6; --text-secondary: #E8D5C4; --border-color: rgba(212, 165, 116, 0.2); }
 
-    /* Dark mode */
-    body.dark-mode {
-        --background: var(--dark-background); --surface: var(--dark-surface);
-        --primary: var(--dark-primary); --primary-rgb: var(--dark-primary-rgb);
-        --primary-light: var(--dark-primary-light); --text-primary: var(--dark-text-primary);
-        --text-secondary: var(--dark-text-secondary); --border-color: var(--dark-border-color);
-        --shadow-color: var(--dark-shadow-color);
-    }
+        /* --- Global Styles & Resets --- */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { height: 100%; }
+        body {
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            color: var(--text-primary);
+            transition: background 0.5s ease, color 0.5s ease;
+            background: var(--background);
+            overflow: hidden;
+            line-height: 1.6;
+        }
 
-    /* --- REFINED THEME PALETTES (Improved Readability) --- */
-    body.theme-sage { --background: #F1F5F1; --surface: rgba(255, 255, 255, 0.7); --primary: #799975; --primary-rgb: 121, 153, 117; --primary-light: #E6EEE5; --text-primary: #3E513D; --text-secondary: #7E8C7D; --border-color: #E3E9E2; --shadow-color: rgba(68, 87, 66, 0.1); }
-    body.theme-rose { --background: #FDF4F6; --surface: rgba(255, 255, 255, 0.7); --primary: #D4A6B2; --primary-rgb: 212, 166, 178; --primary-light: #F9EBEF; --text-primary: #7A5862; --text-secondary: #A99299; --border-color: #F3E6E9; --shadow-color: rgba(133, 97, 107, 0.1); }
-    body.theme-mist { --background: #F0F4F8; --surface: rgba(255, 255, 255, 0.7); --primary: #94AEC3; --primary-rgb: 148, 174, 195; --primary-light: #E9EFF4; --text-primary: #4F5E6B; --text-secondary: #93A0AC; --border-color: #E2E8ED; --shadow-color: rgba(86, 104, 121, 0.1); }
-    body.theme-lavender { --background: #F8F6FC; --surface: rgba(255, 255, 255, 0.7); --primary: #9E8FB2; --primary-rgb: 158, 143, 178; --primary-light: #EFECF5; --text-primary: #524761; --text-secondary: #8C819D; --border-color: #E8E4F0; --shadow-color: rgba(90, 78, 107, 0.1); }
-    body.theme-minimalist-light { --background: #FFFFFF; --surface: rgba(248, 248, 248, 0.8); --primary: #333333; --primary-rgb: 51,51,51; --primary-light: #F1F1F1; --text-primary: #121212; --text-secondary: #666666; --border-color: #EAEAEA; --shadow-color: rgba(0,0,0,0.05); }
-    body.theme-minimalist-dark { --background: #121212; --surface: rgba(28, 28, 28, 0.8); --primary: #E0E0E0; --primary-rgb: 224,224,224; --primary-light: #2A2A2A; --text-primary: #FAFAFA; --text-secondary: #AAAAAA; --border-color: rgba(255, 255, 255, 0.15); --shadow-color: rgba(0, 0, 0, 0.5); }
+        /* --- Glass Effect & Card Styling --- */
+        .glass-effect {
+            background: var(--surface);
+            backdrop-filter: var(--blur-effect);
+            -webkit-backdrop-filter: var(--blur-effect);
+            border-radius: var(--border-radius);
+            box-shadow: 0 12px 40px 0 var(--shadow-color);
+            border: 1px solid var(--border-color);
+        }
 
-    @keyframes auroraGradient { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
-    body[class*="theme-aurora"] { background-size: 400% 400%; animation: auroraGradient 20s ease infinite; }
-    body.theme-aurora-boreal { --background: #0d1a26; --surface: rgba(22, 34, 48, 0.85); --primary: #50E3C2; --primary-rgb: 80, 227, 194; --primary-light: rgba(80, 227, 194, 0.15); --text-primary: #E0F5FF; --text-secondary: #A0B8D0; --border-color: rgba(80, 227, 194, 0.2); --shadow-color: rgba(0, 0, 0, 0.25); background: linear-gradient(-45deg, #0d1a26, #1a3a52, #3c164f, #1a233b); }
-    body.theme-aurora-twilight { --background: #1e1e2f; --surface: rgba(38, 38, 59, 0.9); --primary: #C792EA; --primary-rgb: 199, 146, 234; --primary-light: rgba(199, 146, 234, 0.15); --text-primary: #E6E0FF; --text-secondary: #9E93B3; --border-color: rgba(199, 146, 234, 0.2); --shadow-color: rgba(0, 0, 0, 0.25); background: linear-gradient(-45deg, #1e1e2f, #3a2e5d, #6a538d, #2f274a); }
-    body.theme-aurora-cottoncandy { --background: #fce4ec; --surface: rgba(255, 255, 255, 0.9); --primary: #F48FB1; --primary-rgb: 244, 143, 177; --primary-light: rgba(248, 187, 208, 0.25); --text-primary: #880E4F; --text-secondary: #AD1457; --border-color: rgba(248, 187, 208, 0.5); --shadow-color: rgba(136, 14, 79, 0.1); background: linear-gradient(-45deg, #fce4ec, #f8bbd0, #f48fb1, #ff80ab); }
+        .liquid-glass {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+            backdrop-filter: var(--blur-effect);
+            -webkit-backdrop-filter: var(--blur-effect);
+            border-radius: var(--border-radius);
+            box-shadow: 0 8px 32px 0 var(--shadow-color);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
 
-    /* --- Global Styles & Resets --- */
-    * { box-sizing: border-box; }
-    html { height: 100%; }
-    body {
-        font-family: 'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-        margin: 0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100%;
-        color: var(--text-primary);
-        transition: background 0.5s ease, color 0.5s ease;
-        background: var(--background);
-        overflow: hidden; /* Prevent body scrollbars */
-    }
+        /* --- App Container & Page Views --- */
+        .app-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+            transition: all 0.5s ease;
+            border-radius: 0;
+            box-shadow: none;
+            max-width: 1200px;
+        }
 
-    /* --- Glass Effect & Card Styling --- */
-    .glass-effect {
-        background: var(--surface);
-        backdrop-filter: var(--blur-effect);
-        -webkit-backdrop-filter: var(--blur-effect);
-        border-radius: var(--border-radius);
-        box-shadow: 0 8px 32px 0 var(--shadow-color);
-        border: 1px solid var(--border-color);
-    }
+        @media (min-width: 768px) {
+            .app-container {
+                height: 90vh;
+                border-radius: 24px;
+                margin: 20px;
+                max-height: 900px;
+            }
+        }
 
-    /* --- App Container & Page Views --- */
-    .app-container {
-        width: 100%;
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-        overflow: hidden;
-        position: relative;
-        transition: all 0.5s ease;
-        border-radius: 0;
-        box-shadow: none;
-    }
+        main.content-area {
+            flex-grow: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+            position: relative;
+            padding: 20px 20px calc(70px + 20px) 20px;
+            -webkit-overflow-scrolling: touch;
+        }
 
-    main.content-area {
-        flex-grow: 1;
-        overflow-y: auto;
-        overflow-x: hidden;
-        position: relative;
-        padding: 15px 15px calc(65px + 20px) 15px;
-        -webkit-overflow-scrolling: touch;
-    }
+        .page {
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            padding: 20px; overflow-y: auto; opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+            pointer-events: none;
+        }
+        .page.active { opacity: 1; transform: translateY(0); pointer-events: auto; }
+        .page-title { 
+            font-size: 1.8rem; 
+            font-weight: 700; 
+            margin-bottom: 24px; 
+            margin-top: 0; 
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .page-title i {
+            color: var(--primary);
+            font-size: 1.5rem;
+        }
 
-    .page {
-        position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-        padding: 20px; overflow-y: auto; opacity: 0;
-        transform: translateY(20px);
-        transition: opacity 0.4s ease, transform 0.4s ease;
-        pointer-events: none;
-    }
-    .page.active { opacity: 1; transform: translateY(0); pointer-events: auto; }
-    .page-title { font-size: 1.6rem; font-weight: 600; margin-bottom: 20px; margin-top: 0; color: var(--text-primary); }
+        /* --- IMPROVED SMALLER DOCK --- */
+        .dock {
+            position: absolute;
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: calc(100% - 40px);
+            max-width: 380px;
+            height: 70px;
+            z-index: 100;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            border-radius: 20px;
+            padding: 0 12px;
+            box-shadow: 0 8px 25px -8px var(--shadow-color);
+        }
+        .dock-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            border: none;
+            background: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            width: 60px;
+            height: 60px;
+            transition: var(--transition);
+            border-radius: 16px;
+            -webkit-tap-highlight-color: transparent;
+            position: relative;
+        }
+        .dock-item i {
+            font-size: 20px;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        .dock-item span {
+            font-size: 10px;
+            font-weight: 500;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            position: absolute;
+            bottom: 10px;
+        }
+        .dock-item.active {
+            color: var(--primary);
+            background: var(--primary-light);
+        }
+        .dock-item.active i {
+            transform: translateY(-6px);
+        }
+        .dock-item.active span {
+            opacity: 1;
+        }
+        .dock-item:not(.active):hover {
+            color: var(--text-primary);
+            background: rgba(var(--primary-rgb), 0.05);
+        }
 
-    /* --- NEW: IMPROVED DOCK LAYOUT --- */
-    .dock {
-        position: absolute;
-        bottom: 20px; /* Increased bottom spacing */
-        left: 50%;
-        transform: translateX(-50%);
-        width: calc(100% - 40px);
-        max-width: 380px;
-        height: 70px; /* Slightly taller for a better feel */
-        z-index: 100;
-        display: flex;
-        justify-content: space-around;
-        align-items: center;
-        border-radius: 35px; /* Fully rounded pill shape */
-        padding: 0 10px;
-        /* Softer, more lifted shadow */
-        box-shadow: 0 10px 30px -10px var(--shadow-color);
-    }
-    .dock-item {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 4px;
-        border: none;
-        background: none;
-        color: var(--text-secondary);
-        cursor: pointer;
-        width: 80px; /* Increased tap area */
-        height: 60px;
-        transition: var(--transition);
-        border-radius: 20px; /* Softer rounded highlight */
-        -webkit-tap-highlight-color: transparent;
-        position: relative; /* For icon/text animation */
-        top: 0;
-    }
-    .dock-item i {
-        font-size: 24px; /* Larger icon */
-        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-    }
-    .dock-item span {
-        font-size: 11px;
-        font-weight: 500;
-        opacity: 0;
-        transition: opacity 0.3s ease;
-        position: absolute;
-        bottom: 8px; /* Position text inside */
-    }
-    /* Active state animation */
-    .dock-item.active {
-        color: var(--primary);
-    }
-    .dock-item.active i {
-        transform: translateY(-8px); /* Move icon up */
-    }
-    .dock-item.active span {
-        opacity: 1; /* Fade in text */
-        transform: translateY(0);
-    }
-    .dock-item:not(.active):hover {
-        color: var(--text-primary);
-        background: rgba(var(--primary-rgb), 0.05);
-    }
+        /* --- IMPROVED TASK MANAGER PAGE --- */
+        .task-form-container {
+            margin-bottom: 24px;
+        }
+        .task-form-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+        .task-form-header h3 {
+            margin: 0;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        .quick-add-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 8px 16px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .quick-add-btn:hover {
+            filter: brightness(1.1);
+        }
+        .task-input-row { 
+            display: flex; 
+            gap: 12px; 
+            align-items: center; 
+            margin-bottom: 16px; 
+        }
+        #task-icon { 
+            flex: 0 0 60px; 
+            text-align: center; 
+            font-size: 24px; 
+            padding: 14px 0; 
+            border-radius: 16px;
+            background: var(--primary-light);
+            border: 1px solid var(--border-color);
+        }
+        #task-name { 
+            flex-grow: 1; 
+        }
 
-    /* --- TASK MANAGER PAGE --- */
-    #new-task-form h3 { margin:0 0 15px; }
-    .task-input-row { display: flex; gap: 10px; align-items: center; margin-bottom: 10px; }
-    #task-icon { flex: 0 0 50px; text-align: center; font-size: 20px; padding: 12px 0; }
-    #task-name { flex-grow: 1; }
+        #new-task-form input, #new-task-form textarea, #new-task-form button {
+            width: 100%; 
+            padding: 16px; 
+            margin-bottom: 12px; 
+            border-radius: 16px;
+            border: 1px solid var(--border-color); 
+            box-sizing: border-box;
+            background: var(--primary-light); 
+            color: var(--text-primary);
+            font-family: 'Poppins', sans-serif; 
+            transition: var(--transition);
+            -webkit-appearance: none;
+            font-size: 16px;
+        }
+        #new-task-form input:focus, #new-task-form textarea:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.2);
+            outline: none;
+        }
+        #new-task-form .time-inputs, .duration-inputs { 
+            display: flex; 
+            gap: 12px; 
+            margin-bottom: 12px;
+        }
+        #new-task-form .time-inputs > *, .duration-inputs > * {
+            flex: 1;
+        }
+        #new-task-form button[type="submit"] { 
+            background-color: var(--primary); 
+            color: white; 
+            cursor: pointer; 
+            font-weight: 600; 
+            margin-top: 10px; 
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        #new-task-form button[type="submit"]:hover { 
+            filter: brightness(1.1); 
+        }
+        .or-divider { 
+            text-align: center; 
+            margin: 16px 0; 
+            color: var(--text-secondary);
+            position: relative;
+        }
+        .or-divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: var(--border-color);
+            z-index: -1;
+        }
+        .or-divider span {
+            background: var(--surface);
+            padding: 0 12px;
+        }
 
-    #new-task-form input, #new-task-form textarea, #new-task-form button {
-        width: 100%; padding: 12px; margin-bottom: 10px; border-radius: 16px; /* More rounded */
-        border: 1px solid var(--border-color); box-sizing: border-box;
-        background: var(--primary-light); color: var(--text-primary);
-        font-family: 'Poppins', sans-serif; transition: var(--transition);
-        -webkit-appearance: none;
-        font-size: 16px;
-    }
-    #new-task-form input:focus, #new-task-form textarea:focus {
-        border-color: var(--primary);
-        box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.2);
-        outline: none;
-    }
-    #new-task-form .time-inputs, .duration-inputs { display: flex; flex-direction: column; gap: 10px; }
-    #new-task-form button[type="submit"] { background-color: var(--primary); color: white; cursor: pointer; font-weight: 500; margin-top: 10px; }
-    #new-task-form button[type="submit"]:hover { filter: brightness(1.1); }
-    .or-divider { text-align: center; margin: 15px 0; color: var(--text-secondary); }
+        /* --- IMPROVED TASK LIST & ITEMS WITH STATUS BUTTONS --- */
+        .task-list-container { 
+            margin-top: 24px; 
+        }
+        .task-list-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+        .task-list-header h3 {
+            margin: 0;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        .task-filters {
+            display: flex;
+            gap: 8px;
+        }
+        .filter-btn {
+            background: var(--primary-light);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            border-radius: 12px;
+            padding: 6px 12px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .filter-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        .inbox-date-header {
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            margin-top: 24px;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .inbox-date-header:first-of-type {
+            margin-top: 0;
+        }
+        @keyframes item-in { 
+            from { opacity: 0; transform: translateY(10px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
+        .task-item {
+            animation: item-in 0.4s ease forwards;
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+            padding: 18px;
+            background: var(--surface);
+            border-radius: 18px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 16px rgba(var(--primary-rgb), 0.05);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        .task-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(var(--primary-rgb), 0.1);
+        }
+        .task-item.completed {
+            background: none;
+            box-shadow: none;
+            opacity: 0.7;
+        }
+        .task-item.completed .task-item-content { 
+            text-decoration: line-through; 
+            color: var(--text-secondary); 
+        }
+        .task-item .task-icon {
+            font-size: 20px;
+            margin-right: 16px;
+            flex-shrink: 0;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--primary-light);
+        }
+        .task-item-content { 
+            flex-grow: 1; 
+        }
+        .task-item strong { 
+            display: block; 
+            margin-bottom: 4px;
+            font-weight: 600;
+        }
+        .task-item-meta { 
+            font-size: 0.85em; 
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .task-item .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .task-item .actions { 
+            display: flex; 
+            align-items: center; 
+            margin-left: auto; 
+            padding-left: 10px; 
+            gap: 8px;
+        }
+        .task-item button {
+            background: none; 
+            border: none; 
+            cursor: pointer; 
+            padding: 8px;
+            color: var(--text-secondary); 
+            font-size: 16px; 
+            transition: color 0.2s;
+            -webkit-tap-highlight-color: transparent;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .task-item button:hover { 
+            color: var(--primary); 
+            background: var(--primary-light);
+        }
+        .task-item .complete-task {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            font-size: 18px;
+            width: 30px;
+            height: 30px;
+        }
+        
+        /* NEW: Task Status Buttons */
+        .task-status-buttons {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        .status-btn {
+            padding: 8px 12px;
+            border-radius: 10px;
+            border: none;
+            font-size: 0.8rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .status-btn.todo {
+            background: rgba(var(--primary-rgb), 0.1);
+            color: var(--primary);
+        }
+        .status-btn.in-progress {
+            background: rgba(var(--warning-rgb, 255, 209, 102), 0.1);
+            color: var(--warning, #FFD166);
+        }
+        .status-btn.done {
+            background: rgba(var(--success-rgb, 78, 205, 196), 0.1);
+            color: var(--success, #4ECDC4);
+        }
+        .status-btn:hover {
+            filter: brightness(1.1);
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-secondary);
+        }
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+        .empty-state p {
+            margin-bottom: 16px;
+        }
+        .empty-state button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .empty-state button:hover {
+            filter: brightness(1.1);
+        }
 
-    /* --- Aesthetic Task List & Items --- */
-    .task-list-container { margin-top: 20px; }
-    .inbox-date-header {
-        font-weight: 600;
-        font-size: 0.9rem;
-        color: var(--text-secondary);
-        margin-top: 25px;
-        margin-bottom: 10px;
-        padding-bottom: 5px;
-        border-bottom: 1px solid var(--border-color);
-    }
-    .inbox-date-header:first-of-type {
-        margin-top: 0;
-    }
-    @keyframes item-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-    .task-item {
-        animation: item-in 0.4s ease forwards;
-        display: flex;
-        align-items: center;
-        margin-bottom: 12px;
-        padding: 15px;
-        background: var(--surface);
-        border-radius: 18px; /* Softer edges */
-        border: 1px solid var(--border-color);
-        box-shadow: 0 4px 16px rgba(var(--primary-rgb), 0.05);
-        transition: all 0.3s ease;
-        position: relative;
-    }
-    .task-item.completed {
-        background: none;
-        box-shadow: none;
-        opacity: 0.7;
-    }
-    .task-item.completed .task-item-content { text-decoration: line-through; color: var(--text-secondary); }
-    .task-item .task-icon {
-        font-size: 20px;
-        margin-right: 15px;
-        flex-shrink: 0;
-        width: 44px;
-        height: 44px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: var(--primary-light);
-    }
-    .task-item-content { flex-grow: 1; }
-    .task-item strong { display: block; }
-    .task-item-meta { font-size: 0.8em; color: var(--text-secondary); }
-    .task-item .actions { display: flex; align-items: center; margin-left: auto; padding-left: 10px; }
-    .task-item button {
-        background: none; border: none; cursor: pointer; padding: 5px;
-        color: var(--text-secondary); font-size: 16px; transition: color 0.2s;
-        -webkit-tap-highlight-color: transparent;
-    }
-    .task-item button:hover { color: var(--primary); }
-    .task-item .complete-task {
-        position: absolute;
-        top: 8px;
-        right: 8px;
-        font-size: 20px;
-    }
-    .task-item .actions .start-focus, .task-item .actions .delete-task {
-        margin-left: 5px;
-    }
+        /* --- IMPROVED CALENDAR VIEW --- */
+        #calendar-view-page header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 20px; 
+        }
+        #month-year { 
+            font-size: 1.4rem; 
+            margin: 0; 
+            font-weight: 600;
+        }
+        .calendar-nav { 
+            display: flex;
+            gap: 8px;
+        }
+        .calendar-nav button { 
+            background: var(--primary-light); 
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px; 
+            cursor: pointer; 
+            color: var(--text-primary); 
+            transition: var(--transition);
+        }
+        .calendar-nav button:hover {
+            background: var(--primary);
+            color: white;
+        }
+        .calendar-grid { 
+            display: grid; 
+            grid-template-columns: repeat(7, 1fr); 
+            gap: 8px; 
+            text-align: center; 
+            margin-bottom: 20px;
+        }
+        .calendar-grid div {
+            padding: 10px; 
+            border-radius: 12px; 
+            position: relative;
+            min-height: 40px; 
+            display: flex; 
+            align-items: center;
+            justify-content: center; 
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+        .calendar-grid .day-name { 
+            font-weight: 600; 
+            color: var(--text-secondary); 
+            cursor: default; 
+            font-size: 0.8rem;
+            text-transform: uppercase;
+        }
+        .calendar-grid .calendar-day { 
+            cursor: pointer; 
+        }
+        .calendar-grid .calendar-day:hover { 
+            background: var(--primary-light); 
+        }
+        .calendar-grid .today { 
+            background-color: var(--primary); 
+            color: white; 
+            font-weight: 600; 
+        }
+        .calendar-grid .selected { 
+            box-shadow: 0 0 0 2px var(--primary); 
+        }
+        .calendar-grid .has-tasks::after {
+            content: ''; 
+            position: absolute; 
+            bottom: 6px; 
+            left: 50%;
+            transform: translateX(-50%); 
+            width: 6px; 
+            height: 6px;
+            background-color: var(--primary); 
+            border-radius: 50%;
+        }
+        .calendar-grid .other-month {
+            color: var(--text-secondary);
+            opacity: 0.5;
+        }
 
-    /* --- CALENDAR VIEW --- */
-    #calendar-view-page header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-    #month-year { font-size: 1.3rem; margin: 0; }
-    .calendar-nav button { background: none; border: none; font-size: 24px; cursor: pointer; color: var(--text-primary); }
-    .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; text-align: center; }
-    .calendar-grid div {
-        padding: 5px; border-radius: 50%; position: relative;
-        min-height: 30px; display: flex; align-items: center;
-        justify-content: center; font-size: 0.7rem;
-    }
-    .calendar-grid .day-name { font-weight: 600; color: var(--text-secondary); cursor: default; }
-    .calendar-grid .calendar-day { cursor: pointer; transition: all 0.3s ease; }
-    .calendar-grid .calendar-day:hover { background: var(--primary-light); }
-    .calendar-grid .today { background-color: var(--primary-light); color: var(--primary); font-weight: 600; }
-    .calendar-grid .selected { box-shadow: 0 0 0 2px var(--primary); }
-    .calendar-grid .has-tasks::after {
-        content: ''; position: absolute; bottom: 5px; left: 50%;
-        transform: translateX(-50%); width: 5px; height: 5px;
-        background-color: var(--primary); border-radius: 50%;
-    }
+        /* --- IMPROVED SETTINGS PAGE --- */
+        .settings-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .settings-group {
+            padding: 24px;
+            border-radius: var(--border-radius);
+            background: var(--surface);
+            backdrop-filter: var(--blur-effect);
+            -webkit-backdrop-filter: var(--blur-effect);
+            box-shadow: 0 8px 32px 0 var(--shadow-color);
+            border: 1px solid var(--border-color);
+        }
+        .settings-group h4 {
+            margin-top: 0; 
+            margin-bottom: 20px; 
+            color: var(--text-primary);
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 12px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .settings-group h4 i {
+            color: var(--primary);
+        }
+        .settings-option { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 20px; 
+        }
+        .settings-option:last-child {
+            margin-bottom: 0;
+        }
+        .settings-option label {
+            flex-grow: 1;
+            margin: 0;
+            font-weight: 500; 
+            font-size: 1em;
+            padding-right: 15px;
+        }
+        .settings-option input, .settings-option select {
+            width: auto;
+            flex-basis: 50%;
+            max-width: 150px;
+            padding: 12px 16px;
+            border-radius: 14px;
+            border: 1px solid var(--border-color);
+            background: var(--primary-light);
+            color: var(--text-primary);
+            font-size: 16px;
+            transition: var(--transition);
+            -webkit-appearance: none;
+        }
+        .settings-option input[type="color"] {
+            flex-basis: 60px; 
+            height: 40px; 
+            padding: 5px;
+            border-radius: 12px;
+            cursor: pointer;
+        }
+        .settings-option select {
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 16px;
+            padding-right: 40px;
+        }
 
-    /* --- NEW: IMPROVED SETTINGS PAGE --- */
-    #settings-page .settings-group {
-        margin-bottom: 20px;
-        padding: 20px;
-        /* Applying the glass effect to each group */
-        background: var(--surface);
-        backdrop-filter: var(--blur-effect);
-        -webkit-backdrop-filter: var(--blur-effect);
-        border-radius: var(--border-radius);
-        box-shadow: 0 8px 32px 0 var(--shadow-color);
-        border: 1px solid var(--border-color);
-    }
-    #settings-page .settings-group h4 {
-        margin-top: 0; margin-bottom: 15px; color: var(--text-primary);
-        border-bottom: 1px solid var(--border-color);
-        padding-bottom: 10px;
-        font-weight: 600; /* Bolder headings */
-    }
-    .settings-option { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-    .settings-option label {
-        flex-grow: 1;
-        margin: 0; /* Removed bottom margin */
-        font-weight: 500; font-size: 1em;
-        padding-right: 15px; /* Add space between label and input */
-    }
-    .settings-option input, .settings-option select {
-        width: auto;
-        flex-basis: 50%; /* Assign a base width for inputs */
-        max-width: 150px;
-        padding: 12px;
-        border-radius: 14px; /* More rounded */
-        border: 1px solid var(--border-color);
-        background: var(--primary-light);
-        color: var(--text-primary);
-        font-size: 16px;
-        transition: var(--transition);
-        -webkit-appearance: none;
-    }
-     .settings-option input[type="color"] {
-        flex-basis: 60px; height: 40px; padding: 5px;
-        border-radius: 12px;
-    }
-     .settings-option select {
-        appearance: menulist; /* Native dropdown arrow */
-        -webkit-appearance: menulist;
-    }
+        .theme-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); 
+            gap: 15px; 
+            margin-top: 15px; 
+        }
+        .theme-item {
+            height: 80px;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.3s;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid transparent;
+        }
+        .theme-item:hover { 
+            transform: scale(1.05); 
+        }
+        .theme-item.active {
+            box-shadow: 0 0 0 3px var(--primary);
+            border-color: var(--background);
+        }
+        .theme-item .theme-name {
+            position: absolute; 
+            bottom: 0; 
+            left: 0; 
+            right: 0;
+            background: rgba(0,0,0,0.7);
+            color: white; 
+            padding: 6px; 
+            font-size: 0.75em;
+            text-align: center;
+            font-weight: 500;
+        }
 
-    .theme-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 15px; margin-top: 15px; }
-    .theme-item {
-        height: 60px;
-        border-radius: 16px; /* More rounded */
-        cursor: pointer;
-        transition: transform 0.2s, box-shadow 0.3s;
-        position: relative;
-        overflow: hidden;
-        border: 2px solid transparent;
-    }
-    .theme-item:hover { transform: scale(1.05); }
-    .theme-item.active {
-        box-shadow: 0 0 0 3px var(--primary);
-        border-color: var(--background); /* Inner border to not affect layout */
-    }
-    .theme-item .theme-name {
-        position: absolute; bottom: 0; left: 0; right: 0;
-        background: rgba(0,0,0,0.5);
-        color: white; padding: 4px; font-size: 0.7em;
-        text-align: center;
-    }
+        /* --- IMPROVED AI ASSISTANT (OPTILITE) --- */
+        .ai-assistant-btn {
+            position: fixed; 
+            bottom: 95px; 
+            right: 20px; 
+            width: 60px; 
+            height: 60px;
+            border-radius: 50%; 
+            background: var(--primary); 
+            color: white;
+            border: none; 
+            cursor: pointer; 
+            z-index: 1001;
+            box-shadow: 0 8px 25px rgba(var(--primary-rgb), 0.3);
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            transition: var(--transition);
+            -webkit-tap-highlight-color: transparent;
+        }
+        .ai-assistant-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 12px 30px rgba(var(--primary-rgb), 0.4);
+        }
+        .ai-assistant-btn i {
+            font-size: 24px;
+        }
+        .ai-assistant-panel {
+            position: fixed; 
+            bottom: 165px; 
+            right: 20px;
+            width: calc(100vw - 40px); 
+            max-width: 420px; 
+            height: 500px; 
+            max-height: 60vh;
+            z-index: 1000; 
+            display: none; 
+            flex-direction: column;
+            animation: modal-in 0.4s; 
+            transform-origin: bottom right;
+            border-radius: 24px;
+            overflow: hidden;
+        }
+        .ai-header { 
+            padding: 20px; 
+            border-bottom: 1px solid var(--border-color); 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            background: var(--surface);
+        }
+        .ai-header h4 {
+            margin: 0;
+            font-size: 1.1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .ai-header h4 i {
+            color: var(--primary);
+        }
+        .ai-close {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+        .ai-close:hover {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+        .ai-conversation { 
+            flex-grow: 1; 
+            padding: 20px; 
+            overflow-y: auto; 
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .ai-message { 
+            margin-bottom: 0;
+            padding: 16px; 
+            border-radius: 18px; 
+            max-width: 85%; 
+            word-wrap: break-word; 
+            line-height: 1.5;
+        }
+        .ai-user { 
+            background: var(--primary); 
+            color: white;
+            margin-left: auto; 
+            border-bottom-right-radius: 6px;
+        }
+        .ai-bot { 
+            background: var(--primary-light); 
+            border: 1px solid var(--border-color); 
+            margin-right: auto;
+            border-bottom-left-radius: 6px;
+        }
+        .ai-input-area { 
+            padding: 20px; 
+            border-top: 1px solid var(--border-color); 
+            display: flex; 
+            gap: 12px;
+            background: var(--surface);
+        }
+        .ai-input { 
+            flex-grow: 1; 
+            padding: 14px 18px; 
+            border-radius: 20px; 
+            border: 1px solid var(--border-color); 
+            background: var(--primary-light); 
+            color: var(--text-primary);
+            font-family: 'Poppins', sans-serif;
+            font-size: 16px;
+        }
+        .ai-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(var(--primary-rgb), 0.2);
+        }
+        .ai-send { 
+            background: var(--primary); 
+            color: white; 
+            border: none;
+            border-radius: 50%; 
+            width: 50px; 
+            height: 50px; 
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+        .ai-send:hover {
+            filter: brightness(1.1);
+            transform: scale(1.05);
+        }
+        .ai-send i {
+            font-size: 18px;
+        }
+        @keyframes modal-in { 
+            from { opacity: 0; transform: scale(0.9) translateY(20px); } 
+            to { opacity: 1; transform: scale(1) translateY(0); } 
+        }
+        .ai-typing {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-top: 8px;
+        }
+        .ai-typing-dots {
+            display: flex;
+            gap: 4px;
+        }
+        .ai-typing-dots span {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--text-secondary);
+            animation: typing 1.4s infinite ease-in-out;
+        }
+        .ai-typing-dots span:nth-child(1) { animation-delay: -0.32s; }
+        .ai-typing-dots span:nth-child(2) { animation-delay: -0.16s; }
+        @keyframes typing {
+            0%, 80%, 100% { transform: scale(0.8); opacity: 0.5; }
+            40% { transform: scale(1); opacity: 1; }
+        }
 
-    /* --- AI Assistant --- */
-    .ai-assistant-btn {
-        position: fixed; bottom: 85px; right: 20px; width: 50px; height: 50px;
-        border-radius: 50%; background: var(--primary); color: white;
-        border: none; cursor: pointer; z-index: 1001;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-        display: flex; align-items: center; justify-content: center;
-        transition: var(--transition);
-        -webkit-tap-highlight-color: transparent;
-    }
-    .ai-assistant-panel {
-        position: fixed; bottom: 145px; right: 20px;
-        width: calc(100vw - 40px); max-width: 380px; height: 450px; max-height: 55vh;
-        z-index: 1000; display: none; flex-direction: column;
-        animation: modal-in 0.4s; transform-origin: bottom right;
-    }
-    .ai-header { padding: 15px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
-    .ai-conversation { flex-grow: 1; padding: 15px; overflow-y: auto; }
-    .ai-message { margin-bottom: 15px; padding: 10px; border-radius: 10px; max-width: 85%; word-wrap: break-word; }
-    .ai-user { background: var(--primary-light); margin-left: auto; }
-    .ai-bot { background: var(--surface); border: 1px solid var(--border-color); margin-right: auto;}
-    .ai-input-area { padding: 15px; border-top: 1px solid var(--border-color); display: flex; }
-    .ai-input { flex-grow: 1; padding: 10px; border-radius: 20px; border: 1px solid var(--border-color); background: var(--primary-light); }
-    .ai-send { background: var(--primary); color: white; border-radius: 50%; width: 40px; height: 40px; margin-left: 10px; }
-    @keyframes modal-in { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+        /* --- FOCUS VIEW --- */
+        .focus-view-container {
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            display: none;
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: center;
+            z-index: 2000; 
+            opacity: 0; 
+            transition: opacity 0.5s;
+        }
+        .focus-view-container.visible { 
+            display: flex; 
+            opacity: 1; 
+        }
+        .focus-view-container.light-mode { 
+            background: #FFFFFF; 
+            color: #121212; 
+        }
+        .focus-view-container.dark-mode { 
+            background: #121212; 
+            color: #FFFFFF; 
+        }
+        .color-fill-bg { 
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 0; 
+            z-index: -1; 
+            transition: height 1s linear; 
+        }
+        .focus-content { 
+            text-align: center; 
+            z-index: 1; 
+            padding: 40px; 
+            max-width: 500px;
+            width: 90%;
+        }
+        #focus-task-icon { 
+            font-size: 4rem; 
+            margin-bottom: 20px; 
+        }
+        #focus-task-name { 
+            font-size: 2rem; 
+            margin-bottom: 30px; 
+            font-weight: 600;
+        }
+        #focus-timer { 
+            font-size: 4rem; 
+            font-weight: 300; 
+            margin: 30px 0; 
+            letter-spacing: 2px; 
+            font-family: 'Courier New', monospace;
+        }
+        #focus-status-text { 
+            text-transform: uppercase; 
+            letter-spacing: 3px; 
+            margin-bottom: 40px; 
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        .focus-controls { 
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .focus-controls button {
+            background: rgba(255, 255, 255, 0.1); 
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 14px 24px; 
+            border-radius: 12px; 
+            cursor: pointer; 
+            transition: background 0.3s;
+            -webkit-tap-highlight-color: transparent;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .focus-view-container.light-mode button { 
+            background: rgba(0,0,0,0.05); 
+            border: 1px solid rgba(0,0,0,0.1); 
+            color: #121212; 
+        }
+        .focus-view-container.dark-mode button { 
+            color: white; 
+        }
+        .focus-controls button:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        .focus-view-container.light-mode button:hover {
+            background: rgba(0,0,0,0.1);
+        }
 
-    /* --- Focus View --- */
-    .focus-view-container {
-        position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: none;
-        flex-direction: column; justify-content: center; align-items: center;
-        z-index: 2000; opacity: 0; transition: opacity 0.5s;
-    }
-    .focus-view-container.visible { display: flex; opacity: 1; }
-    .focus-view-container.light-mode { background: #FFFFFF; color: #121212; }
-    .focus-view-container.dark-mode { background: #121212; color: #FFFFFF; }
-    .color-fill-bg { position: absolute; top: 0; left: 0; width: 100%; height: 0; z-index: -1; transition: height 1s linear; }
-    .focus-content { text-align: center; z-index: 1; padding: 20px; }
-    #focus-task-icon { font-size: 2.5rem; margin-bottom: 10px; }
-    #focus-task-name { font-size: 1.5rem; margin-bottom: 20px; }
-    #focus-timer { font-size: 2.5rem; font-weight: 300; margin: 20px 0; letter-spacing: 2px; }
-    #focus-status-text { text-transform: uppercase; letter-spacing: 2px; margin-bottom: 30px; }
-    .focus-controls button {
-        background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.3);
-        padding: 12px 18px; margin: 5px; border-radius: 12px; /* rounder */
-        cursor: pointer; transition: background 0.3s;
-        -webkit-tap-highlight-color: transparent;
-    }
-    .focus-view-container.light-mode button { background: rgba(0,0,0,0.05); border: 1px solid rgba(0,0,0,0.1); color: #121212; }
-    .focus-view-container.dark-mode button { color: white; }
+        /* --- RESPONSIVE DESIGN --- */
+        @media (max-width: 480px) {
+            .page {
+                padding: 16px;
+            }
+            .page-title {
+                font-size: 1.5rem;
+            }
+            .dock {
+                width: calc(100% - 32px);
+                height: 65px;
+                padding: 0 10px;
+            }
+            .dock-item {
+                width: 55px;
+                height: 55px;
+            }
+            .dock-item i {
+                font-size: 18px;
+            }
+            .task-item {
+                padding: 16px;
+            }
+            .task-item .task-icon {
+                width: 44px;
+                height: 44px;
+                margin-right: 12px;
+            }
+            .ai-assistant-panel {
+                width: calc(100vw - 32px);
+                height: 450px;
+            }
+            #focus-timer {
+                font-size: 3rem;
+            }
+            #focus-task-name {
+                font-size: 1.5rem;
+            }
+        }
 
-</style>
+        @media (min-width: 768px) {
+            .task-input-row {
+                flex-direction: row;
+            }
+            #new-task-form .time-inputs, .duration-inputs {
+                flex-direction: row;
+            }
+            .focus-controls {
+                flex-direction: row;
+            }
+        }
+    </style>
 </head>
-<body>
+<body class="theme-zenith">
     <audio id="complete-sound" src="https://actions.google.com/sounds/v1/alarms/notification_bell.ogg" preload="auto"></audio>
     <audio id="cancel-sound" src="https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg" preload="auto"></audio>
 
@@ -426,18 +1060,33 @@
 
         <!-- PAGE: INBOX -->
         <div id="inbox-page" class="page">
-            <h1 class="page-title">Inbox</h1>
-            <div class="task-list-container" id="inbox-task-list"></div>
+            <h1 class="page-title"><i class="fas fa-inbox"></i> Inbox</h1>
+            <div class="task-list-container">
+                <div class="task-list-header">
+                    <h3>All Tasks</h3>
+                    <div class="task-filters">
+                        <button class="filter-btn active" data-filter="all">All</button>
+                        <button class="filter-btn" data-filter="today">Today</button>
+                        <button class="filter-btn" data-filter="upcoming">Upcoming</button>
+                    </div>
+                </div>
+                <div id="inbox-task-list"></div>
+            </div>
         </div>
 
         <!-- PAGE: TASK MANAGER -->
         <div id="manager-page" class="page active">
-            <h1 class="page-title">Manager</h1>
-            <div class="card glass-effect" style="padding: 15px;">
+            <h1 class="page-title"><i class="fas fa-list-check"></i> Manager</h1>
+            <div class="task-form-container liquid-glass" style="padding: 24px;">
                  <form id="new-task-form">
-                    <h3>New Task</h3>
+                    <div class="task-form-header">
+                        <h3>New Task</h3>
+                        <button type="button" class="quick-add-btn" id="quick-add-btn">
+                            <i class="fas fa-bolt"></i> Quick Add
+                        </button>
+                    </div>
                      <div class="task-input-row">
-                         <input type="text" id="task-icon" placeholder="🗓️" maxlength="2">
+                         <input type="text" id="task-icon" placeholder="📌" maxlength="2" title="Task Icon">
                          <input type="text" id="task-name" placeholder="What is your focus?" required>
                      </div>
                      <input type="date" id="task-date" required>
@@ -445,89 +1094,106 @@
                         <input type="time" id="task-start-time" title="Start Time">
                         <input type="time" id="task-end-time" title="End Time">
                       </div>
-                      <div class="or-divider">OR</div>
+                      <div class="or-divider"><span>OR</span></div>
                      <div class="duration-inputs">
                          <input type="number" id="task-hours" placeholder="Hours" min="0">
                          <input type="number" id="task-minutes" placeholder="Minutes" min="0" max="59">
                      </div>
-                     <button type="submit">Create Task</button>
+                     <button type="submit">
+                         <i class="fas fa-plus"></i> Create Task
+                     </button>
                  </form>
             </div>
-             <div class="task-list-container glass-effect" style="margin-top:20px; padding:15px;">
-                <h3 style="margin-top:0;">Today's Tasks</h3>
+             <div class="task-list-container liquid-glass" style="padding: 24px;">
+                <div class="task-list-header">
+                    <h3>Today's Tasks</h3>
+                    <div class="task-filters">
+                        <button class="filter-btn active" data-filter="all">All</button>
+                        <button class="filter-btn" data-filter="pending">Pending</button>
+                        <button class="filter-btn" data-filter="completed">Completed</button>
+                    </div>
+                </div>
                 <div id="manager-task-list"></div>
              </div>
         </div>
 
         <!-- PAGE: CALENDAR -->
         <div id="calendar-page" class="page">
-            <h1 class="page-title">Calendar</h1>
-            <div id="calendar-view" class="glass-effect" style="padding:15px;">
+            <h1 class="page-title"><i class="fas fa-calendar-days"></i> Calendar</h1>
+            <div id="calendar-view" class="liquid-glass" style="padding: 24px;">
                 <header>
-                    <h2 id="month-year" style="font-size: 1.2rem; margin:0;">September 2025</h2>
+                    <h2 id="month-year">September 2025</h2>
                     <div class="calendar-nav">
-                        <button id="prev-month">&lt;</button>
-                        <button id="next-month">&gt;</button>
+                        <button id="prev-month"><i class="fas fa-chevron-left"></i></button>
+                        <button id="next-month"><i class="fas fa-chevron-right"></i></button>
                     </div>
                 </header>
                 <div class="calendar-grid"></div>
             </div>
-            <div class="task-list-container glass-effect" style="margin-top:20px; padding:15px;">
-                <h3 id="calendar-task-list-title" style="margin-top:0;">Tasks</h3>
+            <div class="task-list-container liquid-glass" style="margin-top: 24px; padding: 24px;">
+                <h3 id="calendar-task-list-title" style="margin-top: 0;">Tasks</h3>
                 <div id="calendar-task-list"></div>
             </div>
         </div>
 
         <!-- PAGE: SETTINGS -->
         <div id="settings-page" class="page">
-            <h1 class="page-title">Settings</h1>
+            <h1 class="page-title"><i class="fas fa-cog"></i> Settings</h1>
 
-            <div class="settings-group">
-                <h4>Appearance</h4>
-                <div class="settings-option">
-                    <label for="theme-selector">Theme</label>
+            <div class="settings-container">
+                <div class="settings-group">
+                    <h4><i class="fas fa-palette"></i> Appearance</h4>
+                    <div class="settings-option">
+                        <label for="theme-selector">Theme</label>
+                    </div>
+                    <div class="theme-grid" id="theme-grid"></div>
+                     <div class="settings-option" style="margin-top: 20px;">
+                        <label for="focus-fill-color">Focus Session Color</label>
+                        <input type="color" id="focus-fill-color" value="#7B61FF">
+                    </div>
                 </div>
-                <div class="theme-grid" id="theme-grid"></div>
-                 <div class="settings-option" style="margin-top: 20px;">
-                    <label for="focus-fill-color">Focus Session Color</label>
-                    <input type="color" id="focus-fill-color" value="#8D6E63">
+
+                <div class="settings-group">
+                    <h4><i class="fas fa-clock"></i> Pomodoro</h4>
+                    <div class="settings-option">
+                        <label>Pomodoro (min)</label>
+                        <input type="number" id="pomodoro-duration" value="25" min="1" max="120">
+                    </div>
+                    <div class="settings-option">
+                        <label>Short Break (min)</label>
+                        <input type="number" id="break-duration" value="5" min="1" max="60">
+                    </div>
+                    <div class="settings-option">
+                        <label>Long Break (min)</label>
+                        <input type="number" id="long-break-duration" value="15" min="1" max="60">
+                    </div>
+                </div>
+
+                <div class="settings-group">
+                    <h4><i class="fas fa-sliders-h"></i> General</h4>
+                    <div class="settings-option">
+                        <label for="auto-delete">Auto-delete tasks after</label>
+                        <select id="auto-delete">
+                            <option value="0">Never</option>
+                            <option value="1">1 day</option>
+                            <option value="7">1 week</option>
+                            <option value="30">1 month</option>
+                        </select>
+                    </div>
+                    <div class="settings-option">
+                        <label for="default-view">Default View</label>
+                        <select id="default-view">
+                            <option value="manager-page">Manager</option>
+                            <option value="inbox-page">Inbox</option>
+                            <option value="calendar-page">Calendar</option>
+                        </select>
+                    </div>
                 </div>
             </div>
-
-            <div class="settings-group">
-                <h4>Pomodoro</h4>
-                <div class="settings-option">
-                    <label>Pomodoro (min)</label>
-                    <input type="number" id="pomodoro-duration" value="25">
-                </div>
-                <div class="settings-option">
-                    <label>Short Break (min)</label>
-                    <input type="number" id="break-duration" value="5">
-                </div>
-                <div class="settings-option">
-                    <label>Long Break (min)</label>
-                    <input type="number" id="long-break-duration" value="15">
-                </div>
-            </div>
-
-            <div class="settings-group">
-                <h4>General</h4>
-                <div class="settings-option">
-                    <label for="auto-delete">Auto-delete tasks after</label>
-                    <select id="auto-delete">
-                        <option value="0">Never</option>
-                        <option value="1">1 day</option>
-                        <option value="7">1 week</option>
-                        <option value="30">1 month</option>
-                    </select>
-                </div>
-            </div>
-
         </div>
-
     </main>
 
-    <nav class="dock glass-effect">
+    <nav class="dock liquid-glass">
         <button class="dock-item" data-page="inbox-page"><i class="fas fa-inbox"></i><span>Inbox</span></button>
         <button class="dock-item active" data-page="manager-page"><i class="fas fa-list-check"></i><span>Manager</span></button>
         <button class="dock-item" data-page="calendar-page"><i class="fas fa-calendar-days"></i><span>Calendar</span></button>
@@ -536,17 +1202,19 @@
 </div>
 
 <!-- AI Assistant Floating UI -->
-<button class="ai-assistant-btn" id="ai-assistant-btn"><i class="fas fa-wand-magic-sparkles"></i></button>
-<div class="ai-assistant-panel glass-effect" id="ai-assistant-panel">
+<button class="ai-assistant-btn" id="ai-assistant-btn" title="OptiLite AI Assistant">
+    <i class="fas fa-robot"></i>
+</button>
+<div class="ai-assistant-panel liquid-glass" id="ai-assistant-panel">
     <div class="ai-header">
-        <h4>AI Assistant</h4>
+        <h4><i class="fas fa-robot"></i> OptiLite AI</h4>
         <button class="ai-close" id="ai-close">&times;</button>
     </div>
     <div class="ai-conversation" id="ai-conversation">
-        <div class="ai-message ai-bot">How can I help you focus today? Try: "Schedule physics study for 45 minutes" or "Create a task for tomorrow".</div>
+        <div class="ai-message ai-bot">Hello! I'm OptiLite, your AI productivity assistant. How can I help you focus today? Try: "Schedule physics study for 45 minutes tomorrow" or "Create a task for my meeting on Friday".</div>
     </div>
     <div class="ai-input-area">
-        <input type="text" class="ai-input" id="ai-input" placeholder="Ask me...">
+        <input type="text" class="ai-input" id="ai-input" placeholder="Ask OptiLite...">
         <button class="ai-send" id="ai-send" type="button"><i class="fas fa-paper-plane"></i></button>
     </div>
 </div>
@@ -560,9 +1228,9 @@
         <div id="focus-timer">00:00:00</div>
         <p id="focus-status-text">Remaining</p>
         <div class="focus-controls">
-            <button id="pause-resume-btn">Pause</button>
-            <button id="complete-btn">✓ Complete</button>
-            <button id="exit-focus-btn">Exit Focus</button>
+            <button id="pause-resume-btn"><i class="fas fa-pause"></i> Pause</button>
+            <button id="complete-btn"><i class="fas fa-check"></i> Complete</button>
+            <button id="exit-focus-btn"><i class="fas fa-times"></i> Exit Focus</button>
         </div>
     </div>
 </div>
@@ -579,6 +1247,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let isPaused = false;
     let totalDuration;
     let currentTaskID = null;
+    let currentFilter = 'all';
 
     // --- Element Selectors ---
     const pages = document.querySelectorAll('.page');
@@ -599,10 +1268,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const taskEndTimeInput = document.getElementById('task-end-time');
     const taskHoursInput = document.getElementById('task-hours');
     const taskMinutesInput = document.getElementById('task-minutes');
+    const quickAddBtn = document.getElementById('quick-add-btn');
 
     const inboxTaskList = document.getElementById('inbox-task-list');
     const managerTaskList = document.getElementById('manager-task-list');
     const calendarTaskList = document.getElementById('calendar-task-list');
+    const filterButtons = document.querySelectorAll('.filter-btn');
 
     const focusView = document.getElementById('focus-view');
     const colorFillBg = document.getElementById('color-fill-bg');
@@ -617,23 +1288,29 @@ document.addEventListener('DOMContentLoaded', () => {
     const themeGrid = document.getElementById('theme-grid');
     const focusFillColorInput = document.getElementById('focus-fill-color');
     const completeSound = document.getElementById('complete-sound');
+    const defaultViewSelect = document.getElementById('default-view');
 
     // Utility Functions
     const toYYYYMMDD = (date) => date.toISOString().split('T')[0];
 
     // --- THEMES ---
     const ALL_THEMES = [
-         {name: 'Cozy Mocha', value: 'default', category: 'light', color: '#8D6E63'},
-         {name: 'Sage', value: 'theme-sage', category: 'light', color: '#799975'},
-         {name: 'Rose', value: 'theme-rose', category: 'light', color: '#D4A6B2'},
-         {name: 'Mist', value: 'theme-mist', category: 'light', color: '#94AEC3'},
-         {name: 'Lavender', value: 'theme-lavender', category: 'light', color: '#9E8FB2'},
-         {name: 'Minimalist', value: 'theme-minimalist-light', category: 'light', color: '#f5f5f5'},
-         {name: 'Dark Mode', value: 'dark-mode', category: 'dark', color: '#1A1A2E'},
-         {name: 'Minimalist Dark', value: 'theme-minimalist-dark', category: 'dark', color: '#121212'},
-         {name: 'Boreal', value: 'theme-aurora-boreal', category: 'aurora', color: 'linear-gradient(-45deg, #0d1a26, #1a3a52, #3c164f, #1a233b)'},
-         {name: 'Twilight', value: 'theme-aurora-twilight', category: 'aurora', color: 'linear-gradient(-45deg, #1e1e2f, #3a2e5d, #6a538d, #2f274a)'},
-         {name: 'Cotton Candy', value: 'theme-aurora-cottoncandy', category: 'aurora', color: 'linear-gradient(-45deg, #fce4ec, #f8bbd0, #f48fb1, #ff80ab)'},
+        {name: 'Zenith', value: 'theme-zenith', category: 'dark', color: '#0F1419'},
+        {name: 'Zenith Light', value: 'theme-zenith-light', category: 'light', color: '#F5F7FA'},
+        {name: 'Aurora', value: 'theme-aurora', category: 'dark', color: '#0A0E17'},
+        {name: 'Solar', value: 'theme-solar', category: 'dark', color: '#1A1A2E'},
+        {name: 'Forest', value: 'theme-forest', category: 'dark', color: '#0D1B1E'},
+        {name: 'Blossom', value: 'theme-blossom', category: 'dark', color: '#1A0B2E'},
+        {name: 'Midnight', value: 'theme-midnight', category: 'dark', color: '#000000'},
+        {name: 'Cotton Candy', value: 'theme-cotton-candy', category: 'light', color: '#F8F4FF'},
+        {name: 'Ocean', value: 'theme-ocean', category: 'dark', color: '#001F3F'},
+        {name: 'Sunset', value: 'theme-sunset', category: 'dark', color: '#2D1B69'},
+        {name: 'Emerald', value: 'theme-emerald', category: 'dark', color: '#0C2D1F'},
+        // NEW COZY & ZEN THEMES
+        {name: 'Cozy', value: 'theme-cozy', category: 'dark', color: '#2D1F2B'},
+        {name: 'Zen Garden', value: 'theme-zen-garden', category: 'dark', color: '#1A2F1A'},
+        {name: 'Serene', value: 'theme-serene', category: 'dark', color: '#1A2B3C'},
+        {name: 'Warmth', value: 'theme-warmth', category: 'dark', color: '#3C2A1F'},
     ];
 
     // --- CORE LOGIC (IMPROVED LOCAL STORAGE) ---
@@ -657,24 +1334,44 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- RENDERING (IMPROVED TASK ITEM) ---
+    // --- RENDERING (IMPROVED TASK ITEM WITH STATUS BUTTONS) ---
     function renderTaskItem(task) {
         const taskItem = document.createElement('div');
         taskItem.className = `task-item ${task.completed ? 'completed' : ''}`;
         taskItem.dataset.id = task.id;
+        
         const timeInfo = task.startTime ? `${task.startTime}${task.endTime ? ' - ' + task.endTime : ''}` : ``;
         const durationInfo = task.duration ? `${task.duration} min` : '';
+        const dateInfo = new Date(task.date + 'T00:00:00').toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
+        
         const meta = [timeInfo, durationInfo].filter(Boolean).join(' • ');
 
         taskItem.innerHTML = `
-            <button class="complete-task" title="${task.completed ? 'Mark Incomplete' : 'Mark Complete'}">${task.completed ? '<i class="fas fa-undo"></i>' : '<i class="fas fa-check"></i>'}</button>
+            <button class="complete-task" title="${task.completed ? 'Mark Incomplete' : 'Mark Complete'}">
+                ${task.completed ? '<i class="fas fa-undo"></i>' : '<i class="fas fa-check"></i>'}
+            </button>
             <div class="task-icon">${task.icon || '📌'}</div>
             <div class="task-item-content">
                 <strong>${task.name}</strong>
-                <p class="task-item-meta">${meta}</p>
+                <div class="task-item-meta">
+                    ${meta ? `<span class="meta-item"><i class="far fa-clock"></i> ${meta}</span>` : ''}
+                    <span class="meta-item"><i class="far fa-calendar"></i> ${dateInfo}</span>
+                </div>
+                <div class="task-status-buttons">
+                    <button class="status-btn todo ${task.status === 'todo' || !task.status ? 'active' : ''}" data-status="todo">
+                        <i class="fas fa-circle"></i> To Do
+                    </button>
+                    <button class="status-btn in-progress ${task.status === 'in-progress' ? 'active' : ''}" data-status="in-progress">
+                        <i class="fas fa-spinner"></i> In Progress
+                    </button>
+                    <button class="status-btn done ${task.status === 'done' ? 'active' : ''}" data-status="done">
+                        <i class="fas fa-check-circle"></i> Done
+                    </button>
+                </div>
             </div>
             <div class="actions">
                ${!task.completed ? `<button class="start-focus" title="Start Focus"><i class="fas fa-play"></i></button>` : ''}
+               <button class="edit-task" title="Edit Task"><i class="fas fa-edit"></i></button>
                <button class="delete-task" title="Delete Task"><i class="fas fa-trash"></i></button>
             </div>`;
         return taskItem;
@@ -698,33 +1395,62 @@ document.addEventListener('DOMContentLoaded', () => {
         const tomorrowStr = toYYYYMMDD(tomorrow);
 
         const dateHeadings = {
-            [todayStr]: "Today",
-            [tomorrowStr]: "Tomorrow"
+            [todayStr]: `<i class="fas fa-sun"></i> Today`,
+            [tomorrowStr]: `<i class="fas fa-calendar-plus"></i> Tomorrow`
         };
 
         if (Object.keys(tasksByDate).length > 0) {
             for (const dateStr in tasksByDate) {
-                const headerText = dateHeadings[dateStr] || new Date(dateStr + 'T00:00:00').toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' });
+                const headerText = dateHeadings[dateStr] || `<i class="far fa-calendar"></i> ${new Date(dateStr + 'T00:00:00').toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' })}`;
                 const header = document.createElement('h4');
                 header.className = 'inbox-date-header';
-                header.textContent = headerText;
+                header.innerHTML = headerText;
                 inboxTaskList.appendChild(header);
 
-                tasksByDate[dateStr].forEach(task => inboxTaskList.appendChild(renderTaskItem(task)));
+                tasksByDate[dateStr].forEach(task => {
+                    if (currentFilter === 'all' || 
+                        (currentFilter === 'today' && task.date === todayStr) ||
+                        (currentFilter === 'upcoming' && task.date > todayStr)) {
+                        inboxTaskList.appendChild(renderTaskItem(task));
+                    }
+                });
             }
         } else {
-            inboxTaskList.innerHTML = '<p>Your inbox is empty. Add a task in the Manager tab!</p>';
+            inboxTaskList.innerHTML = `
+                <div class="empty-state">
+                    <i class="far fa-folder-open"></i>
+                    <p>Your inbox is empty. Add a task in the Manager tab!</p>
+                    <button id="empty-inbox-btn">Create Your First Task</button>
+                </div>`;
+            document.getElementById('empty-inbox-btn').addEventListener('click', () => switchPage('manager-page'));
         }
 
-
-        // --- MANAGER & CALENDAR LISTS (UNCHANGED) ---
+        // --- MANAGER LIST ---
         managerTaskList.innerHTML = '';
-        tasks.filter(t => t.date === todayStr).forEach(task => managerTaskList.appendChild(renderTaskItem(task)));
-        if (managerTaskList.innerHTML === '') managerTaskList.innerHTML = '<p>No tasks for today.</p>';
+        const todayTasks = tasks.filter(t => t.date === todayStr);
+        
+        if (currentFilter === 'all') {
+            todayTasks.forEach(task => managerTaskList.appendChild(renderTaskItem(task)));
+        } else if (currentFilter === 'pending') {
+            todayTasks.filter(t => !t.completed).forEach(task => managerTaskList.appendChild(renderTaskItem(task)));
+        } else if (currentFilter === 'completed') {
+            todayTasks.filter(t => t.completed).forEach(task => managerTaskList.appendChild(renderTaskItem(task)));
+        }
+        
+        if (managerTaskList.innerHTML === '') {
+            managerTaskList.innerHTML = `
+                <div class="empty-state">
+                    <i class="far fa-check-circle"></i>
+                    <p>No tasks for today.</p>
+                    <button id="empty-manager-btn">Add a Task</button>
+                </div>`;
+            document.getElementById('empty-manager-btn').addEventListener('click', () => {
+                taskNameInput.focus();
+            });
+        }
 
         renderTasksForCalendarDate(selectedCalendarDate);
     }
-
 
     function renderTasksForCalendarDate(date) {
         const dateStr = toYYYYMMDD(date);
@@ -734,7 +1460,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (tasksForDate.length > 0) {
             tasksForDate.forEach(task => calendarTaskList.appendChild(renderTaskItem(task)));
         } else {
-            calendarTaskList.innerHTML = '<p>No tasks scheduled for this day.</p>';
+            calendarTaskList.innerHTML = `
+                <div class="empty-state">
+                    <i class="far fa-calendar-times"></i>
+                    <p>No tasks scheduled for this day.</p>
+                </div>`;
         }
     }
 
@@ -744,12 +1474,23 @@ document.addEventListener('DOMContentLoaded', () => {
         const month = currentDate.getMonth();
         monthYearEl.textContent = `${currentDate.toLocaleString('default', { month: 'long' })} ${year}`;
 
-        ['S', 'M', 'T', 'W', 'T', 'F', 'S'].forEach(day => {
-            const dayEl = document.createElement('div'); dayEl.className = 'day-name'; dayEl.textContent = day; calendarGrid.appendChild(dayEl);
+        ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].forEach(day => {
+            const dayEl = document.createElement('div'); 
+            dayEl.className = 'day-name'; 
+            dayEl.textContent = day; 
+            calendarGrid.appendChild(dayEl);
         });
 
         const firstDayOfMonth = new Date(year, month, 1).getDay();
-        for (let i = 0; i < firstDayOfMonth; i++) calendarGrid.appendChild(document.createElement('div'));
+        const daysInPrevMonth = new Date(year, month, 0).getDate();
+        
+        // Previous month days
+        for (let i = firstDayOfMonth - 1; i >= 0; i--) {
+            const dayEl = document.createElement('div');
+            dayEl.textContent = daysInPrevMonth - i;
+            dayEl.classList.add('calendar-day', 'other-month');
+            calendarGrid.appendChild(dayEl);
+        }
 
         const daysInMonth = new Date(year, month + 1, 0).getDate();
         const todayStr = toYYYYMMDD(new Date());
@@ -764,7 +1505,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (dateStr === todayStr) dayEl.classList.add('today');
             if (dateStr === selectedStr) dayEl.classList.add('selected');
-            if (tasks.some(task => task.date === dateStr)) dayEl.classList.add('has-tasks');
+            if (tasks.some(task => task.date === dateStr && !task.completed)) dayEl.classList.add('has-tasks');
 
             dayEl.addEventListener('click', () => {
                 document.querySelector('.calendar-day.selected')?.classList.remove('selected');
@@ -772,6 +1513,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 selectedCalendarDate = dateObj;
                 renderTasksForCalendarDate(selectedCalendarDate);
             });
+            calendarGrid.appendChild(dayEl);
+        }
+
+        // Next month days
+        const totalCells = 42; // 6 rows x 7 days
+        const remainingCells = totalCells - (firstDayOfMonth + daysInMonth);
+        for (let day = 1; day <= remainingCells; day++) {
+            const dayEl = document.createElement('div');
+            dayEl.textContent = day;
+            dayEl.classList.add('calendar-day', 'other-month');
             calendarGrid.appendChild(dayEl);
         }
     }
@@ -784,11 +1535,38 @@ document.addEventListener('DOMContentLoaded', () => {
         dockItems.forEach(item => {
             item.classList.toggle('active', item.dataset.page === pageId);
         });
+        
+        // Update filters based on page
+        if (pageId === 'inbox-page') {
+            currentFilter = 'all';
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.filter === 'all');
+            });
+        } else if (pageId === 'manager-page') {
+            currentFilter = 'all';
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.filter === 'all');
+            });
+        }
+        
+        renderAllTaskLists();
     }
 
     // --- Task Handling ---
     taskForm.addEventListener('submit', (e) => {
         e.preventDefault();
+        createTask();
+    });
+
+    quickAddBtn.addEventListener('click', () => {
+        taskNameInput.focus();
+        // Set default values for quick add
+        taskDateInput.value = toYYYYMMDD(new Date());
+        taskHoursInput.value = '';
+        taskMinutesInput.value = '25';
+    });
+
+    function createTask() {
         let duration = (parseInt(taskHoursInput.value) || 0) * 60 + (parseInt(taskMinutesInput.value) || 0);
         if (!duration && taskStartTimeInput.value && taskEndTimeInput.value) {
             const start = new Date(`1970-01-01T${taskStartTimeInput.value}`);
@@ -798,6 +1576,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (duration <= 0 && (!taskStartTimeInput.value || !taskEndTimeInput.value)) {
             // Allow creating tasks with 0 duration if no times are set
         } else if (duration < 0) {
+             alert("End time must be after start time");
              return;
         }
         if(!taskNameInput.value.trim()) return;
@@ -811,11 +1590,15 @@ document.addEventListener('DOMContentLoaded', () => {
             endTime: taskEndTimeInput.value,
             duration: duration,
             completed: false,
+            status: 'todo' // Default status
         });
         taskForm.reset();
         taskDateInput.value = toYYYYMMDD(new Date());
         saveAndRerender();
-    });
+        
+        // Show confirmation
+        showNotification('Task created successfully!', 'success');
+    }
 
     document.querySelector('.content-area').addEventListener('click', e => {
         const button = e.target.closest('button');
@@ -825,16 +1608,81 @@ document.addEventListener('DOMContentLoaded', () => {
         const taskId = taskItem.dataset.id;
 
         if (button.classList.contains('delete-task')) {
-            tasks = tasks.filter(t => t.id !== taskId);
+            if (confirm('Are you sure you want to delete this task?')) {
+                tasks = tasks.filter(t => t.id !== taskId);
+                saveAndRerender();
+                showNotification('Task deleted', 'info');
+            }
         } else if (button.classList.contains('complete-task')) {
             const task = tasks.find(t => t.id === taskId);
-            if(task) task.completed = !task.completed;
+            if(task) {
+                task.completed = !task.completed;
+                saveAndRerender();
+                showNotification(`Task ${task.completed ? 'completed' : 'marked as incomplete'}`, 'success');
+            }
         } else if (button.classList.contains('start-focus')) {
             const task = tasks.find(t => t.id === taskId);
-            if(task && task.duration > 0) startFocusSession(task);
-            else if (task) alert("Cannot start focus session for tasks with no duration.");
+            if(task && task.duration > 0) {
+                startFocusSession(task);
+                showNotification('Focus session started', 'info');
+            } else if (task) {
+                showNotification("Cannot start focus session for tasks with no duration.", 'warning');
+            }
+        } else if (button.classList.contains('edit-task')) {
+            const task = tasks.find(t => t.id === taskId);
+            if(task) {
+                editTask(task);
+            }
+        } else if (button.classList.contains('status-btn')) {
+            const task = tasks.find(t => t.id === taskId);
+            if(task) {
+                const status = button.dataset.status;
+                task.status = status;
+                
+                // If status is "done", mark as completed
+                if (status === 'done') {
+                    task.completed = true;
+                }
+                
+                saveAndRerender();
+                showNotification(`Task status updated to ${status}`, 'success');
+            }
         }
+    });
+
+    function editTask(task) {
+        // Populate form with task data
+        taskIconInput.value = task.icon || '📌';
+        taskNameInput.value = task.name;
+        taskDateInput.value = task.date;
+        taskStartTimeInput.value = task.startTime || '';
+        taskEndTimeInput.value = task.endTime || '';
+        
+        if (task.duration) {
+            const hours = Math.floor(task.duration / 60);
+            const minutes = task.duration % 60;
+            taskHoursInput.value = hours || '';
+            taskMinutesInput.value = minutes || '';
+        }
+        
+        // Scroll to form
+        document.querySelector('#new-task-form').scrollIntoView({ behavior: 'smooth' });
+        taskNameInput.focus();
+        
+        // Remove task from list
+        tasks = tasks.filter(t => t.id !== task.id);
         saveAndRerender();
+        showNotification('Task loaded for editing', 'info');
+    }
+
+    // Filter buttons
+    filterButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            filterButtons.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentFilter = btn.dataset.filter;
+            renderAllTaskLists();
+        });
     });
 
     // --- FOCUS TIMER ---
@@ -847,12 +1695,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
         focusTimerEl.textContent = formatTime(timeRemaining);
         isPaused = false;
-        pauseResumeBtn.textContent = 'Pause';
+        pauseResumeBtn.innerHTML = '<i class="fas fa-pause"></i> Pause';
 
-        const isDarkMode = document.body.classList.contains('dark-mode') || document.body.className.includes('dark');
+        const isDarkMode = document.body.classList.contains('theme-zenith') || 
+                          document.body.classList.contains('theme-aurora') ||
+                          document.body.classList.contains('theme-solar') ||
+                          document.body.classList.contains('theme-forest') ||
+                          document.body.classList.contains('theme-blossom') ||
+                          document.body.classList.contains('theme-midnight') ||
+                          document.body.classList.contains('theme-ocean') ||
+                          document.body.classList.contains('theme-sunset') ||
+                          document.body.classList.contains('theme-emerald') ||
+                          document.body.classList.contains('theme-cozy') ||
+                          document.body.classList.contains('theme-zen-garden') ||
+                          document.body.classList.contains('theme-serene') ||
+                          document.body.classList.contains('theme-warmth');
+        
         focusView.className = `focus-view-container visible ${isDarkMode ? 'dark-mode' : 'light-mode'}`;
 
-        colorFillBg.style.background = localStorage.getItem('focusFillColor') || '#8D6E63';
+        colorFillBg.style.background = localStorage.getItem('focusFillColor') || '#7B61FF';
 
         if (timerInterval) clearInterval(timerInterval);
         startTimer();
@@ -863,13 +1724,14 @@ document.addEventListener('DOMContentLoaded', () => {
             if(isPaused) return;
             timeRemaining--;
             focusTimerEl.textContent = formatTime(timeRemaining);
-            document.title = `${formatTime(timeRemaining)} - ${focusTaskNameEl.textContent}`;
+            document.title = `${formatTime(timeRemaining)} - ${focusTaskNameEl.textContent} - ChronoFocus`;
             colorFillBg.style.height = `${((totalDuration - timeRemaining) / totalDuration) * 100}%`;
 
             if(timeRemaining <= 0) {
                 clearInterval(timerInterval);
                 completeSound.play();
                 completeTask(currentTaskID, true);
+                showNotification('Focus session completed!', 'success');
                 setTimeout(endFocusSession, 1000);
             }
         }, 1000);
@@ -884,7 +1746,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function completeTask(taskId) {
         const task = tasks.find(t => t.id === taskId);
-        if(task) task.completed = true;
+        if(task) {
+            task.completed = true;
+            task.status = 'done';
+        }
     }
 
     function formatTime(seconds) {
@@ -897,7 +1762,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- SETTINGS ---
     function applyTheme(theme) {
-        document.body.className = theme === 'default' ? '' : theme;
+        document.body.className = theme;
         localStorage.setItem('focusTimerTheme', theme);
         document.querySelectorAll('.theme-item.active').forEach(i => i.classList.remove('active'));
         document.querySelector(`.theme-item[data-theme="${theme}"]`)?.classList.add('active');
@@ -920,18 +1785,40 @@ document.addEventListener('DOMContentLoaded', () => {
     dockItems.forEach(item => {
         item.addEventListener('click', () => switchPage(item.dataset.page));
     });
-    prevMonthBtn.addEventListener('click', () => { currentDate.setMonth(currentDate.getMonth() - 1); renderCalendar(); });
-    nextMonthBtn.addEventListener('click', () => { currentDate.setMonth(currentDate.getMonth() + 1); renderCalendar(); });
+    prevMonthBtn.addEventListener('click', () => { 
+        currentDate.setMonth(currentDate.getMonth() - 1); 
+        renderCalendar(); 
+    });
+    nextMonthBtn.addEventListener('click', () => { 
+        currentDate.setMonth(currentDate.getMonth() + 1); 
+        renderCalendar(); 
+    });
 
-    pauseResumeBtn.addEventListener('click', () => { isPaused = !isPaused; pauseResumeBtn.textContent = isPaused ? 'Resume' : 'Pause'; });
-    completeBtn.addEventListener('click', () => { completeTask(currentTaskID); endFocusSession(); });
-    exitFocusBtn.addEventListener('click', endFocusSession);
+    pauseResumeBtn.addEventListener('click', () => { 
+        isPaused = !isPaused; 
+        pauseResumeBtn.innerHTML = isPaused ? '<i class="fas fa-play"></i> Resume' : '<i class="fas fa-pause"></i> Pause'; 
+    });
+    completeBtn.addEventListener('click', () => { 
+        completeTask(currentTaskID); 
+        showNotification('Task completed!', 'success');
+        endFocusSession(); 
+    });
+    exitFocusBtn.addEventListener('click', () => {
+        if (confirm('Are you sure you want to exit the focus session?')) {
+            endFocusSession();
+            showNotification('Focus session ended', 'info');
+        }
+    });
 
     focusFillColorInput.addEventListener('input', (e) => {
         localStorage.setItem('focusFillColor', e.target.value);
     });
 
-    // --- AI ASSISTANT ---
+    defaultViewSelect.addEventListener('change', (e) => {
+        localStorage.setItem('defaultView', e.target.value);
+    });
+
+    // --- AI ASSISTANT (OPTILITE) - IMPROVED NATURAL LANGUAGE PROCESSING ---
     const aiPanel = document.getElementById('ai-assistant-panel');
     const aiConversation = document.getElementById('ai-conversation');
     const aiInput = document.getElementById('ai-input');
@@ -959,12 +1846,35 @@ document.addEventListener('DOMContentLoaded', () => {
         aiConversation.scrollTop = aiConversation.scrollHeight;
     }
 
+    function showTypingIndicator() {
+        const typingEl = document.createElement('div');
+        typingEl.className = 'ai-typing';
+        typingEl.innerHTML = `
+            OptiLite is thinking
+            <div class="ai-typing-dots">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        `;
+        aiConversation.appendChild(typingEl);
+        aiConversation.scrollTop = aiConversation.scrollHeight;
+        return typingEl;
+    }
+
     function handleAIInput() {
         const userInput = aiInput.value.trim();
         if (!userInput) return;
         addMessageToAI(userInput, 'user');
         aiInput.value = '';
-        processAICommand(userInput);
+        
+        const typingIndicator = showTypingIndicator();
+        
+        // Simulate AI thinking time
+        setTimeout(() => {
+            typingIndicator.remove();
+            processAICommand(userInput);
+        }, 1500);
     }
 
     function processAICommand(command) {
@@ -973,19 +1883,30 @@ document.addEventListener('DOMContentLoaded', () => {
         let duration = 0;
         let date = toYYYYMMDD(new Date());
 
+        // Enhanced date parsing
         const dateKeywords = {
+            'today': () => toYYYYMMDD(new Date()),
             'tomorrow': () => { const d = new Date(); d.setDate(d.getDate() + 1); return toYYYYMMDD(d); },
             'next week': () => { const d = new Date(); d.setDate(d.getDate() + 7); return toYYYYMMDD(d); },
             'next month': () => { const d = new Date(); d.setMonth(d.getMonth() + 1); return toYYYYMMDD(d); },
             'monday': getNextDayOfWeek(1), 'tuesday': getNextDayOfWeek(2),
             'wednesday': getNextDayOfWeek(3), 'thursday': getNextDayOfWeek(4),
-            'friday': getNextDayOfWeek(5), 'saturday': getNextDayOfWeek(6), 'sunday': getNextDayOfWeek(0)
+            'friday': getNextDayOfWeek(5), 'saturday': getNextDayOfWeek(6), 'sunday': getNextDayOfWeek(0),
+            'this monday': getNextDayOfWeek(1), 'this tuesday': getNextDayOfWeek(2),
+            'this wednesday': getNextDayOfWeek(3), 'this thursday': getNextDayOfWeek(4),
+            'this friday': getNextDayOfWeek(5), 'this saturday': getNextDayOfWeek(6), 'this sunday': getNextDayOfWeek(0)
         };
+        
         for (const [kw, fn] of Object.entries(dateKeywords)) {
-            if (lowerCmd.includes(kw)) { date = fn(); taskName = taskName.replace(kw, '').trim(); break; }
+            if (lowerCmd.includes(kw)) { 
+                date = fn(); 
+                taskName = taskName.replace(kw, '').trim(); 
+                break; 
+            }
         }
 
-        const durationRegex = /(\d+)\s*(min|mins|minutes|hr|hrs|hours)/g;
+        // Enhanced duration parsing
+        const durationRegex = /(\d+)\s*(min|mins|minutes|hr|hrs|hours?|hour)/g;
         let match;
         while ((match = durationRegex.exec(lowerCmd)) !== null) {
             const val = parseInt(match[1]);
@@ -993,43 +1914,132 @@ document.addEventListener('DOMContentLoaded', () => {
             taskName = taskName.replace(match[0], '').trim();
         }
 
-        taskName = taskName.replace(/schedule|create|add|task|a|an|remind me to|for|reminder for/g, '').trim();
+        // Enhanced task name extraction
+        const removePhrases = [
+            'schedule', 'create', 'add', 'task', 'a', 'an', 'remind me to', 'for', 'reminder for', 'set', 'make',
+            'please', 'can you', 'could you', 'i need to', 'i want to', 'i have to', 'i should'
+        ];
+        
+        removePhrases.forEach(phrase => {
+            const regex = new RegExp(`\\b${phrase}\\b`, 'gi');
+            taskName = taskName.replace(regex, '');
+        });
+        
+        taskName = taskName.replace(/\s+/g, ' ').trim();
         taskName = taskName.charAt(0).toUpperCase() + taskName.slice(1);
 
         if (taskName) {
             tasks.push({
-                id: Date.now().toString(), name: taskName, date: date,
-                icon: '🤖', startTime: '', endTime: '',
-                duration: duration, completed: false,
+                id: Date.now().toString(), 
+                name: taskName, 
+                date: date,
+                icon: '🤖', 
+                startTime: '', 
+                endTime: '',
+                duration: duration, 
+                completed: false,
+                status: 'todo'
             });
             saveAndRerender();
             const durationText = duration > 0 ? ` for ${duration} minutes` : '';
-            addMessageToAI(`Okay, I've scheduled "${taskName}"${durationText} on ${new Date(date + 'T00:00:00').toLocaleDateString()}.`, 'bot');
+            const dateText = date === toYYYYMMDD(new Date()) ? 'today' : `on ${new Date(date + 'T00:00:00').toLocaleDateString()}`;
+            addMessageToAI(`Okay, I've scheduled "${taskName}"${durationText} ${dateText}.`, 'bot');
+            showNotification('Task created with AI!', 'success');
         } else {
-            addMessageToAI("I'm sorry, I didn't understand that. Please try 'Schedule workout for 1 hour tomorrow'.", 'bot');
+            addMessageToAI("I'm sorry, I didn't understand that. Please try something like 'Schedule physics study for 45 minutes tomorrow' or 'Create a task for my meeting on Friday'.", 'bot');
         }
     }
 
     function getNextDayOfWeek(dayOfWeek) {
         return () => {
-             const today = new Date(); const resultDate = new Date();
+             const today = new Date(); 
+             const resultDate = new Date();
              const dist = (dayOfWeek - today.getDay() + 7) % 7;
              resultDate.setDate(today.getDate() + (dist === 0 ? 7 : dist));
              return toYYYYMMDD(resultDate);
         };
     }
 
+    // --- NOTIFICATION SYSTEM ---
+    function showNotification(message, type = 'info') {
+        // Create notification element
+        const notification = document.createElement('div');
+        notification.className = `notification notification-${type}`;
+        notification.innerHTML = `
+            <div class="notification-content">
+                <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'warning' ? 'exclamation-triangle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
+                <span>${message}</span>
+            </div>
+        `;
+        
+        // Add styles for notification
+        if (!document.querySelector('#notification-styles')) {
+            const style = document.createElement('style');
+            style.id = 'notification-styles';
+            style.textContent = `
+                .notification {
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    padding: 16px 20px;
+                    border-radius: 12px;
+                    background: var(--surface);
+                    backdrop-filter: var(--blur-effect);
+                    -webkit-backdrop-filter: var(--blur-effect);
+                    box-shadow: 0 8px 32px var(--shadow-color);
+                    border: 1px solid var(--border-color);
+                    z-index: 10000;
+                    transform: translateX(120%);
+                    transition: transform 0.3s ease;
+                    max-width: 320px;
+                }
+                .notification.show {
+                    transform: translateX(0);
+                }
+                .notification-content {
+                    display: flex;
+                    align-items: center;
+                    gap: 12px;
+                }
+                .notification-success i { color: var(--success); }
+                .notification-warning i { color: var(--warning); }
+                .notification-error i { color: var(--danger); }
+                .notification-info i { color: var(--primary); }
+            `;
+            document.head.appendChild(style);
+        }
+        
+        document.body.appendChild(notification);
+        
+        // Show notification
+        setTimeout(() => notification.classList.add('show'), 10);
+        
+        // Hide after 3 seconds
+        setTimeout(() => {
+            notification.classList.remove('show');
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.parentNode.removeChild(notification);
+                }
+            }, 300);
+        }, 3000);
+    }
+
     // --- INITIALIZATION ---
     function initializeApp() {
         loadTasks();
-        const savedTheme = localStorage.getItem('focusTimerTheme') || 'default';
+        const savedTheme = localStorage.getItem('focusTimerTheme') || 'theme-zenith';
         populateThemeDashboard();
         applyTheme(savedTheme);
-        focusFillColorInput.value = localStorage.getItem('focusFillColor') || '#8D6E63';
+        focusFillColorInput.value = localStorage.getItem('focusFillColor') || '#7B61FF';
         taskDateInput.value = toYYYYMMDD(new Date());
+        
+        const defaultView = localStorage.getItem('defaultView') || 'manager-page';
+        defaultViewSelect.value = defaultView;
+        
         renderAllTaskLists();
         renderCalendar();
-        switchPage('manager-page');
+        switchPage(defaultView);
     }
 
     initializeApp();
