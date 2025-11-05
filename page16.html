@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="icon" href="Chronofocus.png" type="image/x-icon">
 <title>Chrono Focus Pro - Advanced Task & Calendar Manager</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -12,221 +11,145 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
 :root {
-  /* Cozy Theme (Default) */
-  --primary: #8B5FBF;
-  --primary-light: #E8DEF8;
-  --primary-dark: #6750A4;
-  --secondary: #7B9EA8;
-  --accent: #FF9E6D;
-  --background: #FFFBFE;
-  --surface: #FFFFFF;
-  --surface-elevated: #FFFFFF;
-  --text-primary: #1C1B1F;
-  --text-secondary: #49454F;
-  --text-disabled: #79747E;
-  --border-color: #E7E0EC;
-  --success: #0D7377;
-  --warning: #FFB740;
-  --danger: #B3261E;
-  --hover-overlay: rgba(139, 95, 191, 0.08);
-  --active-overlay: rgba(139, 95, 191, 0.12);
+  /* Glass Theme (Default) */
+  --primary: #6366F1;
+  --primary-light: rgba(99, 102, 241, 0.1);
+  --primary-dark: #4F46E5;
+  --secondary: #8B5CF6;
+  --accent: #10B981;
+  --background: linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 100%);
+  --surface: rgba(255, 255, 255, 0.7);
+  --surface-elevated: rgba(255, 255, 255, 0.9);
+  --text-primary: #1E293B;
+  --text-secondary: #64748B;
+  --text-disabled: #94A3B8;
+  --border-color: rgba(226, 232, 240, 0.6);
+  --success: #10B981;
+  --warning: #F59E0B;
+  --danger: #EF4444;
+  --hover-overlay: rgba(99, 102, 241, 0.08);
+  --active-overlay: rgba(99, 102, 241, 0.12);
   
   /* Task Priority Colors */
-  --priority-high: #FF5252;
-  --priority-medium: #FFB740;
-  --priority-low: #0D7377;
+  --priority-high: #EF4444;
+  --priority-medium: #F59E0B;
+  --priority-low: #10B981;
   
   /* Calendar Colors */
-  --today-bg: var(--primary-light);
+  --today-bg: rgba(99, 102, 241, 0.1);
   --today-text: var(--primary-dark);
-  --weekend-bg: #F5F5F5;
+  --weekend-bg: rgba(241, 245, 249, 0.5);
   --weekend-text: var(--text-secondary);
   
   /* Rounded corners */
   --border-radius-sm: 8px;
   --border-radius: 16px;
-  --border-radius-lg: 24px;
-  --border-radius-xl: 28px;
+  --border-radius-lg: 20px;
+  --border-radius-xl: 24px;
   
   /* Shadows */
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
-  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.12);
-  --shadow-lg: 0 10px 20px rgba(0, 0, 0, 0.15);
-  --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.2);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
   
   /* Transition */
   --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* Glass effect */
+  --glass-bg: rgba(255, 255, 255, 0.25);
+  --glass-border: rgba(255, 255, 255, 0.18);
+  --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  --backdrop-blur: blur(10px);
 }
 
-/* Zen Theme */
-body.theme-zen {
-  --primary: #4A7C59;
-  --primary-light: #E8F5E9;
-  --primary-dark: #2E5D3A;
-  --secondary: #8DAB7F;
-  --accent: #C8E6C9;
-  --background: #F9F7F4;
-  --surface: #FFFFFF;
-  --surface-elevated: #FFFFFF;
-  --text-primary: #2E3229;
-  --text-secondary: #5A6650;
-  --text-disabled: #8A9785;
-  --border-color: #E0E0E0;
-  --hover-overlay: rgba(74, 124, 89, 0.08);
-  --active-overlay: rgba(74, 124, 89, 0.12);
-  --today-bg: #E8F5E9;
-  --today-text: #2E5D3A;
-  --weekend-bg: #F5F5F5;
+/* Midnight Glass Theme */
+body.theme-midnight-glass {
+  --primary: #818CF8;
+  --primary-light: rgba(129, 140, 248, 0.15);
+  --primary-dark: #6366F1;
+  --secondary: #A78BFA;
+  --accent: #34D399;
+  --background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+  --surface: rgba(30, 41, 59, 0.7);
+  --surface-elevated: rgba(30, 41, 59, 0.9);
+  --text-primary: #F1F5F9;
+  --text-secondary: #CBD5E1;
+  --text-disabled: #64748B;
+  --border-color: rgba(71, 85, 105, 0.5);
+  --hover-overlay: rgba(129, 140, 248, 0.1);
+  --active-overlay: rgba(129, 140, 248, 0.15);
+  --today-bg: rgba(129, 140, 248, 0.2);
+  --today-text: #818CF8;
+  --weekend-bg: rgba(30, 41, 59, 0.8);
+  --glass-bg: rgba(15, 23, 42, 0.3);
+  --glass-border: rgba(255, 255, 255, 0.1);
 }
 
-/* Aurora Theme */
-body.theme-aurora {
-  --primary: #5D8AA8;
-  --primary-light: #E3F2FD;
-  --primary-dark: #1565C0;
-  --secondary: #80CBC4;
-  --accent: #B2EBF2;
-  --background: linear-gradient(135deg, #E3F2FD, #B3E5FC);
-  --surface: rgba(255, 255, 255, 0.9);
-  --surface-elevated: rgba(255, 255, 255, 0.95);
-  --text-primary: #0D47A1;
-  --text-secondary: #546E7A;
-  --text-disabled: #90A4AE;
-  --border-color: rgba(179, 229, 252, 0.5);
-  --hover-overlay: rgba(93, 138, 168, 0.08);
-  --active-overlay: rgba(93, 138, 168, 0.12);
-  --today-bg: #E1F5FE;
-  --today-text: #0277BD;
-  --weekend-bg: rgba(179, 229, 252, 0.3);
+/* Sunset Glass Theme */
+body.theme-sunset-glass {
+  --primary: #F97316;
+  --primary-light: rgba(249, 115, 22, 0.1);
+  --primary-dark: #EA580C;
+  --secondary: #FB923C;
+  --accent: #F59E0B;
+  --background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
+  --surface: rgba(255, 255, 255, 0.7);
+  --surface-elevated: rgba(255, 255, 255, 0.9);
+  --text-primary: #431407;
+  --text-secondary: #92400E;
+  --text-disabled: #D97706;
+  --border-color: rgba(251, 191, 36, 0.4);
+  --hover-overlay: rgba(249, 115, 22, 0.08);
+  --active-overlay: rgba(249, 115, 22, 0.12);
+  --today-bg: rgba(249, 115, 22, 0.1);
+  --today-text: #EA580C;
+  --weekend-bg: rgba(254, 243, 199, 0.5);
 }
 
-/* Mocha Theme */
-body.theme-mocha {
-  --primary: #A67C52;
-  --primary-light: #F5E6D3;
-  --primary-dark: #8B5A2B;
-  --secondary: #8A6D3B;
-  --accent: #D7B899;
-  --background: #FDF6E3;
-  --surface: #FFFBF0;
-  --surface-elevated: #FFFBF0;
-  --text-primary: #5C4B37;
-  --text-secondary: #8D7B58;
-  --text-disabled: #B8A88D;
-  --border-color: #E8D8B5;
-  --hover-overlay: rgba(166, 124, 82, 0.08);
-  --active-overlay: rgba(166, 124, 82, 0.12);
-  --today-bg: #F5E6D3;
-  --today-text: #8B5A2B;
-  --weekend-bg: #F5F0E6;
+/* Forest Glass Theme */
+body.theme-forest-glass {
+  --primary: #059669;
+  --primary-light: rgba(5, 150, 105, 0.1);
+  --primary-dark: #047857;
+  --secondary: #10B981;
+  --accent: #34D399;
+  --background: linear-gradient(135deg, #D1FAE5 0%, #A7F3D0 100%);
+  --surface: rgba(255, 255, 255, 0.7);
+  --surface-elevated: rgba(255, 255, 255, 0.9);
+  --text-primary: #064E3B;
+  --text-secondary: #065F46;
+  --text-disabled: #059669;
+  --border-color: rgba(16, 185, 129, 0.4);
+  --hover-overlay: rgba(5, 150, 105, 0.08);
+  --active-overlay: rgba(5, 150, 105, 0.12);
+  --today-bg: rgba(5, 150, 105, 0.1);
+  --today-text: #047857;
+  --weekend-bg: rgba(209, 250, 229, 0.5);
 }
 
-/* Sunset Theme */
-body.theme-sunset {
-  --primary: #FF6B6B;
-  --primary-light: #FFE8E8;
-  --primary-dark: #E05555;
-  --secondary: #FFA36C;
-  --accent: #FFD166;
-  --background: linear-gradient(135deg, #FFE8E8, #FFD166);
-  --surface: rgba(255, 255, 255, 0.9);
-  --surface-elevated: rgba(255, 255, 255, 0.95);
-  --text-primary: #8B3A3A;
-  --text-secondary: #B85C5C;
-  --text-disabled: #D49B9B;
-  --border-color: rgba(255, 182, 182, 0.5);
-  --hover-overlay: rgba(255, 107, 107, 0.08);
-  --active-overlay: rgba(255, 107, 107, 0.12);
-  --today-bg: #FFE8E8;
-  --today-text: #E05555;
-  --weekend-bg: rgba(255, 211, 102, 0.3);
+/* Ocean Glass Theme */
+body.theme-ocean-glass {
+  --primary: #0EA5E9;
+  --primary-light: rgba(14, 165, 233, 0.1);
+  --primary-dark: #0284C7;
+  --secondary: #38BDF8;
+  --accent: #22D3EE;
+  --background: linear-gradient(135deg, #E0F2FE 0%, #BAE6FD 100%);
+  --surface: rgba(255, 255, 255, 0.7);
+  --surface-elevated: rgba(255, 255, 255, 0.9);
+  --text-primary: #0C4A6E;
+  --text-secondary: #075985;
+  --text-disabled: #0EA5E9;
+  --border-color: rgba(56, 189, 248, 0.4);
+  --hover-overlay: rgba(14, 165, 233, 0.08);
+  --active-overlay: rgba(14, 165, 233, 0.12);
+  --today-bg: rgba(14, 165, 233, 0.1);
+  --today-text: #0284C7;
+  --weekend-bg: rgba(224, 242, 254, 0.5);
 }
 
-/* Ocean Theme */
-body.theme-ocean {
-  --primary: #1E88E5;
-  --primary-light: #E3F2FD;
-  --primary-dark: #1565C0;
-  --secondary: #4DB6AC;
-  --accent: #80DEEA;
-  --background: linear-gradient(135deg, #E3F2FD, #B3E5FC);
-  --surface: rgba(255, 255, 255, 0.9);
-  --surface-elevated: rgba(255, 255, 255, 0.95);
-  --text-primary: #0D47A1;
-  --text-secondary: #546E7A;
-  --text-disabled: #90A4AE;
-  --border-color: rgba(179, 229, 252, 0.5);
-  --hover-overlay: rgba(30, 136, 229, 0.08);
-  --active-overlay: rgba(30, 136, 229, 0.12);
-  --today-bg: #E1F5FE;
-  --today-text: #0277BD;
-  --weekend-bg: rgba(179, 229, 252, 0.3);
-}
-
-/* Forest Theme */
-body.theme-forest {
-  --primary: #2E7D32;
-  --primary-light: #E8F5E9;
-  --primary-dark: #1B5E20;
-  --secondary: #66BB6A;
-  --accent: #A5D6A7;
-  --background: #F1F8E9;
-  --surface: #FFFFFF;
-  --surface-elevated: #FFFFFF;
-  --text-primary: #1B5E20;
-  --text-secondary: #388E3C;
-  --text-disabled: #81C784;
-  --border-color: #C8E6C9;
-  --hover-overlay: rgba(46, 125, 50, 0.08);
-  --active-overlay: rgba(46, 125, 50, 0.12);
-  --today-bg: #E8F5E9;
-  --today-text: #1B5E20;
-  --weekend-bg: #E8F5E9;
-}
-
-/* Midnight Theme */
-body.theme-midnight {
-  --primary: #7E57C2;
-  --primary-light: #EDE7F6;
-  --primary-dark: #5E35B1;
-  --secondary: #7986CB;
-  --accent: #B39DDB;
-  --background: #121212;
-  --surface: #1E1E1E;
-  --surface-elevated: #252525;
-  --text-primary: #E0E0E0;
-  --text-secondary: #A0A0A0;
-  --text-disabled: #616161;
-  --border-color: #333333;
-  --hover-overlay: rgba(126, 87, 194, 0.08);
-  --active-overlay: rgba(126, 87, 194, 0.12);
-  --today-bg: #2D1B69;
-  --today-text: #B39DDB;
-  --weekend-bg: #1A1A1A;
-}
-
-/* Rose Theme */
-body.theme-rose {
-  --primary: #EC407A;
-  --primary-light: #FCE4EC;
-  --primary-dark: #D81B60;
-  --secondary: #F48FB1;
-  --accent: #F8BBD0;
-  --background: #FFF0F5;
-  --surface: #FFFFFF;
-  --surface-elevated: #FFFFFF;
-  --text-primary: #880E4F;
-  --text-secondary: #AD1457;
-  --text-disabled: #E91E63;
-  --border-color: #F8BBD0;
-  --hover-overlay: rgba(236, 64, 122, 0.08);
-  --active-overlay: rgba(236, 64, 122, 0.12);
-  --today-bg: #FCE4EC;
-  --today-text: #D81B60;
-  --weekend-bg: #FFF0F5;
-}
-
-/* Additional themes would be defined here... */
+/* Additional glass themes would be defined here... */
 
 /* Global Styles */
 * {
@@ -255,30 +178,109 @@ body {
   overflow: auto;
 }
 
-/* Header */
-.main-header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  padding: 16px 24px;
+/* Sidebar */
+.sidebar {
+  width: 280px;
   background: var(--surface);
-  border-bottom: 1px solid var(--border-color);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  z-index: 100;
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: var(--backdrop-blur);
+  -webkit-backdrop-filter: var(--backdrop-blur);
+  border-right: 1px solid var(--border-color);
+  padding: 24px 0;
+  position: fixed;
+  height: 100vh;
+  z-index: 50;
+  overflow-y: auto;
 }
 
-.header-title {
+.sidebar-header {
+  padding: 0 24px 24px;
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: 24px;
+}
+
+.sidebar-title {
   font-size: 1.5rem;
   font-weight: 700;
   color: var(--primary);
   display: flex;
   align-items: center;
   gap: 12px;
+}
+
+.sidebar-nav {
+  list-style: none;
+  padding: 0 16px;
+}
+
+.sidebar-item {
+  margin-bottom: 8px;
+}
+
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: var(--border-radius);
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: var(--transition);
+  font-weight: 500;
+}
+
+.sidebar-link:hover {
+  background: var(--hover-overlay);
+  color: var(--text-primary);
+}
+
+.sidebar-link.active {
+  background: var(--primary-light);
+  color: var(--primary);
+}
+
+.sidebar-section {
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-color);
+}
+
+.sidebar-section-title {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-disabled);
+  margin-bottom: 16px;
+  padding: 0 24px;
+}
+
+/* Header */
+.main-header {
+  position: fixed;
+  top: 0;
+  left: 280px;
+  right: 0;
+  padding: 16px 24px;
+  background: var(--surface);
+  backdrop-filter: var(--backdrop-blur);
+  -webkit-backdrop-filter: var(--backdrop-blur);
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 100;
+}
+
+.header-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.header-date {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin-top: 4px;
 }
 
 .header-controls {
@@ -307,14 +309,38 @@ body {
   color: var(--text-primary);
 }
 
+.floating-add-btn {
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: var(--transition);
+  font-size: 1.2rem;
+  box-shadow: var(--shadow-lg);
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 90;
+}
+
+.floating-add-btn:hover {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: var(--shadow-xl);
+}
+
 /* Main Content */
 .main-content {
   margin-top: 80px;
+  margin-left: 280px;
   padding: 24px;
-  width: 100%;
+  width: calc(100% - 280px);
   max-width: 1200px;
-  margin-left: auto;
-  margin-right: auto;
 }
 
 .content-grid {
@@ -326,6 +352,8 @@ body {
 /* Tasks Section */
 .tasks-section {
   background: var(--surface);
+  backdrop-filter: var(--backdrop-blur);
+  -webkit-backdrop-filter: var(--backdrop-blur);
   border-radius: var(--border-radius-lg);
   box-shadow: var(--shadow-sm);
   overflow: hidden;
@@ -368,7 +396,7 @@ body {
 .task-input:focus {
   outline: none;
   border-color: var(--primary);
-  box-shadow: 0 0 0 4px rgba(139, 95, 191, 0.1);
+  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
 }
 
 .task-input::placeholder {
@@ -482,7 +510,7 @@ body {
   align-items: flex-start;
   gap: 16px;
   padding: 16px;
-  background: var(--surface);
+  background: var(--surface-elevated);
   border: 1px solid var(--border-color);
   border-radius: var(--border-radius-lg);
   margin-bottom: 12px;
@@ -490,6 +518,8 @@ body {
   cursor: pointer;
   opacity: 0;
   animation: slideInUp 0.5s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
+  backdrop-filter: var(--backdrop-blur);
+  -webkit-backdrop-filter: var(--backdrop-blur);
 }
 
 .task-item:nth-child(1) { animation-delay: 0.05s; }
@@ -505,7 +535,7 @@ body {
 .task-item:hover {
   transform: translateY(-2px);
   box-shadow: var(--shadow-lg);
-  border-color: rgba(139, 95, 191, 0.3);
+  border-color: rgba(99, 102, 241, 0.3);
 }
 
 .task-item.completed {
@@ -595,7 +625,7 @@ body {
   color: var(--text-secondary);
   margin-top: 8px;
   padding: 8px 12px;
-  background: rgba(139, 95, 191, 0.05);
+  background: rgba(99, 102, 241, 0.05);
   border-radius: var(--border-radius-sm);
   border-left: 3px solid var(--primary);
 }
@@ -620,17 +650,17 @@ body {
 }
 
 .task-priority.high {
-  background: rgba(255, 82, 82, 0.1);
+  background: rgba(239, 68, 68, 0.1);
   color: var(--priority-high);
 }
 
 .task-priority.medium {
-  background: rgba(255, 183, 64, 0.1);
+  background: rgba(245, 158, 11, 0.1);
   color: var(--priority-medium);
 }
 
 .task-priority.low {
-  background: rgba(13, 115, 119, 0.1);
+  background: rgba(16, 185, 129, 0.1);
   color: var(--priority-low);
 }
 
@@ -686,6 +716,8 @@ body {
 /* Calendar Section */
 .calendar-section {
   background: var(--surface);
+  backdrop-filter: var(--backdrop-blur);
+  -webkit-backdrop-filter: var(--backdrop-blur);
   border-radius: var(--border-radius-lg);
   box-shadow: var(--shadow-sm);
   overflow: hidden;
@@ -776,6 +808,8 @@ body {
   font-weight: 500;
   background: transparent;
   border: 1px solid transparent;
+  backdrop-filter: var(--backdrop-blur);
+  -webkit-backdrop-filter: var(--backdrop-blur);
 }
 
 .calendar-day:hover {
@@ -809,66 +843,6 @@ body {
   transform: translateX(-50%);
 }
 
-/* Dock */
-.dock {
-  position: fixed;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: var(--surface);
-  border-radius: var(--border-radius-xl);
-  padding: 12px 20px;
-  box-shadow: var(--shadow-lg);
-  display: flex;
-  gap: 16px;
-  z-index: 90;
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid var(--border-color);
-  transition: var(--transition);
-}
-
-.dock-item {
-  width: 50px;
-  height: 50px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--surface-elevated);
-  border-radius: var(--border-radius-xl);
-  cursor: pointer;
-  transition: var(--transition);
-  color: var(--text-secondary);
-  font-size: 1.2rem;
-  position: relative;
-}
-
-.dock-item:hover {
-  transform: translateY(-5px) scale(1.1);
-  color: var(--primary);
-  background: var(--hover-overlay);
-}
-
-.dock-item.active {
-  color: var(--primary);
-  background: var(--primary-light);
-}
-
-.dock-item .badge {
-  position: absolute;
-  top: -5px;
-  right: -5px;
-  background: var(--danger);
-  color: white;
-  border-radius: 50%;
-  width: 18px;
-  height: 18px;
-  font-size: 0.7rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
 /* Settings Panel */
 .settings-panel {
   position: fixed;
@@ -877,6 +851,8 @@ body {
   width: 400px;
   height: 100vh;
   background: var(--surface);
+  backdrop-filter: var(--backdrop-blur);
+  -webkit-backdrop-filter: var(--backdrop-blur);
   border-left: 1px solid var(--border-color);
   box-shadow: var(--shadow-xl);
   z-index: 200;
@@ -944,6 +920,8 @@ body {
   cursor: pointer;
   transition: var(--transition);
   text-align: center;
+  backdrop-filter: var(--backdrop-blur);
+  -webkit-backdrop-filter: var(--backdrop-blur);
 }
 
 .theme-option:hover {
@@ -975,6 +953,8 @@ body {
   width: 400px;
   max-width: calc(100vw - 48px);
   background: var(--surface);
+  backdrop-filter: var(--backdrop-blur);
+  -webkit-backdrop-filter: var(--backdrop-blur);
   border: 1px solid var(--border-color);
   border-radius: var(--border-radius-lg);
   box-shadow: var(--shadow-xl);
@@ -1033,6 +1013,8 @@ body {
   font-size: 0.9rem;
   line-height: 1.4;
   max-width: 85%;
+  backdrop-filter: var(--backdrop-blur);
+  -webkit-backdrop-filter: var(--backdrop-blur);
 }
 
 .ai-message.user {
@@ -1127,6 +1109,8 @@ body {
   display: flex;
   align-items: center;
   gap: 12px;
+  backdrop-filter: var(--backdrop-blur);
+  -webkit-backdrop-filter: var(--backdrop-blur);
 }
 
 .toast::before {
@@ -1185,6 +1169,18 @@ body {
   }
 }
 
+@keyframes completeTask {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
 /* Empty State */
 .empty-state {
   text-align: center;
@@ -1214,6 +1210,8 @@ body {
 /* Stats Section */
 .stats-section {
   background: var(--surface);
+  backdrop-filter: var(--backdrop-blur);
+  -webkit-backdrop-filter: var(--backdrop-blur);
   border-radius: var(--border-radius-lg);
   box-shadow: var(--shadow-sm);
   overflow: hidden;
@@ -1247,6 +1245,8 @@ body {
   padding: 20px;
   text-align: center;
   box-shadow: var(--shadow-sm);
+  backdrop-filter: var(--backdrop-blur);
+  -webkit-backdrop-filter: var(--backdrop-blur);
 }
 
 .stat-value {
@@ -1267,176 +1267,8 @@ body {
   padding: 20px;
   box-shadow: var(--shadow-sm);
   margin-top: 16px;
-}
-
-/* Future Plans Section */
-.future-plans-section {
-  background: var(--surface);
-  border-radius: var(--border-radius-lg);
-  box-shadow: var(--shadow-sm);
-  overflow: hidden;
-  margin-top: 24px;
-}
-
-.future-plans-header {
-  padding: 20px;
-  border-bottom: 1px solid var(--border-color);
-  background: var(--surface-elevated);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.future-plans-title {
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: var(--text-primary);
-}
-
-.future-plans-content {
-  padding: 20px;
-}
-
-.future-plan-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 16px;
-  padding: 16px;
-  background: var(--surface);
-  border: 1px solid var(--border-color);
-  border-radius: var(--border-radius-lg);
-  margin-bottom: 12px;
-  transition: var(--transition);
-}
-
-.future-plan-item:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-lg);
-}
-
-.future-plan-content {
-  flex: 1;
-}
-
-.future-plan-text {
-  font-size: 1rem;
-  color: var(--text-primary);
-  margin-bottom: 8px;
-}
-
-.future-plan-date {
-  font-size: 0.875rem;
-  color: var(--text-secondary);
-}
-
-/* Sticky Notes Section */
-.sticky-notes-section {
-  background: var(--surface);
-  border-radius: var(--border-radius-lg);
-  box-shadow: var(--shadow-sm);
-  overflow: hidden;
-  margin-top: 24px;
-}
-
-.sticky-notes-header {
-  padding: 20px;
-  border-bottom: 1px solid var(--border-color);
-  background: var(--surface-elevated);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.sticky-notes-title {
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: var(--text-primary);
-}
-
-.sticky-notes-content {
-  padding: 20px;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 16px;
-}
-
-.sticky-note {
-  background: var(--surface-elevated);
-  border-radius: var(--border-radius);
-  padding: 16px;
-  box-shadow: var(--shadow-sm);
-  min-height: 150px;
-  position: relative;
-  transition: var(--transition);
-}
-
-.sticky-note:hover {
-  transform: rotate(1deg);
-  box-shadow: var(--shadow-md);
-}
-
-.sticky-note.yellow {
-  background: #FFF9C4;
-  border-left: 4px solid #FFD600;
-}
-
-.sticky-note.blue {
-  background: #E3F2FD;
-  border-left: 4px solid #2196F3;
-}
-
-.sticky-note.green {
-  background: #E8F5E9;
-  border-left: 4px solid #4CAF50;
-}
-
-.sticky-note.pink {
-  background: #FCE4EC;
-  border-left: 4px solid #E91E63;
-}
-
-.sticky-note-content {
-  font-size: 0.9rem;
-  color: var(--text-primary);
-  margin-bottom: 16px;
-}
-
-.sticky-note-date {
-  font-size: 0.75rem;
-  color: var(--text-secondary);
-  position: absolute;
-  bottom: 10px;
-  left: 16px;
-}
-
-.sticky-note-actions {
-  position: absolute;
-  bottom: 10px;
-  right: 16px;
-  display: flex;
-  gap: 8px;
-  opacity: 0;
-  transition: var(--transition);
-}
-
-.sticky-note:hover .sticky-note-actions {
-  opacity: 1;
-}
-
-.sticky-note-action {
-  background: none;
-  border: none;
-  color: var(--text-secondary);
-  cursor: pointer;
-  font-size: 0.8rem;
-  padding: 4px;
-  border-radius: var(--border-radius-sm);
-  transition: var(--transition);
-}
-
-.sticky-note-action:hover {
-  background: var(--hover-overlay);
-  color: var(--text-primary);
+  backdrop-filter: var(--backdrop-blur);
+  -webkit-backdrop-filter: var(--backdrop-blur);
 }
 
 /* Task Description Modal */
@@ -1454,6 +1286,8 @@ body {
   opacity: 0;
   visibility: hidden;
   transition: var(--transition);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
 }
 
 .modal.open {
@@ -1472,6 +1306,8 @@ body {
   padding: 24px;
   transform: translateY(20px);
   transition: var(--transition);
+  backdrop-filter: var(--backdrop-blur);
+  -webkit-backdrop-filter: var(--backdrop-blur);
 }
 
 .modal.open .modal-content {
@@ -1533,15 +1369,17 @@ body {
     order: 1;
   }
   
-  .dock {
-    padding: 10px 16px;
-    gap: 12px;
+  .sidebar {
+    width: 240px;
   }
   
-  .dock-item {
-    width: 44px;
-    height: 44px;
-    font-size: 1.1rem;
+  .main-content {
+    margin-left: 240px;
+    width: calc(100% - 240px);
+  }
+  
+  .main-header {
+    left: 240px;
   }
   
   .settings-panel {
@@ -1585,20 +1423,28 @@ body {
     bottom: 90px;
   }
   
-  .dock {
-    bottom: 10px;
-    padding: 8px 12px;
-    gap: 8px;
+  .sidebar {
+    width: 100%;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
   }
   
-  .dock-item {
-    width: 40px;
-    height: 40px;
-    font-size: 1rem;
+  .sidebar.open {
+    transform: translateX(0);
   }
   
-  .sticky-notes-content {
-    grid-template-columns: 1fr;
+  .main-content {
+    margin-left: 0;
+    width: 100%;
+  }
+  
+  .main-header {
+    left: 0;
+  }
+  
+  .floating-add-btn {
+    bottom: 16px;
+    right: 16px;
   }
 }
 
@@ -1637,15 +1483,10 @@ body {
     right: 10px;
   }
   
-  .dock {
-    padding: 6px 10px;
-    gap: 6px;
-  }
-  
-  .dock-item {
-    width: 36px;
-    height: 36px;
-    font-size: 0.9rem;
+  .floating-add-btn {
+    width: 48px;
+    height: 48px;
+    font-size: 1rem;
   }
 }
 
@@ -1655,7 +1496,7 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--background);
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
@@ -1675,20 +1516,140 @@ a, button, input, select, .task-item, .calendar-day {
 :is(a, button, input, select, .task-item, .calendar-day):focus-visible {
   outline: 2px solid var(--focus-ring-color);
   outline-offset: 2px;
-  box-shadow: 0 0 0 4px rgba(139, 95, 191, 0.2);
+  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.2);
+}
+
+/* Natural Language Input Styles */
+.natural-language-hint {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.natural-language-hint i {
+  color: var(--primary);
+}
+
+/* Sound Feedback */
+@keyframes chime {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+.chime-animation {
+  animation: chime 0.3s ease;
+}
+
+/* Mobile Menu Button */
+.mobile-menu-btn {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: var(--border-radius);
+  transition: var(--transition);
+}
+
+.mobile-menu-btn:hover {
+  background: var(--hover-overlay);
+  color: var(--text-primary);
+}
+
+@media (max-width: 768px) {
+  .mobile-menu-btn {
+    display: block;
+  }
 }
 </style>
 </head>
-<body class="theme-cozy">
+<body class="theme-glass">
 <div class="app-container">
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <h1 class="sidebar-title">
+        <i class="fas fa-check-circle"></i>
+        Chrono Focus Pro
+      </h1>
+    </div>
+    <ul class="sidebar-nav">
+      <li class="sidebar-item">
+        <a href="#" class="sidebar-link active" data-view="today">
+          <i class="fas fa-inbox"></i>
+          <span>Today</span>
+        </a>
+      </li>
+      <li class="sidebar-item">
+        <a href="#" class="sidebar-link" data-view="upcoming">
+          <i class="fas fa-calendar-alt"></i>
+          <span>Upcoming</span>
+        </a>
+      </li>
+      <li class="sidebar-item">
+        <a href="#" class="sidebar-link" data-view="projects">
+          <i class="fas fa-folder"></i>
+          <span>Projects</span>
+        </a>
+      </li>
+      <li class="sidebar-item">
+        <a href="#" class="sidebar-link" data-view="history">
+          <i class="fas fa-history"></i>
+          <span>History</span>
+        </a>
+      </li>
+    </ul>
+    
+    <div class="sidebar-section">
+      <div class="sidebar-section-title">Filters & Labels</div>
+      <ul class="sidebar-nav">
+        <li class="sidebar-item">
+          <a href="#" class="sidebar-link" data-filter="priority-high">
+            <i class="fas fa-flag" style="color: var(--priority-high)"></i>
+            <span>High Priority</span>
+          </a>
+        </li>
+        <li class="sidebar-item">
+          <a href="#" class="sidebar-link" data-filter="priority-medium">
+            <i class="fas fa-flag" style="color: var(--priority-medium)"></i>
+            <span>Medium Priority</span>
+          </a>
+        </li>
+        <li class="sidebar-item">
+          <a href="#" class="sidebar-link" data-filter="priority-low">
+            <i class="fas fa-flag" style="color: var(--priority-low)"></i>
+            <span>Low Priority</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </aside>
+
   <!-- Header -->
   <header class="main-header">
-    <h1 class="header-title">
-      <i class="fas fa-check-circle"></i>
-      Chrono Focus Pro
-    </h1>
+    <div>
+      <h1 class="header-title" id="viewTitle">Today</h1>
+      <div class="header-date" id="currentDate"></div>
+    </div>
     <div class="header-controls">
-      <!-- Removed theme and settings buttons as requested -->
+      <button class="header-btn" id="searchBtn" title="Search">
+        <i class="fas fa-search"></i>
+      </button>
+      <button class="header-btn" id="notificationsBtn" title="Notifications">
+        <i class="fas fa-bell"></i>
+      </button>
+      <button class="header-btn" id="profileBtn" title="Profile">
+        <i class="fas fa-user"></i>
+      </button>
+      <button class="mobile-menu-btn" id="mobileMenuBtn">
+        <i class="fas fa-bars"></i>
+      </button>
     </div>
   </header>
 
@@ -1703,7 +1664,7 @@ a, button, input, select, .task-item, .calendar-day {
               <textarea
                 class="task-input"
                 id="taskInput"
-                placeholder="Add a new task..."
+                placeholder="Add a new task (try natural language like 'meeting at 5 pm tomorrow')..."
                 rows="1"
               ></textarea>
             </div>
@@ -1727,6 +1688,10 @@ a, button, input, select, .task-item, .calendar-day {
               <option value="learning">📚 Learning</option>
             </select>
             <input type="date" class="task-option-select" id="taskDate" aria-label="Task Date">
+          </div>
+          <div class="natural-language-hint">
+            <i class="fas fa-lightbulb"></i>
+            <span>Try: "meeting tomorrow at 3pm" or "buy groceries on Friday"</span>
           </div>
         </div>
 
@@ -1805,55 +1770,13 @@ a, button, input, select, .task-item, .calendar-day {
         <canvas id="productivityChart"></canvas>
       </div>
     </section>
-    
-    <!-- Future Plans Section -->
-    <section class="future-plans-section">
-      <div class="future-plans-header">
-        <h2 class="future-plans-title">Future Plans</h2>
-        <button class="add-task-btn" id="addFuturePlan" style="padding: 8px 16px; font-size: 0.875rem;">Add Plan</button>
-      </div>
-      <div class="future-plans-content" id="futurePlansList">
-        <!-- Future plans will be added here -->
-      </div>
-    </section>
-    
-    <!-- Sticky Notes Section -->
-    <section class="sticky-notes-section">
-      <div class="sticky-notes-header">
-        <h2 class="sticky-notes-title">Sticky Notes</h2>
-        <button class="add-task-btn" id="addStickyNote" style="padding: 8px 16px; font-size: 0.875rem;">Add Note</button>
-      </div>
-      <div class="sticky-notes-content" id="stickyNotesList">
-        <!-- Sticky notes will be added here -->
-      </div>
-    </section>
   </main>
 </div>
 
-<!-- Dock -->
-<div class="dock" id="dock">
-  <div class="dock-item active" id="dockTasks" title="Tasks">
-    <i class="fas fa-tasks"></i>
-  </div>
-  <div class="dock-item" id="dockCalendar" title="Calendar">
-    <i class="fas fa-calendar"></i>
-  </div>
-  <div class="dock-item" id="dockAdd" title="Add Task">
-    <i class="fas fa-plus"></i>
-  </div>
-  <div class="dock-item" id="dockAI" title="AI Assistant">
-    <i class="fas fa-robot"></i>
-  </div>
-  <div class="dock-item" id="dockStats" title="Statistics">
-    <i class="fas fa-chart-bar"></i>
-  </div>
-  <div class="dock-item" id="dockSettings" title="Settings">
-    <i class="fas fa-cog"></i>
-  </div>
-  <div class="dock-item" id="dockThemes" title="Themes">
-    <i class="fas fa-palette"></i>
-  </div>
-</div>
+<!-- Floating Add Button -->
+<button class="floating-add-btn" id="floatingAddBtn" title="Add Task">
+  <i class="fas fa-plus"></i>
+</button>
 
 <!-- Settings Panel -->
 <div class="settings-panel" id="settingsPanel">
@@ -1867,43 +1790,26 @@ a, button, input, select, .task-item, .calendar-day {
   <div class="settings-section">
     <h3 class="settings-section-title">Appearance</h3>
     <div class="theme-options">
-      <div class="theme-option active" data-theme="theme-cozy">
-        <div class="theme-preview" style="background: linear-gradient(135deg, #8B5FBF, #E8DEF8);"></div>
-        <div class="theme-name">Cozy</div>
+      <div class="theme-option active" data-theme="theme-glass">
+        <div class="theme-preview" style="background: linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 100%);"></div>
+        <div class="theme-name">Glass</div>
       </div>
-      <div class="theme-option" data-theme="theme-zen">
-        <div class="theme-preview" style="background: linear-gradient(135deg, #4A7C59, #E8F5E9);"></div>
-        <div class="theme-name">Zen</div>
+      <div class="theme-option" data-theme="theme-midnight-glass">
+        <div class="theme-preview" style="background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);"></div>
+        <div class="theme-name">Midnight Glass</div>
       </div>
-      <div class="theme-option" data-theme="theme-aurora">
-        <div class="theme-preview" style="background: linear-gradient(135deg, #5D8AA8, #E3F2FD);"></div>
-        <div class="theme-name">Aurora</div>
+      <div class="theme-option" data-theme="theme-sunset-glass">
+        <div class="theme-preview" style="background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);"></div>
+        <div class="theme-name">Sunset Glass</div>
       </div>
-      <div class="theme-option" data-theme="theme-mocha">
-        <div class="theme-preview" style="background: linear-gradient(135deg, #A67C52, #F5E6D3);"></div>
-        <div class="theme-name">Mocha</div>
+      <div class="theme-option" data-theme="theme-forest-glass">
+        <div class="theme-preview" style="background: linear-gradient(135deg, #D1FAE5 0%, #A7F3D0 100%);"></div>
+        <div class="theme-name">Forest Glass</div>
       </div>
-      <div class="theme-option" data-theme="theme-sunset">
-        <div class="theme-preview" style="background: linear-gradient(135deg, #FF6B6B, #FFE8E8);"></div>
-        <div class="theme-name">Sunset</div>
+      <div class="theme-option" data-theme="theme-ocean-glass">
+        <div class="theme-preview" style="background: linear-gradient(135deg, #E0F2FE 0%, #BAE6FD 100%);"></div>
+        <div class="theme-name">Ocean Glass</div>
       </div>
-      <div class="theme-option" data-theme="theme-ocean">
-        <div class="theme-preview" style="background: linear-gradient(135deg, #1E88E5, #E3F2FD);"></div>
-        <div class="theme-name">Ocean</div>
-      </div>
-      <div class="theme-option" data-theme="theme-forest">
-        <div class="theme-preview" style="background: linear-gradient(135deg, #2E7D32, #E8F5E9);"></div>
-        <div class="theme-name">Forest</div>
-      </div>
-      <div class="theme-option" data-theme="theme-midnight">
-        <div class="theme-preview" style="background: linear-gradient(135deg, #7E57C2, #EDE7F6);"></div>
-        <div class="theme-name">Midnight</div>
-      </div>
-      <div class="theme-option" data-theme="theme-rose">
-        <div class="theme-preview" style="background: linear-gradient(135deg, #EC407A, #FCE4EC);"></div>
-        <div class="theme-name">Rose</div>
-      </div>
-      <!-- Additional themes would be added here -->
     </div>
   </div>
   
@@ -1990,6 +1896,7 @@ class ChronoFocusPro {
     this.currentDate = new Date();
     this.selectedDate = new Date();
     this.currentFilter = 'all';
+    this.currentView = 'today';
     this.draggedTask = null;
     this.aiActive = false;
     this.currentEditingTaskId = null;
@@ -2001,10 +1908,8 @@ class ChronoFocusPro {
     this.renderCalendar();
     this.updateTasksView();
     this.autoResizeTextarea();
-    this.setupDock();
-    this.loadFuturePlans();
-    this.loadStickyNotes();
-    this.updateStats();
+    this.updateCurrentDate();
+    this.loadHistory();
   }
 
   initializeElements() {
@@ -2012,9 +1917,22 @@ class ChronoFocusPro {
       // Body
       body: document.body,
       
+      // Sidebar
+      sidebar: document.getElementById('sidebar'),
+      sidebarLinks: document.querySelectorAll('.sidebar-link'),
+      mobileMenuBtn: document.getElementById('mobileMenuBtn'),
+      
+      // Header
+      viewTitle: document.getElementById('viewTitle'),
+      currentDate: document.getElementById('currentDate'),
+      searchBtn: document.getElementById('searchBtn'),
+      notificationsBtn: document.getElementById('notificationsBtn'),
+      profileBtn: document.getElementById('profileBtn'),
+      
       // Tasks
       taskInput: document.getElementById('taskInput'),
       addTaskBtn: document.getElementById('addTaskBtn'),
+      floatingAddBtn: document.getElementById('floatingAddBtn'),
       taskPriority: document.getElementById('taskPriority'),
       taskCategory: document.getElementById('taskCategory'),
       taskDate: document.getElementById('taskDate'),
@@ -2029,16 +1947,6 @@ class ChronoFocusPro {
       prevMonth: document.getElementById('prevMonth'),
       nextMonth: document.getElementById('nextMonth'),
       todayBtn: document.getElementById('todayBtn'),
-      
-      // Dock
-      dock: document.getElementById('dock'),
-      dockTasks: document.getElementById('dockTasks'),
-      dockCalendar: document.getElementById('dockCalendar'),
-      dockAdd: document.getElementById('dockAdd'),
-      dockAI: document.getElementById('dockAI'),
-      dockStats: document.getElementById('dockStats'),
-      dockSettings: document.getElementById('dockSettings'),
-      dockThemes: document.getElementById('dockThemes'),
       
       // Settings
       settingsPanel: document.getElementById('settingsPanel'),
@@ -2060,14 +1968,6 @@ class ChronoFocusPro {
       refreshStats: document.getElementById('refreshStats'),
       productivityChart: document.getElementById('productivityChart'),
       
-      // Future Plans
-      futurePlansList: document.getElementById('futurePlansList'),
-      addFuturePlan: document.getElementById('addFuturePlan'),
-      
-      // Sticky Notes
-      stickyNotesList: document.getElementById('stickyNotesList'),
-      addStickyNote: document.getElementById('addStickyNote'),
-      
       // Task Description Modal
       taskDescriptionModal: document.getElementById('taskDescriptionModal'),
       taskDescriptionInput: document.getElementById('taskDescriptionInput'),
@@ -2084,6 +1984,29 @@ class ChronoFocusPro {
   }
 
   setupEventListeners() {
+    // Mobile menu
+    this.elements.mobileMenuBtn.addEventListener('click', () => this.toggleSidebar());
+    
+    // Sidebar navigation
+    this.elements.sidebarLinks.forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const view = e.currentTarget.dataset.view;
+        const filter = e.currentTarget.dataset.filter;
+        
+        if (view) {
+          this.setView(view);
+        } else if (filter) {
+          this.setFilterByPriority(filter);
+        }
+        
+        // Close sidebar on mobile after selection
+        if (window.innerWidth < 768) {
+          this.toggleSidebar();
+        }
+      });
+    });
+
     // Task input and actions
     this.elements.taskInput.addEventListener('keypress', (e) => {
       if (e.key === 'Enter' && !e.shiftKey) {
@@ -2092,6 +2015,7 @@ class ChronoFocusPro {
       }
     });
     this.elements.addTaskBtn.addEventListener('click', () => this.addTask());
+    this.elements.floatingAddBtn.addEventListener('click', () => this.focusTaskInput());
 
     // Filters
     this.elements.filterBtns.forEach(btn => {
@@ -2103,14 +2027,10 @@ class ChronoFocusPro {
     this.elements.nextMonth.addEventListener('click', () => this.changeMonth(1));
     this.elements.todayBtn.addEventListener('click', () => this.goToToday());
 
-    // Dock items
-    this.elements.dockTasks.addEventListener('click', () => this.scrollToTasks());
-    this.elements.dockCalendar.addEventListener('click', () => this.scrollToCalendar());
-    this.elements.dockAdd.addEventListener('click', () => this.focusTaskInput());
-    this.elements.dockAI.addEventListener('click', () => this.toggleAIPanel());
-    this.elements.dockStats.addEventListener('click', () => this.showStats());
-    this.elements.dockSettings.addEventListener('click', () => this.toggleSettings());
-    this.elements.dockThemes.addEventListener('click', () => this.showThemeSelector());
+    // Header buttons
+    this.elements.searchBtn.addEventListener('click', () => this.showSearch());
+    this.elements.notificationsBtn.addEventListener('click', () => this.showNotifications());
+    this.elements.profileBtn.addEventListener('click', () => this.showProfile());
 
     // Settings
     this.elements.closeSettings.addEventListener('click', () => this.toggleSettings());
@@ -2143,32 +2063,54 @@ class ChronoFocusPro {
     // Stats
     this.elements.refreshStats.addEventListener('click', () => this.updateStats());
 
-    // Future Plans
-    this.elements.addFuturePlan.addEventListener('click', () => this.addFuturePlan());
-
-    // Sticky Notes
-    this.elements.addStickyNote.addEventListener('click', () => this.addStickyNote());
-
     // Task Description Modal
     this.elements.closeTaskDescriptionModal.addEventListener('click', () => this.closeTaskDescriptionModal());
     this.elements.cancelTaskDescription.addEventListener('click', () => this.closeTaskDescriptionModal());
     this.elements.saveTaskDescription.addEventListener('click', () => this.saveTaskDescription());
   }
 
-  setupDock() {
-    // Make dock responsive
-    window.addEventListener('resize', () => {
-      if (window.innerWidth < 480) {
-        this.elements.dock.style.padding = '6px 10px';
-        this.elements.dock.style.gap = '6px';
-      } else if (window.innerWidth < 768) {
-        this.elements.dock.style.padding = '8px 12px';
-        this.elements.dock.style.gap = '8px';
-      } else {
-        this.elements.dock.style.padding = '12px 20px';
-        this.elements.dock.style.gap = '16px';
+  toggleSidebar() {
+    this.elements.sidebar.classList.toggle('open');
+  }
+
+  setView(view) {
+    this.currentView = view;
+    
+    // Update active state in sidebar
+    this.elements.sidebarLinks.forEach(link => {
+      link.classList.remove('active');
+      if (link.dataset.view === view) {
+        link.classList.add('active');
       }
     });
+    
+    // Update view title
+    const viewTitles = {
+      'today': 'Today',
+      'upcoming': 'Upcoming',
+      'projects': 'Projects',
+      'history': 'History'
+    };
+    
+    this.elements.viewTitle.textContent = viewTitles[view] || 'Today';
+    
+    // Update tasks view based on selected view
+    this.updateTasksView();
+  }
+
+  setFilterByPriority(priorityFilter) {
+    // Set active state in sidebar
+    this.elements.sidebarLinks.forEach(link => {
+      if (link.dataset.filter) {
+        link.classList.remove('active');
+        if (link.dataset.filter === priorityFilter) {
+          link.classList.add('active');
+        }
+      }
+    });
+    
+    // Update tasks view with priority filter
+    this.updateTasksView(priorityFilter);
   }
 
   // Task Methods
@@ -2179,13 +2121,17 @@ class ChronoFocusPro {
       return;
     }
     
+    // Parse natural language for date and time
+    const parsedTask = this.parseNaturalLanguage(text);
+    
     const task = {
       id: `task_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-      text,
+      text: parsedTask.text,
       completed: false,
       priority: this.elements.taskPriority.value,
       category: this.elements.taskCategory.value,
-      date: this.elements.taskDate.value || this.formatDate(new Date()),
+      date: parsedTask.date || this.elements.taskDate.value || this.formatDate(new Date()),
+      time: parsedTask.time,
       createdAt: new Date().toISOString(),
       description: '',
       notes: ''
@@ -2206,12 +2152,74 @@ class ChronoFocusPro {
     this.playSound('add');
   }
 
+  parseNaturalLanguage(text) {
+    const result = { text, date: null, time: null };
+    
+    // Common date patterns
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    
+    // Remove date/time indicators from the text
+    const patterns = [
+      { regex: /\b(today|now)\b/i, date: this.formatDate(today) },
+      { regex: /\btomorrow\b/i, date: this.formatDate(tomorrow) },
+      { regex: /\b(monday|tuesday|wednesday|thursday|friday|saturday|sunday)\b/i, 
+        handler: (day) => {
+          const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+          const targetDay = days.indexOf(day.toLowerCase());
+          const currentDay = today.getDay();
+          let diff = targetDay - currentDay;
+          if (diff <= 0) diff += 7;
+          const date = new Date(today);
+          date.setDate(date.getDate() + diff);
+          return this.formatDate(date);
+        }
+      },
+      { regex: /\b(\d{1,2})(:\d{2})?\s*(am|pm)\b/i, 
+        handler: (match) => {
+          result.time = match[0].toUpperCase();
+          return null;
+        }
+      },
+      { regex: /\bat\s+(\d{1,2})(:\d{2})?\s*(am|pm)\b/i, 
+        handler: (match) => {
+          result.time = match[1] + (match[2] || ':00') + ' ' + match[3].toUpperCase();
+          return null;
+        }
+      }
+    ];
+    
+    for (const pattern of patterns) {
+      const match = text.match(pattern.regex);
+      if (match) {
+        if (pattern.handler) {
+          const date = pattern.handler(match);
+          if (date) result.date = date;
+        } else {
+          result.date = pattern.date;
+        }
+        
+        // Remove the matched text from the task description
+        result.text = result.text.replace(pattern.regex, '').trim();
+      }
+    }
+    
+    return result;
+  }
+
   toggleTask(taskId) {
     const tasks = this.getTasks();
     const task = tasks.find(t => t.id === taskId);
     if (task) {
       task.completed = !task.completed;
       task.completedAt = task.completed ? new Date().toISOString() : null;
+      
+      // Move to history if completed
+      if (task.completed) {
+        this.addToHistory(task);
+      }
+      
       this.saveTasks(tasks);
       this.updateTasksView();
       this.updateStats();
@@ -2219,6 +2227,15 @@ class ChronoFocusPro {
       if(task.completed) {
         this.showToast('Task completed! 🎉', 'success');
         this.playSound('complete');
+        
+        // Add chime animation
+        const taskElement = document.querySelector(`[data-task-id="${taskId}"]`);
+        if (taskElement) {
+          taskElement.classList.add('chime-animation');
+          setTimeout(() => {
+            taskElement.classList.remove('chime-animation');
+          }, 300);
+        }
       } else {
         this.playSound('undo');
       }
@@ -2287,23 +2304,44 @@ class ChronoFocusPro {
   }
 
   // View Methods
-  updateTasksView() {
-    const tasks = this.getFilteredTasks();
+  updateTasksView(priorityFilter = null) {
+    let tasks = this.getFilteredTasks();
+    
+    // Apply priority filter if specified
+    if (priorityFilter) {
+      const priority = priorityFilter.replace('priority-', '');
+      tasks = tasks.filter(task => task.priority === priority);
+    }
+    
     this.renderTasks(tasks);
   }
 
   getFilteredTasks() {
     let tasks = this.getTasks();
     
+    // Filter by view
+    if (this.currentView === 'today') {
+      const today = this.formatDate(new Date());
+      tasks = tasks.filter(task => task.date === today);
+    } else if (this.currentView === 'upcoming') {
+      const today = this.formatDate(new Date());
+      tasks = tasks.filter(task => task.date >= today);
+    } else if (this.currentView === 'history') {
+      return this.getHistory();
+    }
+    
+    // Filter by status
     if (this.currentFilter === 'pending') tasks = tasks.filter(task => !task.completed);
     else if (this.currentFilter === 'completed') tasks = tasks.filter(task => task.completed);
     
+    // Sort tasks
     tasks.sort((a, b) => {
         if (a.completed !== b.completed) return a.completed - b.completed;
         const priorityOrder = { high: 0, medium: 1, low: 2 };
         if (priorityOrder[a.priority] !== priorityOrder[b.priority]) return priorityOrder[a.priority] - priorityOrder[b.priority];
-        return new Date(b.createdAt) - new Date(a.createdAt);
+        return new Date(a.date) - new Date(b.date);
     });
+    
     return tasks;
   }
   
@@ -2333,6 +2371,7 @@ class ChronoFocusPro {
       <div class="task-content">
         <div class="task-text-content">
           <div class="task-text">${task.text}</div>
+          ${task.time ? `<span class="task-time" style="font-size: 0.875rem; color: var(--text-secondary);">${task.time}</span>` : ''}
         </div>
         ${task.description ? `<div class="task-notes">${task.description}</div>` : ''}
         ${task.notes ? `<div class="task-notes">${task.notes}</div>` : ''}
@@ -2433,26 +2472,41 @@ class ChronoFocusPro {
     this.renderCalendar();
   }
 
-  // Dock Methods
-  scrollToTasks() {
-    document.querySelector('.tasks-section').scrollIntoView({ behavior: 'smooth' });
+  // Header Methods
+  updateCurrentDate() {
+    const now = new Date();
+    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    this.elements.currentDate.textContent = now.toLocaleDateString('en-US', options);
   }
 
-  scrollToCalendar() {
-    document.querySelector('.calendar-section').scrollIntoView({ behavior: 'smooth' });
+  showSearch() {
+    const query = prompt('Search tasks:');
+    if (query) {
+      this.searchTasks(query);
+    }
+  }
+
+  searchTasks(query) {
+    const tasks = this.getTasks();
+    const filteredTasks = tasks.filter(task => 
+      task.text.toLowerCase().includes(query.toLowerCase()) ||
+      (task.description && task.description.toLowerCase().includes(query.toLowerCase()))
+    );
+    
+    this.renderTasks(filteredTasks);
+    this.showToast(`Found ${filteredTasks.length} tasks matching "${query}"`, 'success');
+  }
+
+  showNotifications() {
+    this.showToast('No new notifications', 'success');
+  }
+
+  showProfile() {
+    this.toggleSettings();
   }
 
   focusTaskInput() {
     this.elements.taskInput.focus();
-  }
-
-  showStats() {
-    this.updateStats();
-    document.querySelector('.stats-section').scrollIntoView({ behavior: 'smooth' });
-  }
-
-  showThemeSelector() {
-    this.toggleSettings();
   }
 
   // Stats Methods
@@ -2507,15 +2561,15 @@ class ChronoFocusPro {
           {
             label: 'Tasks Completed',
             data: completedByDay,
-            backgroundColor: 'rgba(139, 95, 191, 0.7)',
-            borderColor: 'rgba(139, 95, 191, 1)',
+            backgroundColor: 'rgba(99, 102, 241, 0.7)',
+            borderColor: 'rgba(99, 102, 241, 1)',
             borderWidth: 1
           },
           {
             label: 'Tasks Created',
             data: createdByDay,
-            backgroundColor: 'rgba(255, 158, 109, 0.7)',
-            borderColor: 'rgba(255, 158, 109, 1)',
+            backgroundColor: 'rgba(16, 185, 129, 0.7)',
+            borderColor: 'rgba(16, 185, 129, 1)',
             borderWidth: 1
           }
         ]
@@ -2540,123 +2594,19 @@ class ChronoFocusPro {
     });
   }
 
-  // Future Plans Methods
-  addFuturePlan() {
-    const text = prompt('Enter your future plan:');
-    if (text && text.trim()) {
-      const plan = {
-        id: `plan_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-        text: text.trim(),
-        date: this.formatDate(new Date()),
-        createdAt: new Date().toISOString()
-      };
-      
-      const plans = this.getFuturePlans();
-      plans.push(plan);
-      this.saveFuturePlans(plans);
-      this.renderFuturePlans();
-      this.showToast('Future plan added!', 'success');
-      this.playSound('add');
-    }
+  // History Methods
+  addToHistory(task) {
+    const history = this.getHistory();
+    history.push({
+      ...task,
+      archivedAt: new Date().toISOString()
+    });
+    this.saveHistory(history);
   }
 
-  renderFuturePlans() {
-    const plans = this.getFuturePlans();
-    this.elements.futurePlansList.innerHTML = '';
-    
-    if (plans.length === 0) {
-      this.elements.futurePlansList.innerHTML = '<p style="text-align: center; color: var(--text-secondary); padding: 20px;">No future plans yet. Add one to get started!</p>';
-    } else {
-      plans.forEach(plan => {
-        const planElement = document.createElement('div');
-        planElement.className = 'future-plan-item';
-        planElement.innerHTML = `
-          <div class="future-plan-content">
-            <div class="future-plan-text">${plan.text}</div>
-            <div class="future-plan-date">Added on ${new Date(plan.createdAt).toLocaleDateString()}</div>
-          </div>
-          <button class="task-action-btn delete" data-plan-id="${plan.id}" title="Delete"><i class="fas fa-trash"></i></button>
-        `;
-        
-        planElement.querySelector('.delete').addEventListener('click', (e) => {
-          e.stopPropagation();
-          this.deleteFuturePlan(plan.id, planElement);
-        });
-        
-        this.elements.futurePlansList.appendChild(planElement);
-      });
-    }
-  }
-
-  deleteFuturePlan(planId, planElement) {
-    if (confirm('Are you sure you want to delete this future plan?')) {
-      let plans = this.getFuturePlans();
-      plans = plans.filter(p => p.id !== planId);
-      this.saveFuturePlans(plans);
-      planElement.remove();
-      this.showToast('Future plan deleted', 'success');
-      this.playSound('delete');
-    }
-  }
-
-  // Sticky Notes Methods
-  addStickyNote() {
-    const text = prompt('Enter your sticky note:');
-    if (text && text.trim()) {
-      const note = {
-        id: `note_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-        text: text.trim(),
-        color: ['yellow', 'blue', 'green', 'pink'][Math.floor(Math.random() * 4)],
-        date: this.formatDate(new Date()),
-        createdAt: new Date().toISOString()
-      };
-      
-      const notes = this.getStickyNotes();
-      notes.push(note);
-      this.saveStickyNotes(notes);
-      this.renderStickyNotes();
-      this.showToast('Sticky note added!', 'success');
-      this.playSound('add');
-    }
-  }
-
-  renderStickyNotes() {
-    const notes = this.getStickyNotes();
-    this.elements.stickyNotesList.innerHTML = '';
-    
-    if (notes.length === 0) {
-      this.elements.stickyNotesList.innerHTML = '<p style="text-align: center; color: var(--text-secondary); padding: 20px;">No sticky notes yet. Add one to get started!</p>';
-    } else {
-      notes.forEach(note => {
-        const noteElement = document.createElement('div');
-        noteElement.className = `sticky-note ${note.color}`;
-        noteElement.innerHTML = `
-          <div class="sticky-note-content">${note.text}</div>
-          <div class="sticky-note-date">${new Date(note.createdAt).toLocaleDateString()}</div>
-          <div class="sticky-note-actions">
-            <button class="sticky-note-action delete" data-note-id="${note.id}" title="Delete"><i class="fas fa-trash"></i></button>
-          </div>
-        `;
-        
-        noteElement.querySelector('.delete').addEventListener('click', (e) => {
-          e.stopPropagation();
-          this.deleteStickyNote(note.id, noteElement);
-        });
-        
-        this.elements.stickyNotesList.appendChild(noteElement);
-      });
-    }
-  }
-
-  deleteStickyNote(noteId, noteElement) {
-    if (confirm('Are you sure you want to delete this sticky note?')) {
-      let notes = this.getStickyNotes();
-      notes = notes.filter(n => n.id !== noteId);
-      this.saveStickyNotes(notes);
-      noteElement.remove();
-      this.showToast('Sticky note deleted', 'success');
-      this.playSound('delete');
-    }
+  loadHistory() {
+    // This is called on initialization
+    // History is loaded when the history view is selected
   }
 
   // AI Assistant Methods
@@ -3011,7 +2961,7 @@ class ChronoFocusPro {
   }
 
   loadTheme() {
-    const savedTheme = localStorage.getItem('chronoFocusProTheme') || 'theme-cozy';
+    const savedTheme = localStorage.getItem('chronoFocusProTheme') || 'theme-glass';
     this.setTheme(savedTheme);
     
     // Update theme option active state
@@ -3062,13 +3012,8 @@ class ChronoFocusPro {
   getTasks() { return JSON.parse(localStorage.getItem('chronoFocusProTasks') || '[]'); }
   saveTasks(tasks) { localStorage.setItem('chronoFocusProTasks', JSON.stringify(tasks)); }
   
-  getFuturePlans() { return JSON.parse(localStorage.getItem('chronoFocusProFuturePlans') || '[]'); }
-  saveFuturePlans(plans) { localStorage.setItem('chronoFocusProFuturePlans', JSON.stringify(plans)); }
-  loadFuturePlans() { this.renderFuturePlans(); }
-  
-  getStickyNotes() { return JSON.parse(localStorage.getItem('chronoFocusProStickyNotes') || '[]'); }
-  saveStickyNotes(notes) { localStorage.setItem('chronoFocusProStickyNotes', JSON.stringify(notes)); }
-  loadStickyNotes() { this.renderStickyNotes(); }
+  getHistory() { return JSON.parse(localStorage.getItem('chronoFocusProHistory') || '[]'); }
+  saveHistory(history) { localStorage.setItem('chronoFocusProHistory', JSON.stringify(history)); }
   
   getTasksForDate(date) {
     const dateStr = this.formatDate(date);
