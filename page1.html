@@ -93,7 +93,7 @@ body::before {
     transition: background 0.5s ease;
 }
 
-/* --- NEW: Split Screen Feature --- */
+/* --- NEW: Enhanced Split Screen Feature --- */
 .split-screen-container {
     position: fixed;
     top: 0;
@@ -120,6 +120,7 @@ body::before {
     display: flex;
     flex: 1;
     gap: 10px;
+    position: relative;
 }
 
 .split-screen-panel {
@@ -128,6 +129,7 @@ body::before {
     border-radius: var(--border-radius);
     overflow: hidden;
     position: relative;
+    transition: all 0.3s ease;
 }
 
 .split-screen-panel iframe {
@@ -143,6 +145,7 @@ body::before {
     display: flex;
     align-items: center;
     justify-content: center;
+    position: relative;
 }
 
 .split-screen-divider::after {
@@ -151,6 +154,120 @@ body::before {
     height: 40px;
     background: rgba(255, 255, 255, 0.5);
     border-radius: 2px;
+}
+
+/* --- NEW: Mobile Split Screen --- */
+.mobile-split-screen-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    z-index: 2000;
+    display: none;
+    flex-direction: column;
+    padding: 15px;
+}
+
+.mobile-split-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    color: white;
+    margin-bottom: 10px;
+}
+
+.mobile-split-content {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    gap: 10px;
+    position: relative;
+}
+
+.mobile-split-panel {
+    background: white;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    position: relative;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.mobile-split-panel iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+.mobile-split-divider {
+    height: 10px;
+    background: rgba(255, 255, 255, 0.2);
+    cursor: row-resize;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    margin: 5px 0;
+    border-radius: 5px;
+    transition: background 0.2s ease;
+}
+
+.mobile-split-divider::after {
+    content: '';
+    width: 40px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 2px;
+}
+
+.mobile-split-divider:active {
+    background: rgba(255, 255, 255, 0.4);
+}
+
+.mobile-split-controls {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.mobile-split-btn {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 8px 15px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.mobile-split-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.mobile-split-btn.active {
+    background: var(--primary);
+}
+
+/* Panel states */
+.panel-minimized {
+    flex: 0 0 60px;
+    overflow: hidden;
+}
+
+.panel-maximized {
+    flex: 1 1 100%;
+}
+
+.panel-normal {
+    flex: 1;
 }
 
 /* --- THEME PALETTES --- */
@@ -617,7 +734,7 @@ li.deleting { animation: fadeOutShrink 0.5s ease forwards; }
 <!-- NEW: Floating Particles Background -->
 <div class="particles-container" id="particlesContainer"></div>
 
-<!-- NEW: Split Screen Feature -->
+<!-- NEW: Enhanced Split Screen Feature -->
 <div class="split-screen-container" id="splitScreenContainer">
     <div class="split-screen-header">
         <h2>Split Screen Mode</h2>
@@ -631,6 +748,34 @@ li.deleting { animation: fadeOutShrink 0.5s ease forwards; }
         <div class="split-screen-panel" id="rightPanel">
             <iframe src="page2.html" id="rightFrame"></iframe>
         </div>
+    </div>
+</div>
+
+<!-- NEW: Mobile Split Screen Feature -->
+<div class="mobile-split-screen-container" id="mobileSplitScreenContainer">
+    <div class="mobile-split-header">
+        <h2>Mobile Split Screen</h2>
+        <button id="closeMobileSplitScreen" class="close-modal-btn">&times;</button>
+    </div>
+    <div class="mobile-split-content">
+        <div class="mobile-split-panel" id="topPanel">
+            <iframe src="page1.html" id="topFrame"></iframe>
+        </div>
+        <div class="mobile-split-divider" id="mobileSplitDivider"></div>
+        <div class="mobile-split-panel" id="bottomPanel">
+            <iframe src="page2.html" id="bottomFrame"></iframe>
+        </div>
+    </div>
+    <div class="mobile-split-controls">
+        <button class="mobile-split-btn" id="topMaximizeBtn">
+            <i class="fa-solid fa-arrow-up"></i> Maximize Top
+        </button>
+        <button class="mobile-split-btn" id="equalSizeBtn">
+            <i class="fa-solid fa-equals"></i> Equal Size
+        </button>
+        <button class="mobile-split-btn" id="bottomMaximizeBtn">
+            <i class="fa-solid fa-arrow-down"></i> Maximize Bottom
+        </button>
     </div>
 </div>
 
@@ -670,7 +815,7 @@ li.deleting { animation: fadeOutShrink 0.5s ease forwards; }
                 <p>Boost Your Workflow</p>
             </div>
         </a>
-        <!-- NEW: Split Screen Button -->
+        <!-- NEW: Enhanced Split Screen Button -->
         <a href="#" class="dock-button split-screen-btn" id="splitScreenBtn">
             <i class="fa-solid fa-columns"></i>
             <div>
@@ -848,6 +993,14 @@ class ChronoFocusApp {
             splitDivider: document.getElementById('splitDivider'),
             leftPanel: document.getElementById('leftPanel'),
             rightPanel: document.getElementById('rightPanel'),
+            mobileSplitScreenContainer: document.getElementById('mobileSplitScreenContainer'),
+            closeMobileSplitScreen: document.getElementById('closeMobileSplitScreen'),
+            mobileSplitDivider: document.getElementById('mobileSplitDivider'),
+            topPanel: document.getElementById('topPanel'),
+            bottomPanel: document.getElementById('bottomPanel'),
+            topMaximizeBtn: document.getElementById('topMaximizeBtn'),
+            equalSizeBtn: document.getElementById('equalSizeBtn'),
+            bottomMaximizeBtn: document.getElementById('bottomMaximizeBtn'),
             particlesContainer: document.getElementById('particlesContainer')
         };
 
@@ -874,6 +1027,12 @@ class ChronoFocusApp {
             splitScreen: {
                 isResizing: false,
                 leftWidth: 50
+            },
+            mobileSplitScreen: {
+                isResizing: false,
+                topHeight: 50,
+                topState: 'normal', // normal, minimized, maximized
+                bottomState: 'normal'
             }
         };
 
@@ -890,6 +1049,7 @@ class ChronoFocusApp {
         this.updatePomodoroDisplay();
         this.loadSettings();
         this.createParticles();
+        this.initMobileSplitScreen();
         console.log("Chrono Focus Zenith 2 Ultra Beta 8 Initialized!");
     }
    
@@ -1320,7 +1480,7 @@ class ChronoFocusApp {
         this.triggerHapticFeedback();
     }
    
-    // --- SPLIT SCREEN FEATURE ---
+    // --- ENHANCED SPLIT SCREEN FEATURE ---
     initSplitScreen() {
         this.dom.splitScreenBtn.addEventListener('click', (e) => {
             e.preventDefault();
@@ -1340,9 +1500,14 @@ class ChronoFocusApp {
     }
     
     openSplitScreen() {
-        this.dom.splitScreenContainer.style.display = 'flex';
-        this.updateSplitScreenLayout();
-        this.triggerHapticFeedback();
+        // Check if mobile device
+        if (window.innerWidth <= 768) {
+            this.openMobileSplitScreen();
+        } else {
+            this.dom.splitScreenContainer.style.display = 'flex';
+            this.updateSplitScreenLayout();
+            this.triggerHapticFeedback();
+        }
     }
     
     closeSplitScreen() {
@@ -1373,6 +1538,125 @@ class ChronoFocusApp {
     updateSplitScreenLayout() {
         this.dom.leftPanel.style.flex = `0 0 ${this.state.splitScreen.leftWidth}%`;
         this.dom.rightPanel.style.flex = `0 0 ${100 - this.state.splitScreen.leftWidth}%`;
+    }
+    
+    // --- NEW: MOBILE SPLIT SCREEN FEATURE ---
+    initMobileSplitScreen() {
+        this.dom.closeMobileSplitScreen.addEventListener('click', () => {
+            this.closeMobileSplitScreen();
+        });
+        
+        // Mobile split screen resizing
+        this.dom.mobileSplitDivider.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            this.state.mobileSplitScreen.isResizing = true;
+            document.addEventListener('touchmove', this.handleMobileSplitResize.bind(this));
+            document.addEventListener('touchend', this.stopMobileSplitResize.bind(this));
+        });
+        
+        // Control buttons
+        this.dom.topMaximizeBtn.addEventListener('click', () => {
+            this.maximizeTopPanel();
+        });
+        
+        this.dom.equalSizeBtn.addEventListener('click', () => {
+            this.equalSizePanels();
+        });
+        
+        this.dom.bottomMaximizeBtn.addEventListener('click', () => {
+            this.maximizeBottomPanel();
+        });
+    }
+    
+    openMobileSplitScreen() {
+        this.dom.mobileSplitScreenContainer.style.display = 'flex';
+        this.updateMobileSplitScreenLayout();
+        this.triggerHapticFeedback();
+    }
+    
+    closeMobileSplitScreen() {
+        this.dom.mobileSplitScreenContainer.style.display = 'none';
+        this.triggerHapticFeedback();
+    }
+    
+    handleMobileSplitResize(e) {
+        if (!this.state.mobileSplitScreen.isResizing) return;
+        
+        const containerRect = this.dom.mobileSplitScreenContainer.getBoundingClientRect();
+        const containerHeight = containerRect.height;
+        const touchY = e.touches[0].clientY - containerRect.top;
+        
+        // Calculate new height percentage
+        const newHeight = Math.max(20, Math.min(80, (touchY / containerHeight) * 100));
+        this.state.mobileSplitScreen.topHeight = newHeight;
+        this.state.mobileSplitScreen.topState = 'normal';
+        this.state.mobileSplitScreen.bottomState = 'normal';
+        
+        this.updateMobileSplitScreenLayout();
+    }
+    
+    stopMobileSplitResize() {
+        this.state.mobileSplitScreen.isResizing = false;
+        document.removeEventListener('touchmove', this.handleMobileSplitResize.bind(this));
+        document.removeEventListener('touchend', this.stopMobileSplitResize.bind(this));
+    }
+    
+    updateMobileSplitScreenLayout() {
+        if (this.state.mobileSplitScreen.topState === 'maximized') {
+            this.dom.topPanel.classList.remove('panel-normal', 'panel-minimized');
+            this.dom.topPanel.classList.add('panel-maximized');
+            this.dom.bottomPanel.classList.remove('panel-normal', 'panel-maximized');
+            this.dom.bottomPanel.classList.add('panel-minimized');
+        } else if (this.state.mobileSplitScreen.bottomState === 'maximized') {
+            this.dom.topPanel.classList.remove('panel-normal', 'panel-maximized');
+            this.dom.topPanel.classList.add('panel-minimized');
+            this.dom.bottomPanel.classList.remove('panel-normal', 'panel-minimized');
+            this.dom.bottomPanel.classList.add('panel-maximized');
+        } else {
+            this.dom.topPanel.classList.remove('panel-minimized', 'panel-maximized');
+            this.dom.topPanel.classList.add('panel-normal');
+            this.dom.bottomPanel.classList.remove('panel-minimized', 'panel-maximized');
+            this.dom.bottomPanel.classList.add('panel-normal');
+            
+            // Set the height based on the stored percentage
+            this.dom.topPanel.style.flex = `0 0 ${this.state.mobileSplitScreen.topHeight}%`;
+            this.dom.bottomPanel.style.flex = `0 0 ${100 - this.state.mobileSplitScreen.topHeight}%`;
+        }
+        
+        // Update control buttons
+        this.updateMobileSplitControls();
+    }
+    
+    maximizeTopPanel() {
+        this.state.mobileSplitScreen.topState = 'maximized';
+        this.state.mobileSplitScreen.bottomState = 'minimized';
+        this.updateMobileSplitScreenLayout();
+        this.triggerHapticFeedback();
+    }
+    
+    maximizeBottomPanel() {
+        this.state.mobileSplitScreen.topState = 'minimized';
+        this.state.mobileSplitScreen.bottomState = 'maximized';
+        this.updateMobileSplitScreenLayout();
+        this.triggerHapticFeedback();
+    }
+    
+    equalSizePanels() {
+        this.state.mobileSplitScreen.topHeight = 50;
+        this.state.mobileSplitScreen.topState = 'normal';
+        this.state.mobileSplitScreen.bottomState = 'normal';
+        this.updateMobileSplitScreenLayout();
+        this.triggerHapticFeedback();
+    }
+    
+    updateMobileSplitControls() {
+        // Update active state of control buttons
+        this.dom.topMaximizeBtn.classList.toggle('active', this.state.mobileSplitScreen.topState === 'maximized');
+        this.dom.equalSizeBtn.classList.toggle('active', 
+            this.state.mobileSplitScreen.topState === 'normal' && 
+            this.state.mobileSplitScreen.bottomState === 'normal' &&
+            this.state.mobileSplitScreen.topHeight === 50);
+        this.dom.bottomMaximizeBtn.classList.toggle('active', this.state.mobileSplitScreen.bottomState === 'maximized');
     }
    
     // --- UI & HELPERS ---
