@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Super Infinite World</title>
+    <title>Super Infinite World Ultra</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 
@@ -24,7 +24,7 @@
         #game-container {
             position: relative;
             box-shadow: 0 10px 20px rgba(0,0,0,0.5);
-            border: 4px solid #fff;
+            border: 6px solid #ffce00; /* Thicker, more heroic border */
             width: 800px;
             height: 450px;
             overflow: hidden;
@@ -46,44 +46,47 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            background: rgba(0, 0, 0, 0.85);
+            background: rgba(0, 0, 0, 0.95); /* Darker overlay */
             color: white;
             z-index: 10;
+            transition: opacity 0.3s ease;
         }
 
         .hidden { display: none !important; }
 
-        h1 { font-size: 24px; color: #ffce00; margin-bottom: 20px; text-shadow: 3px 3px #d32f2f; text-align: center; line-height: 1.5;}
-        h2 { font-size: 14px; color: #fff; margin-top: 20px; }
-        p { font-size: 10px; color: #ccc; line-height: 1.5; max-width: 600px; text-align: center;}
+        h1 { font-size: 28px; color: #ffce00; margin-bottom: 25px; text-shadow: 4px 4px #d32f2f; text-align: center; line-height: 1.5;}
+        h2 { font-size: 16px; color: #fff; margin-top: 20px; }
+        p { font-size: 12px; color: #ccc; line-height: 1.5; max-width: 600px; text-align: center;}
 
         /* Buttons & Grid */
         .btn-grid {
             display: flex;
-            gap: 10px;
+            gap: 15px; /* Larger gap */
             flex-wrap: wrap;
             justify-content: center;
-            margin: 10px 0;
+            margin: 15px 0;
         }
 
         button {
             background: #e52521;
-            border: 3px solid white;
+            border: 4px solid white; /* Thicker border */
             color: white;
             font-family: 'Press Start 2P', cursive;
-            font-size: 10px;
-            padding: 10px 15px;
+            font-size: 12px;
+            padding: 12px 18px; /* Larger padding */
             cursor: pointer;
             text-transform: uppercase;
-            transition: transform 0.1s;
+            box-shadow: 2px 2px #a81c1c; /* Button shadow */
+            transition: transform 0.1s, background 0.1s;
         }
-        button:hover { background: #ff4d4d; transform: scale(1.05); }
-        button:active { transform: scale(0.95); }
+        button:hover { background: #ff4d4d; transform: translateY(-2px); box-shadow: 2px 4px #a81c1c; }
+        button:active { transform: translateY(0); background: #cc0000; box-shadow: 2px 2px #a81c1c; }
         
         button.selected {
             background: #ffce00;
             color: #d32f2f;
             border-color: #d32f2f;
+            box-shadow: 2px 2px #ff8c00;
         }
 
         /* HUD */
@@ -97,28 +100,31 @@
             display: flex;
             justify-content: space-between;
             pointer-events: none;
-            text-shadow: 2px 2px 0 #000;
+            text-shadow: 3px 3px 0 #000; /* Stronger shadow */
             color: white;
             z-index: 5;
+            font-size: 14px;
         }
 
-        .hearts { color: #ff0000; font-size: 20px; }
+        .hearts { color: #ff0000; font-size: 22px; }
+        .coins { color: #ffce00; font-size: 16px; margin-right: 20px;} /* New coin display */
 
         /* Math Modal */
         #math-modal {
-            background: rgba(0,0,0,0.9);
+            background: rgba(0,0,0,0.95);
             z-index: 20;
         }
         #math-input {
-            background: #333;
-            border: 2px solid #fff;
+            background: #444;
+            border: 3px solid #fff;
             color: #fff;
             font-family: 'Press Start 2P';
-            font-size: 20px;
+            font-size: 24px;
             padding: 10px;
             text-align: center;
-            margin: 10px;
-            width: 100px;
+            margin: 15px;
+            width: 120px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
         }
 
     </style>
@@ -129,13 +135,15 @@
         <canvas id="gameCanvas" width="800" height="450"></canvas>
         
         <div id="hud" class="hidden">
-            <div id="score-display">SCORE: 0</div>
+            <div style="display: flex; align-items: center;">
+                <div id="coin-display" class="coins">💰 0</div>
+                <div id="score-display">SCORE: 0</div>
+            </div>
             <div id="lives-display" class="hearts">❤❤❤</div>
         </div>
 
-        <!-- MAIN MENU -->
         <div id="main-menu" class="screen">
-            <h1>SUPER INFINITE HUB</h1>
+            <h1>SUPER INFINITE HUB ULTRA</h1>
             
             <h2>SELECT CHARACTER</h2>
             <div class="btn-grid" id="char-select">
@@ -161,19 +169,18 @@
             <p style="margin-top:20px">History: <span id="menu-history">No runs yet</span></p>
         </div>
 
-        <!-- MATH MODAL -->
         <div id="math-modal" class="screen hidden">
-            <h1 style="color:#fff">MATH LOCK!</h1>
-            <p>Solve to open the gate!</p>
-            <h1 id="math-problem">2 + 2 = ?</h1>
+            <h1 style="color:#ffce00">MATH LOCK!</h1>
+            <p>Solve the security puzzle!</p>
+            <h1 id="math-problem" style="font-size:36px">2 + 2 = ?</h1>
             <input type="number" id="math-input" autofocus>
-            <button onclick="checkMath()">UNLOCK</button>
+            <button onclick="checkMath()">UNLOCK THE GATE</button>
         </div>
 
-        <!-- GAME OVER -->
         <div id="game-over-screen" class="screen hidden">
             <h1>GAME OVER</h1>
             <p>Final Score: <span id="final-score">0</span></p>
+            <p>Coins Collected: <span id="final-coins">0</span></p>
             <button onclick="showMenu()">BACK TO MENU</button>
         </div>
     </div>
@@ -185,15 +192,17 @@
         // --- CONFIGURATION & STATE ---
         const CONFIG = {
             gravity: 0.6,
-            jumpForce: -11,
+            jumpForce: -13, // Increased jump force for better feel
             groundHeight: 50,
-            initialSpeed: 4
+            initialSpeed: 5, // Slightly faster start
+            maxSpeed: 15
         };
 
         let gameState = {
             mode: 'MENU', // MENU, RUNNER, DRIVER, FIGHTER, PAUSED
             running: false,
             score: 0,
+            coins: 0, // NEW: Coin count
             frames: 0,
             speed: 0,
             lives: 3,
@@ -206,7 +215,12 @@
             world: 'sunny' // sunny, night, cave
         };
 
-        // --- ASSETS (COLORS) ---
+        // Keyboard state for better controls (no sticky jump)
+        const keys = {
+            jump: false
+        };
+
+        // --- ASSETS (COLORS & AUDIO) ---
         const PALETTES = {
             sunny: { sky: '#5c94fc', ground: '#c84c0c', groundTop: '#ff987d', text: '#fff' },
             night: { sky: '#090033', ground: '#333333', groundTop: '#555555', text: '#ffff00' },
@@ -217,51 +231,109 @@
             mario: { hat: '#ff0000', skin: '#ffcc99', suit: '#0000ff' },
             luigi: { hat: '#00aa00', skin: '#ffcc99', suit: '#0000ff' },
             peach: { hat: '#ff69b4', skin: '#ffcc99', suit: '#ff1493' },
-            car:   { body: '#ff0000', wheel: '#000' }
+            car:   { body: '#ff0000', wheel: '#000' }
         };
+
+        // NEW: Simple Audio Context and Synth for Retro SFX
+        let audioContext;
+        function playSound(type) {
+            if (!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = audioContext.createOscillator();
+            const gain = audioContext.createGain();
+            osc.connect(gain);
+            gain.connect(audioContext.destination);
+
+            switch(type) {
+                case 'jump':
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(500, audioContext.currentTime);
+                    gain.gain.setValueAtTime(0.5, audioContext.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.15);
+                    break;
+                case 'hit':
+                    osc.type = 'square';
+                    osc.frequency.setValueAtTime(100, audioContext.currentTime);
+                    gain.gain.setValueAtTime(0.8, audioContext.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.3);
+                    break;
+                case 'coin':
+                    osc.type = 'square';
+                    osc.frequency.setValueAtTime(880, audioContext.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(1760, audioContext.currentTime + 0.05);
+                    gain.gain.setValueAtTime(0.3, audioContext.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.1);
+                    break;
+                case 'solve':
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(440, audioContext.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(660, audioContext.currentTime + 0.1);
+                    gain.gain.setValueAtTime(0.5, audioContext.currentTime);
+                    gain.gain.linearRampToValueAtTime(0.001, audioContext.currentTime + 0.2);
+                    break;
+                default: return;
+            }
+
+            osc.start();
+            osc.stop(audioContext.currentTime + 0.3);
+        }
 
         // --- GAME OBJECTS ---
         let player = {
             x: 100, y: 0, w: 30, h: 40, dy: 0, grounded: false,
+            // IMPROVED: More detailed pixel-art-like character
             draw() {
                 let x = this.x, y = this.y;
                 let c = CHAR_COLORS[settings.char];
                 
                 if (gameState.mode === 'DRIVER') {
-                    // Car Sprite
-                    ctx.fillStyle = c.hat; // Car Body Color (using hat color)
-                    ctx.fillRect(x, y + 15, 60, 20); // Main body
-                    ctx.fillRect(x + 10, y, 35, 15); // Roof
-                    ctx.fillStyle = '#000'; // Wheels
+                    // Car Sprite (Improved slightly)
+                    ctx.fillStyle = c.hat; 
+                    ctx.fillRect(x, y + 15, 60, 20); 
+                    ctx.fillRect(x + 10, y, 35, 15); 
+                    ctx.fillStyle = '#000'; 
                     ctx.beginPath(); ctx.arc(x + 15, y + 35, 8, 0, Math.PI*2); ctx.fill();
                     ctx.beginPath(); ctx.arc(x + 50, y + 35, 8, 0, Math.PI*2); ctx.fill();
-                    ctx.fillStyle = '#add8e6'; // Window
+                    ctx.fillStyle = '#add8e6'; 
                     ctx.fillRect(x + 30, y + 2, 13, 10);
                 } else {
-                    // Person Sprite
-                    // Hat/Hair
-                    ctx.fillStyle = c.hat; 
-                    ctx.fillRect(x, y, 30, 10);
-                    // Face
-                    ctx.fillStyle = c.skin; 
+                    // Person Sprite (More detailed)
+                    // Head/Hat
+                    ctx.fillStyle = c.hat; 
+                    ctx.fillRect(x + 5, y, 20, 10); // Hat top
+                    ctx.fillRect(x + 20, y + 5, 5, 5); // Brim tip
+                    
+                    // Face & Neck
+                    ctx.fillStyle = c.skin; 
                     ctx.fillRect(x + 5, y + 10, 20, 10);
-                    // Body
-                    ctx.fillStyle = c.suit; 
+                    ctx.fillStyle = '#000'; // Eyes
+                    ctx.fillRect(x + 10, y + 12, 3, 3);
+                    ctx.fillRect(x + 17, y + 12, 3, 3);
+                    
+                    // Body/Suit
+                    ctx.fillStyle = c.suit; 
                     ctx.fillRect(x + 5, y + 20, 20, 15);
-                    // Arms/Legs details omitted for brevity but keeping style
-                    ctx.fillStyle = c.hat;
-                    ctx.fillRect(x, y+20, 5, 15); ctx.fillRect(x+25, y+20, 5, 15);
+                    ctx.fillStyle = '#ffce00'; // Shirt detail
+                    ctx.fillRect(x + 10, y + 25, 10, 5);
+
+                    // Arms (Simplified)
+                    ctx.fillStyle = c.suit;
+                    ctx.fillRect(x, y+20, 5, 10); ctx.fillRect(x+25, y+20, 5, 10);
+                    
+                    // Legs/Feet
+                    ctx.fillStyle = c.suit;
+                    ctx.fillRect(x+5, y+35, 8, 5); ctx.fillRect(x+17, y+35, 8, 5);
                     ctx.fillStyle = '#6a3627'; // Shoes
-                    ctx.fillRect(x+2, y+37, 10, 3); ctx.fillRect(x+18, y+37, 10, 3);
+                    ctx.fillRect(x+5, y+40, 10, 5); ctx.fillRect(x+15, y+40, 10, 5);
                 }
             },
             update() {
-                if (gameState.mode === 'FIGHTER') return; // Player doesn't move in fighter mode
+                if (gameState.mode === 'FIGHTER') return;
 
                 this.dy += CONFIG.gravity;
                 this.y += this.dy;
 
-                let groundY = canvas.height - CONFIG.groundHeight - (gameState.mode === 'DRIVER' ? 35 : this.h);
+                let charHeight = (gameState.mode === 'DRIVER' ? 35 : 45); // Player height for ground check (Person is 45px tall)
+                let groundY = canvas.height - CONFIG.groundHeight - charHeight;
 
                 if (this.y > groundY) {
                     this.y = groundY;
@@ -272,19 +344,20 @@
                 }
             },
             jump() {
-                if (this.grounded) {
+                if (this.grounded && gameState.running) {
                     this.dy = CONFIG.jumpForce;
                     this.grounded = false;
+                    playSound('jump'); // Play sound
                 }
             }
         };
 
-        let entities = []; // obstacles, enemies, etc.
+        let entities = []; 
+        let particles = []; // NEW: Particle system for coins/hits
 
         // --- CORE FUNCTIONS ---
 
         function init() {
-            // Load history
             let h = localStorage.getItem('superHubHistory');
             if(h) gameState.history = JSON.parse(h);
             updateMenuHistory();
@@ -306,6 +379,7 @@
             gameState.mode = mode;
             gameState.running = true;
             gameState.score = 0;
+            gameState.coins = 0; // Reset coins
             gameState.frames = 0;
             gameState.lives = 3;
             gameState.speed = mode === 'DRIVER' ? 7 : CONFIG.initialSpeed;
@@ -313,6 +387,7 @@
             entities = [];
             player.y = 0;
             player.dy = 0;
+            particles = [];
 
             document.getElementById('main-menu').classList.add('hidden');
             document.getElementById('game-over-screen').classList.add('hidden');
@@ -331,28 +406,41 @@
         }
 
         function takeDamage() {
-            gameState.lives--;
-            updateHUD();
-            
-            // Screen shake effect
-            canvas.style.transform = "translate(5px, 5px)";
-            setTimeout(() => canvas.style.transform = "translate(0,0)", 100);
+            if (gameState.lives > 0) {
+                playSound('hit'); // Play sound
+                gameState.lives--;
+                updateHUD();
+                
+                // Screen shake effect
+                canvas.style.transform = "translate(5px, 5px)";
+                setTimeout(() => canvas.style.transform = "translate(0,0)", 100);
 
-            if (gameState.lives <= 0) {
-                gameOver();
-            } else {
-                // Clear nearby enemies/obstacles to prevent instant double hit
-                entities = entities.filter(e => e.x > player.x + 200 || e.type === 'cloud'); 
+                if (gameState.lives <= 0) {
+                    gameOver();
+                } else {
+                    // Give invincibility frames (simple implementation: clear nearby obstacles)
+                    entities = entities.filter(e => e.x > player.x + 200 || e.type === 'cloud' || e.type === 'coin'); 
+                }
             }
+        }
+        
+        // NEW: Function to collect coins
+        function collectCoin() {
+            gameState.coins++;
+            gameState.score += 5; // Small score boost for coins
+            playSound('coin');
+            updateHUD();
         }
 
         function gameOver() {
             gameState.running = false;
-            gameState.history.unshift(Math.floor(gameState.score));
+            let finalScore = Math.floor(gameState.score);
+            gameState.history.unshift(finalScore);
             if(gameState.history.length > 5) gameState.history.pop();
             localStorage.setItem('superHubHistory', JSON.stringify(gameState.history));
 
-            document.getElementById('final-score').innerText = Math.floor(gameState.score);
+            document.getElementById('final-score').innerText = finalScore;
+            document.getElementById('final-coins').innerText = gameState.coins; // Show collected coins
             document.getElementById('game-over-screen').classList.remove('hidden');
         }
 
@@ -364,6 +452,7 @@
 
         function updateHUD() {
             document.getElementById('score-display').innerText = "SCORE: " + Math.floor(gameState.score);
+            document.getElementById('coin-display').innerText = "💰 " + gameState.coins;
             let hearts = "";
             for(let i=0; i<gameState.lives; i++) hearts += "❤";
             document.getElementById('lives-display').innerText = hearts;
@@ -371,18 +460,23 @@
 
         // --- MATH SYSTEM ---
         function triggerMathLock() {
-            gameState.running = false; // Pause game
+            gameState.running = false; 
             
-            // Generate simple math
-            let a = Math.floor(Math.random() * 10);
-            let b = Math.floor(Math.random() * 10);
-            let isPlus = Math.random() > 0.5;
-            
-            gameState.mathAnswer = isPlus ? a + b : a - b;
-            // Ensure positive result for subtraction simplicity
-            if (!isPlus && b > a) { let t = a; a = b; b = t; gameState.mathAnswer = a - b; }
+            // Generate simple math (IMPROVED: Slightly harder, up to 15, includes multiply)
+            let a = Math.floor(Math.random() * 15) + 1;
+            let b = Math.floor(Math.random() * 10) + 1;
+            let op;
+            let rand = Math.random();
 
-            document.getElementById('math-problem').innerText = `${a} ${isPlus ? '+' : '-'} ${b} = ?`;
+            if (rand < 0.4) { op = '+'; gameState.mathAnswer = a + b; }
+            else if (rand < 0.8) { 
+                op = '-'; 
+                if (b > a) { let t = a; a = b; b = t; } // Swap for positive result
+                gameState.mathAnswer = a - b; 
+            }
+            else { op = 'x'; gameState.mathAnswer = a * b; } // Multiply
+
+            document.getElementById('math-problem').innerText = `${a} ${op} ${b} = ?`;
             document.getElementById('math-modal').classList.remove('hidden');
             
             const input = document.getElementById('math-input');
@@ -393,59 +487,61 @@
         function checkMath() {
             let val = parseInt(document.getElementById('math-input').value);
             if (val === gameState.mathAnswer) {
-                // Correct!
+                playSound('solve'); // Success sound
                 document.getElementById('math-modal').classList.add('hidden');
                 gameState.running = true;
-                gameState.score += 50;
-                // Remove the gate that triggered it
+                gameState.score += 100; // Bigger reward
                 entities = entities.filter(e => e.type !== 'gate');
                 requestAnimationFrame(gameLoop);
             } else {
-                // Wrong!
-                alert("Wrong! Try again.");
+                playSound('hit'); // Failure sound
                 document.getElementById('math-input').value = '';
                 document.getElementById('math-input').focus();
             }
         }
 
-        // --- INPUTS ---
+        // --- INPUTS (IMPROVED: Dedicated key state handling) ---
         window.addEventListener('keydown', (e) => {
             if (e.key === "Enter" && !document.getElementById('math-modal').classList.contains('hidden')) {
                 checkMath();
                 return;
             }
             if ((e.code === 'Space' || e.code === 'ArrowUp') && gameState.running) {
-                if (gameState.mode !== 'FIGHTER') player.jump();
+                keys.jump = true; // Set key state
+            }
+        });
+
+        window.addEventListener('keyup', (e) => {
+             if ((e.code === 'Space' || e.code === 'ArrowUp') && gameState.running) {
+                keys.jump = false; // Reset key state
             }
         });
 
         canvas.addEventListener('mousedown', (e) => {
-            if (gameState.mode === 'FIGHTER') {
-                // Check if clicked a spider
+            if (gameState.mode === 'FIGHTER' && gameState.running) {
                 const rect = canvas.getBoundingClientRect();
                 const mx = e.clientX - rect.left;
                 const my = e.clientY - rect.top;
                 
-                // Reverse loop to hit top ones first
                 for (let i = entities.length - 1; i >= 0; i--) {
                     let en = entities[i];
                     if (en.type === 'spider' && 
                         mx >= en.x && mx <= en.x + en.w && 
                         my >= en.y && my <= en.y + en.h) {
                         
-                        // Hit!
                         entities.splice(i, 1);
-                        gameState.score += 10;
+                        gameState.score += 20;
                         updateHUD();
-                        
-                        // Particle effect could go here
-                        return; // Hit one per click
+                        playSound('coin'); // Use coin sound for successful hit
+                        return;
                     }
                 }
+                playSound('hit'); // Miss sound
             } else {
                 if(gameState.running) player.jump();
             }
         });
+
 
         // --- GAME LOOP ---
         function gameLoop() {
@@ -453,16 +549,22 @@
 
             // 1. Update
             gameState.frames++;
-            gameState.score += 0.1;
+            gameState.score += 0.2; // Faster score gain
             
-            // Difficulty ramp
-            if (gameState.frames % 600 === 0) gameState.speed += 0.5;
+            // Apply jump from key state
+            if (keys.jump && gameState.mode !== 'FIGHTER') {
+                player.jump();
+                // Note: keys.jump isn't reset here, allowing for held jump on ground
+            }
 
-            // Spawn Logic
+            // Difficulty ramp (Faster speed increase)
+            if (gameState.frames % 300 === 0 && gameState.speed < CONFIG.maxSpeed) gameState.speed += 0.5;
+
             spawnManager();
 
             player.update();
             updateEntities();
+            updateParticles(); // NEW: Update particles
 
             // 2. Draw
             draw();
@@ -472,46 +574,61 @@
         }
 
         function spawnManager() {
-            let palette = PALETTES[settings.world];
-
             // Clouds (All modes)
             if (Math.random() < 0.01) {
-                entities.push({ type: 'cloud', x: canvas.width, y: Math.random() * 200, speed: Math.random() + 0.5 });
+                entities.push({ type: 'cloud', x: canvas.width, y: Math.random() * 200, speed: Math.random() * 0.5 + 0.5 });
             }
 
             // Mode Specific Spawns
             if (gameState.mode === 'RUNNER' || gameState.mode === 'DRIVER') {
-                // Obstacles
-                if (gameState.frames % 100 === 0) {
-                    if (Math.random() > 0.3) {
+                // Obstacles/Coins
+                if (gameState.frames % 70 === 0) { // More frequent spawns
+                    if (Math.random() > 0.4) {
                         let type = gameState.mode === 'DRIVER' ? 'rock' : 'pipe';
-                        entities.push({ 
-                            type: type, 
-                            x: canvas.width, 
-                            y: canvas.height - CONFIG.groundHeight - (type === 'rock' ? 30 : (Math.random()*60 + 40)),
-                            w: type === 'rock' ? 40 : 50,
-                            h: type === 'rock' ? 30 : 100, // height handled in draw for pipe
+                        let w = type === 'rock' ? 40 : 50;
+                        let h = type === 'rock' ? 30 : (Math.random()*60 + 40);
+                        let y = canvas.height - CONFIG.groundHeight - (type === 'rock' ? 30 : h);
+
+                        entities.push({ 
+                            type: type, 
+                            x: canvas.width, 
+                            y: y,
+                            w: w,
+                            h: h, 
                             passed: false
                         });
                     }
+
+                    // NEW: Spawn Coins
+                    if (Math.random() > 0.5) {
+                        for(let i=0; i<3; i++) { // Spawn a small cluster
+                            entities.push({
+                                type: 'coin',
+                                x: canvas.width + 50 * i,
+                                y: canvas.height - CONFIG.groundHeight - 100 - (Math.random() * 50),
+                                w: 20, h: 20,
+                                collected: false
+                            });
+                        }
+                    }
                 }
 
-                // Math Gate (Runner only)
-                if (gameState.mode === 'RUNNER' && gameState.frames % 800 === 0) {
+                // Math Gate (Runner only) - less frequent
+                if (gameState.mode === 'RUNNER' && gameState.frames % 1200 === 0) {
                      entities.push({ type: 'gate', x: canvas.width, y: canvas.height - CONFIG.groundHeight - 120, w: 60, h: 120 });
                 }
             }
 
             if (gameState.mode === 'FIGHTER') {
-                // Spawn Spiders
-                if (gameState.frames % 60 === 0) {
+                // Spawn Spiders (Faster/More)
+                if (gameState.frames % 40 === 0) {
                     let side = Math.random() > 0.5 ? 'left' : 'right';
                     entities.push({
                         type: 'spider',
                         x: side === 'left' ? -50 : canvas.width + 50,
                         y: canvas.height - CONFIG.groundHeight - 40,
                         w: 40, h: 30,
-                        vx: side === 'left' ? (Math.random() * 2 + 1) : -(Math.random() * 2 + 1)
+                        vx: side === 'left' ? (Math.random() * 3 + 1.5) : -(Math.random() * 3 + 1.5) // Faster
                     });
                 }
             }
@@ -524,13 +641,6 @@
                 // Movement
                 if (e.type === 'spider') {
                     e.x += e.vx;
-                    // Fighter mode collision (Spiders hitting center)
-                    let centerX = canvas.width / 2;
-                    if (Math.abs(e.x - centerX) < 20) {
-                        takeDamage();
-                        entities.splice(i, 1);
-                        continue;
-                    }
                 } else if (e.type === 'cloud') {
                     e.x -= e.speed;
                 } else {
@@ -543,21 +653,49 @@
                     continue;
                 }
 
-                // Collision Player vs Obstacles
-                if (gameState.mode !== 'FIGHTER' && e.type !== 'cloud') {
-                    // AABB Collision
-                    if (player.x < e.x + e.w &&
+                // Collision Player vs Entities
+                if (gameState.mode !== 'FIGHTER') {
+                    // AABB Collision Check (adjust h for player sprite)
+                    let p_h = gameState.mode === 'DRIVER' ? 35 : 45;
+                    
+                    if (player.x < e.x + (e.w || 50) &&
                         player.x + player.w > e.x &&
-                        player.y < e.y + e.h && // Simple height check
-                        player.y + player.h > e.y) {
+                        player.y < e.y + (e.h || 50) &&
+                        player.y + p_h > e.y) {
                         
                         if (e.type === 'gate') {
                             triggerMathLock();
-                        } else {
+                        } else if (e.type === 'coin') {
+                            collectCoin();
+                            entities.splice(i, 1);
+                        } else if (e.type === 'pipe' || e.type === 'rock') {
                             takeDamage();
-                            entities.splice(i, 1); // Remove obstacle after hit
+                            entities.splice(i, 1);
                         }
                     }
+                } else if (e.type === 'spider') {
+                    // Fighter mode collision (Spiders hitting center)
+                    let centerX = canvas.width / 2;
+                    if (Math.abs(e.x - centerX) < 20) {
+                        takeDamage();
+                        entities.splice(i, 1);
+                        continue;
+                    }
+                }
+            }
+        }
+
+        // NEW: Particle system
+        function updateParticles() {
+            for (let i = particles.length - 1; i >= 0; i--) {
+                let p = particles[i];
+                p.x += p.vx;
+                p.y += p.vy;
+                p.vy += 0.5; // Gravity
+                p.alpha -= 0.05;
+
+                if (p.alpha <= 0) {
+                    particles.splice(i, 1);
                 }
             }
         }
@@ -578,43 +716,57 @@
             // Entities
             entities.forEach(e => {
                 if (e.type === 'cloud') {
-                    ctx.fillStyle = 'rgba(255,255,255,0.5)';
+                    ctx.fillStyle = 'rgba(255,255,255,0.7)'; // Brighter clouds
                     ctx.beginPath(); ctx.arc(e.x, e.y, 30, 0, Math.PI*2); ctx.fill();
+                    ctx.beginPath(); ctx.arc(e.x + 20, e.y - 10, 20, 0, Math.PI*2); ctx.fill();
                 } else if (e.type === 'pipe') {
-                    ctx.fillStyle = '#00aa00';
-                    ctx.fillRect(e.x, e.y, e.w, canvas.height - e.y - CONFIG.groundHeight); // Extend to ground
-                    ctx.fillStyle = '#00ff00';
-                    ctx.fillRect(e.x, e.y, e.w, 20); // Rim
+                    ctx.fillStyle = '#008800'; // Darker pipe body
+                    ctx.fillRect(e.x, e.y, e.w, canvas.height - e.y - CONFIG.groundHeight); 
+                    ctx.fillStyle = '#00cc00'; // Brighter rim
+                    ctx.fillRect(e.x, e.y, e.w, 15); 
                 } else if (e.type === 'rock') {
-                    ctx.fillStyle = '#555';
-                    ctx.beginPath(); ctx.arc(e.x + 20, e.y + 15, 20, 0, Math.PI*2); ctx.fill();
+                    ctx.fillStyle = '#666';
+                    ctx.beginPath(); 
+                    ctx.moveTo(e.x, e.y + e.h); 
+                    ctx.lineTo(e.x + e.w / 2, e.y);
+                    ctx.lineTo(e.x + e.w, e.y + e.h);
+                    ctx.fill();
                 } else if (e.type === 'gate') {
-                    ctx.fillStyle = '#ffd700';
+                    ctx.fillStyle = '#ffce00';
                     ctx.fillRect(e.x, e.y, e.w, e.h);
-                    ctx.fillStyle = '#000';
-                    ctx.font = '20px Arial';
+                    ctx.fillStyle = '#333';
+                    ctx.font = '20px "Press Start 2P"';
                     ctx.fillText("?", e.x + 20, e.y + 60);
-                    ctx.fillText("LOCK", e.x + 5, e.y + 80);
+                    ctx.fillText("LOCK", e.x + 5, e.y + 100);
                 } else if (e.type === 'spider') {
-                    ctx.fillStyle = '#000';
-                    ctx.beginPath(); ctx.arc(e.x + 20, e.y + 15, 15, 0, Math.PI*2); ctx.fill(); // Body
-                    ctx.strokeStyle = '#000'; ctx.lineWidth = 2;
-                    // Legs
+                    ctx.fillStyle = '#222';
+                    ctx.beginPath(); ctx.arc(e.x + 20, e.y + 15, 15, 0, Math.PI*2); ctx.fill(); 
+                    ctx.strokeStyle = '#222'; ctx.lineWidth = 2;
                     ctx.beginPath(); ctx.moveTo(e.x+20, e.y+15); ctx.lineTo(e.x, e.y); ctx.stroke();
                     ctx.beginPath(); ctx.moveTo(e.x+20, e.y+15); ctx.lineTo(e.x+40, e.y); ctx.stroke();
-                    // Eyes
-                    ctx.fillStyle = 'red'; 
-                    ctx.beginPath(); ctx.arc(e.x+15, e.y+15, 2, 0, Math.PI*2); ctx.fill();
-                    ctx.beginPath(); ctx.arc(e.x+25, e.y+15, 2, 0, Math.PI*2); ctx.fill();
+                    ctx.fillStyle = 'red'; 
+                    ctx.beginPath(); ctx.arc(e.x+15, e.y+15, 3, 0, Math.PI*2); ctx.fill();
+                    ctx.beginPath(); ctx.arc(e.x+25, e.y+15, 3, 0, Math.PI*2); ctx.fill();
+                } else if (e.type === 'coin') {
+                    ctx.fillStyle = '#ffce00';
+                    ctx.beginPath(); ctx.arc(e.x + e.w / 2, e.y + e.h / 2, e.w / 2, 0, Math.PI*2); ctx.fill();
+                    ctx.fillStyle = '#d32f2f';
+                    ctx.font = '10px "Press Start 2P"';
+                    ctx.fillText("$", e.x + 5, e.y + 15);
                 }
+            });
+
+            // Particles
+            particles.forEach(p => {
+                ctx.fillStyle = `rgba(${p.color.r}, ${p.color.g}, ${p.color.b}, ${p.alpha})`;
+                ctx.fillRect(p.x, p.y, p.size, p.size);
             });
 
             // Player
             if (gameState.mode === 'FIGHTER') {
-                // Draw player in center
                 ctx.save();
-                ctx.translate(canvas.width/2 - 15, canvas.height - CONFIG.groundHeight - 40);
-                player.x = 0; player.y = 0; // Relative drawing
+                ctx.translate(canvas.width/2 - 15, canvas.height - CONFIG.groundHeight - 45); // Adjust Y for taller sprite
+                player.x = 0; player.y = 0; 
                 player.draw();
                 ctx.restore();
             } else {
