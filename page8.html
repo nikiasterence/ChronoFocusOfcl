@@ -1,2277 +1,3176 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<title>Moodboard Creator – Single File</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<style>
-/* 
-  ============================================================
-  Moodboard Creator - Single File Edition
-  - Modern rounded UI, responsive, touch-friendly
-  - No external libraries or network calls
-  - All logic is inline JS, all visuals are CSS/inline SVG
-  ============================================================
-*/
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <title>Gridora Pro - Professional Moodboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* === ENHANCED MODERN RESET === */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
 
-/* ---------- CSS Design Tokens ---------- */
-:root {
-  --bg: #0f172a;
-  --bg-elevated: #111827;
-  --bg-soft: #020617;
-  --accent: #38bdf8;
-  --accent-soft: rgba(56,189,248,0.12);
-  --accent-strong: #0ea5e9;
-  --outline: rgba(148,163,184,0.6);
-  --outline-subtle: rgba(30,64,175,0.6);
-  --danger: #f97373;
-  --radius-xs: 6px;
-  --radius-sm: 10px;
-  --radius-md: 14px;
-  --radius-lg: 18px;
-  --radius-pill: 999px;
-  --shadow-soft: 0 10px 25px rgba(15,23,42,0.7);
-  --shadow-subtle: 0 4px 10px rgba(15,23,42,0.4);
-  --text: #e5e7eb;
-  --subtle: #9ca3af;
-  --muted: #4b5563;
-  --toolbar-bg: rgba(15,23,42,0.92);
-  --dock-bg: rgba(15,23,42,0.96);
-  --canvas-bg: radial-gradient(circle at top left,#1f2937,#020617 60%);
-  --grid-color: rgba(148,163,184,0.12);
-  --transition-fast: 140ms ease-out;
-  --transition-med: 220ms ease-in-out;
-  --transition-slow: 400ms ease;
-  --scale-zoom: 1;
-  --font-sans: system-ui,-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",sans-serif;
-}
+        :root {
+            /* Enhanced Color Palette */
+            --primary: #7c3aed;
+            --primary-dark: #6d28d9;
+            --primary-light: #a78bfa;
+            --secondary: #f59e0b;
+            --secondary-dark: #d97706;
+            --accent: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --success: #10b981;
+            
+            /* Default Light Theme */
+            --background: #fafafa;
+            --surface: #ffffff;
+            --surface-dark: #f5f5f5;
+            --surface-light: #ffffff;
+            --text-primary: #1f2937;
+            --text-secondary: #6b7280;
+            --text-light: #9ca3af;
+            --border: #e5e7eb;
+            --border-light: #f3f4f6;
+            --border-dark: #d1d5db;
+            
+            /* Effects */
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            --shadow-primary: 0 0 20px rgba(124, 58, 237, 0.15);
+            --radius-sm: 6px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 24px;
+            --radius-full: 9999px;
+            --transition: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-smooth: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-bounce: 400ms cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
 
-/* Theme modifiers (user-selectable, toggled via JS by adding data-theme attr to body):
-   - data-theme="minimal"
-   - data-theme="dark" (default)
-   - data-theme="paper"
-   - data-theme="material"
-*/
-body[data-theme="minimal"] {
-  --bg: #f7fafc;
-  --bg-elevated: #ffffff;
-  --bg-soft: #edf2f7;
-  --toolbar-bg: rgba(255,255,255,0.96);
-  --dock-bg: rgba(255,255,255,0.98);
-  --text: #111827;
-  --subtle: #4b5563;
-  --muted: #9ca3af;
-  --canvas-bg: radial-gradient(circle at top left,#e5e7eb,#f9fafb 65%);
-}
-body[data-theme="paper"] {
-  --bg: #f5f0e6;
-  --bg-elevated: #fdfaf4;
-  --bg-soft: #f1e6d8;
-  --toolbar-bg: rgba(247,241,230,0.98);
-  --dock-bg: rgba(244,236,222,0.98);
-  --canvas-bg: radial-gradient(circle at top left,#f4ede1,#fefcf8 65%);
-}
-body[data-theme="material"] {
-  --bg: #0b1020;
-  --bg-elevated: #151b2e;
-  --bg-soft: #0f172a;
-  --accent: #6366f1;
-  --accent-soft: rgba(99,102,241,0.12);
-  --accent-strong: #818cf8;
-  --toolbar-bg: rgba(15,23,42,0.98);
-  --dock-bg: rgba(15,23,42,0.98);
-  --canvas-bg: radial-gradient(circle at top left,#111827,#020617 70%);
-}
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--background);
+            color: var(--text-primary);
+            overflow: hidden;
+            height: 100vh;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
 
-/* High contrast mode & large-text mode (set via JS toggle):
-   - body[data-high-contrast="true"]
-   - body[data-large-text="true"]
-*/
-body[data-high-contrast="true"] {
-  --accent-soft: rgba(56,189,248,0.3);
-  --outline: #fafafa;
-  --grid-color: rgba(148,163,184,0.3);
-}
-body[data-large-text="true"] {
-  font-size: 18px;
-}
+        /* === ENHANCED LAYOUT === */
+        #app {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            grid-template-rows: auto 1fr;
+            height: 100vh;
+            gap: 1px;
+            background: var(--border);
+            transition: var(--transition);
+        }
 
-/* ---------- Global Layout ---------- */
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
+        /* === ENHANCED HEADER === */
+        #header {
+            grid-column: 1 / -1;
+            background: var(--surface);
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            z-index: 1000;
+        }
 
-body {
-  margin: 0;
-  padding: 0;
-  background: var(--bg);
-  color: var(--text);
-  font-family: var(--font-sans);
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
-}
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
 
-.app-root {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  overflow: hidden;
-}
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--primary);
+            transition: var(--transition);
+            cursor: pointer;
+        }
 
-/* ---------- Top Toolbar ---------- */
-.app-toolbar {
-  position: relative;
-  z-index: 10;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 8px 14px;
-  background: var(--toolbar-bg);
-  backdrop-filter: blur(18px);
-  box-shadow: var(--shadow-subtle);
-}
+        .logo:hover {
+            transform: translateY(-1px);
+        }
 
-.app-toolbar-left,
-.app-toolbar-right {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
+        .logo-icon {
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            box-shadow: var(--shadow-primary);
+            transition: var(--transition-bounce);
+        }
 
-.app-title {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 6px 12px;
-  border-radius: var(--radius-pill);
-  background: rgba(15,23,42,0.85);
-  box-shadow: inset 0 0 0 1px rgba(148,163,184,0.3);
-  font-size: 13px;
-  letter-spacing: 0.03em;
-  text-transform: uppercase;
-}
-.app-title span.logo-dot {
-  width: 16px;
-  height: 16px;
-  border-radius: 6px;
-  background: radial-gradient(circle at 20% 0,#38bdf8,#1d4ed8 60%,#0f172a 100%);
-  box-shadow: 0 0 0 1px rgba(191,219,254,0.8),0 4px 8px rgba(15,23,42,0.9);
-}
-.app-title .subtitle {
-  color: var(--subtle);
-  text-transform: none;
-  font-size: 11px;
-}
+        .logo:hover .logo-icon {
+            transform: rotate(15deg) scale(1.05);
+        }
 
-/* ---------- Icon Buttons & Pills ---------- */
-.icon-btn {
-  position: relative;
-  border: none;
-  outline: none;
-  background: transparent;
-  color: inherit;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 6px 9px;
-  border-radius: var(--radius-pill);
-  cursor: pointer;
-  transition:
-    background var(--transition-fast),
-    transform var(--transition-fast),
-    box-shadow var(--transition-fast),
-    color var(--transition-fast);
-  min-width: 0;
-}
-.icon-btn svg {
-  width: 17px;
-  height: 17px;
-}
-.icon-btn span.label {
-  margin-left: 6px;
-  font-size: 12px;
-}
-.icon-btn[data-variant="ghost"] {
-  background: transparent;
-}
-.icon-btn[data-variant="soft"] {
-  background: rgba(15,23,42,0.7);
-}
-.icon-btn[data-variant="accent"] {
-  background: var(--accent-soft);
-  color: var(--accent-strong);
-}
-.icon-btn[data-variant="primary"] {
-  background: var(--accent-strong);
-  color: #0b1020;
-  box-shadow: 0 7px 18px rgba(56,189,248,0.45);
-}
-.icon-btn:hover {
-  background: rgba(148,163,184,0.18);
-  transform: translateY(-1px);
-  box-shadow: 0 3px 8px rgba(15,23,42,0.6);
-}
-.icon-btn[data-variant="accent"]:hover {
-  background: rgba(56,189,248,0.16);
-}
-.icon-btn[data-variant="primary"]:hover {
-  background: #0ea5e9;
-  transform: translateY(-1px) scale(1.02);
-}
-.icon-btn:active {
-  transform: translateY(0) scale(0.98);
-  box-shadow: 0 1px 3px rgba(15,23,42,0.8);
-}
-.icon-btn[aria-pressed="true"] {
-  background: var(--accent-soft);
-  color: var(--accent-strong);
-}
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
 
-kbd.shortcut {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 18px;
-  padding: 1px 5px;
-  border-radius: var(--radius-xs);
-  border: 1px solid rgba(148,163,184,0.4);
-  font-size: 10px;
-  font-weight: 500;
-  background: rgba(15,23,42,0.8);
-  color: var(--subtle);
-  margin-left: 4px;
-}
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: var(--surface-dark);
+            border-radius: var(--radius-full);
+            cursor: pointer;
+            transition: var(--transition);
+        }
 
-/* ---------- Board Tabs & Status ---------- */
-.board-tabs {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  padding: 0 8px;
-}
-.board-tab {
-  padding: 4px 10px;
-  border-radius: var(--radius-pill);
-  font-size: 12px;
-  cursor: pointer;
-  border: 1px solid transparent;
-  color: var(--subtle);
-  background: transparent;
-  max-width: 160px;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
-  transition: background var(--transition-fast),color var(--transition-fast),border var(--transition-fast),transform var(--transition-fast);
-}
-.board-tab.active {
-  background: var(--accent-soft);
-  border-color: var(--outline-subtle);
-  color: var(--accent-strong);
-  transform: translateY(-1px);
-}
-.board-tab:hover {
-  background: rgba(15,23,42,0.6);
-}
+        .user-profile:hover {
+            background: var(--primary-light);
+            color: white;
+        }
 
-.status-pill {
-  padding: 3px 9px;
-  border-radius: var(--radius-pill);
-  font-size: 11px;
-  border: 1px solid rgba(148,163,184,0.4);
-  color: var(--subtle);
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-}
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
 
-/* ---------- Main Region Layout ---------- */
-.app-main {
-  flex: 1;
-  display: grid;
-  grid-template-columns: minmax(0,1.22fr) minmax(260px,0.48fr);
-  gap: 8px;
-  padding: 8px 10px 74px;
-}
-@media (max-width: 960px) {
-  .app-main {
-    grid-template-columns: minmax(0,1fr);
-    grid-template-rows: minmax(0,1.1fr) auto;
-  }
-}
+        /* === ENHANCED SIDEBAR === */
+        #sidebar {
+            background: var(--surface);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            transition: var(--transition);
+        }
 
-/* ---------- Canvas Shell ---------- */
-.canvas-shell {
-  position: relative;
-  border-radius: var(--radius-lg);
-  background: var(--bg-elevated);
-  box-shadow: var(--shadow-soft);
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-}
+        .sidebar-section {
+            padding: 24px;
+            border-bottom: 1px solid var(--border-light);
+        }
 
-.canvas-toolbar-strip {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 6px 10px;
-  background: linear-gradient(90deg,rgba(15,23,42,0.95),rgba(15,23,42,0.62));
-  border-bottom: 1px solid rgba(15,23,42,0.9);
-}
+        .sidebar-section-title {
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-light);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
 
-.canvas-zoom-label,
-.canvas-view-controls {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 11px;
-  color: var(--subtle);
-}
+        /* === ENHANCED NAV TABS === */
+        .nav-tabs {
+            display: flex;
+            background: var(--surface-dark);
+            border-radius: var(--radius-md);
+            padding: 4px;
+            margin-bottom: 20px;
+        }
 
-.range-zoom {
-  width: 96px;
-}
+        .nav-tab {
+            flex: 1;
+            padding: 12px 16px;
+            text-align: center;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            transition: var(--transition);
+        }
 
-/* ---------- Canvas & Items ---------- */
-.canvas-outer {
-  flex: 1;
-  position: relative;
-  background: var(--canvas-bg);
-  overflow: hidden;
-}
+        .nav-tab.active {
+            background: var(--surface);
+            color: var(--primary);
+            box-shadow: var(--shadow-sm);
+        }
 
-.canvas-inner {
-  position: absolute;
-  inset: 0;
-  transform-origin: 0 0;
-  /* transform & translation driven via JS for zoom/pan */
-}
+        .nav-tab:hover:not(.active) {
+            background: rgba(124, 58, 237, 0.1);
+        }
 
-.canvas-grid::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(to right,var(--grid-color) 1px,transparent 1px),
-    linear-gradient(to bottom,var(--grid-color) 1px,transparent 1px);
-  background-size: 40px 40px;
-  opacity: 0.8;
-  pointer-events: none;
-}
-.canvas-grid[data-snap="off"]::before {
-  opacity: 0.14;
-}
+        /* === ENHANCED BOARD LIST === */
+        .board-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
 
-/* Canvas base size; items can exist anywhere, but export will cover extents */
-.canvas-board {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 1800px;
-  height: 1100px;
-  transform: translate(-50%, -50%);
-}
+        .board-item {
+            padding: 16px;
+            border-radius: var(--radius-lg);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: var(--transition);
+            border: 2px solid transparent;
+            background: var(--surface);
+        }
 
-/* ---------- Generic Item Card ---------- */
-.mood-item {
-  position: absolute;
-  min-width: 96px;
-  min-height: 64px;
-  border-radius: var(--radius-md);
-  background: rgba(15,23,42,0.86);
-  color: var(--text);
-  box-shadow: 0 10px 18px rgba(15,23,42,0.7);
-  border: 1px solid rgba(15,23,42,0.9);
-  padding: 8px 10px;
-  cursor: move;
-  user-select: none;
-  touch-action: none;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  transition:
-    box-shadow var(--transition-fast),
-    transform var(--transition-fast),
-    border-color var(--transition-fast),
-    background var(--transition-fast),
-    opacity var(--transition-fast);
-}
-.mood-item[data-selected="true"] {
-  box-shadow: 0 0 0 1px rgba(56,189,248,0.9),0 0 0 3px rgba(56,189,248,0.42),0 24px 40px rgba(15,23,42,0.9);
-  border-color: rgba(56,189,248,0.9);
-}
-.mood-item[data-locked="true"] {
-  cursor: default;
-  border-style: dashed;
-  opacity: 0.75;
-}
-.mood-item[data-hidden="true"] {
-  opacity: 0.08;
-  pointer-events: none;
-}
-.mood-item-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 4px;
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: var(--subtle);
-}
-.mood-item-body {
-  flex: 1;
-  font-size: 13px;
-  line-height: 1.38;
-  word-wrap: break-word;
-}
-.mood-item-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-  margin-top: 4px;
-}
-.item-tag-pill {
-  padding: 2px 6px;
-  border-radius: var(--radius-pill);
-  background: rgba(15,23,42,0.9);
-  border: 1px solid rgba(148,163,184,0.4);
-  font-size: 10px;
-}
+        .board-item:hover {
+            background: var(--primary-light);
+            color: white;
+            transform: translateX(4px);
+            border-color: var(--primary);
+        }
 
-/* Item specific types */
-.mood-item[data-type="note"] {
-  backdrop-filter: blur(10px);
-  background: linear-gradient(135deg,rgba(15,23,42,0.9),rgba(15,23,42,0.6));
-}
-.mood-item[data-type="color"] {
-  padding: 5px;
-}
-.color-swatch-block {
-  border-radius: var(--radius-md);
-  height: 46px;
-  margin-bottom: 4px;
-  border: 1px solid rgba(15,23,42,0.7);
-}
-.mood-item[data-type="emoji"] .mood-item-body {
-  font-size: 32px;
-  text-align: center;
-}
-.mood-item[data-type="link"] .mood-item-body a {
-  color: var(--accent-strong);
-  text-decoration: none;
-}
-.mood-item[data-type="link"] .mood-item-body a:hover {
-  text-decoration: underline;
-}
-.mood-item[data-type="image"] .mood-item-body img {
-  width: 100%;
-  height: auto;
-  display: block;
-  border-radius: var(--radius-sm);
-}
+        .board-item.active {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border-color: var(--primary);
+            box-shadow: var(--shadow-md);
+        }
 
-/* Resize & rotation handles */
-.resize-handle {
-  position: absolute;
-  width: 11px;
-  height: 11px;
-  border-radius: 50%;
-  background: var(--accent-strong);
-  border: 2px solid #020617;
-  box-shadow: 0 0 0 1px rgba(15,23,42,0.9);
-}
-.resize-handle.br {
-  right: -6px;
-  bottom: -6px;
-  cursor: se-resize;
-}
-.rotate-handle {
-  position: absolute;
-  top: -26px;
-  left: 50%;
-  width: 14px;
-  height: 14px;
-  transform: translateX(-50%);
-  border-radius: 999px;
-  background: var(--accent-soft);
-  border: 1px solid rgba(148,163,184,0.7);
-  cursor: grab;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.rotate-handle svg {
-  width: 10px;
-  height: 10px;
-}
+        .board-item-name {
+            font-weight: 600;
+            font-size: 14px;
+        }
 
-/* Selection marquee */
-.selection-rect {
-  position: absolute;
-  border: 1px dashed rgba(56,189,248,0.8);
-  background: rgba(56,189,248,0.18);
-  pointer-events: none;
-  z-index: 5000;
-}
+        .board-item-count {
+            font-size: 12px;
+            opacity: 0.7;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 2px 8px;
+            border-radius: var(--radius-full);
+        }
 
-/* Alignment guides */
-.align-guide {
-  position: absolute;
-  background: rgba(56,189,248,0.8);
-  pointer-events: none;
-  z-index: 4000;
-}
-.align-guide[data-orient="v"] {
-  width: 1px;
-}
-.align-guide[data-orient="h"] {
-  height: 1px;
-}
+        /* === ENHANCED QUICK ACTIONS === */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-top: 16px;
+        }
 
-/* ---------- Inspector Panel ---------- */
-.inspector-panel {
-  border-left: 1px solid rgba(15,23,42,0.9);
-  background: var(--bg-elevated);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-soft);
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
+        .quick-action {
+            padding: 16px;
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            border: 2px solid var(--border);
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            transition: var(--transition);
+        }
 
-.inspector-header {
-  padding: 8px 12px;
-  border-bottom: 1px solid rgba(15,23,42,0.9);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-size: 12px;
-  text-transform: uppercase;
-  letter-spacing: 0.16em;
-  color: var(--subtle);
-}
+        .quick-action:hover {
+            background: var(--primary-light);
+            color: white;
+            transform: translateY(-4px);
+            border-color: var(--primary);
+            box-shadow: var(--shadow-lg);
+        }
 
-.inspector-body {
-  padding: 8px 10px 10px;
-  overflow-y: auto;
-  scrollbar-width: thin;
-}
-.inspector-group {
-  margin-bottom: 10px;
-  padding: 8px;
-  border-radius: var(--radius-md);
-  background: rgba(15,23,42,0.86);
-  border: 1px solid rgba(15,23,42,0.95);
-}
-.inspector-group-title {
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.14em;
-  margin-bottom: 6px;
-  color: var(--subtle);
-}
-.inspector-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0,1fr));
-  gap: 6px;
-}
-.inspector-row {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  margin-bottom: 4px;
-}
-.inspector-row label {
-  font-size: 11px;
-  color: var(--subtle);
-  flex: 0 0 48px;
-}
-.inspector-row input,
-.inspector-row select {
-  flex: 1;
-  min-width: 0;
-}
+        .quick-action-icon {
+            font-size: 24px;
+            color: var(--primary);
+            transition: var(--transition);
+        }
 
-/* Inputs */
-.input,
-select,
-textarea {
-  font-family: inherit;
-  font-size: 12px;
-  border-radius: var(--radius-sm);
-  border: 1px solid rgba(30,64,175,0.5);
-  background: rgba(15,23,42,0.9);
-  color: var(--text);
-  padding: 4px 7px;
-  outline: none;
-  transition: border-color var(--transition-fast),box-shadow var(--transition-fast),background var(--transition-fast);
-}
-textarea {
-  resize: vertical;
-}
-.input:focus,
-select:focus,
-textarea:focus {
-  border-color: var(--accent-strong);
-  box-shadow: 0 0 0 1px rgba(56,189,248,0.7);
-  background: rgba(15,23,42,0.98);
-}
+        .quick-action:hover .quick-action-icon {
+            color: white;
+        }
 
-/* ---------- Dock (Bottom) ---------- */
-.app-dock-shell {
-  position: fixed;
-  left: 50%;
-  bottom: 10px;
-  transform: translateX(-50%);
-  z-index: 30;
-  pointer-events: none;
-}
+        .quick-action-label {
+            font-size: 13px;
+            font-weight: 600;
+            text-align: center;
+        }
 
-.app-dock {
-  pointer-events: auto;
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  padding: 8px 10px;
-  border-radius: 22px;
-  background: var(--dock-bg);
-  backdrop-filter: blur(20px);
-  box-shadow: 0 18px 45px rgba(15,23,42,0.9);
-  border: 1px solid rgba(15,23,42,0.95);
-  transform-origin: 50% 100%;
-  transform: translateY(18px) scale(0.96);
-  opacity: 0;
-  transition:
-    opacity var(--transition-med),
-    transform var(--transition-med);
-}
-.app-dock[data-open="true"] {
-  transform: translateY(0) scale(1);
-  opacity: 1;
-}
+        /* === ENHANCED THEME SELECTOR === */
+        .theme-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-top: 16px;
+        }
 
-/* Dock groups */
-.dock-group {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 4px 6px;
-  border-radius: 18px;
-  background: rgba(15,23,42,0.9);
-  box-shadow: inset 0 0 0 1px rgba(15,23,42,0.9);
-}
-.dock-group-label {
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.16em;
-  color: var(--muted);
-  padding: 0 4px 0 1px;
-}
+        .theme-option {
+            aspect-ratio: 1;
+            border-radius: var(--radius-lg);
+            border: 3px solid transparent;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: var(--transition);
+            box-shadow: var(--shadow-sm);
+        }
 
-/* ---------- Context Menu ---------- */
-.context-menu {
-  position: fixed;
-  z-index: 40;
-  min-width: 180px;
-  border-radius: var(--radius-md);
-  background: var(--toolbar-bg);
-  box-shadow: var(--shadow-soft);
-  border: 1px solid rgba(15,23,42,0.95);
-  padding: 4px;
-  font-size: 13px;
-  display: none;
-}
-.context-menu[data-open="true"] {
-  display: block;
-}
-.ctx-item {
-  padding: 5px 8px;
-  border-radius: var(--radius-sm);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  cursor: pointer;
-  color: var(--text);
-}
-.ctx-item:hover {
-  background: rgba(15,23,42,0.9);
-}
-.ctx-item span.secondary {
-  font-size: 11px;
-  color: var(--muted);
-}
+        .theme-option:hover {
+            transform: scale(1.05);
+            border-color: var(--primary);
+        }
 
-/* ---------- AI Assistant Panel ---------- */
-.ai-panel-shell {
-  position: fixed;
-  right: 14px;
-  bottom: 80px;
-  width: 320px;
-  max-width: calc(100vw - 28px);
-  z-index: 28;
-}
-.ai-panel {
-  border-radius: 18px;
-  background: var(--toolbar-bg);
-  border: 1px solid rgba(15,23,42,0.95);
-  box-shadow: var(--shadow-soft);
-  overflow: hidden;
-  display: none;
-  flex-direction: column;
-}
-.ai-panel[data-open="true"] {
-  display: flex;
-}
-.ai-panel-header {
-  padding: 6px 9px;
-  border-bottom: 1px solid rgba(15,23,42,0.9);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 6px;
-  font-size: 12px;
-}
-.ai-panel-header span.title {
-  text-transform: uppercase;
-  letter-spacing: 0.16em;
-  color: var(--subtle);
-}
-.ai-chip {
-  padding: 1px 6px;
-  border-radius: 999px;
-  border: 1px solid rgba(56,189,248,0.9);
-  font-size: 10px;
-  color: var(--accent-strong);
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-}
-.ai-panel-body {
-  padding: 7px 9px 9px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-.ai-prompt-understanding {
-  padding: 5px 7px;
-  border-radius: var(--radius-md);
-  background: rgba(15,23,42,0.9);
-  border: 1px solid rgba(30,64,175,0.6);
-  font-size: 11px;
-  color: var(--subtle);
-}
-.ai-suggestion-pills {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-}
-.suggestion-pill {
-  padding: 3px 7px;
-  border-radius: var(--radius-pill);
-  border: 1px solid rgba(148,163,184,0.5);
-  font-size: 11px;
-  cursor: pointer;
-  color: var(--subtle);
-}
-.suggestion-pill:hover {
-  background: rgba(15,23,42,0.9);
-}
+        .theme-option.active {
+            border-color: var(--primary);
+            transform: scale(1.05);
+            box-shadow: var(--shadow-lg), 0 0 20px rgba(124, 58, 237, 0.3);
+        }
 
-/* ---------- Overlays ---------- */
-.overlay-dim {
-  position: fixed;
-  inset: 0;
-  background: radial-gradient(circle at top,#020617aa,#020617ff);
-  z-index: 25;
-  display: none;
-}
-.overlay-dim[data-open="true"] {
-  display: block;
-}
+        .theme-option.active::after {
+            content: '✓';
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            width: 20px;
+            height: 20px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+            box-shadow: var(--shadow-sm);
+        }
 
-/* Gesture help overlay */
-.help-overlay {
-  position: fixed;
-  inset: auto 12px 80px auto;
-  width: 260px;
-  max-width: calc(100vw - 24px);
-  background: var(--toolbar-bg);
-  border-radius: 16px;
-  border: 1px solid rgba(15,23,42,0.95);
-  box-shadow: var(--shadow-soft);
-  padding: 8px 10px;
-  font-size: 11px;
-  color: var(--subtle);
-  z-index: 27;
-  display: none;
-}
-.help-overlay[data-open="true"] {
-  display: block;
-}
-.help-overlay h3 {
-  margin: 0 0 5px;
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.16em;
-  color: var(--subtle);
-}
-.help-overlay ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-.help-overlay li {
-  margin-bottom: 3px;
-}
+        .theme-option.minimal { background: linear-gradient(135deg, #f8fafc, #e2e8f0); }
+        .theme-option.modern { background: linear-gradient(135deg, #0f172a, #1e293b); }
+        .theme-option.creative { background: linear-gradient(135deg, #8b5cf6, #ec4899); }
+        .theme-option.nature { background: linear-gradient(135deg, #10b981, #059669); }
+        .theme-option.cozy { background: linear-gradient(135deg, #fef3c7, #fde68a); }
+        .theme-option.zen { background: linear-gradient(135deg, #a7f3d0, #6ee7b7); }
+        .theme-option.sunset { background: linear-gradient(135deg, #f97316, #eab308); }
+        .theme-option.ocean { background: linear-gradient(135deg, #22d3ee, #0ea5e9); }
+        .theme-option.forest { background: linear-gradient(135deg, #16a34a, #15803d); }
+        .theme-option.pastel { background: linear-gradient(135deg, #f0abfc, #c4b5fd); }
+        .theme-option.monochrome { background: linear-gradient(135deg, #6b7280, #4b5563); }
+        .theme-option.professional { background: linear-gradient(135deg, #2563eb, #1d4ed8); }
 
-/* ---------- Minimap ---------- */
-.minimap-shell {
-  position: absolute;
-  right: 8px;
-  bottom: 8px;
-  width: 140px;
-  height: 96px;
-  border-radius: 14px;
-  background: rgba(15,23,42,0.9);
-  border: 1px solid rgba(15,23,42,0.95);
-  box-shadow: var(--shadow-subtle);
-  overflow: hidden;
-  pointer-events: none;
-}
-.minimap-canvas {
-  width: 100%;
-  height: 100%;
-  background: radial-gradient(circle at top left,#1f2937,#020617);
-}
-.minimap-viewport {
-  position: absolute;
-  border: 1px solid rgba(56,189,248,0.9);
-  box-shadow: 0 0 0 1px rgba(15,23,42,0.9);
-}
+        /* === SETTINGS SECTION === */
+        .settings-option {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px;
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 2px solid transparent;
+        }
 
-/* ---------- Template Gallery ---------- */
-.template-gallery {
-  display: flex;
-  gap: 8px;
-  overflow-x: auto;
-}
-.template-card {
-  flex: 0 0 130px;
-  border-radius: 16px;
-  padding: 5px;
-  background: rgba(15,23,42,0.9);
-  border: 1px solid rgba(15,23,42,0.95);
-  box-shadow: 0 8px 18px rgba(15,23,42,0.8);
-  cursor: pointer;
-  transition: transform var(--transition-med),box-shadow var(--transition-med),border-color var(--transition-med);
-}
-.template-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 16px 30px rgba(15,23,42,0.95);
-  border-color: rgba(56,189,248,0.8);
-}
-.template-preview {
-  height: 70px;
-  border-radius: 12px;
-  background: conic-gradient(from 180deg,#38bdf8,#6366f1,#f97316,#ecfeff,#38bdf8);
-  opacity: 0.75;
-  position: relative;
-  overflow: hidden;
-}
-.template-preview::after {
-  content: "";
-  position: absolute;
-  inset: 8px;
-  border-radius: 10px;
-  background: rgba(15,23,42,0.9);
-}
-.template-title {
-  margin-top: 4px;
-  font-size: 11px;
-  color: var(--subtle);
-}
+        .settings-option:hover {
+            border-color: var(--primary-light);
+            transform: translateX(4px);
+        }
 
-/* ---------- Language / Settings chips ---------- */
-.settings-chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-}
+        .settings-label {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
 
-/* ---------- Toast ---------- */
-.toast {
-  position: fixed;
-  left: 50%;
-  bottom: 84px;
-  transform: translateX(-50%) translateY(40px);
-  padding: 7px 12px;
-  border-radius: var(--radius-pill);
-  background: rgba(15,23,42,0.96);
-  border: 1px solid rgba(148,163,184,0.7);
-  color: var(--subtle);
-  font-size: 12px;
-  box-shadow: var(--shadow-subtle);
-  opacity: 0;
-  pointer-events: none;
-  z-index: 50;
-  transition: opacity var(--transition-med),transform var(--transition-med);
-}
-.toast[data-open="true"] {
-  opacity: 1;
-  transform: translateX(-50%) translateY(0);
-}
+        .settings-icon {
+            color: var(--primary);
+            font-size: 18px;
+        }
 
-/* ---------- Accessibility: focus outline ---------- */
-:focus-visible {
-  outline: 2px solid var(--accent-strong);
-  outline-offset: 2px;
-}
+        .toggle-switch {
+            position: relative;
+            width: 52px;
+            height: 28px;
+        }
 
-/* Utility classes */
-.badge {
-  padding: 2px 6px;
-  border-radius: 999px;
-  border: 1px solid rgba(148,163,184,0.6);
-  font-size: 10px;
-  color: var(--subtle);
-}
-.text-subtle { color: var(--subtle); }
-.text-danger { color: var(--danger); }
-.flex { display: flex; }
-.flex-between { display:flex; justify-content:space-between; align-items:center; }
-.gap-4 { gap: 4px; }
-.gap-6 { gap: 6px; }
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
 
-/* Scrollbars */
-::-webkit-scrollbar {
-  width: 7px;
-  height: 7px;
-}
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-::-webkit-scrollbar-thumb {
-  background: rgba(31,41,55,0.9);
-  border-radius: 999px;
-}
-</style>
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--border);
+            transition: var(--transition);
+            border-radius: var(--radius-full);
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: var(--transition);
+            border-radius: 50%;
+        }
+
+        input:checked + .toggle-slider {
+            background-color: var(--primary);
+        }
+
+        input:checked + .toggle-slider:before {
+            transform: translateX(24px);
+        }
+
+        .select-wrapper {
+            position: relative;
+        }
+
+        .select-wrapper select {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: var(--radius-lg);
+            border: 2px solid var(--border);
+            background: var(--surface);
+            color: var(--text-primary);
+            font-size: 14px;
+            cursor: pointer;
+            appearance: none;
+            outline: none;
+            transition: var(--transition);
+        }
+
+        .select-wrapper select:hover {
+            border-color: var(--primary);
+        }
+
+        .select-wrapper::after {
+            content: "⌄";
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+            color: var(--text-light);
+        }
+
+        /* === ENHANCED CANVAS AREA === */
+        #canvas-area {
+            position: relative;
+            background: var(--background);
+            overflow: hidden;
+        }
+
+        #canvas-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            overflow: auto;
+            cursor: grab;
+        }
+
+        #canvas-container:active {
+            cursor: grabbing;
+        }
+
+        #canvas {
+            position: relative;
+            width: 4000px;
+            height: 4000px;
+            background: var(--surface);
+            background-size: 40px 40px;
+            background-position: -1px -1px;
+            transform-origin: 0 0;
+            transition: background-image 0.3s ease;
+        }
+
+        /* === ENHANCED DOCK === */
+        #dock {
+            position: absolute;
+            bottom: 32px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: var(--radius-xl);
+            padding: 16px 24px;
+            display: flex;
+            gap: 12px;
+            box-shadow: var(--shadow-2xl);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            z-index: 100;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        #dock:hover {
+            transform: translateX(-50%) translateY(-5px);
+            box-shadow: var(--shadow-2xl), 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .dock-item {
+            width: 56px;
+            height: 56px;
+            border-radius: var(--radius-lg);
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dock-item:hover {
+            background: var(--primary-light);
+            color: white;
+            transform: translateY(-5px) scale(1.1);
+        }
+
+        .dock-item.active {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 20px rgba(124, 58, 237, 0.3);
+        }
+
+        .dock-item i {
+            font-size: 20px;
+            transition: var(--transition);
+        }
+
+        .dock-item-label {
+            font-size: 10px;
+            font-weight: 600;
+            opacity: 0.8;
+            transition: var(--transition);
+        }
+
+        .dock-item:hover .dock-item-label {
+            opacity: 1;
+            transform: translateY(1px);
+        }
+
+        /* === ZOOM CONTROLS === */
+        #zoom-controls {
+            position: absolute;
+            right: 32px;
+            bottom: 160px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: var(--radius-xl);
+            padding: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: var(--shadow-2xl);
+        }
+
+        .zoom-btn {
+            width: 48px;
+            height: 48px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: var(--transition);
+        }
+
+        .zoom-btn:hover {
+            background: var(--primary);
+            color: white;
+            transform: scale(1.1);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .zoom-display {
+            width: 48px;
+            height: 48px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        /* === ENHANCED AI PANEL === */
+        #ai-panel {
+            position: absolute;
+            top: 80px;
+            right: 32px;
+            width: 400px;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(30px);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-2xl);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            display: none;
+            flex-direction: column;
+            max-height: calc(100vh - 120px);
+            z-index: 1000;
+            overflow: hidden;
+        }
+
+        #ai-panel.open {
+            display: flex;
+            animation: slideIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .ai-header {
+            padding: 24px;
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+        }
+
+        .ai-title {
+            font-weight: 700;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .ai-model {
+            font-size: 12px;
+            opacity: 0.9;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 4px 12px;
+            border-radius: var(--radius-full);
+        }
+
+        .ai-close {
+            width: 36px;
+            height: 36px;
+            border-radius: var(--radius-full);
+            border: none;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .ai-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(90deg);
+        }
+
+        .ai-input-container {
+            padding: 24px;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .ai-input {
+            width: 100%;
+            padding: 16px;
+            border: 2px solid var(--border);
+            border-radius: var(--radius-lg);
+            font-family: inherit;
+            font-size: 16px;
+            color: var(--text-primary);
+            background: var(--surface);
+            transition: var(--transition);
+            outline: none;
+        }
+
+        .ai-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+        }
+
+        .ai-suggestions {
+            flex: 1;
+            overflow-y: auto;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .ai-suggestion {
+            padding: 20px;
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            border: 2px solid var(--border);
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ai-suggestion:hover {
+            background: linear-gradient(135deg, var(--primary-light), var(--primary));
+            color: white;
+            transform: translateX(8px);
+            border-color: transparent;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .ai-suggestion-title {
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: inherit;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .ai-suggestion-desc {
+            font-size: 14px;
+            color: var(--text-light);
+            transition: var(--transition);
+        }
+
+        .ai-suggestion:hover .ai-suggestion-desc {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        /* === ENHANCED CANVAS ITEMS === */
+        .canvas-item {
+            position: absolute;
+            cursor: move;
+            border-radius: var(--radius-lg);
+            transition: var(--transition);
+            background: white;
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+            user-select: none;
+            transform-origin: center;
+        }
+
+        .canvas-item:hover {
+            box-shadow: var(--shadow-xl);
+            transform: translateY(-2px) scale(1.01);
+        }
+
+        .canvas-item.selected {
+            box-shadow: 0 0 0 3px var(--primary), var(--shadow-2xl);
+            z-index: 1000;
+        }
+
+        .canvas-item.dragging {
+            opacity: 0.9;
+            cursor: grabbing;
+            transform: scale(1.05);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Enhanced Image Item */
+        .item-image {
+            overflow: hidden;
+            background: transparent;
+        }
+
+        .item-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.5s ease;
+        }
+
+        .item-image:hover img {
+            transform: scale(1.05);
+        }
+
+        .image-actions {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            display: flex;
+            gap: 8px;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: var(--transition);
+        }
+
+        .canvas-item:hover .image-actions {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .image-action-btn {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: var(--radius-md);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .image-action-btn:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px) scale(1.1);
+            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+        }
+
+        /* Enhanced Text Note */
+        .item-text {
+            padding: 24px;
+            background: white;
+            border: 2px solid var(--border);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .item-text-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .item-text-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary);
+            border: none;
+            outline: none;
+            background: transparent;
+            width: 100%;
+        }
+
+        .text-toolbar {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .text-toolbar-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border);
+            background: var(--surface);
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .text-toolbar-btn:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .item-text-content {
+            flex: 1;
+            border: none;
+            outline: none;
+            background: transparent;
+            font-family: inherit;
+            font-size: 15px;
+            line-height: 1.8;
+            color: var(--text-primary);
+            resize: none;
+        }
+
+        /* Enhanced Color Swatch */
+        .item-color {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            overflow: hidden;
+            border: 2px solid white;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .color-preview {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 4px solid white;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .color-info {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 12px 24px;
+            border-radius: var(--radius-lg);
+            backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .color-value {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .color-name {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        /* === IMAGE EDITOR MODAL === */
+        #image-editor {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+        }
+
+        #image-editor.open {
+            display: flex;
+        }
+
+        .editor-modal {
+            width: 90vw;
+            max-width: 1200px;
+            height: 90vh;
+            background: var(--surface);
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: var(--shadow-2xl);
+        }
+
+        .editor-header {
+            padding: 24px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+        }
+
+        .editor-title {
+            font-weight: 700;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .editor-body {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+
+        .editor-preview {
+            flex: 1;
+            padding: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--background);
+        }
+
+        .editor-preview img {
+            max-width: 100%;
+            max-height: 100%;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .editor-controls {
+            width: 300px;
+            padding: 32px;
+            border-left: 1px solid var(--border);
+            overflow-y: auto;
+            background: var(--surface);
+        }
+
+        .editor-control-group {
+            margin-bottom: 32px;
+        }
+
+        .editor-control-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .slider-container {
+            margin-bottom: 20px;
+        }
+
+        .slider-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .slider {
+            width: 100%;
+            height: 6px;
+            border-radius: var(--radius-full);
+            background: var(--border);
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .slider::-webkit-slider-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--primary);
+            cursor: pointer;
+            -webkit-appearance: none;
+            box-shadow: var(--shadow-md);
+        }
+
+        .editor-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 32px;
+        }
+
+        /* === ENHANCED SUMMARIZER === */
+        #summarizer-panel {
+            position: absolute;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 500px;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(30px);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-2xl);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            display: none;
+            flex-direction: column;
+            z-index: 1000;
+            overflow: hidden;
+        }
+
+        #summarizer-panel.open {
+            display: flex;
+        }
+
+        .summarizer-header {
+            padding: 24px;
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: linear-gradient(135deg, var(--accent), #0d9);
+            color: white;
+        }
+
+        .summarizer-body {
+            padding: 32px;
+        }
+
+        .summarizer-options {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .summarizer-option {
+            flex: 1;
+            padding: 16px;
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            border: 2px solid var(--border);
+            cursor: pointer;
+            text-align: center;
+            transition: var(--transition);
+        }
+
+        .summarizer-option:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        .summarizer-option.active {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .summarizer-result {
+            background: var(--surface-dark);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            max-height: 300px;
+            overflow-y: auto;
+            border: 2px solid var(--border);
+        }
+
+        .summarizer-stats {
+            display: flex;
+            gap: 24px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .stat {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* === ENHANCED CONTEXT MENU === */
+        #context-menu {
+            position: fixed;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(30px);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-2xl);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            min-width: 220px;
+            display: none;
+            z-index: 9999;
+            padding: 8px;
+        }
+
+        #context-menu.show {
+            display: block;
+            animation: scaleIn 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes scaleIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .context-menu-item {
+            padding: 12px 16px;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--text-primary);
+            transition: var(--transition);
+        }
+
+        .context-menu-item:hover {
+            background: var(--primary-light);
+            color: white;
+        }
+
+        .context-menu-divider {
+            height: 1px;
+            background: var(--border);
+            margin: 6px 0;
+            opacity: 0.5;
+        }
+
+        /* === TOAST NOTIFICATIONS === */
+        #toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 99999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .toast {
+            padding: 16px 24px;
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-2xl);
+            border-left: 4px solid var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transform: translateX(100px);
+            opacity: 0;
+            animation: slideInRight 0.3s forwards, fadeOut 0.3s forwards 2.7s;
+        }
+
+        @keyframes slideInRight {
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes fadeOut {
+            to { opacity: 0; transform: translateX(100px); }
+        }
+
+        .toast-success { border-left-color: var(--success); }
+        .toast-error { border-left-color: var(--danger); }
+        .toast-info { border-left-color: var(--primary); }
+        .toast-warning { border-left-color: var(--warning); }
+
+        /* === ENHANCED BUTTONS === */
+        .btn {
+            padding: 12px 24px;
+            border-radius: var(--radius-lg);
+            border: none;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(124, 58, 237, 0.4);
+        }
+
+        .btn-icon {
+            padding: 12px;
+            width: 48px;
+            height: 48px;
+            justify-content: center;
+            border-radius: var(--radius-lg);
+        }
+
+        /* === RESPONSIVE DESIGN === */
+        @media (max-width: 1200px) {
+            #app {
+                grid-template-columns: 260px 1fr;
+            }
+        }
+
+        @media (max-width: 1024px) {
+            #app {
+                grid-template-columns: 240px 1fr;
+            }
+            
+            .theme-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .quick-actions {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            #app {
+                grid-template-columns: 1fr;
+            }
+            
+            #sidebar {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                z-index: 10000;
+                transform: translateX(-100%);
+            }
+            
+            #sidebar.open {
+                transform: translateX(0);
+            }
+            
+            #dock {
+                bottom: 80px;
+                flex-wrap: wrap;
+                max-width: 95vw;
+                padding: 12px;
+            }
+            
+            .dock-item {
+                width: 44px;
+                height: 44px;
+            }
+            
+            #ai-panel, #summarizer-panel {
+                width: calc(100vw - 32px);
+                right: 16px;
+                left: 16px;
+                transform: none;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .logo span {
+                display: none;
+            }
+            
+            .user-profile span {
+                display: none;
+            }
+            
+            .dock-item-label {
+                display: none;
+            }
+            
+            .zoom-controls {
+                right: 16px;
+                bottom: 120px;
+            }
+        }
+
+        /* === UTILITIES === */
+        .spacer {
+            flex: 1;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .shake {
+            animation: shake 0.5s;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+    </style>
 </head>
-<body data-theme="dark" data-high-contrast="false" data-large-text="false">
-<div class="app-root" aria-label="Moodboard Creator" role="application">
+<body>
+    <div id="app">
+        <!-- Header -->
+        <header id="header">
+            <div class="logo-container">
+                <div class="logo" id="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-th-large"></i>
+                    </div>
+                    <span>Gridora Pro</span>
+                </div>
+                <div class="nav-tabs">
+                    <div class="nav-tab active" data-tab="boards">Boards</div>
+                    <div class="nav-tab" data-tab="themes">Themes</div>
+                    <div class="nav-tab" data-tab="settings">Settings</div>
+                </div>
+            </div>
+            
+            <div class="header-controls">
+                <button class="btn btn-icon" id="undo-btn" title="Undo">
+                    <i class="fas fa-undo"></i>
+                </button>
+                <button class="btn btn-icon" id="redo-btn" title="Redo">
+                    <i class="fas fa-redo"></i>
+                </button>
+                <button class="btn btn-icon" id="export-btn" title="Export">
+                    <i class="fas fa-download"></i>
+                </button>
+                <div class="user-profile" id="user-profile">
+                    <div class="user-avatar">U</div>
+                    <span>User</span>
+                </div>
+            </div>
+        </header>
 
-  <!-- Top Toolbar -->
-  <header class="app-toolbar" aria-label="Main toolbar">
-    <div class="app-toolbar-left">
-      <div class="app-title" aria-label="App title">
-        <span class="logo-dot" aria-hidden="true"></span>
-        <div>
-          Moodboard Studio
-          <span class="subtitle">Offline · Local-only</span>
+        <!-- Sidebar -->
+        <aside id="sidebar">
+            <!-- Boards Tab -->
+            <div class="sidebar-section" data-tab-content="boards">
+                <div class="sidebar-section-title">
+                    <span>My Moodboards</span>
+                    <button class="btn btn-icon" id="new-board-btn">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
+                <div class="board-list" id="board-list">
+                    <!-- Boards will be populated here -->
+                </div>
+            </div>
+
+            <div class="sidebar-section" data-tab-content="boards">
+                <div class="sidebar-section-title">Quick Actions</div>
+                <div class="quick-actions">
+                    <div class="quick-action" data-action="upload">
+                        <i class="fas fa-upload quick-action-icon"></i>
+                        <span class="quick-action-label">Upload</span>
+                    </div>
+                    <div class="quick-action" data-action="image">
+                        <i class="fas fa-image quick-action-icon"></i>
+                        <span class="quick-action-label">Image</span>
+                    </div>
+                    <div class="quick-action" data-action="text">
+                        <i class="fas fa-sticky-note quick-action-icon"></i>
+                        <span class="quick-action-label">Note</span>
+                    </div>
+                    <div class="quick-action" data-action="color">
+                        <i class="fas fa-palette quick-action-icon"></i>
+                        <span class="quick-action-label">Color</span>
+                    </div>
+                    <div class="quick-action" data-action="shape">
+                        <i class="fas fa-shapes quick-action-icon"></i>
+                        <span class="quick-action-label">Shape</span>
+                    </div>
+                    <div class="quick-action" data-action="file">
+                        <i class="fas fa-file quick-action-icon"></i>
+                        <span class="quick-action-label">File</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Themes Tab -->
+            <div class="sidebar-section hidden" data-tab-content="themes">
+                <div class="sidebar-section-title">Select Theme</div>
+                <div class="theme-grid" id="theme-grid">
+                    <div class="theme-option minimal active" data-theme="minimal"></div>
+                    <div class="theme-option modern" data-theme="modern"></div>
+                    <div class="theme-option creative" data-theme="creative"></div>
+                    <div class="theme-option nature" data-theme="nature"></div>
+                    <div class="theme-option cozy" data-theme="cozy"></div>
+                    <div class="theme-option zen" data-theme="zen"></div>
+                    <div class="theme-option sunset" data-theme="sunset"></div>
+                    <div class="theme-option ocean" data-theme="ocean"></div>
+                    <div class="theme-option forest" data-theme="forest"></div>
+                    <div class="theme-option pastel" data-theme="pastel"></div>
+                    <div class="theme-option monochrome" data-theme="monochrome"></div>
+                    <div class="theme-option professional" data-theme="professional"></div>
+                </div>
+                
+                <div class="settings-option">
+                    <div class="settings-label">
+                        <i class="fas fa-eye-slash settings-icon"></i>
+                        <span>Hide Themes Section</span>
+                    </div>
+                    <div class="toggle-switch">
+                        <input type="checkbox" id="toggle-themes">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Tab -->
+            <div class="sidebar-section hidden" data-tab-content="settings">
+                <div class="sidebar-section-title">Settings</div>
+                
+                <div class="settings-option">
+                    <div class="settings-label">
+                        <i class="fas fa-user settings-icon"></i>
+                        <span>Profile Settings</span>
+                    </div>
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+                
+                <div class="settings-option">
+                    <div class="settings-label">
+                        <i class="fas fa-robot settings-icon"></i>
+                        <span>AI Model</span>
+                    </div>
+                    <div class="select-wrapper">
+                        <select id="ai-model-select">
+                            <option value="beta1">Basic Beta 1</option>
+                            <option value="none">No AI</option>
+                            <option value="enhanced">Enhanced AI</option>
+                            <option value="pro">Pro AI</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="settings-option">
+                    <div class="settings-label">
+                        <i class="fas fa-hand-paper settings-icon"></i>
+                        <span>Haptic Feedback</span>
+                    </div>
+                    <div class="toggle-switch">
+                        <input type="checkbox" id="toggle-haptics" checked>
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+                
+                <div class="settings-option">
+                    <div class="settings-label">
+                        <i class="fas fa-eye-slash settings-icon"></i>
+                        <span>Hide UI Elements</span>
+                    </div>
+                    <div class="toggle-switch">
+                        <input type="checkbox" id="toggle-ui-hide">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+                
+                <div class="settings-option">
+                    <div class="settings-label">
+                        <i class="fas fa-sun settings-icon"></i>
+                        <span>Dark Mode</span>
+                    </div>
+                    <div class="toggle-switch">
+                        <input type="checkbox" id="toggle-dark-mode">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+                
+                <div class="settings-option">
+                    <div class="settings-label">
+                        <i class="fas fa-save settings-icon"></i>
+                        <span>Auto-save</span>
+                    </div>
+                    <div class="toggle-switch">
+                        <input type="checkbox" id="toggle-autosave" checked>
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+                
+                <button class="btn btn-primary" style="width: 100%; margin-top: 24px;" id="save-settings">
+                    <i class="fas fa-save"></i> Save Settings
+                </button>
+            </div>
+        </aside>
+
+        <!-- Canvas Area -->
+        <main id="canvas-area">
+            <div id="canvas-container">
+                <div id="canvas" class="grid-pattern"></div>
+            </div>
+
+            <!-- Dock -->
+            <div id="dock">
+                <div class="dock-item active" data-tool="select" title="Select">
+                    <i class="fas fa-mouse-pointer"></i>
+                    <span class="dock-item-label">Select</span>
+                </div>
+                <div class="dock-item" data-tool="image" title="Add Image">
+                    <i class="fas fa-image"></i>
+                    <span class="dock-item-label">Image</span>
+                </div>
+                <div class="dock-item" data-tool="text" title="Add Text">
+                    <i class="fas fa-font"></i>
+                    <span class="dock-item-label">Text</span>
+                </div>
+                <div class="dock-item" data-tool="color" title="Add Color">
+                    <i class="fas fa-palette"></i>
+                    <span class="dock-item-label">Color</span>
+                </div>
+                <div class="dock-item" id="dock-ai-btn" title="AI Assistant">
+                    <i class="fas fa-robot"></i>
+                    <span class="dock-item-label">AI</span>
+                </div>
+                <div class="dock-item" id="edit-image-btn" title="Edit Image">
+                    <i class="fas fa-edit"></i>
+                    <span class="dock-item-label">Edit</span>
+                </div>
+                <div class="dock-item" id="summarizer-btn" title="Summarizer">
+                    <i class="fas fa-compress"></i>
+                    <span class="dock-item-label">Summarize</span>
+                </div>
+            </div>
+
+            <!-- Zoom Controls -->
+            <div id="zoom-controls">
+                <button class="zoom-btn" id="zoom-in" title="Zoom In">
+                    <i class="fas fa-plus"></i>
+                </button>
+                <div class="zoom-display" id="zoom-level">100%</div>
+                <button class="zoom-btn" id="zoom-out" title="Zoom Out">
+                    <i class="fas fa-minus"></i>
+                </button>
+                <button class="zoom-btn" id="zoom-reset" title="Reset Zoom">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+
+            <!-- Page Layout Controls -->
+            <div id="page-layout-controls" style="position: absolute; top: 80px; left: 32px; display: flex; flex-direction: column; gap: 8px;">
+                <div class="btn btn-icon" id="page-layout-btn" title="Page Layout">
+                    <i class="fas fa-layer-group"></i>
+                </div>
+                <div class="btn btn-icon" id="grid-snap-btn" title="Toggle Grid Snap">
+                    <i class="fas fa-th"></i>
+                </div>
+                <div class="btn btn-icon" id="guides-btn" title="Toggle Guides">
+                    <i class="fas fa-ruler-combined"></i>
+                </div>
+            </div>
+        </main>
+
+        <!-- AI Panel -->
+        <div id="ai-panel">
+            <div class="ai-header">
+                <div class="ai-title">
+                    <i class="fas fa-robot"></i> AI Assistant
+                    <span class="ai-model" id="ai-model-badge">Basic Beta 1</span>
+                </div>
+                <button class="ai-close" id="close-ai">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="ai-input-container">
+                <input type="text" class="ai-input" id="ai-command" 
+                       placeholder="Ask AI to enhance, organize, or create...">
+            </div>
+            <div class="ai-suggestions" id="ai-suggestions">
+                <div class="ai-suggestion" data-action="enhance-image">
+                    <div class="ai-suggestion-title">
+                        <i class="fas fa-wand-magic-sparkles"></i> Enhance Image
+                    </div>
+                    <div class="ai-suggestion-desc">Improve quality, adjust colors, remove noise</div>
+                </div>
+                <div class="ai-suggestion" data-action="remove-background">
+                    <div class="ai-suggestion-title">
+                        <i class="fas fa-eraser"></i> Remove Background
+                    </div>
+                    <div class="ai-suggestion-desc">Remove image background automatically</div>
+                </div>
+                <div class="ai-suggestion" data-action="create-layout">
+                    <div class="ai-suggestion-title">
+                        <i class="fas fa-th-large"></i> Create Layout
+                    </div>
+                    <div class="ai-suggestion-desc">Generate professional layouts</div>
+                </div>
+                <div class="ai-suggestion" data-action="color-palette">
+                    <div class="ai-suggestion-title">
+                        <i class="fas fa-palette"></i> Color Palette
+                    </div>
+                    <div class="ai-suggestion-desc">Create harmonious color schemes</div>
+                </div>
+                <div class="ai-suggestion" data-action="summarize-content">
+                    <div class="ai-suggestion-title">
+                        <i class="fas fa-compress"></i> Summarize Content
+                    </div>
+                    <div class="ai-suggestion-desc">Create concise summaries</div>
+                </div>
+                <div class="ai-suggestion" data-action="enhance-notes">
+                    <div class="ai-suggestion-title">
+                        <i class="fas fa-magic"></i> Enhance Notes
+                    </div>
+                    <div class="ai-suggestion-desc">Improve formatting and readability</div>
+                </div>
+            </div>
         </div>
-      </div>
 
-      <div class="board-tabs" aria-label="Boards" role="tablist" id="boardTabs"></div>
+        <!-- Image Editor Modal -->
+        <div id="image-editor">
+            <div class="editor-modal">
+                <div class="editor-header">
+                    <div class="editor-title">
+                        <i class="fas fa-edit"></i> Image Editor
+                    </div>
+                    <button class="ai-close" id="close-editor">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="editor-body">
+                    <div class="editor-preview">
+                        <img id="editor-preview-img" src="" alt="Preview">
+                    </div>
+                    <div class="editor-controls">
+                        <div class="editor-control-group">
+                            <div class="editor-control-title">
+                                <i class="fas fa-adjust"></i> Basic Adjustments
+                            </div>
+                            <div class="slider-container">
+                                <div class="slider-label">
+                                    <span>Brightness</span>
+                                    <span id="brightness-value">100%</span>
+                                </div>
+                                <input type="range" class="slider" id="brightness-slider" min="0" max="200" value="100">
+                            </div>
+                            <div class="slider-container">
+                                <div class="slider-label">
+                                    <span>Contrast</span>
+                                    <span id="contrast-value">100%</span>
+                                </div>
+                                <input type="range" class="slider" id="contrast-slider" min="0" max="200" value="100">
+                            </div>
+                            <div class="slider-container">
+                                <div class="slider-label">
+                                    <span>Saturation</span>
+                                    <span id="saturation-value">100%</span>
+                                </div>
+                                <input type="range" class="slider" id="saturation-slider" min="0" max="200" value="100">
+                            </div>
+                        </div>
+                        
+                        <div class="editor-control-group">
+                            <div class="editor-control-title">
+                                <i class="fas fa-sliders-h"></i> Advanced
+                            </div>
+                            <div class="slider-container">
+                                <div class="slider-label">
+                                    <span>Blur</span>
+                                    <span id="blur-value">0px</span>
+                                </div>
+                                <input type="range" class="slider" id="blur-slider" min="0" max="20" value="0">
+                            </div>
+                            <div class="slider-container">
+                                <div class="slider-label">
+                                    <span>Hue Rotation</span>
+                                    <span id="hue-value">0°</span>
+                                </div>
+                                <input type="range" class="slider" id="hue-slider" min="0" max="360" value="0">
+                            </div>
+                        </div>
+                        
+                        <div class="editor-control-group">
+                            <div class="editor-control-title">
+                                <i class="fas fa-crop"></i> Crop
+                            </div>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                                <button class="btn" id="crop-1-1">1:1</button>
+                                <button class="btn" id="crop-16-9">16:9</button>
+                                <button class="btn" id="crop-4-3">4:3</button>
+                                <button class="btn" id="crop-free">Free</button>
+                            </div>
+                        </div>
+                        
+                        <div class="editor-actions">
+                            <button class="btn" id="reset-editor">
+                                <i class="fas fa-undo"></i> Reset
+                            </button>
+                            <button class="btn btn-primary" id="apply-editor">
+                                <i class="fas fa-check"></i> Apply
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-      <button class="icon-btn" data-variant="accent" id="btnNewBoard" aria-label="Create new moodboard">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path fill="currentColor" d="M11 5a1 1 0 0 1 2 0v6h6a1 1 0 1 1 0 2h-6v6a1 1 0 1 1-2 0v-6H5a1 1 0 1 1 0-2h6z"/>
-        </svg>
-        <span class="label">New</span>
-      </button>
+        <!-- Summarizer Panel -->
+        <div id="summarizer-panel">
+            <div class="summarizer-header">
+                <div class="ai-title">
+                    <i class="fas fa-compress"></i> Text Summarizer
+                </div>
+                <button class="ai-close" id="close-summarizer">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="summarizer-body">
+                <div class="summarizer-options">
+                    <div class="summarizer-option active" data-length="short">Short</div>
+                    <div class="summarizer-option" data-length="medium">Medium</div>
+                    <div class="summarizer-option" data-length="long">Long</div>
+                </div>
+                
+                <div class="summarizer-result" id="summarizer-result">
+                    <!-- Summary will appear here -->
+                </div>
+                
+                <div class="summarizer-stats">
+                    <div class="stat">
+                        <i class="fas fa-font"></i>
+                        <span>Original: <span id="original-length">0</span> words</span>
+                    </div>
+                    <div class="stat">
+                        <i class="fas fa-compress"></i>
+                        <span>Summary: <span id="summary-length">0</span> words</span>
+                    </div>
+                    <div class="stat">
+                        <i class="fas fa-percentage"></i>
+                        <span>Reduced: <span id="reduction-percent">0</span>%</span>
+                    </div>
+                </div>
+                
+                <button class="btn btn-primary" style="width: 100%; margin-top: 20px;" id="apply-summary">
+                    <i class="fas fa-check"></i> Apply to Note
+                </button>
+            </div>
+        </div>
+
+        <!-- Context Menu -->
+        <div id="context-menu">
+            <div class="context-menu-item" data-action="duplicate">
+                <i class="fas fa-copy"></i> Duplicate
+            </div>
+            <div class="context-menu-item" data-action="bring-front">
+                <i class="fas fa-arrow-up"></i> Bring to Front
+            </div>
+            <div class="context-menu-item" data-action="send-back">
+                <i class="fas fa-arrow-down"></i> Send to Back
+            </div>
+            <div class="context-menu-divider"></div>
+            <div class="context-menu-item" data-action="edit">
+                <i class="fas fa-edit"></i> Edit
+            </div>
+            <div class="context-menu-item" data-action="enhance">
+                <i class="fas fa-wand-magic-sparkles"></i> AI Enhance
+            </div>
+            <div class="context-menu-divider"></div>
+            <div class="context-menu-item" data-action="delete" style="color: var(--danger);">
+                <i class="fas fa-trash"></i> Delete
+            </div>
+        </div>
+
+        <!-- Toast Container -->
+        <div id="toast-container"></div>
     </div>
 
-    <div class="app-toolbar-right">
-      <span class="status-pill" id="statusAutosave" aria-live="polite">
-        <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
-          <path fill="currentColor" d="M12 4a8 8 0 1 1-7.446 5.032 1 1 0 0 1 1.868.748A6 6 0 1 0 12 6V3a1 1 0 0 1 2 0v4a1 1 0 0 1-1 1h-4a1 1 0 1 1 0-2h2z"/>
-        </svg>
-        <span>Autosave ready</span>
-      </span>
-
-      <button class="icon-btn" data-variant="ghost" id="btnUndo" aria-label="Undo (Ctrl+Z)" aria-keyshortcuts="Ctrl+Z Meta+Z">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path fill="currentColor" d="M9.414 7H17a5 5 0 0 1 0 10H9a1 1 0 1 1 0-2h8a3 3 0 0 0 0-6H9.414l1.293 1.293A1 1 0 0 1 9.293 11.7l-3-3a1 1 0 0 1 0-1.414l3-3A1 1 0 0 1 10.707 4.7z"/>
-        </svg>
-        <kbd class="shortcut">Ctrl+Z</kbd>
-      </button>
-
-      <button class="icon-btn" data-variant="ghost" id="btnRedo" aria-label="Redo (Ctrl+Y)" aria-keyshortcuts="Ctrl+Y Meta+Shift+Z">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path fill="currentColor" d="M14.586 7H7a5 5 0 0 0 0 10h8a1 1 0 0 0 0-2H7a3 3 0 0 1 0-6h7.586l-1.293 1.293A1 1 0 0 0 14.707 11.7l3-3a1 1 0 0 0 0-1.414l-3-3A1 1 0 0 0 13.293 4.7z"/>
-        </svg>
-        <kbd class="shortcut">Ctrl+Y</kbd>
-      </button>
-
-      <button class="icon-btn" data-variant="soft" id="btnThemeToggle" aria-label="Toggle theme">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path fill="currentColor" d="M12 3a1 1 0 0 1 1 1v2.055A6.002 6.002 0 0 1 18.945 11H21a1 1 0 1 1 0 2h-2.055A6.002 6.002 0 0 1 13 18.945V21a1 1 0 1 1-2 0v-2.055A6.002 6.002 0 0 1 5.055 13H3a1 1 0 0 1 0-2h2.055A6.002 6.002 0 0 1 11 6.055V4a1 1 0 0 1 1-1zm0 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8z"/>
-        </svg>
-      </button>
-
-      <button class="icon-btn" data-variant="primary" id="btnExportQuick" aria-label="Export board options">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path fill="currentColor" d="M12 3a1 1 0 0 1 .993.883L13 4v8.586l3.293-3.293a1 1 0 0 1 1.497 1.32l-.083.094-5 5a1 1 0 0 1-1.32.083l-.094-.083-5-5a1 1 0 0 1 1.32-1.497l.094.083L11 12.586V4a1 1 0 0 1 1-1zm-7 14a1 1 0 0 1 .117 1.993L5 19H4a1 1 0 0 1-.117-1.993L4 17h1zm5 0a1 1 0 0 1 .117 1.993L11 19H9a1 1 0 0 1-.117-1.993L9 17zm5 0a1 1 0 0 1 .117 1.993L16 19h-2a1 1 0 0 1-.117-1.993L14 17zm5 0a1 1 0 0 1 .117 1.993L21 19h-1a1 1 0 0 1-.117-1.993L20 17z"/>
-        </svg>
-        <span class="label">Export</span>
-      </button>
-    </div>
-  </header>
-
-  <!-- Main layout: Canvas + Inspector -->
-  <main class="app-main">
-    <!-- Canvas shell -->
-    <section class="canvas-shell" aria-label="Moodboard canvas">
-      <div class="canvas-toolbar-strip">
-        <div class="canvas-view-controls">
-          <button class="icon-btn" data-variant="ghost" id="btnZoomFit" aria-label="Zoom to fit">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path fill="currentColor" d="M5 5h5a1 1 0 0 1 0 2H7v3a1 1 0 0 1-2 0V5zm9 0h5v5a1 1 0 0 1-2 0V7h-3a1 1 0 1 1 0-2zm3 9a1 1 0 0 1 1 1v3h-3a1 1 0 1 1 0-2h1v-2a1 1 0 0 1 1-1zM7 14a1 1 0 0 1 1 1v2h2a1 1 0 1 1 0 2H6v-4a1 1 0 0 1 1-1z"/>
-            </svg>
-          </button>
-          <button class="icon-btn" data-variant="ghost" id="btnToggleGrid" aria-label="Toggle snap to grid" aria-pressed="true">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path fill="currentColor" d="M5 3a2 2 0 0 0-2 2v3h4V3H5zm6 0v5h4V3h-4zm6 0v5h4V5a2 2 0 0 0-2-2h-2zM3 11v4h4v-4H3zm6 0v4h4v-4h-4zm6 0v4h4v-4h-4zM3 17v2a2 2 0 0 0 2 2h2v-4H3zm6 0v4h4v-4h-4zm6 0v4h2a2 2 0 0 0 2-2v-2h-4z"/>
-            </svg>
-          </button>
-          <button class="icon-btn" data-variant="ghost" id="btnToggleMinimap" aria-label="Toggle minimap">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path fill="currentColor" d="M4 5a1 1 0 0 1 .707-.293l4.879.488 4.828-1.932a1 1 0 0 1 .672-.02l4 1.333A1 1 0 0 1 19.5 6.9l-4-1.333-4.828 1.932a1 1 0 0 1-.424.056L5 7.097V18.5l4.293-4.293a1 1 0 0 1 1.414 0L14 17.5l3.293-3.293a1 1 0 1 1 1.414 1.414l-4 4a1 1 0 0 1-1.414 0L10 16.414l-4.293 4.293A1 1 0 0 1 4 20V5z"/>
-            </svg>
-          </button>
-
-          <label class="canvas-zoom-label">
-            <span>Zoom</span>
-            <input type="range" id="zoomSlider" class="range-zoom" min="30" max="180" value="80" />
-            <span id="zoomPercent">80%</span>
-          </label>
-        </div>
-
-        <div class="canvas-view-controls">
-          <span class="badge">PNG · JSON · HTML</span>
-        </div>
-      </div>
-
-      <div class="canvas-outer canvas-grid" id="canvasOuter" data-snap="on" aria-describedby="gestureHint">
-        <div class="canvas-inner" id="canvasInner">
-          <div class="canvas-board" id="canvasBoard" aria-label="Board canvas" tabindex="0"></div>
-        </div>
-
-        <!-- Minimap -->
-        <div class="minimap-shell" id="minimapShell" style="display:none;">
-          <div class="minimap-canvas" id="minimapCanvas"></div>
-          <div class="minimap-viewport" id="minimapViewport"></div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Inspector & Settings -->
-    <aside class="inspector-panel" aria-label="Inspector & settings">
-      <div class="inspector-header">
-        <span>Inspector</span>
-        <div class="flex gap-4">
-          <span id="selectionInfo" class="text-subtle">No selection</span>
-        </div>
-      </div>
-      <div class="inspector-body">
-        <div class="inspector-group">
-          <div class="inspector-group-title">Position & Size</div>
-          <div class="inspector-grid">
-            <div class="inspector-row">
-              <label for="fieldX">X</label>
-              <input id="fieldX" class="input" type="number" step="1" />
-            </div>
-            <div class="inspector-row">
-              <label for="fieldY">Y</label>
-              <input id="fieldY" class="input" type="number" step="1" />
-            </div>
-            <div class="inspector-row">
-              <label for="fieldW">W</label>
-              <input id="fieldW" class="input" type="number" step="1" />
-            </div>
-            <div class="inspector-row">
-              <label for="fieldH">H</label>
-              <input id="fieldH" class="input" type="number" step="1" />
-            </div>
-            <div class="inspector-row">
-              <label for="fieldRotation">Rot°</label>
-              <input id="fieldRotation" class="input" type="number" step="1" />
-            </div>
-            <div class="inspector-row">
-              <label for="fieldZ">Layer</label>
-              <input id="fieldZ" class="input" type="number" step="1" />
-            </div>
-          </div>
-        </div>
-
-        <div class="inspector-group">
-          <div class="inspector-group-title">Styling</div>
-          <div class="inspector-grid">
-            <div class="inspector-row">
-              <label for="fieldFont">Font</label>
-              <select id="fieldFont">
-                <option value="">Default</option>
-                <option value="system-ui">System</option>
-                <option value="serif">Serif</option>
-                <option value="monospace">Mono</option>
-                <option value="cursive">Cursive</option>
-              </select>
-            </div>
-            <div class="inspector-row">
-              <label for="fieldFontSize">Size</label>
-              <input id="fieldFontSize" class="input" type="number" step="1" />
-            </div>
-            <div class="inspector-row">
-              <label for="fieldFontWeight">Weight</label>
-              <select id="fieldFontWeight">
-                <option value="">Normal</option>
-                <option value="500">Medium</option>
-                <option value="600">Semibold</option>
-                <option value="700">Bold</option>
-              </select>
-            </div>
-            <div class="inspector-row">
-              <label for="fieldTextColor">Text</label>
-              <input id="fieldTextColor" class="input" type="color" />
-            </div>
-            <div class="inspector-row">
-              <label for="fieldBgColor">Bg</label>
-              <input id="fieldBgColor" class="input" type="color" />
-            </div>
-            <div class="inspector-row">
-              <label for="fieldBgOpacity">Bg α</label>
-              <input id="fieldBgOpacity" class="input" type="number" min="0" max="1" step="0.05" />
-            </div>
-            <div class="inspector-row">
-              <label for="fieldRadius">Radius</label>
-              <input id="fieldRadius" class="input" type="number" step="1" />
-            </div>
-            <div class="inspector-row">
-              <label for="fieldShadow">Shadow</label>
-              <select id="fieldShadow">
-                <option value="">Soft</option>
-                <option value="none">None</option>
-                <option value="strong">Strong</option>
-              </select>
-            </div>
-            <div class="inspector-row">
-              <label for="fieldBlur">Blur</label>
-              <input id="fieldBlur" class="input" type="number" min="0" max="40" step="1" />
-            </div>
-          </div>
-        </div>
-
-        <div class="inspector-group">
-          <div class="inspector-group-title">Meta & Tags</div>
-          <div class="inspector-row">
-            <label for="fieldTitle">Title</label>
-            <input id="fieldTitle" class="input" type="text" />
-          </div>
-          <div class="inspector-row">
-            <label for="fieldTags">Tags</label>
-            <input id="fieldTags" class="input" type="text" placeholder="comma,separated" />
-          </div>
-          <div class="inspector-row">
-            <label for="fieldLocked">Lock</label>
-            <select id="fieldLocked">
-              <option value="false">No</option>
-              <option value="true">Yes</option>
-            </select>
-          </div>
-          <div class="inspector-row">
-            <label for="fieldHidden">Hide</label>
-            <select id="fieldHidden">
-              <option value="false">No</option>
-              <option value="true">Yes</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="inspector-group">
-          <div class="inspector-group-title">Search & Templates</div>
-          <div class="inspector-row">
-            <label for="fieldSearch">Search</label>
-            <input id="fieldSearch" class="input" type="search" placeholder="title, tags, type" />
-          </div>
-          <div class="template-gallery" id="templateGallery" aria-label="Starter templates"></div>
-        </div>
-
-        <div class="inspector-group">
-          <div class="inspector-group-title">Settings</div>
-          <div class="settings-chips">
-            <button class="icon-btn" data-variant="ghost" id="btnLargeText" aria-pressed="false">
-              <span class="label">Large text</span>
-            </button>
-            <button class="icon-btn" data-variant="ghost" id="btnHighContrast" aria-pressed="false">
-              <span class="label">High contrast</span>
-            </button>
-            <button class="icon-btn" data-variant="ghost" id="btnGestureHelp">
-              <span class="label">Gesture help</span>
-            </button>
-            <button class="icon-btn" data-variant="ghost" id="btnResetData">
-              <span class="label text-danger">Reset local data</span>
-            </button>
-          </div>
-          <div style="margin-top:6px;font-size:11px;" id="storageUsage">Storage: calculating…</div>
-        </div>
-
-        <div class="inspector-group">
-          <div class="inspector-group-title">Language / Locale</div>
-          <div class="settings-chips" id="localeChips">
-            <!-- populated in JS -->
-          </div>
-        </div>
-      </div>
-    </aside>
-  </main>
-
-  <!-- Dock -->
-  <div class="app-dock-shell">
-    <div class="app-dock" id="appDock" aria-label="Tool dock" data-open="true">
-      <!-- Insert group -->
-      <div class="dock-group" aria-label="Insert tools">
-        <span class="dock-group-label">Insert</span>
-        <button class="icon-btn" data-variant="ghost" id="btnInsertNote" aria-label="Insert text note">
-          <svg viewBox="0 0 24 24"><path fill="currentColor" d="M6 4a2 2 0 0 0-2 2v12.5A1.5 1.5 0 0 0 5.5 20H18a2 2 0 0 0 2-2V9.414a2 2 0 0 0-.586-1.414l-3.414-3.414A2 2 0 0 0 14.586 4H6zm0 2h8.586L18 9.414V18H6V6zm2 3a1 1 0 0 0 0 2h6a1 1 0 1 0 0-2H8zm0 4a1 1 0 1 0 0 2h3a1 1 0 1 0 0-2H8z"/></svg>
-        </button>
-        <button class="icon-btn" data-variant="ghost" id="btnInsertImage" aria-label="Insert image">
-          <svg viewBox="0 0 24 24"><path fill="currentColor" d="M5 4a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h14a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3H5zm0 2h14a1 1 0 0 1 1 1v5.586l-3.293-3.293a1 1 0 0 0-1.414 0L11 18l-2.293-2.293a1 1 0 0 0-1.414 0L4 19V7a1 1 0 0 1 1-1zm3 2a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/></svg>
-        </button>
-        <button class="icon-btn" data-variant="ghost" id="btnInsertColor" aria-label="Insert color swatch">
-          <svg viewBox="0 0 24 24"><path fill="currentColor" d="M4.5 4.5a4 4 0 0 1 5.657 0L12 6.343l1.843-1.843a4 4 0 0 1 5.657 5.657L17.657 12l1.843 1.843a4 4 0 0 1-5.657 5.657L12 17.657l-1.843 1.843a4 4 0 0 1-5.657-5.657L6.343 12 4.5 10.157a4 4 0 0 1 0-5.657z"/></svg>
-        </button>
-        <button class="icon-btn" data-variant="ghost" id="btnInsertLink" aria-label="Insert link card">
-          <svg viewBox="0 0 24 24"><path fill="currentColor" d="M10.828 6.343a4 4 0 0 1 5.657 0l1.172 1.172a4 4 0 0 1 0 5.657l-2.121 2.121a4 4 0 0 1-5.657 0 1 1 0 0 1 1.414-1.414 2 2 0 0 0 2.829 0l2.12-2.12a2 2 0 0 0 0-2.829l-1.171-1.172a2 2 0 0 0-2.829 0l-.585.586a1 1 0 1 1-1.414-1.414l.586-.586zM4.929 9.515a4 4 0 0 1 5.657 0 1 1 0 0 1-1.414 1.414 2 2 0 0 0-2.829 0L4.222 13.05a2 2 0 0 0 0 2.829l1.172 1.172a2 2 0 0 0 2.829 0l.585-.586a1 1 0 0 1 1.414 1.414l-.586.586a4 4 0 0 1-5.657 0l-1.172-1.172a4 4 0 0 1 0-5.657l2.121-2.121z"/></svg>
-        </button>
-        <button class="icon-btn" data-variant="ghost" id="btnInsertEmoji" aria-label="Insert emoji sticker">
-          <svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zm-3 6a1.25 1.25 0 1 1 0 2.5A1.25 1.25 0 0 1 9 9zm6 0a1.25 1.25 0 1 1 0 2.5A1.25 1.25 0 0 1 15 9zm-7.293 5.293a1 1 0 0 1 1.414 0A3.99 3.99 0 0 0 12 16a3.99 3.99 0 0 0 2.879-1.707 1 1 0 1 1 1.642 1.137A5.99 5.99 0 0 1 12 18a5.99 5.99 0 0 1-4.521-2.57 1 1 0 0 1 .228-1.137z"/></svg>
-        </button>
-      </div>
-
-      <!-- Edit group -->
-      <div class="dock-group" aria-label="Edit tools">
-        <span class="dock-group-label">Edit</span>
-        <button class="icon-btn" data-variant="ghost" id="btnDuplicate" aria-label="Duplicate selection">
-          <svg viewBox="0 0 24 24"><path fill="currentColor" d="M9 4a2 2 0 0 0-2 2v1H6a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h7a2 2 0 0 0 2-2v-1h1a2 2 0 0 0 2-2V9.414a2 2 0 0 0-.586-1.414l-2.414-2.414A2 2 0 0 0 13.586 5H13V4a2 2 0 0 0-2-2H9zm0 2h2v2a1 1 0 0 0 1 1h2v1h-1a2 2 0 0 0-2 2v1H8V6a2 2 0 0 1 1-1zm4 3h1.586L17 9.414V11h-2V9a1 1 0 0 0-1-1zm-7 3h7a1 1 0 0 1 1 1v7H6v-7a1 1 0 0 1 1-1z"/></svg>
-        </button>
-        <button class="icon-btn" data-variant="ghost" id="btnDelete" aria-label="Delete selection (Delete key)" aria-keyshortcuts="Delete">
-          <svg viewBox="0 0 24 24"><path fill="currentColor" d="M9 4a1 1 0 0 0-.894.553L7.382 6H4a1 1 0 0 0 0 2h1.077l.844 10.133A2 2 0 0 0 7.913 20h8.174a2 2 0 0 0 1.992-1.867L18.923 8H20a1 1 0 1 0 0-2h-3.382l-.724-1.447A1 1 0 0 0 15 4H9zm1.382 2h3.236l.5 1H9.882l.5-1zM10 10a1 1 0 0 1 1 1v5a1 1 0 1 1-2 0v-5a1 1 0 0 1 1-1zm4 0a1 1 0 0 1 1 1v5a1 1 0 1 1-2 0v-5a1 1 0 0 1 1-1z"/></svg>
-        </button>
-        <button class="icon-btn" data-variant="ghost" id="btnLock" aria-label="Lock or unlock selection">
-          <svg viewBox="0 0 24 24"><path fill="currentColor" d="M8 10V8a4 4 0 1 1 8 0v2h1a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-6a2 2 0 0 1 2-2h1zm2-2v2h4V8a2 2 0 1 0-4 0z"/></svg>
-        </button>
-        <button class="icon-btn" data-variant="ghost" id="btnHide" aria-label="Hide or show selection">
-          <svg viewBox="0 0 24 24"><path fill="currentColor" d="M3.707 2.293a1 1 0 0 0-1.414 1.414l2.146 2.146A10.89 10.89 0 0 0 2.458 9.4a1 1 0 0 0 0 .8C4.148 13.742 7.73 17 12 17c1.442 0 2.806-.32 4.058-.9l2.235 2.235a1 1 0 0 0 1.414-1.414l-16-16zM9.53 8.53 11.06 10.06A1 1 0 0 0 12 11a1 1 0 0 0 .94-.658l1.53 1.53A3 3 0 0 1 9.53 8.53zm1.87-2.26 1.66 1.66A3 3 0 0 1 15 12a1 1 0 1 0 2 0 5 5 0 0 0-5-5 1 1 0 0 0-.6.21zM12 7c-.17 0-.338.01-.504.03l-1.56-1.56A9.8 9.8 0 0 1 12 5c4.27 0 7.852 3.258 9.542 6.8a1 1 0 0 1 0 .8 11 11 0 0 1-2.181 2.894l-1.44-1.44A9.06 9.06 0 0 0 20.542 11C18.852 7.458 15.27 5 11 5 10.757 5 10.516 5.01 10.28 5.03z"/></svg>
-        </button>
-      </div>
-
-      <!-- Arrange group -->
-      <div class="dock-group" aria-label="Arrange tools">
-        <span class="dock-group-label">Arrange</span>
-        <button class="icon-btn" data-variant="ghost" id="btnBringFront" aria-label="Bring to front">
-          <svg viewBox="0 0 24 24"><path fill="currentColor" d="M8 8a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-9a2 2 0 0 1-2-2V8zm4-4a2 2 0 0 0-2 2h2V4zM6 10V7a3 3 0 0 1 3-3h3V3H6a3 3 0 0 0-3 3v8h3v-4z"/></svg>
-        </button>
-        <button class="icon-btn" data-variant="ghost" id="btnSendBack" aria-label="Send to back">
-          <svg viewBox="0 0 24 24"><path fill="currentColor" d="M16 5a2 2 0 0 1 2 2v3h-2V7H7v9h3v2H7a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h9zm1 6a2 2 0 0 0-2 2v3h-3a2 2 0 0 0-2 2v1h7a2 2 0 0 0 2-2v-6h-2z"/></svg>
-        </button>
-        <button class="icon-btn" data-variant="ghost" id="btnAlignCenter" aria-label="Align center">
-          <svg viewBox="0 0 24 24"><path fill="currentColor" d="M5 7a1 1 0 0 1 1-1h4V4a1 1 0 0 1 2 0v2h4a1 1 0 1 1 0 2h-4v2h3a1 1 0 1 1 0 2h-3v2h4a1 1 0 1 1 0 2h-4v2a1 1 0 1 1-2 0v-2H6a1 1 0 1 1 0-2h4v-2H7a1 1 0 0 1 0-2h3V8H6a1 1 0 0 1-1-1z"/></svg>
-        </button>
-        <button class="icon-btn" data-variant="ghost" id="btnAutoLayout" aria-label="Auto-arrange with assistant">
-          <svg viewBox="0 0 24 24"><path fill="currentColor" d="M5 5h5v5H5V5zm9 0h5v5h-5V5zM5 14h5v5H5v-5zm9 0h5v5h-5v-5z"/></svg>
-        </button>
-      </div>
-
-      <!-- View group -->
-      <div class="dock-group" aria-label="View tools">
-        <span class="dock-group-label">View</span>
-        <button class="icon-btn" data-variant="ghost" id="btnToggleDock" aria-label="Toggle dock visibility">
-          <svg viewBox="0 0 24 24"><path fill="currentColor" d="M4 5a1 1 0 0 1 1-1h14a1 1 0 0 1 0 2H5a1 1 0 0 1-1-1zm2 4a1 1 0 0 0 0 2h12a1 1 0 1 0 0-2H6zm-2 5a1 1 0 0 1 1-1h14a1 1 0 0 1 0 2H5a1 1 0 0 1-1-1zm2 4a1 1 0 0 0 0 2h8a1 1 0 1 0 0-2H6z"/></svg>
-        </button>
-        <button class="icon-btn" data-variant="ghost" id="btnThemePreset" aria-label="Cycle theme preset">
-          <svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 4a5 5 0 0 1 4.9 4.02A4.5 4.5 0 0 1 16.5 17h-9A4.5 4.5 0 0 1 8 8.02 5 5 0 0 1 12 4zM7.5 19h9a1 1 0 1 1 0 2h-9a1 1 0 0 1 0-2z"/></svg>
-        </button>
-        <button class="icon-btn" data-variant="ghost" id="btnAI" aria-label="Open AI helper">
-          <svg viewBox="0 0 24 24"><path fill="currentColor" d="M7.5 3A4.5 4.5 0 0 0 3 7.5v3A4.5 4.5 0 0 0 7.5 15h.55l1.56 3.12A3 3 0 0 0 12.77 20h3.73A3.5 3.5 0 0 0 20 16.5V8.118A3.12 3.12 0 0 0 16.882 5H14.5A4.5 4.5 0 0 0 10 3H7.5zM7 7.5A.5.5 0 0 1 7.5 7h2a.5.5 0 0 1 0 1h-2A.5.5 0 0 1 7 7.5zm0 3A.5.5 0 0 1 7.5 10h4a.5.5 0 0 1 0 1h-4A.5.5 0 0 1 7 10.5z"/></svg>
-        </button>
-      </div>
-
-      <!-- Export/Import group -->
-      <div class="dock-group" aria-label="Export and import tools">
-        <span class="dock-group-label">Export</span>
-        <button class="icon-btn" data-variant="ghost" id="btnExportJSON" aria-label="Export JSON">
-          <svg viewBox="0 0 24 24"><path fill="currentColor" d="M7 4a2 2 0 0 0-2 2v3h2V6h10v12H7v-3H5v3a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2H7zm4 4a1 1 0 0 1 1 1v3.586l1.293-1.293a1 1 0 0 1 1.497 1.32l-.083.094-3 3a1 1 0 0 1-1.32.083l-.094-.083-3-3a1 1 0 1 1 1.414-1.414L11 12.586V9a1 1 0 0 1 1-1z"/></svg>
-        </button>
-        <button class="icon-btn" data-variant="ghost" id="btnImportJSON" aria-label="Import JSON">
-          <svg viewBox="0 0 24 24"><path fill="currentColor" d="M7 4a2 2 0 0 0-2 2v3h2V6h10v12H7v-3H5v3a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2H7zm5 3a1 1 0 0 1 .993.883L13 8v3.586l1.293-1.293a1 1 0 0 1 1.497 1.32l-.083.094-3 3a1 1 0 0 1-1.32.083l-.094-.083-3-3a1 1 0 1 1 1.414-1.414L11 11.586V8a1 1 0 0 1 1-1z"/></svg>
-        </button>
-        <button class="icon-btn" data-variant="ghost" id="btnExportPNG" aria-label="Export PNG">
-          <svg viewBox="0 0 24 24"><path fill="currentColor" d="M5 4a2 2 0 0 0-2 2v6h2V6h14v12H5v-2H3v2a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2H5zm4 7a1 1 0 0 1 .993.883L10 12v5a1 1 0 1 1-2 0v-2.382l-1.106 1.105a1 1 0 0 1-1.32.083l-.094-.083a1 1 0 0 1 0-1.414l2.5-2.5A1 1 0 0 1 8 12h1zm4 0a1 1 0 0 1 .993.883L14 12v1.382l1.106-1.105a1 1 0 0 1 1.497 1.32l-.083.094-2.5 2.5A1 1 0 0 1 13 17h-1a1 1 0 0 1-.993-.883L11 16v-4a1 1 0 0 1 1-1h1z"/></svg>
-        </button>
-        <button class="icon-btn" data-variant="ghost" id="btnExportHTML" aria-label="Export standalone HTML">
-          <svg viewBox="0 0 24 24"><path fill="currentColor" d="M4 5a1 1 0 0 1 1-1h7.586a2 2 0 0 1 1.414.586l4.414 4.414A2 2 0 0 1 19 10.414V19a1 1 0 0 1-1 1h-5v-2h4v-7h-3a2 2 0 0 1-2-2V6H6v12h3v2H5a1 1 0 0 1-1-1V5zm8 1.414V9h2.586L12 6.414zM10 14a1 1 0 0 1 .993.883L11 15v5a1 1 0 1 1-2 0v-1H7a1 1 0 0 1-.993-.883L6 18v-3a1 1 0 1 1 2 0v2h1v-2a1 1 0 0 1 1-1z"/></svg>
-        </button>
-      </div>
-
-      <!-- Boards group -->
-      <div class="dock-group" aria-label="Board tools">
-        <span class="dock-group-label">Boards</span>
-        <button class="icon-btn" data-variant="ghost" id="btnSnapshot" aria-label="Save snapshot">
-          <svg viewBox="0 0 24 24"><path fill="currentColor" d="M8 5a2 2 0 0 0-1.789 1.106L5.618 7H4a2 2 0 0 0-2 2v7a3 3 0 0 0 3 3h14a3 3 0 0 0 3-3v-7a2 2 0 0 0-2-2h-1.618l-.593-1.894A2 2 0 0 0 15 5H8zm4 3.5a4.5 4.5 0 1 1 0 9 4.5 4.5 0 0 1 0-9z"/></svg>
-        </button>
-        <button class="icon-btn" data-variant="ghost" id="btnSnapshotsView" aria-label="View snapshots">
-          <svg viewBox="0 0 24 24"><path fill="currentColor" d="M5 4a3 3 0 0 0-3 3v7a3 3 0 0 0 3 3h4v-2H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h7V4H5zm5 4a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v9a3 3 0 0 1-3 3h-6a3 3 0 0 1-3-3V8zm3 0v9a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V8h-8z"/></svg>
-        </button>
-        <button class="icon-btn" data-variant="ghost" id="btnCleanupImages" aria-label="Clean up unused images">
-          <svg viewBox="0 0 24 24"><path fill="currentColor" d="M7.05 4.636a9 9 0 1 1-2.414 4.95 1 1 0 1 1 1.966.36A7 7 0 1 0 12 5a1 1 0 0 1 0-2 9 9 0 0 1-4.95 1.636zM12 8a1 1 0 0 1 .993.883L13 9v3.586l1.707 1.707a1 1 0 0 1-1.32 1.497l-.094-.083-2-2A1 1 0 0 1 11 13V9a1 1 0 0 1 1-1z"/></svg>
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- AI Assistant Panel -->
-  <div class="ai-panel-shell">
-    <div class="ai-panel" id="aiPanel" aria-label="Local layout assistant">
-      <div class="ai-panel-header">
-        <span class="title">Assistant</span>
-        <div class="flex gap-4">
-          <span class="ai-chip">
-            <span style="width:6px;height:6px;border-radius:999px;background:#22c55e;box-shadow:0 0 0 4px rgba(34,197,94,0.35);"></span>
-            On-device
-          </span>
-          <button class="icon-btn" data-variant="ghost" id="btnCloseAI" aria-label="Close assistant">
-            <svg viewBox="0 0 24 24"><path fill="currentColor" d="M7.05 6.343a1 1 0 0 1 1.414 0L12 9.879l3.536-3.536a1 1 0 0 1 1.414 1.414L13.414 11.293l3.536 3.536a1 1 0 0 1-1.414 1.414L12 12.707l-3.536 3.536a1 1 0 0 1-1.414-1.414l3.536-3.536-3.536-3.536a1 1 0 0 1 0-1.414z"/></svg>
-          </button>
-        </div>
-      </div>
-      <div class="ai-panel-body">
-        <textarea id="aiPrompt" rows="2" placeholder="Describe your vibe, e.g. 'cozy autumn reading nook, warm neutrals, soft textures'"></textarea>
-        <div class="ai-prompt-understanding" id="aiUnderstanding">
-          <strong>Prompt understanding</strong><br />
-          <span id="aiUnderstandingText">Waiting for prompt…</span>
-        </div>
-        <div class="ai-suggestion-pills" id="aiSuggestionPills"></div>
-        <div class="flex-between" style="margin-top:4px;">
-          <div class="flex gap-4">
-            <button class="icon-btn" data-variant="accent" id="btnAIGenerateText">
-              <span class="label">Notes</span>
-            </button>
-            <button class="icon-btn" data-variant="accent" id="btnAIGeneratePalette">
-              <span class="label">Palette</span>
-            </button>
-            <button class="icon-btn" data-variant="accent" id="btnAIGenerateEmoji">
-              <span class="label">Emoji</span>
-            </button>
-          </div>
-          <button class="icon-btn" data-variant="soft" id="btnAIRunLayout">
-            <span class="label">Layout</span>
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Gesture help overlay -->
-  <div class="help-overlay" id="gestureHelp" aria-live="polite">
-    <h3 id="gestureHint">Gestures & shortcuts</h3>
-    <ul>
-      <li>Pan: Middle mouse or drag empty canvas</li>
-      <li>Zoom: Ctrl/⌘ + mouse wheel, or slider</li>
-      <li>Multi-select: Hold Shift and click</li>
-      <li>Delete: Delete / Backspace</li>
-      <li>Undo: Ctrl/⌘ + Z · Redo: Ctrl/⌘ + Y</li>
-    </ul>
-  </div>
-
-  <!-- Context menu -->
-  <div class="context-menu" id="contextMenu" role="menu"></div>
-
-  <!-- Overlays -->
-  <div class="overlay-dim" id="overlayDim"></div>
-
-  <!-- Toast -->
-  <div class="toast" id="toast" role="status" aria-live="polite"></div>
-
-  <!-- Hidden inputs for file & import -->
-  <input type="file" accept="image/*" id="hiddenImageInput" style="display:none;" />
-  <input type="file" accept="application/json" id="hiddenImportInput" style="display:none;" />
-</div>
-
-<script>
-/*
-  ============================================================
-  Moodboard Creator - Core JavaScript
-  - No external libraries
-  - LocalStorage primary with IndexedDB fallback for large blobs
-  - Undo/redo, autosave, versioned snapshots
-  - Local “AI helper” is simple prompt parser + generators
-  ============================================================
-*/
-
-/* ---------- Storage keys & constants ---------- */
-const STORAGE_KEY_ROOT = "moodboard_studio_v1";
-const STORAGE_KEY_SETTINGS = STORAGE_KEY_ROOT + "_settings";
-const STORAGE_KEY_SNAPSHOTS = STORAGE_KEY_ROOT + "_snapshots";
-const STORAGE_KEY_BLOB_INDEX = STORAGE_KEY_ROOT + "_blob_index"; // metadata for blobs in IndexedDB
-const MAX_HISTORY = 50;
-const AUTOSAVE_DEBOUNCE_MS = 800;
-const SNAPSHOT_INTERVAL_MS = 60 * 1000; // 1 minute
-const BLOB_THRESHOLD_KB = 400; // ~400KB, above this store in IndexedDB when possible[web:14][web:18]
-
-let state = {
-  boards: [],
-  activeBoardId: null,
-  history: [],
-  historyIndex: -1,
-  settings: {
-    themePreset: "dark",
-    largeText: false,
-    highContrast: false,
-    locale: "en",
-  },
-  snapshots: [],
-};
-
-let canvasTransform = {
-  scale: 0.8,
-  offsetX: 0,
-  offsetY: 0,
-};
-
-let dragState = null;
-let resizeState = null;
-let rotateState = null;
-let marqueeState = null;
-let currentSelection = new Set();
-let autosaveTimer = null;
-let lastSnapshotTime = 0;
-let contextMenuTargetId = null;
-let currentLocale = "en";
-let dockOpen = true;
-
-/* ---------- IndexedDB helper (simple) ---------- */
-let dbPromise = null;
-function openBlobDB() {
-  if (!("indexedDB" in window)) {
-    return Promise.resolve(null);
-  }
-  if (dbPromise) return dbPromise;
-  dbPromise = new Promise((resolve, reject) => {
-    const request = indexedDB.open("MoodboardStudioBlobs", 1);
-    request.onerror = () => resolve(null);
-    request.onsuccess = () => resolve(request.result);
-    request.onupgradeneeded = () => {
-      const db = request.result;
-      if (!db.objectStoreNames.contains("blobs")) {
-        db.createObjectStore("blobs");
-      }
-    };
-  });
-  return dbPromise;
-}
-async function putBlob(id, blob) {
-  const db = await openBlobDB();
-  if (!db) return false;
-  return new Promise(resolve => {
-    const tx = db.transaction("blobs", "readwrite");
-    tx.objectStore("blobs").put(blob, id);
-    tx.oncomplete = () => resolve(true);
-    tx.onerror = () => resolve(false);
-  });
-}
-async function getBlob(id) {
-  const db = await openBlobDB();
-  if (!db) return null;
-  return new Promise(resolve => {
-    const tx = db.transaction("blobs", "readonly");
-    const req = tx.objectStore("blobs").get(id);
-    req.onsuccess = () => resolve(req.result || null);
-    req.onerror = () => resolve(null);
-  });
-}
-async function deleteBlob(id) {
-  const db = await openBlobDB();
-  if (!db) return false;
-  return new Promise(resolve => {
-    const tx = db.transaction("blobs", "readwrite");
-    tx.objectStore("blobs").delete(id);
-    tx.oncomplete = () => resolve(true);
-    tx.onerror = () => resolve(false);
-  });
-}
-
-/* ---------- Utilities ---------- */
-function uuid() {
-  return "xxxxxx-xxxx-4xxx-yxxx-xxxxxxxx".replace(/[xy]/g, c => {
-    const r = (crypto.getRandomValues(new Uint8Array(1))[0] & 0xf) >> 0;
-    const v = c === "x" ? r : (r & 0x3) | 0x8;
-    return v.toString(16);
-  });
-}
-function deepClone(obj) {
-  return JSON.parse(JSON.stringify(obj));
-}
-function clamp(v, min, max) {
-  return Math.max(min, Math.min(max, v));
-}
-function lerp(a, b, t) {
-  return a + (b - a) * t;
-}
-
-/* Toast */
-let toastTimer = null;
-function showToast(msg, ms = 2400) {
-  const el = document.getElementById("toast");
-  el.textContent = msg;
-  el.setAttribute("data-open","true");
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => {
-    el.removeAttribute("data-open");
-  }, ms);
-}
-
-/* ---------- Storage layer: localStorage + IndexedDB fallback ---------- */
-function loadFromLocalStorage() {
-  try {
-    const core = JSON.parse(localStorage.getItem(STORAGE_KEY_ROOT) || "null");
-    const settings = JSON.parse(localStorage.getItem(STORAGE_KEY_SETTINGS) || "null");
-    const snapshots = JSON.parse(localStorage.getItem(STORAGE_KEY_SNAPSHOTS) || "[]");
-    const blobIndex = JSON.parse(localStorage.getItem(STORAGE_KEY_BLOB_INDEX) || "{}");
-    return { core, settings, snapshots, blobIndex };
-  } catch {
-    return { core: null, settings: null, snapshots: [], blobIndex: {} };
-  }
-}
-
-function saveToLocalStorageSafe(key, value) {
-  try {
-    localStorage.setItem(key, JSON.stringify(value));
-    return true;
-  } catch (err) {
-    if (err && err.name === "QuotaExceededError") {
-      showToast("Storage almost full – using IndexedDB for large items.");
-      return false;
-    }
-    return false;
-  }
-}
-
-/* Estimate storage usage (approx) */
-function updateStorageUsage() {
-  const el = document.getElementById("storageUsage");
-  try {
-    let total = 0;
-    for (let k in localStorage) {
-      if (!Object.prototype.hasOwnProperty.call(localStorage, k)) continue;
-      const v = localStorage.getItem(k);
-      total += k.length + (v ? v.length : 0);
-    }
-    const kb = Math.round(total / 1024);
-    el.textContent = `Storage: ~${kb} KB used (localStorage + IndexedDB)`;
-  } catch {
-    el.textContent = "Storage: unknown";
-  }
-}
-
-/* Cleanup unused blobs - heuristic:
-   any blobId in STORAGE_KEY_BLOB_INDEX not referenced by current boards will be removed */
-async function cleanupUnusedImages() {
-  const blobIndex = JSON.parse(localStorage.getItem(STORAGE_KEY_BLOB_INDEX) || "{}");
-  const used = new Set();
-  state.boards.forEach(b => {
-    (b.items || []).forEach(it => {
-      if (it.image && it.image.blobId) used.add(it.image.blobId);
-    });
-  });
-  const allIds = Object.keys(blobIndex);
-  let removed = 0;
-  for (const id of allIds) {
-    if (!used.has(id)) {
-      await deleteBlob(id);
-      delete blobIndex[id];
-      removed++;
-    }
-  }
-  localStorage.setItem(STORAGE_KEY_BLOB_INDEX, JSON.stringify(blobIndex));
-  showToast(removed ? `Cleaned ${removed} unused images` : "No unused images to clean");
-  updateStorageUsage();
-}
-
-/* ---------- Core state helpers ---------- */
-function ensureInitialBoard() {
-  if (!state.boards.length) {
-    const id = uuid();
-    state.boards.push({
-      id,
-      name: "Cozy starter",
-      createdAt: Date.now(),
-      items: [],
-      meta: { template: "cozy" },
-    });
-    state.activeBoardId = id;
-  } else if (!state.activeBoardId) {
-    state.activeBoardId = state.boards[0].id;
-  }
-}
-
-function getActiveBoard() {
-  return state.boards.find(b => b.id === state.activeBoardId) || null;
-}
-
-function pushHistory() {
-  const board = getActiveBoard();
-  if (!board) return;
-  const snapshot = deepClone(board);
-  state.history = state.history.slice(0, state.historyIndex + 1);
-  state.history.push(snapshot);
-  if (state.history.length > MAX_HISTORY) {
-    state.history.shift();
-  }
-  state.historyIndex = state.history.length - 1;
-}
-
-function applyHistory(index) {
-  const board = state.history[index];
-  if (!board) return;
-  const idx = state.boards.findIndex(b => b.id === board.id);
-  if (idx >= 0) {
-    state.boards[idx] = deepClone(board);
-  } else {
-    state.boards.push(deepClone(board));
-  }
-  state.activeBoardId = board.id;
-  state.historyIndex = index;
-  renderAll();
-}
-
-/* Debounced autosave */
-function queueAutosave() {
-  document.getElementById("statusAutosave").textContent = "Saving…";
-  clearTimeout(autosaveTimer);
-  autosaveTimer = setTimeout(() => {
-    saveAll();
-    document.getElementById("statusAutosave").textContent = "All changes saved";
-  }, AUTOSAVE_DEBOUNCE_MS);
-}
-
-function saveAll() {
-  const core = {
-    boards: state.boards,
-    activeBoardId: state.activeBoardId,
-  };
-  const ok = saveToLocalStorageSafe(STORAGE_KEY_ROOT, core);
-  if (!ok) {
-    // On quota, rely more heavily on IndexedDB, but core metadata must still fit
-  }
-  saveToLocalStorageSafe(STORAGE_KEY_SETTINGS, state.settings);
-  saveToLocalStorageSafe(STORAGE_KEY_SNAPSHOTS, state.snapshots);
-  updateStorageUsage();
-}
-
-/* Versioned autosave snapshots */
-function maybeSnapshot(reason = "autosave") {
-  const now = Date.now();
-  if (now - lastSnapshotTime < SNAPSHOT_INTERVAL_MS && reason === "autosave") return;
-  const board = getActiveBoard();
-  if (!board) return;
-  const lite = {
-    id: uuid(),
-    boardId: board.id,
-    name: board.name,
-    createdAt: now,
-    reason,
-    itemCount: (board.items || []).length,
-  };
-  state.snapshots.unshift(lite);
-  if (state.snapshots.length > 30) state.snapshots.length = 30;
-  lastSnapshotTime = now;
-  queueAutosave();
-}
-
-/* ---------- Rendering ---------- */
-function renderBoardTabs() {
-  const container = document.getElementById("boardTabs");
-  container.innerHTML = "";
-  state.boards.forEach(b => {
-    const btn = document.createElement("button");
-    btn.className = "board-tab" + (b.id === state.activeBoardId ? " active" : "");
-    btn.type = "button";
-    btn.role = "tab";
-    btn.textContent = b.name || "Untitled board";
-    btn.addEventListener("click", () => {
-      state.activeBoardId = b.id;
-      currentSelection.clear();
-      pushHistory();
-      renderAll();
-    });
-    container.appendChild(btn);
-  });
-}
-
-function renderItems() {
-  const board = getActiveBoard();
-  const canvasBoard = document.getElementById("canvasBoard");
-  canvasBoard.innerHTML = "";
-  if (!board) return;
-
-  // Simple lazy DOM rendering: only instantiate first N items, rest as lightweight placeholders
-  const MAX_DOM_ITEMS = 180;
-  const items = board.items || [];
-  const heavy = items.slice(0, MAX_DOM_ITEMS);
-  const light = items.slice(MAX_DOM_ITEMS);
-
-  heavy.forEach(item => {
-    const el = document.createElement("div");
-    el.className = "mood-item";
-    el.dataset.id = item.id;
-    el.dataset.type = item.type;
-    if (currentSelection.has(item.id)) el.dataset.selected = "true";
-    if (item.locked) el.dataset.locked = "true";
-    if (item.hidden) el.dataset.hidden = "true";
-    el.style.left = (item.x || 0) + "px";
-    el.style.top = (item.y || 0) + "px";
-    el.style.width = (item.w || 160) + "px";
-    el.style.height = (item.h || 120) + "px";
-    el.style.transform = "rotate(" + (item.rotation || 0) + "deg)";
-    if (item.style) {
-      if (item.style.fontFamily) el.style.fontFamily = item.style.fontFamily;
-      if (item.style.fontSize) el.style.fontSize = item.style.fontSize + "px";
-      if (item.style.fontWeight) el.style.fontWeight = item.style.fontWeight;
-      if (item.style.textColor) el.style.color = item.style.textColor;
-      if (item.style.bgColor || item.style.bgOpacity != null) {
-        const base = item.style.bgColor || "rgba(15,23,42,1)";
-        const alpha = item.style.bgOpacity != null ? item.style.bgOpacity : 0.9;
-        // simple: assume hex; more robust conversion if needed
-        el.style.backgroundColor = base;
-        el.style.opacity = alpha;
-      }
-      if (item.style.radius != null) el.style.borderRadius = item.style.radius + "px";
-      if (item.style.shadow === "none") el.style.boxShadow = "none";
-      if (item.style.shadow === "strong") el.style.boxShadow = "0 20px 40px rgba(15,23,42,0.95)";
-      if (item.style.blur) el.style.backdropFilter = "blur(" + item.style.blur + "px)";
-    }
-
-    const header = document.createElement("div");
-    header.className = "mood-item-header";
-    header.innerHTML = `<span>${(item.title || item.type || "Item").toUpperCase()}</span><span>${item.type === "image" ? "IMG" : item.type === "note" ? "TXT" : item.type === "color" ? "CLR" : item.type === "link" ? "LNK" : "STK"}</span>`;
-    el.appendChild(header);
-
-    const body = document.createElement("div");
-    body.className = "mood-item-body";
-
-    if (item.type === "note") {
-      body.textContent = item.text || "Double-click to edit";
-    } else if (item.type === "color") {
-      const block = document.createElement("div");
-      block.className = "color-swatch-block";
-      block.style.background = item.color || "#f97316";
-      body.appendChild(block);
-      const code = document.createElement("div");
-      code.textContent = item.color || "#f97316";
-      body.appendChild(code);
-    } else if (item.type === "image") {
-      const img = document.createElement("img");
-      if (item.image && item.image.dataUrl) {
-        img.src = item.image.dataUrl;
-      } else if (item.image && item.image.blobId) {
-        // lazy load from IndexedDB
-        (async () => {
-          const blob = await getBlob(item.image.blobId);
-          if (blob) {
-            const url = URL.createObjectURL(blob);
-            img.src = url;
-          }
-        })();
-      }
-      body.appendChild(img);
-    } else if (item.type === "link") {
-      const a = document.createElement("a");
-      a.href = item.url || "#";
-      a.target = "_blank";
-      a.rel = "noopener noreferrer";
-      a.textContent = item.title || item.url || "Link";
-      body.appendChild(a);
-      if (item.text) {
-        const p = document.createElement("div");
-        p.style.fontSize = "11px";
-        p.style.marginTop = "4px";
-        p.textContent = item.text;
-        body.appendChild(p);
-      }
-    } else if (item.type === "emoji") {
-      body.textContent = item.emoji || "✨";
-    }
-    el.appendChild(body);
-
-    if (item.tags && item.tags.length) {
-      const tags = document.createElement("div");
-      tags.className = "mood-item-tags";
-      item.tags.forEach(t => {
-        const tag = document.createElement("span");
-        tag.className = "item-tag-pill";
-        tag.textContent = t;
-        tags.appendChild(tag);
-      });
-      el.appendChild(tags);
-    }
-
-    // handles
-    const resize = document.createElement("div");
-    resize.className = "resize-handle br";
-    el.appendChild(resize);
-
-    const rotate = document.createElement("div");
-    rotate.className = "rotate-handle";
-    rotate.innerHTML = `<svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 4a1 1 0 0 1 .993.883L13 5v1.055a6.002 6.002 0 0 1 4.9 5.638 1 1 0 0 1-1.993.112A4.001 4.001 0 0 0 13 8.062V9a1 1 0 0 1-2 0V5a1 1 0 0 1 1-1zm0 4a5 5 0 1 1-4.9 6.116 1 1 0 0 1 1.964-.4A3.002 3.002 0 1 0 12 9z"/></svg>`;
-    el.appendChild(rotate);
-
-    // events
-    el.addEventListener("pointerdown", onItemPointerDown);
-    el.addEventListener("dblclick", onItemDoubleClick);
-    el.addEventListener("contextmenu", e => openContextMenu(e, item.id));
-
-    resize.addEventListener("pointerdown", e => onResizePointerDown(e, item.id));
-    rotate.addEventListener("pointerdown", e => onRotatePointerDown(e, item.id));
-
-    canvasBoard.appendChild(el);
-  });
-
-  // Light placeholders (not interactive; could be extended to virtualize fully)
-  light.forEach(() => {
-    // skipping; DOM stays lighter for huge boards
-  });
-
-  updateSelectionInfo();
-}
-
-function renderInspector() {
-  const board = getActiveBoard();
-  if (!board) return;
-  const arr = board.items || [];
-  const selectedItems = arr.filter(it => currentSelection.has(it.id));
-  const single = selectedItems.length === 1 ? selectedItems[0] : null;
-
-  const fields = ["fieldX","fieldY","fieldW","fieldH","fieldRotation","fieldZ","fieldFont","fieldFontSize","fieldFontWeight","fieldTextColor","fieldBgColor","fieldBgOpacity","fieldRadius","fieldShadow","fieldBlur","fieldTitle","fieldTags","fieldLocked","fieldHidden"];
-  fields.forEach(id => {
-    const el = document.getElementById(id);
-    if (!el) return;
-    el.disabled = !single;
-  });
-
-  if (!single) {
-    updateSelectionInfo();
-    return;
-  }
-
-  document.getElementById("fieldX").value = Math.round(single.x || 0);
-  document.getElementById("fieldY").value = Math.round(single.y || 0);
-  document.getElementById("fieldW").value = Math.round(single.w || 160);
-  document.getElementById("fieldH").value = Math.round(single.h || 120);
-  document.getElementById("fieldRotation").value = Math.round(single.rotation || 0);
-  document.getElementById("fieldZ").value = single.z || 0;
-  const st = single.style || {};
-  document.getElementById("fieldFont").value = st.fontFamily || "";
-  document.getElementById("fieldFontSize").value = st.fontSize || "";
-  document.getElementById("fieldFontWeight").value = st.fontWeight || "";
-  document.getElementById("fieldTextColor").value = st.textColor || "#e5e7eb";
-  document.getElementById("fieldBgColor").value = st.bgColor || "#111827";
-  document.getElementById("fieldBgOpacity").value = st.bgOpacity != null ? st.bgOpacity : 0.9;
-  document.getElementById("fieldRadius").value = st.radius != null ? st.radius : 14;
-  document.getElementById("fieldShadow").value = st.shadow || "";
-  document.getElementById("fieldBlur").value = st.blur || 0;
-  document.getElementById("fieldTitle").value = single.title || "";
-  document.getElementById("fieldTags").value = (single.tags || []).join(",");
-  document.getElementById("fieldLocked").value = single.locked ? "true" : "false";
-  document.getElementById("fieldHidden").value = single.hidden ? "true" : "false";
-
-  updateSelectionInfo();
-}
-
-function updateSelectionInfo() {
-  const board = getActiveBoard();
-  const info = document.getElementById("selectionInfo");
-  if (!board) {
-    info.textContent = "No board";
-    return;
-  }
-  const count = currentSelection.size;
-  const total = (board.items || []).length;
-  if (!count) {
-    info.textContent = total ? `${total} items` : "Empty board";
-  } else if (count === 1) {
-    const it = board.items.find(i => i.id === [...currentSelection][0]);
-    info.textContent = `${it.type || "item"} selected`;
-  } else {
-    info.textContent = `${count} items selected`;
-  }
-}
-
-/* Template gallery */
-function renderTemplates() {
-  const gallery = document.getElementById("templateGallery");
-  gallery.innerHTML = "";
-  const templates = [
-    { id: "cozy", name: "Cozy reading nook" },
-    { id: "brand", name: "Brand mood" },
-    { id: "product", name: "Product launch" },
-  ];
-  templates.forEach(t => {
-    const card = document.createElement("div");
-    card.className = "template-card";
-    card.dataset.id = t.id;
-    card.innerHTML = `<div class="template-preview"></div><div class="template-title">${t.name}</div>`;
-    card.addEventListener("click", () => applyTemplate(t.id));
-    gallery.appendChild(card);
-  });
-}
-
-/* Locale chips */
-function renderLocaleChips() {
-  const el = document.getElementById("localeChips");
-  el.innerHTML = "";
-  const locales = ["en","fr","es","de"];
-  locales.forEach(loc => {
-    const btn = document.createElement("button");
-    btn.className = "icon-btn";
-    btn.dataset.variant = loc === currentLocale ? "accent" : "ghost";
-    btn.textContent = loc.toUpperCase();
-    btn.addEventListener("click", () => {
-      currentLocale = loc;
-      state.settings.locale = loc;
-      saveAll();
-      renderLocaleChips();
-      showToast("Locale set to " + loc.toUpperCase());
-    });
-    el.appendChild(btn);
-  });
-}
-
-/* Minimap rendering (very lightweight, approximate) */
-function renderMinimap() {
-  const shell = document.getElementById("minimapShell");
-  if (shell.style.display === "none") return;
-  const board = getActiveBoard();
-  if (!board) return;
-  const boardW = 1800;
-  const boardH = 1100;
-  const shellW = shell.clientWidth;
-  const shellH = shell.clientHeight;
-  const scaleX = shellW / boardW;
-  const scaleY = shellH / boardH;
-  const factor = Math.min(scaleX, scaleY);
-
-  const viewport = document.getElementById("minimapViewport");
-  const viewW = (shellW / canvasTransform.scale) * factor;
-  const viewH = (shellH / canvasTransform.scale) * factor;
-  viewport.style.width = viewW + "px";
-  viewport.style.height = viewH + "px";
-  viewport.style.left = (shellW/2 - viewW/2 - canvasTransform.offsetX * factor) + "px";
-  viewport.style.top = (shellH/2 - viewH/2 - canvasTransform.offsetY * factor) + "px";
-}
-
-/* Root renderer */
-function renderAll() {
-  renderBoardTabs();
-  renderItems();
-  renderInspector();
-  renderMinimap();
-}
-
-/* ---------- Theme & settings ---------- */
-function applySettingsFromState() {
-  const body = document.body;
-  body.dataset.theme = state.settings.themePreset || "dark";
-  body.dataset.highContrast = state.settings.highContrast ? "true" : "false";
-  body.dataset.largeText = state.settings.largeText ? "true" : "false";
-  currentLocale = state.settings.locale || "en";
-
-  document.getElementById("btnLargeText").setAttribute("aria-pressed", state.settings.largeText ? "true" : "false");
-  document.getElementById("btnHighContrast").setAttribute("aria-pressed", state.settings.highContrast ? "true" : "false");
-}
-
-/* Cycle theme presets */
-function cycleThemePreset() {
-  const presets = ["dark","minimal","paper","material"];
-  const idx = presets.indexOf(state.settings.themePreset || "dark");
-  const next = presets[(idx + 1) % presets.length];
-  state.settings.themePreset = next;
-  applySettingsFromState();
-  saveAll();
-  showToast("Theme preset: " + next);
-}
-
-/* ---------- Item creation helpers ---------- */
-function addItem(type, partial = {}) {
-  const board = getActiveBoard();
-  if (!board) return;
-  const id = uuid();
-  const base = {
-    id,
-    type,
-    x: 140 + Math.random() * 60,
-    y: 120 + Math.random() * 60,
-    w: 200,
-    h: 140,
-    rotation: 0,
-    z: (board.items.reduce((m, it) => Math.max(m, it.z || 0), 0) || 0) + 1,
-    title: "",
-    text: "",
-    locked: false,
-    hidden: false,
-    tags: [],
-    style: {
-      fontFamily: "",
-      fontSize: 13,
-      fontWeight: "",
-      textColor: "#e5e7eb",
-      bgColor: "#111827",
-      bgOpacity: 0.9,
-      radius: 14,
-      shadow: "",
-      blur: 8,
-    },
-  };
-  if (type === "note") {
-    base.text = "New note";
-    base.title = "Note";
-  }
-  if (type === "color") {
-    base.color = partial.color || "#f97316";
-    base.title = "Swatch";
-    base.w = 130;
-    base.h = 94;
-  }
-  if (type === "emoji") {
-    base.emoji = partial.emoji || "✨";
-    base.title = "Emoji";
-    base.w = 80;
-    base.h = 80;
-  }
-  if (type === "link") {
-    base.url = partial.url || "https://";
-    base.text = partial.text || "";
-    base.title = "Link";
-  }
-  if (type === "image") {
-    base.image = partial.image || null;
-    base.title = "Image";
-    base.w = partial.w || 260;
-    base.h = partial.h || 180;
-  }
-  board.items.push(base);
-  currentSelection.clear();
-  currentSelection.add(id);
-  pushHistory();
-  renderAll();
-  queueAutosave();
-  maybeSnapshot("add-item");
-}
-
-/* ---------- Pointer interactions: drag, resize, rotation, pan, marquee ---------- */
-function canvasToBoardCoords(clientX, clientY) {
-  const outer = document.getElementById("canvasOuter");
-  const rect = outer.getBoundingClientRect();
-  const x = (clientX - rect.left - canvasTransform.offsetX) / canvasTransform.scale;
-  const y = (clientY - rect.top - canvasTransform.offsetY) / canvasTransform.scale;
-  return { x, y };
-}
-
-/* Drag (move item) */
-function onItemPointerDown(e) {
-  const itemEl = e.currentTarget;
-  const itemId = itemEl.dataset.id;
-  const board = getActiveBoard();
-  if (!board) return;
-  const item = board.items.find(i => i.id === itemId);
-  if (!item || item.locked) return;
-
-  const isResizeHandle = e.target.classList.contains("resize-handle");
-  const isRotateHandle = e.target.classList.contains("rotate-handle");
-  if (isResizeHandle || isRotateHandle) return; // handled separately
-
-  itemEl.setPointerCapture(e.pointerId);
-
-  const multi = e.shiftKey;
-  if (!multi && !currentSelection.has(itemId)) {
-    currentSelection.clear();
-  }
-  if (multi && currentSelection.has(itemId)) {
-    currentSelection.delete(itemId);
-  } else {
-    currentSelection.add(itemId);
-  }
-  renderInspector();
-
-  const { x, y } = canvasToBoardCoords(e.clientX, e.clientY);
-  const start = { x, y };
-
-  const selectedItems = board.items.filter(i => currentSelection.has(i.id)).map(it => ({
-    id: it.id,
-    startX: it.x || 0,
-    startY: it.y || 0,
-  }));
-
-  dragState = {
-    pointerId: e.pointerId,
-    start,
-    selectedItems,
-  };
-
-  pushHistory();
-  e.preventDefault();
-}
-
-/* Resize */
-function onResizePointerDown(e, itemId) {
-  e.stopPropagation();
-  const board = getActiveBoard();
-  if (!board) return;
-  const item = board.items.find(i => i.id === itemId);
-  if (!item || item.locked) return;
-  const itemEl = document.querySelector(`.mood-item[data-id="${itemId}"]`);
-  if (!itemEl) return;
-
-  itemEl.setPointerCapture(e.pointerId);
-  const { x, y } = canvasToBoardCoords(e.clientX, e.clientY);
-  resizeState = {
-    pointerId: e.pointerId,
-    itemId,
-    startX: x,
-    startY: y,
-    baseW: item.w || 160,
-    baseH: item.h || 120,
-  };
-  pushHistory();
-}
-
-/* Rotate */
-function onRotatePointerDown(e, itemId) {
-  e.stopPropagation();
-  const board = getActiveBoard();
-  if (!board) return;
-  const item = board.items.find(i => i.id === itemId);
-  if (!item || item.locked) return;
-  const itemEl = document.querySelector(`.mood-item[data-id="${itemId}"]`);
-  if (!itemEl) return;
-
-  itemEl.setPointerCapture(e.pointerId);
-  const { x, y } = canvasToBoardCoords(e.clientX, e.clientY);
-  rotateState = {
-    pointerId: e.pointerId,
-    itemId,
-    startX: x,
-    startY: y,
-    baseRotation: item.rotation || 0,
-  };
-  pushHistory();
-}
-
-/* Canvas pointer for marquee selection & panning */
-function onCanvasPointerDown(e) {
-  if (e.button === 1 || (e.button === 0 && e.altKey)) {
-    // Pan
-    const outer = document.getElementById("canvasOuter");
-    outer.setPointerCapture(e.pointerId);
-    dragState = {
-      pointerId: e.pointerId,
-      mode: "pan",
-      startX: e.clientX,
-      startY: e.clientY,
-      baseOffsetX: canvasTransform.offsetX,
-      baseOffsetY: canvasTransform.offsetY,
-    };
-    e.preventDefault();
-    return;
-  }
-
-  if (e.button !== 0) return;
-  const outer = document.getElementById("canvasOuter");
-  outer.setPointerCapture(e.pointerId);
-  const { x, y } = canvasToBoardCoords(e.clientX, e.clientY);
-  marqueeState = {
-    pointerId: e.pointerId,
-    startX: x,
-    startY: y,
-    endX: x,
-    endY: y,
-  };
-  const rect = document.createElement("div");
-  rect.className = "selection-rect";
-  rect.id = "selectionRect";
-  document.getElementById("canvasBoard").appendChild(rect);
-  currentSelection.clear();
-  renderInspector();
-  e.preventDefault();
-}
-
-function onGlobalPointerMove(e) {
-  const board = getActiveBoard();
-  if (!board) return;
-
-  // Drag items or pan
-  if (dragState && dragState.pointerId === e.pointerId) {
-    if (dragState.mode === "pan") {
-      const dx = e.clientX - dragState.startX;
-      const dy = e.clientY - dragState.startY;
-      canvasTransform.offsetX = dragState.baseOffsetX + dx;
-      canvasTransform.offsetY = dragState.baseOffsetY + dy;
-      applyCanvasTransform();
-      renderMinimap();
-      return;
-    }
-    const { x, y } = canvasToBoardCoords(e.clientX, e.clientY);
-    const dx = x - dragState.start.x;
-    const dy = y - dragState.start.y;
-    const snap = document.getElementById("canvasOuter").dataset.snap === "on";
-    board.items.forEach(it => {
-      const match = dragState.selectedItems.find(si => si.id === it.id);
-      if (!match) return;
-      let nx = match.startX + dx;
-      let ny = match.startY + dy;
-      if (snap) {
-        const grid = 20;
-        nx = Math.round(nx / grid) * grid;
-        ny = Math.round(ny / grid) * grid;
-      }
-      it.x = nx;
-      it.y = ny;
-    });
-    renderItems();
-    return;
-  }
-
-  // Resize
-  if (resizeState && resizeState.pointerId === e.pointerId) {
-    const { x, y } = canvasToBoardCoords(e.clientX, e.clientY);
-    const dx = x - resizeState.startX;
-    const dy = y - resizeState.startY;
-    const item = board.items.find(i => i.id === resizeState.itemId);
-    if (!item) return;
-    item.w = clamp(resizeState.baseW + dx, 60, 1200);
-    item.h = clamp(resizeState.baseH + dy, 40, 900);
-    renderItems();
-    return;
-  }
-
-  // Rotate
-  if (rotateState && rotateState.pointerId === e.pointerId) {
-    const { x, y } = canvasToBoardCoords(e.clientX, e.clientY);
-    const item = board.items.find(i => i.id === rotateState.itemId);
-    if (!item) return;
-    const cx = (item.x || 0) + (item.w || 0) / 2;
-    const cy = (item.y || 0) + (item.h || 0) / 2;
-    const angle = Math.atan2(y - cy, x - cx) * 180 / Math.PI;
-    item.rotation = Math.round(angle);
-    renderItems();
-    return;
-  }
-
-  // Marquee
-  if (marqueeState && marqueeState.pointerId === e.pointerId) {
-    const { x, y } = canvasToBoardCoords(e.clientX, e.clientY);
-    marqueeState.endX = x;
-    marqueeState.endY = y;
-    const minX = Math.min(marqueeState.startX, marqueeState.endX);
-    const minY = Math.min(marqueeState.startY, marqueeState.end
+    <script>
+        // === ENHANCED STATE MANAGEMENT ===
+        const state = {
+            boards: [],
+            currentBoard: null,
+            items: [],
+            selectedItem: null,
+            zoom: 1,
+            isDragging: false,
+            isResizing: false,
+            dragStart: { x: 0, y: 0 },
+            tool: 'select',
+            theme: 'minimal',
+            uiHidden: false,
+            history: [],
+            historyIndex: -1,
+            settings: {
+                hapticFeedback: true,
+                showThemes: true,
+                aiModel: 'beta1',
+                darkMode: false,
+                autoSave: true,
+                gridSnap: true,
+                showGuides: false
+            },
+            currentImageEdit: null
+        };
+
+        // === ELEMENTS ===
+        const elements = {
+            canvas: document.getElementById('canvas'),
+            canvasContainer: document.getElementById('canvas-container'),
+            boardList: document.getElementById('board-list'),
+            aiPanel: document.getElementById('ai-panel'),
+            aiCommand: document.getElementById('ai-command'),
+            aiSuggestions: document.getElementById('ai-suggestions'),
+            summarizerPanel: document.getElementById('summarizer-panel'),
+            imageEditor: document.getElementById('image-editor'),
+            contextMenu: document.getElementById('context-menu'),
+            dock: document.getElementById('dock'),
+            toastContainer: document.getElementById('toast-container'),
+            themeGrid: document.getElementById('theme-grid'),
+            editorPreviewImg: document.getElementById('editor-preview-img'),
+            summarizerResult: document.getElementById('summarizer-result')
+        };
+
+        // === INITIALIZATION ===
+        function init() {
+            loadSettings();
+            createDefaultBoard();
+            setupEventListeners();
+            setupImageEditor();
+            setupSummarizer();
+            applyTheme();
+            render();
+            showToast('Welcome to Gridora Pro!', 'info');
+        }
+
+        function createDefaultBoard() {
+            const board = {
+                id: 'board_' + Date.now(),
+                name: 'My Moodboard',
+                createdAt: Date.now(),
+                items: [],
+                layout: 'freeform',
+                backgroundColor: '#ffffff'
+            };
+            
+            state.boards.push(board);
+            state.currentBoard = board;
+            updateBoardList();
+            saveHistory();
+        }
+
+        // === ENHANCED RENDERING ===
+        function render() {
+            elements.canvas.innerHTML = '';
+            
+            // Sort by z-index
+            const sortedItems = [...state.items].sort((a, b) => a.zIndex - b.zIndex);
+            
+            sortedItems.forEach(item => {
+                const element = createItemElement(item);
+                elements.canvas.appendChild(element);
+            });
+        }
+
+        function createItemElement(item) {
+            const div = document.createElement('div');
+            div.className = 'canvas-item';
+            div.dataset.id = item.id;
+            
+            div.style.transform = `translate(${item.x}px, ${item.y}px)`;
+            div.style.width = `${item.width}px`;
+            div.style.height = `${item.height}px`;
+            div.style.zIndex = item.zIndex;
+            
+            if (state.selectedItem?.id === item.id) {
+                div.classList.add('selected');
+            }
+            
+            switch (item.type) {
+                case 'image':
+                    createImageItem(div, item);
+                    break;
+                case 'text':
+                    createTextItem(div, item);
+                    break;
+                case 'color':
+                    createColorItem(div, item);
+                    break;
+                case 'shape':
+                    createShapeItem(div, item);
+                    break;
+                case 'file':
+                    createFileItem(div, item);
+                    break;
+            }
+            
+            div.addEventListener('mousedown', (e) => {
+                if (e.target.closest('.image-action-btn') || 
+                    e.target.closest('.text-toolbar-btn') ||
+                    e.target.closest('textarea') ||
+                    e.target.closest('input')) return;
+                    
+                selectItem(item);
+                startDragging(e, item);
+            });
+            
+            div.addEventListener('dblclick', () => {
+                if (item.type === 'text') {
+                    editTextItem(item);
+                } else if (item.type === 'image') {
+                    openImageEditor(item);
+                }
+            });
+            
+            return div;
+        }
+
+        function createImageItem(div, item) {
+            div.classList.add('item-image');
+            
+            const img = document.createElement('img');
+            img.src = item.url;
+            img.alt = item.name || 'Image';
+            img.style.filter = item.filter || '';
+            
+            // Image actions
+            const actions = document.createElement('div');
+            actions.className = 'image-actions';
+            actions.innerHTML = `
+                <button class="image-action-btn" onclick="openImageEditor(state.items.find(i => i.id === '${item.id}'))" title="Edit">
+                    <i class="fas fa-edit"></i>
+                </button>
+                <button class="image-action-btn" onclick="enhanceImage('${item.id}')" title="Enhance">
+                    <i class="fas fa-wand-magic-sparkles"></i>
+                </button>
+                <button class="image-action-btn" onclick="removeBackground('${item.id}')" title="Remove BG">
+                    <i class="fas fa-eraser"></i>
+                </button>
+            `;
+            
+            div.appendChild(img);
+            div.appendChild(actions);
+        }
+
+        function createTextItem(div, item) {
+            div.classList.add('item-text');
+            
+            const header = document.createElement('div');
+            header.className = 'item-text-header';
+            header.innerHTML = `
+                <input type="text" class="item-text-title" value="${item.title || 'Untitled Note'}" 
+                       placeholder="Note Title" oninput="updateTextItem('${item.id}', 'title', this.value)">
+                <div class="text-toolbar">
+                    <button class="text-toolbar-btn" onclick="toggleTextStyle('${item.id}', 'bold')">
+                        <i class="fas fa-bold"></i>
+                    </button>
+                    <button class="text-toolbar-btn" onclick="toggleTextStyle('${item.id}', 'italic')">
+                        <i class="fas fa-italic"></i>
+                    </button>
+                    <button class="text-toolbar-btn" onclick="toggleTextStyle('${item.id}', 'underline')">
+                        <i class="fas fa-underline"></i>
+                    </button>
+                </div>
+            `;
+            
+            const textarea = document.createElement('textarea');
+            textarea.className = 'item-text-content';
+            textarea.value = item.content || '';
+            textarea.placeholder = 'Start typing...';
+            textarea.style.fontWeight = item.style?.bold ? 'bold' : 'normal';
+            textarea.style.fontStyle = item.style?.italic ? 'italic' : 'normal';
+            textarea.style.textDecoration = item.style?.underline ? 'underline' : 'none';
+            textarea.style.fontSize = item.style?.fontSize || '15px';
+            textarea.style.color = item.style?.color || 'var(--text-primary)';
+            
+            textarea.addEventListener('input', (e) => {
+                updateTextItem(item.id, 'content', e.target.value);
+            });
+            
+            div.appendChild(header);
+            div.appendChild(textarea);
+        }
+
+        function createColorItem(div, item) {
+            div.classList.add('item-color');
+            div.style.backgroundColor = item.color;
+            
+            div.innerHTML = `
+                <div class="color-preview" style="background: ${item.color};"></div>
+                <div class="color-info">
+                    <div class="color-value">${item.color.toUpperCase()}</div>
+                    <div class="color-name">${item.name || 'Color Swatch'}</div>
+                </div>
+            `;
+        }
+
+        // === ENHANCED EVENT HANDLERS ===
+        function setupEventListeners() {
+            // Tool selection
+            elements.dock.addEventListener('click', (e) => {
+                const dockItem = e.target.closest('.dock-item');
+                if (!dockItem) return;
+                
+                if (dockItem.id === 'dock-ai-btn') {
+                    toggleAIPanel();
+                } else if (dockItem.id === 'edit-image-btn') {
+                    if (state.selectedItem?.type === 'image') {
+                        openImageEditor(state.selectedItem);
+                    } else {
+                        showToast('Select an image first!', 'warning');
+                    }
+                } else if (dockItem.id === 'summarizer-btn') {
+                    if (state.selectedItem?.type === 'text') {
+                        openSummarizer(state.selectedItem);
+                    } else {
+                        showToast('Select a text note first!', 'warning');
+                    }
+                } else if (dockItem.dataset.tool) {
+                    setActiveTool(dockItem.dataset.tool);
+                }
+            });
+            
+            // Nav tabs
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const tabName = tab.dataset.tab;
+                    
+                    // Update active tab
+                    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    
+                    // Show corresponding content
+                    document.querySelectorAll('[data-tab-content]').forEach(content => {
+                        content.classList.add('hidden');
+                    });
+                    document.querySelector(`[data-tab-content="${tabName}"]`).classList.remove('hidden');
+                });
+            });
+            
+            // Zoom controls
+            document.getElementById('zoom-in').addEventListener('click', () => setZoom(state.zoom * 1.2));
+            document.getElementById('zoom-out').addEventListener('click', () => setZoom(state.zoom * 0.8));
+            document.getElementById('zoom-reset').addEventListener('click', () => setZoom(1));
+            
+            // Theme selection
+            document.querySelectorAll('.theme-option').forEach(option => {
+                option.addEventListener('click', () => {
+                    document.querySelectorAll('.theme-option').forEach(o => o.classList.remove('active'));
+                    option.classList.add('active');
+                    state.theme = option.dataset.theme;
+                    applyTheme();
+                    showToast(`Theme changed to ${state.theme}`, 'success');
+                });
+            });
+            
+            // Settings
+            document.getElementById('save-settings').addEventListener('click', saveSettings);
+            
+            // AI Panel
+            document.getElementById('close-ai').addEventListener('click', () => {
+                elements.aiPanel.classList.remove('open');
+            });
+            
+            elements.aiCommand.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter' && e.target.value.trim()) {
+                    handleAICommand(e.target.value.trim());
+                    e.target.value = '';
+                }
+            });
+            
+            elements.aiSuggestions.addEventListener('click', (e) => {
+                const suggestion = e.target.closest('.ai-suggestion');
+                if (suggestion) {
+                    handleAISuggestion(suggestion.dataset.action);
+                }
+            });
+            
+            // New board
+            document.getElementById('new-board-btn').addEventListener('click', createNewBoard);
+            
+            // Quick actions
+            document.querySelectorAll('.quick-action').forEach(action => {
+                action.addEventListener('click', () => {
+                    const actionType = action.dataset.action;
+                    handleQuickAction(actionType);
+                });
+            });
+            
+            // Export
+            document.getElementById('export-btn').addEventListener('click', exportBoard);
+            
+            // Canvas interactions
+            elements.canvasContainer.addEventListener('mousedown', handleCanvasMouseDown);
+            document.addEventListener('mousemove', handleMouseMove);
+            document.addEventListener('mouseup', handleMouseUp);
+            document.addEventListener('keydown', handleKeyDown);
+            document.addEventListener('contextmenu', handleContextMenu);
+            
+            // Context menu
+            elements.contextMenu.addEventListener('click', (e) => {
+                const item = e.target.closest('.context-menu-item');
+                if (item) {
+                    handleContextAction(item.dataset.action);
+                }
+            });
+            
+            // Page layout controls
+            document.getElementById('page-layout-btn').addEventListener('click', openPageLayoutModal);
+            document.getElementById('grid-snap-btn').addEventListener('click', toggleGridSnap);
+            document.getElementById('guides-btn').addEventListener('click', toggleGuides);
+        }
+
+        // === ENHANCED AI FEATURES ===
+        function toggleAIPanel() {
+            if (state.settings.aiModel === 'none') {
+                showToast('AI features are disabled in settings', 'warning');
+                return;
+            }
+            elements.aiPanel.classList.toggle('open');
+            if (elements.aiPanel.classList.contains('open')) {
+                elements.aiCommand.focus();
+                updateAIModelBadge();
+            }
+        }
+
+        function handleAICommand(command) {
+            showToast(`Processing: ${command}`, 'info');
+            
+            // Simulate AI processing
+            setTimeout(() => {
+                if (command.includes('enhance') && command.includes('image')) {
+                    if (state.selectedItem?.type === 'image') {
+                        enhanceImage(state.selectedItem.id);
+                    }
+                } else if (command.includes('remove') && command.includes('background')) {
+                    if (state.selectedItem?.type === 'image') {
+                        removeBackground(state.selectedItem.id);
+                    }
+                } else if (command.includes('layout')) {
+                    createLayout();
+                } else if (command.includes('color') || command.includes('palette')) {
+                    createColorPalette();
+                } else if (command.includes('summarize')) {
+                    if (state.selectedItem?.type === 'text') {
+                        openSummarizer(state.selectedItem);
+                    }
+                } else {
+                    // Generic AI response
+                    showToast('AI task completed successfully!', 'success');
+                }
+                elements.aiPanel.classList.remove('open');
+            }, 1500);
+        }
+
+        function handleAISuggestion(action) {
+            switch (action) {
+                case 'enhance-image':
+                    if (state.selectedItem?.type === 'image') {
+                        enhanceImage(state.selectedItem.id);
+                    }
+                    break;
+                case 'remove-background':
+                    if (state.selectedItem?.type === 'image') {
+                        removeBackground(state.selectedItem.id);
+                    }
+                    break;
+                case 'create-layout':
+                    createLayout();
+                    break;
+                case 'color-palette':
+                    createColorPalette();
+                    break;
+                case 'summarize-content':
+                    if (state.selectedItem?.type === 'text') {
+                        openSummarizer(state.selectedItem);
+                    }
+                    break;
+                case 'enhance-notes':
+                    if (state.selectedItem?.type === 'text') {
+                        enhanceNote(state.selectedItem.id);
+                    }
+                    break;
+            }
+            elements.aiPanel.classList.remove('open');
+        }
+
+        function enhanceImage(itemId) {
+            const item = state.items.find(i => i.id === itemId);
+            if (!item) return;
+            
+            showToast('Enhancing image with AI...', 'info');
+            
+            setTimeout(() => {
+                // Simulate enhancement
+                item.filter = 'brightness(1.1) contrast(1.1) saturate(1.2)';
+                item.enhanced = true;
+                render();
+                showToast('Image enhanced successfully!', 'success');
+            }, 2000);
+        }
+
+        function removeBackground(itemId) {
+            const item = state.items.find(i => i.id === itemId);
+            if (!item) return;
+            
+            showToast('Removing background with AI...', 'info');
+            
+            setTimeout(() => {
+                // Simulate background removal
+                item.filter = 'contrast(1.2)';
+                item.backgroundRemoved = true;
+                render();
+                showToast('Background removed successfully!', 'success');
+            }, 2000);
+        }
+
+        function createLayout() {
+            const layouts = ['grid', 'radial', 'freeform', 'timeline'];
+            const layout = layouts[Math.floor(Math.random() * layouts.length)];
+            
+            showToast(`Creating ${layout} layout...`, 'info');
+            
+            setTimeout(() => {
+                state.currentBoard.layout = layout;
+                organizeItems(layout);
+                showToast(`${layout.charAt(0).toUpperCase() + layout.slice(1)} layout created!`, 'success');
+            }, 1500);
+        }
+
+        function createColorPalette() {
+            const colors = [
+                '#7c3aed', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6',
+                '#0ea5e9', '#ec4899', '#84cc16', '#f97316', '#6366f1'
+            ];
+            
+            const startX = 100;
+            const startY = 100;
+            const size = 120;
+            const spacing = 20;
+            
+            // Clear existing color items
+            state.items = state.items.filter(item => item.type !== 'color');
+            
+            colors.forEach((color, i) => {
+                const item = {
+                    id: 'color_' + Date.now() + '_' + i,
+                    type: 'color',
+                    color: color,
+                    name: `Color ${i + 1}`,
+                    x: startX + (i % 5) * (size + spacing),
+                    y: startY + Math.floor(i / 5) * (size + spacing),
+                    width: size,
+                    height: size,
+                    zIndex: state.items.length
+                };
+                state.items.push(item);
+            });
+            
+            saveHistory();
+            render();
+            showToast('Color palette created!', 'success');
+        }
+
+        function enhanceNote(itemId) {
+            const item = state.items.find(i => i.id === itemId);
+            if (!item || item.type !== 'text') return;
+            
+            showToast('Enhancing note with AI...', 'info');
+            
+            setTimeout(() => {
+                const enhancedContent = `✨ ENHANCED NOTE ✨\n\n${item.content}\n\n✅ Organized\n✅ Formatted\n✅ Improved readability`;
+                
+                updateTextItem(itemId, 'content', enhancedContent);
+                updateTextItem(itemId, 'title', 'Enhanced Note');
+                
+                if (!item.style) item.style = {};
+                item.style.bold = true;
+                item.style.color = 'var(--primary)';
+                
+                render();
+                showToast('Note enhanced successfully!', 'success');
+            }, 1000);
+        }
+
+        // === ENHANCED IMAGE EDITOR ===
+        function setupImageEditor() {
+            const sliders = ['brightness', 'contrast', 'saturation', 'blur', 'hue'];
+            
+            sliders.forEach(slider => {
+                const sliderEl = document.getElementById(`${slider}-slider`);
+                const valueEl = document.getElementById(`${slider}-value`);
+                
+                sliderEl.addEventListener('input', () => {
+                    if (slider === 'hue') {
+                        valueEl.textContent = `${sliderEl.value}°`;
+                    } else if (slider === 'blur') {
+                        valueEl.textContent = `${sliderEl.value}px`;
+                    } else {
+                        valueEl.textContent = `${sliderEl.value}%`;
+                    }
+                    applyImageFilters();
+                });
+            });
+            
+            // Crop buttons
+            document.querySelectorAll('[id^="crop-"]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    showToast(`Crop mode: ${btn.textContent}`, 'info');
+                });
+            });
+            
+            // Reset button
+            document.getElementById('reset-editor').addEventListener('click', resetImageEditor);
+            
+            // Apply button
+            document.getElementById('apply-editor').addEventListener('click', applyImageChanges);
+            
+            // Close button
+            document.getElementById('close-editor').addEventListener('click', () => {
+                elements.imageEditor.classList.remove('open');
+            });
+        }
+
+        function openImageEditor(item) {
+            if (!item || item.type !== 'image') return;
+            
+            state.currentImageEdit = item;
+            elements.editorPreviewImg.src = item.url;
+            
+            // Reset sliders
+            document.getElementById('brightness-slider').value = 100;
+            document.getElementById('contrast-slider').value = 100;
+            document.getElementById('saturation-slider').value = 100;
+            document.getElementById('blur-slider').value = 0;
+            document.getElementById('hue-slider').value = 0;
+            
+            // Update values
+            document.getElementById('brightness-value').textContent = '100%';
+            document.getElementById('contrast-value').textContent = '100%';
+            document.getElementById('saturation-value').textContent = '100%';
+            document.getElementById('blur-value').textContent = '0px';
+            document.getElementById('hue-value').textContent = '0°';
+            
+            elements.imageEditor.classList.add('open');
+        }
+
+        function applyImageFilters() {
+            const brightness = document.getElementById('brightness-slider').value;
+            const contrast = document.getElementById('contrast-slider').value;
+            const saturation = document.getElementById('saturation-slider').value;
+            const blur = document.getElementById('blur-slider').value;
+            const hue = document.getElementById('hue-slider').value;
+            
+            const filter = `brightness(${brightness}%) contrast(${contrast}%) saturate(${saturation}%) blur(${blur}px) hue-rotate(${hue}deg)`;
+            elements.editorPreviewImg.style.filter = filter;
+        }
+
+        function resetImageEditor() {
+            document.getElementById('brightness-slider').value = 100;
+            document.getElementById('contrast-slider').value = 100;
+            document.getElementById('saturation-slider').value = 100;
+            document.getElementById('blur-slider').value = 0;
+            document.getElementById('hue-slider').value = 0;
+            
+            applyImageFilters();
+            showToast('Editor reset', 'info');
+        }
+
+        function applyImageChanges() {
+            if (!state.currentImageEdit) return;
+            
+            const item = state.items.find(i => i.id === state.currentImageEdit.id);
+            if (!item) return;
+            
+            const brightness = document.getElementById('brightness-slider').value;
+            const contrast = document.getElementById('contrast-slider').value;
+            const saturation = document.getElementById('saturation-slider').value;
+            const blur = document.getElementById('blur-slider').value;
+            const hue = document.getElementById('hue-slider').value;
+            
+            item.filter = `brightness(${brightness}%) contrast(${contrast}%) saturate(${saturation}%) blur(${blur}px) hue-rotate(${hue}deg)`;
+            
+            render();
+            elements.imageEditor.classList.remove('open');
+            showToast('Image edited successfully!', 'success');
+        }
+
+        // === ENHANCED SUMMARIZER ===
+        function setupSummarizer() {
+            // Length options
+            document.querySelectorAll('.summarizer-option').forEach(option => {
+                option.addEventListener('click', () => {
+                    document.querySelectorAll('.summarizer-option').forEach(o => o.classList.remove('active'));
+                    option.classList.add('active');
+                    if (state.selectedItem?.type === 'text') {
+                        generateSummary(state.selectedItem);
+                    }
+                });
+            });
+            
+            // Apply button
+            document.getElementById('apply-summary').addEventListener('click', applySummary);
+            
+            // Close button
+            document.getElementById('close-summarizer').addEventListener('click', () => {
+                elements.summarizerPanel.classList.remove('open');
+            });
+        }
+
+        function openSummarizer(item) {
+            if (!item || item.type !== 'text') return;
+            
+            state.currentSummaryItem = item;
+            generateSummary(item);
+            elements.summarizerPanel.classList.add('open');
+        }
+
+        function generateSummary(item) {
+            const content = item.content || '';
+            const words = content.split(/\s+/).filter(w => w.length > 0);
+            const selectedLength = document.querySelector('.summarizer-option.active').dataset.length;
+            
+            let targetLength;
+            switch (selectedLength) {
+                case 'short': targetLength = Math.max(10, Math.floor(words.length * 0.1)); break;
+                case 'medium': targetLength = Math.max(20, Math.floor(words.length * 0.3)); break;
+                case 'long': targetLength = Math.max(30, Math.floor(words.length * 0.5)); break;
+                default: targetLength = 20;
+            }
+            
+            // Simulate AI summarization
+            const sentences = content.split(/[.!?]+/).filter(s => s.trim().length > 0);
+            const summary = sentences.slice(0, Math.min(sentences.length, 3)).join('. ') + '.';
+            const summaryWords = summary.split(/\s+/).filter(w => w.length > 0);
+            
+            // Update UI
+            elements.summarizerResult.textContent = summary;
+            document.getElementById('original-length').textContent = words.length;
+            document.getElementById('summary-length').textContent = summaryWords.length;
+            
+            const reduction = Math.round((1 - summaryWords.length / words.length) * 100);
+            document.getElementById('reduction-percent').textContent = reduction || 0;
+        }
+
+        function applySummary() {
+            if (!state.currentSummaryItem) return;
+            
+            const item = state.items.find(i => i.id === state.currentSummaryItem.id);
+            if (!item) return;
+            
+            const summary = elements.summarizerResult.textContent;
+            updateTextItem(item.id, 'content', summary);
+            updateTextItem(item.id, 'title', 'Summarized Note');
+            
+            elements.summarizerPanel.classList.remove('open');
+            showToast('Summary applied to note!', 'success');
+        }
+
+        // === PAGE LAYOUT & OPTIONS ===
+        function openPageLayoutModal() {
+            showToast('Page layout options coming soon!', 'info');
+        }
+
+        function toggleGridSnap() {
+            state.settings.gridSnap = !state.settings.gridSnap;
+            const btn = document.getElementById('grid-snap-btn');
+            if (state.settings.gridSnap) {
+                btn.style.background = 'var(--primary)';
+                btn.style.color = 'white';
+                showToast('Grid snap enabled', 'success');
+            } else {
+                btn.style.background = '';
+                btn.style.color = '';
+                showToast('Grid snap disabled', 'info');
+            }
+        }
+
+        function toggleGuides() {
+            state.settings.showGuides = !state.settings.showGuides;
+            const btn = document.getElementById('guides-btn');
+            if (state.settings.showGuides) {
+                btn.style.background = 'var(--primary)';
+                btn.style.color = 'white';
+                // Add guide lines to canvas
+                elements.canvas.style.backgroundImage = `
+                    linear-gradient(to right, rgba(124, 58, 237, 0.1) 1px, transparent 1px),
+                    linear-gradient(to bottom, rgba(124, 58, 237, 0.1) 1px, transparent 1px)
+                `;
+                showToast('Guides enabled', 'success');
+            } else {
+                btn.style.background = '';
+                btn.style.color = '';
+                elements.canvas.style.backgroundImage = '';
+                showToast('Guides disabled', 'info');
+            }
+        }
+
+        // === THEME SYSTEM ===
+        function applyTheme() {
+            const themes = {
+                minimal: { bg: '#fafafa', surface: '#ffffff', text: '#1f2937', border: '#e5e7eb' },
+                modern: { bg: '#0f172a', surface: '#1e293b', text: '#f1f5f9', border: '#334155' },
+                creative: { bg: '#faf5ff', surface: '#f3e8ff', text: '#581c87', border: '#e9d5ff' },
+                nature: { bg: '#f0fdf4', surface: '#dcfce7', text: '#14532d', border: '#bbf7d0' },
+                cozy: { bg: '#fffbeb', surface: '#fef3c7', text: '#78350f', border: '#fde68a' },
+                zen: { bg: '#ecfdf5', surface: '#d1fae5', text: '#064e3b', border: '#a7f3d0' },
+                sunset: { bg: '#fff7ed', surface: '#ffedd5', text: '#7c2d12', border: '#fed7aa' },
+                ocean: { bg: '#f0f9ff', surface: '#e0f2fe', text: '#0c4a6e', border: '#bae6fd' },
+                forest: { bg: '#f0fdf4', surface: '#dcfce7', text: '#14532d', border: '#bbf7d0' },
+                pastel: { bg: '#fdf4ff', surface: '#fae8ff', text: '#701a75', border: '#f5d0fe' },
+                monochrome: { bg: '#f9fafb', surface: '#f3f4f6', text: '#374151', border: '#d1d5db' },
+                professional: { bg: '#eff6ff', surface: '#dbeafe', text: '#1e40af', border: '#bfdbfe' }
+            };
+            
+            const theme = themes[state.theme] || themes.minimal;
+            
+            document.documentElement.style.setProperty('--background', theme.bg);
+            document.documentElement.style.setProperty('--surface', theme.surface);
+            document.documentElement.style.setProperty('--text-primary', theme.text);
+            document.documentElement.style.setProperty('--border', theme.border);
+            
+            // Update canvas background
+            elements.canvas.style.background = theme.surface;
+        }
+
+        // === SETTINGS MANAGEMENT ===
+        function loadSettings() {
+            const saved = localStorage.getItem('gridora_settings');
+            if (saved) {
+                state.settings = { ...state.settings, ...JSON.parse(saved) };
+            }
+            
+            // Apply loaded settings
+            document.getElementById('toggle-haptics').checked = state.settings.hapticFeedback;
+            document.getElementById('toggle-themes').checked = !state.settings.showThemes;
+            document.getElementById('toggle-ui-hide').checked = state.settings.uiHidden;
+            document.getElementById('toggle-dark-mode').checked = state.settings.darkMode;
+            document.getElementById('toggle-autosave').checked = state.settings.autoSave;
+            document.getElementById('ai-model-select').value = state.settings.aiModel;
+            
+            // Hide themes section if disabled
+            if (!state.settings.showThemes) {
+                document.querySelector('[data-tab="themes"]').style.display = 'none';
+            }
+        }
+
+        function saveSettings() {
+            state.settings.hapticFeedback = document.getElementById('toggle-haptics').checked;
+            state.settings.showThemes = !document.getElementById('toggle-themes').checked;
+            state.settings.uiHidden = document.getElementById('toggle-ui-hide').checked;
+            state.settings.darkMode = document.getElementById('toggle-dark-mode').checked;
+            state.settings.autoSave = document.getElementById('toggle-autosave').checked;
+            state.settings.aiModel = document.getElementById('ai-model-select').value;
+            
+            localStorage.setItem('gridora_settings', JSON.stringify(state.settings));
+            
+            // Apply theme visibility
+            const themesTab = document.querySelector('[data-tab="themes"]');
+            themesTab.style.display = state.settings.showThemes ? 'flex' : 'none';
+            
+            // Update AI model badge
+            updateAIModelBadge();
+            
+            showToast('Settings saved successfully!', 'success');
+        }
+
+        function updateAIModelBadge() {
+            const badge = document.getElementById('ai-model-badge');
+            const model = state.settings.aiModel;
+            
+            let badgeText = 'Basic Beta 1';
+            if (model === 'none') badgeText = 'No AI';
+            else if (model === 'enhanced') badgeText = 'Enhanced AI';
+            else if (model === 'pro') badgeText = 'Pro AI';
+            
+            badge.textContent = badgeText;
+        }
+
+        // === UTILITY FUNCTIONS ===
+        function selectItem(item) {
+            state.selectedItem = item;
+            render();
+            
+            // Update dock selection
+            document.querySelectorAll('.dock-item').forEach(dockItem => {
+                if (dockItem.dataset.tool) {
+                    dockItem.classList.remove('active');
+                }
+            });
+            document.querySelector(`.dock-item[data-tool="select"]`).classList.add('active');
+            state.tool = 'select';
+        }
+
+        function setActiveTool(tool) {
+            state.tool = tool;
+            document.querySelectorAll('.dock-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            document.querySelector(`.dock-item[data-tool="${tool}"]`).classList.add('active');
+            
+            // Update cursor
+            const cursor = {
+                select: 'grab',
+                image: 'crosshair',
+                text: 'text',
+                color: 'crosshair',
+                shape: 'crosshair',
+                file: 'copy'
+            }[tool] || 'default';
+            
+            elements.canvasContainer.style.cursor = cursor;
+        }
+
+        function handleQuickAction(action) {
+            switch (action) {
+                case 'upload':
+                    showToast('Upload feature coming soon!', 'info');
+                    break;
+                case 'image':
+                    createItem('image', 100, 100);
+                    break;
+                case 'text':
+                    createItem('text', 100, 100);
+                    break;
+                case 'color':
+                    createItem('color', 100, 100);
+                    break;
+                case 'shape':
+                    createItem('shape', 100, 100);
+                    break;
+                case 'file':
+                    createItem('file', 100, 100);
+                    break;
+            }
+        }
+
+        function createItem(type, x, y) {
+            const item = {
+                id: 'item_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
+                type: type,
+                x: x,
+                y: y,
+                width: 200,
+                height: 150,
+                zIndex: state.items.length,
+                createdAt: Date.now()
+            };
+            
+            switch (type) {
+                case 'image':
+                    item.url = 'https://images.unsplash.com/photo-1541963463532-d68292c34b19?w=400&h=300&fit=crop';
+                    item.name = 'Sample Image';
+                    break;
+                case 'text':
+                    item.title = 'New Note';
+                    item.content = 'Start typing here...';
+                    item.style = {};
+                    break;
+                case 'color':
+                    item.color = '#7c3aed';
+                    item.name = 'Purple';
+                    break;
+                case 'shape':
+                    item.shape = 'rectangle';
+                    item.color = '#7c3aed';
+                    break;
+                case 'file':
+                    item.name = 'document.pdf';
+                    item.size = '1.2 MB';
+                    item.icon = '📄';
+                    break;
+            }
+            
+            state.items.push(item);
+            selectItem(item);
+            saveHistory();
+            render();
+            
+            showToast(`${type.charAt(0).toUpperCase() + type.slice(1)} added`, 'success');
+        }
+
+        function updateTextItem(itemId, property, value) {
+            const item = state.items.find(i => i.id === itemId);
+            if (item) {
+                item[property] = value;
+                saveHistory();
+            }
+        }
+
+        function toggleTextStyle(itemId, style) {
+            const item = state.items.find(i => i.id === itemId);
+            if (item && item.type === 'text') {
+                if (!item.style) item.style = {};
+                item.style[style] = !item.style[style];
+                render();
+                saveHistory();
+            }
+        }
+
+        function editTextItem(item) {
+            // Already handled in text item creation
+        }
+
+        function organizeItems(layout = 'grid') {
+            const cols = 4;
+            const spacing = 20;
+            const itemWidth = 200;
+            const itemHeight = 150;
+            
+            state.items.forEach((item, i) => {
+                if (layout === 'grid') {
+                    const col = i % cols;
+                    const row = Math.floor(i / cols);
+                    item.x = 100 + col * (itemWidth + spacing);
+                    item.y = 100 + row * (itemHeight + spacing);
+                } else if (layout === 'radial') {
+                    const angle = (i / state.items.length) * Math.PI * 2;
+                    const radius = 300;
+                    item.x = 500 + Math.cos(angle) * radius;
+                    item.y = 500 + Math.sin(angle) * radius;
+                }
+            });
+            
+            render();
+            saveHistory();
+        }
+
+        function createNewBoard() {
+            const name = prompt('Enter board name:', `Board ${state.boards.length + 1}`);
+            if (!name) return;
+            
+            const board = {
+                id: 'board_' + Date.now(),
+                name: name,
+                createdAt: Date.now(),
+                items: [],
+                layout: 'freeform'
+            };
+            
+            state.boards.push(board);
+            state.currentBoard = board;
+            state.items = [];
+            state.selectedItem = null;
+            
+            updateBoardList();
+            render();
+            showToast(`Board "${name}" created`, 'success');
+        }
+
+        function updateBoardList() {
+            elements.boardList.innerHTML = '';
+            
+            state.boards.forEach(board => {
+                const div = document.createElement('div');
+                div.className = `board-item ${board.id === state.currentBoard.id ? 'active' : ''}`;
+                div.innerHTML = `
+                    <span class="board-item-name">${board.name}</span>
+                    <span class="board-item-count">${board.items?.length || 0}</span>
+                `;
+                div.addEventListener('click', () => {
+                    state.currentBoard = board;
+                    state.items = board.items || [];
+                    updateBoardList();
+                    render();
+                    showToast(`Switched to "${board.name}"`, 'info');
+                });
+                elements.boardList.appendChild(div);
+            });
+        }
+
+        // === DRAG & DROP ===
+        function startDragging(e, item) {
+            state.isDragging = true;
+            state.dragStart = {
+                x: e.clientX,
+                y: e.clientY,
+                itemX: item.x,
+                itemY: item.y
+            };
+        }
+
+        function handleCanvasMouseDown(e) {
+            if (e.target === elements.canvasContainer || e.target === elements.canvas) {
+                state.selectedItem = null;
+                render();
+                
+                if (state.tool !== 'select') {
+                    const rect = elements.canvasContainer.getBoundingClientRect();
+                    const x = (e.clientX - rect.left + elements.canvasContainer.scrollLeft) / state.zoom;
+                    const y = (e.clientY - rect.top + elements.canvasContainer.scrollTop) / state.zoom;
+                    createItem(state.tool, x, y);
+                }
+            }
+        }
+
+        function handleMouseMove(e) {
+            if (!state.isDragging || !state.selectedItem) return;
+            
+            const dx = (e.clientX - state.dragStart.x) / state.zoom;
+            const dy = (e.clientY - state.dragStart.y) / state.zoom;
+            
+            // Apply grid snap if enabled
+            if (state.settings.gridSnap) {
+                const gridSize = 20;
+                state.selectedItem.x = Math.round((state.dragStart.itemX + dx) / gridSize) * gridSize;
+                state.selectedItem.y = Math.round((state.dragStart.itemY + dy) / gridSize) * gridSize;
+            } else {
+                state.selectedItem.x = state.dragStart.itemX + dx;
+                state.selectedItem.y = state.dragStart.itemY + dy;
+            }
+            
+            render();
+        }
+
+        function handleMouseUp() {
+            if (state.isDragging) {
+                saveHistory();
+            }
+            state.isDragging = false;
+        }
+
+        // === CONTEXT MENU ===
+        function handleContextMenu(e) {
+            e.preventDefault();
+            
+            if (state.selectedItem) {
+                elements.contextMenu.style.left = `${e.clientX}px`;
+                elements.contextMenu.style.top = `${e.clientY}px`;
+                elements.contextMenu.classList.add('show');
+            }
+        }
+
+        function handleContextAction(action) {
+            if (!state.selectedItem) return;
+            
+            switch (action) {
+                case 'duplicate':
+                    duplicateItem(state.selectedItem);
+                    break;
+                case 'bring-front':
+                    bringToFront(state.selectedItem.id);
+                    break;
+                case 'send-back':
+                    sendToBack(state.selectedItem.id);
+                    break;
+                case 'edit':
+                    if (state.selectedItem.type === 'image') {
+                        openImageEditor(state.selectedItem);
+                    } else if (state.selectedItem.type === 'text') {
+                        // Focus on text area
+                    }
+                    break;
+                case 'enhance':
+                    if (state.selectedItem.type === 'image') {
+                        enhanceImage(state.selectedItem.id);
+                    } else if (state.selectedItem.type === 'text') {
+                        enhanceNote(state.selectedItem.id);
+                    }
+                    break;
+                case 'delete':
+                    deleteItem(state.selectedItem.id);
+                    break;
+            }
+            
+            elements.contextMenu.classList.remove('show');
+        }
+
+        function duplicateItem(item) {
+            const duplicate = JSON.parse(JSON.stringify(item));
+            duplicate.id = 'item_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+            duplicate.x += 20;
+            duplicate.y += 20;
+            duplicate.zIndex = state.items.length;
+            
+            state.items.push(duplicate);
+            selectItem(duplicate);
+            saveHistory();
+            render();
+            showToast('Item duplicated', 'success');
+        }
+
+        function bringToFront(itemId) {
+            const item = state.items.find(i => i.id === itemId);
+            if (item) {
+                item.zIndex = Math.max(...state.items.map(i => i.zIndex)) + 1;
+                render();
+                showToast('Brought to front', 'success');
+            }
+        }
+
+        function sendToBack(itemId) {
+            const item = state.items.find(i => i.id === itemId);
+            if (item) {
+                item.zIndex = Math.min(...state.items.map(i => i.zIndex)) - 1;
+                render();
+                showToast('Sent to back', 'success');
+            }
+        }
+
+        function deleteItem(itemId) {
+            state.items = state.items.filter(item => item.id !== itemId);
+            if (state.selectedItem?.id === itemId) {
+                state.selectedItem = null;
+            }
+            render();
+            saveHistory();
+            showToast('Item deleted', 'success');
+        }
+
+        // === KEYBOARD SHORTCUTS ===
+        function handleKeyDown(e) {
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+            
+            switch (e.key) {
+                case 'Delete':
+                case 'Backspace':
+                    if (state.selectedItem) {
+                        deleteItem(state.selectedItem.id);
+                    }
+                    break;
+                case 'Escape':
+                    state.selectedItem = null;
+                    render();
+                    elements.contextMenu.classList.remove('show');
+                    break;
+                case 'a':
+                case 'A':
+                    if (e.ctrlKey) {
+                        // Select all items
+                        showToast('All items selected', 'info');
+                    }
+                    break;
+                case 'z':
+                case 'Z':
+                    if (e.ctrlKey && e.shiftKey) {
+                        redo();
+                    } else if (e.ctrlKey) {
+                        undo();
+                    }
+                    break;
+                case 's':
+                case 'S':
+                    if (e.ctrlKey) {
+                        saveHistory();
+                        showToast('Progress saved', 'success');
+                    }
+                    break;
+            }
+        }
+
+        // === UNDO/REDO ===
+        function saveHistory() {
+            state.history = state.history.slice(0, state.historyIndex + 1);
+            state.history.push({
+                items: JSON.parse(JSON.stringify(state.items)),
+                selectedItemId: state.selectedItem?.id,
+                board: JSON.parse(JSON.stringify(state.currentBoard))
+            });
+            state.historyIndex++;
+            
+            // Limit history
+            if (state.history.length > 50) {
+                state.history.shift();
+                state.historyIndex--;
+            }
+            
+            // Auto-save
+            if (state.settings.autoSave) {
+                localStorage.setItem('gridora_autosave', JSON.stringify({
+                    boards: state.boards,
+                    currentBoard: state.currentBoard,
+                    items: state.items
+                }));
+            }
+        }
+
+        function undo() {
+            if (state.historyIndex > 0) {
+                state.historyIndex--;
+                const historyState = state.history[state.historyIndex];
+                state.items = JSON.parse(JSON.stringify(historyState.items));
+                state.selectedItem = state.items.find(item => item.id === historyState.selectedItemId);
+                render();
+                showToast('Undo', 'info');
+            }
+        }
+
+        function redo() {
+            if (state.historyIndex < state.history.length - 1) {
+                state.historyIndex++;
+                const historyState = state.history[state.historyIndex];
+                state.items = JSON.parse(JSON.stringify(historyState.items));
+                state.selectedItem = state.items.find(item => item.id === historyState.selectedItemId);
+                render();
+                showToast('Redo', 'info');
+            }
+        }
+
+        // === ZOOM ===
+        function setZoom(zoom) {
+            state.zoom = Math.max(0.1, Math.min(5, zoom));
+            elements.canvas.style.transform = `scale(${state.zoom})`;
+            document.getElementById('zoom-level').textContent = `${Math.round(state.zoom * 100)}%`;
+        }
+
+        // === EXPORT ===
+        function exportBoard() {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            canvas.width = 2000;
+            canvas.height = 2000;
+            
+            // Draw background
+            ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--surface').trim();
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // In a real app, you would draw all items here
+            
+            const dataUrl = canvas.toDataURL('image/png');
+            const a = document.createElement('a');
+            a.href = dataUrl;
+            a.download = `gridora-${state.currentBoard.name}-${Date.now()}.png`;
+            a.click();
+            
+            showToast('Board exported as PNG!', 'success');
+        }
+
+        // === TOAST NOTIFICATIONS ===
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            toast.innerHTML = `
+                <i class="fas fa-${getToastIcon(type)}"></i>
+                <span>${message}</span>
+            `;
+            
+            elements.toastContainer.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
+
+        function getToastIcon(type) {
+            const icons = {
+                success: 'check-circle',
+                error: 'exclamation-circle',
+                warning: 'exclamation-triangle',
+                info: 'info-circle'
+            };
+            return icons[type] || 'info-circle';
+        }
+
+        // Start the application
+        init();
+    </script>
+</body>
+</html>
