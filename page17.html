@@ -3,660 +3,662 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <link rel="icon" href="Chronofocus.png" type="image/x-icon">
-    <title>Cody - Code Runner</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>☕</text></svg>">
+    <title>Cody Pro - Cozy IDE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <style>
         :root {
-            --primary: #8ecae6;
-            --secondary: #219ebc;
-            --accent: #ffb4a2;
-            --dark: #1d3557;
-            --light: #f1faee;
-            --glass: rgba(255, 255, 255, 0.1);
-            --glass-border: rgba(255, 255, 255, 0.2);
-            --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-            --blur: blur(10px);
+            /* Palette: Cozy Night (Dracula/Nord inspired but warmer) */
+            --bg-app: #1e1e2e;
+            --bg-sidebar: #181825;
+            --bg-editor: #1e1e2e;
+            --bg-panel: #262639; /* slightly lighter than app */
+            --border: #313244;
+            
+            --primary: #cba6f7;
+            --secondary: #89b4fa;
+            --accent: #f9e2af;
+            --danger: #f38ba8;
+            --success: #a6e3a1;
+            
+            --text-main: #cdd6f4;
+            --text-muted: #a6adc8;
+            
+            --font-ui: 'Nunito', sans-serif;
+            --font-code: 'Fira Code', monospace;
+            
+            --shadow: 0 4px 20px rgba(0,0,0,0.3);
+            --radius: 12px;
         }
 
-        /* Cozy Theme */
-        .cozy-theme {
-            --primary: #d4a373;
-            --secondary: #a98467;
-            --accent: #e6bba5;
-            --dark: #6f5e53;
-            --light: #f0ead2;
-        }
-
-        /* Liquid Glass Theme */
-        .liquid-glass-theme {
-            --primary: #8ecae6;
-            --secondary: #219ebc;
-            --accent: #ffb4a2;
-            --dark: #1d3557;
-            --light: #f1faee;
-        }
-
-        /* Aurora Theme */
-        .aurora-theme {
-            --primary: #ff7e5f;
-            --secondary: #feb47b;
-            --accent: #ffb4a2;
-            --dark: #1d3557;
-            --light: #f1faee;
-        }
-        
-        /* NEW: Material 3 Theme */
-        .material3-theme {
-            --primary: #6750A4;    /* M3 Primary */
-            --secondary: #958DA5;   /* M3 Secondary */
-            --accent: #FFB570;      /* M3 Tertiary/Accent */
-            --dark: #1C1B1F;        /* M3 Dark Neutral */
-            --light: #EADDFF;       /* M3 Light Neutral/On Primary Container */
-            --glass: rgba(74, 68, 88, 0.25);
-            --glass-border: rgba(231, 224, 236, 0.3);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; outline: none; }
 
         body {
-            background: linear-gradient(135deg, var(--dark), var(--secondary));
-            color: var(--light);
-            min-height: 100vh;
-            padding: 20px;
+            background-color: var(--bg-app);
+            color: var(--text-main);
+            font-family: var(--font-ui);
+            height: 100vh;
             display: flex;
-            flex-direction: column;
-            align-items: center;
-            overflow-x: hidden;
-            transition: background 0.5s ease;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 1200px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        header {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            background: linear-gradient(to right, var(--primary), var(--accent));
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-        }
-
-        .tagline {
-            font-size: 1.2rem;
-            opacity: 0.8;
-        }
-
-        .editor-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            height: 60vh;
-            transition: grid-template-columns 0.3s ease; /* Added for smooth transition */
-        }
-        
-        /* Styles for the full page views */
-        .editor-container.code-fullscreen .code-panel {
-            grid-column: 1 / -1;
-        }
-        .editor-container.code-fullscreen .preview-panel {
-            display: none;
-        }
-        .editor-container.preview-fullscreen .preview-panel {
-            grid-column: 1 / -1;
-        }
-        .editor-container.preview-fullscreen .code-panel {
-            display: none;
-        }
-
-        @media (max-width: 768px) {
-            .editor-container {
-                grid-template-columns: 1fr;
-                height: auto;
-            }
-        }
-
-        .code-panel, .preview-panel {
-            background: var(--glass);
-            backdrop-filter: var(--blur);
-            border-radius: 15px;
-            border: 1px solid var(--glass-border);
-            box-shadow: var(--shadow);
             overflow: hidden;
-            display: flex;
-            flex-direction: column;
         }
 
-        .panel-header {
-            padding: 15px 20px;
-            background: rgba(0, 0, 0, 0.2);
+        /* --- Sidebar --- */
+        .sidebar {
+            width: 250px;
+            background-color: var(--bg-sidebar);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            flex-shrink: 0;
+            transition: transform 0.3s ease;
+        }
+
+        .brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            margin-bottom: 10px;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        .panel-title {
-            font-weight: 600;
+        .file-list {
+            flex: 1;
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+
+        .file-item {
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            color: var(--text-muted);
             display: flex;
             align-items: center;
             gap: 8px;
+            transition: all 0.2s;
+            margin-bottom: 4px;
         }
 
-        .panel-title i {
+        .file-item:hover {
+            background-color: rgba(255,255,255,0.05);
+            color: var(--text-main);
+        }
+
+        .file-item.active {
+            background-color: rgba(203, 166, 247, 0.15);
             color: var(--primary);
-        }
-
-        .code-tabs {
-            display: flex;
-            background: rgba(0, 0, 0, 0.2);
-            padding: 0 10px;
-        }
-
-        .code-tab {
-            padding: 10px 20px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border-bottom: 2px solid transparent;
-        }
-
-        .code-tab.active {
-            border-bottom: 2px solid var(--primary);
-            color: var(--primary);
-        }
-
-        .code-tab:hover {
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        .code-area {
-            flex: 1;
-            padding: 15px;
-            background: rgba(0, 0, 0, 0.3);
-            border: none;
-            color: var(--light);
-            font-family: 'Courier New', monospace;
-            resize: none;
-            outline: none;
-            line-height: 1.5;
-            font-size: 14px;
-        }
-
-        #preview {
-            flex: 1;
-            width: 100%;
-            border: none;
-            background: white;
-        }
-
-        .controls {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            margin-top: 20px;
-            flex-wrap: wrap;
-        }
-
-        button {
-            padding: 12px 25px;
-            border: none;
-            border-radius: 50px;
-            background: var(--primary);
-            color: var(--dark);
             font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
 
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
-        }
+        .file-icon { width: 16px; opacity: 0.7; }
+        .file-item.active .file-icon { opacity: 1; }
 
-        button#runBtn {
-            background: var(--secondary);
-            color: white;
-        }
-
-        button#clearBtn {
-            background: var(--accent);
-            color: var(--dark);
-        }
-
-        .hidden {
-            display: none;
-        }
-
-        .water-effect {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: -1;
-            opacity: 0.1;
-        }
-
-        .ripple {
-            position: absolute;
-            border-radius: 50%;
-            background: radial-gradient(circle, var(--primary) 0%, transparent 70%);
-            transform: scale(0);
-            animation: ripple-animation 3s linear infinite;
-        }
-
-        @keyframes ripple-animation {
-            to {
-                transform: scale(4);
-                opacity: 0;
-            }
-        }
-
-        .zen-elements {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
+        .sidebar-actions {
             display: flex;
             flex-direction: column;
             gap: 10px;
-            z-index: 10;
         }
 
-        .zen-element {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: var(--glass);
-            backdrop-filter: var(--blur);
-            border: 1px solid var(--glass-border);
+        .btn {
+            background: var(--bg-panel);
+            color: var(--text-main);
+            border: 1px solid var(--border);
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: var(--font-ui);
+            font-weight: 600;
+            transition: all 0.2s;
             display: flex;
             align-items: center;
             justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
+            gap: 8px;
         }
 
-        .zen-element:hover {
-            transform: scale(1.1);
-            background: var(--primary);
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.2); border-color: var(--primary); }
+        .btn-primary { background: var(--primary); color: var(--bg-app); border: none; }
+        .btn-sm { padding: 4px 8px; font-size: 0.8rem; }
+
+        /* --- Main Content --- */
+        .main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            position: relative;
         }
 
-        .status {
-            margin-top: 10px;
-            text-align: center;
+        /* Top Bar */
+        .top-bar {
+            height: 50px;
+            background-color: var(--bg-app);
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            border-bottom: 1px solid var(--border);
+            justify-content: space-between;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 5px;
+            height: 100%;
+            align-items: flex-end;
+        }
+
+        .tab {
+            padding: 8px 15px 8px 15px;
+            background-color: transparent;
+            color: var(--text-muted);
             font-size: 0.9rem;
-            opacity: 0.7;
+            border-radius: 8px 8px 0 0;
+            cursor: pointer;
+            position: relative;
+            border: 1px solid transparent;
+        }
+
+        .tab.active {
+            background-color: var(--bg-panel);
+            color: var(--primary);
+            border: 1px solid var(--border);
+            border-bottom: 1px solid var(--bg-panel);
+            margin-bottom: -1px;
+            z-index: 10;
+        }
+
+        .tab-close {
+            margin-left: 8px;
+            font-size: 0.8rem;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .tab:hover .tab-close { opacity: 1; }
+        .tab-close:hover { color: var(--danger); }
+
+        .run-actions { display: flex; gap: 10px; }
+
+        /* Editor & Preview Split */
+        .workspace {
+            flex: 1;
+            display: flex;
+            height: calc(100vh - 50px - 25px); /* Minus header and footer */
+        }
+
+        .editor-container {
+            flex: 1;
+            background-color: var(--bg-editor);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .preview-container {
+            flex: 1;
+            background-color: #fff;
+            border-left: 1px solid var(--border);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .panel-label {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            color: rgba(0,0,0,0.2);
+            font-weight: 900;
+            pointer-events: none;
+            z-index: 5;
+        }
+        .editor-container .panel-label { color: rgba(255,255,255,0.05); }
+
+        textarea.code-area {
+            flex: 1;
+            background-color: var(--bg-editor);
+            color: var(--text-main);
+            border: none;
+            padding: 20px;
+            font-family: var(--font-code);
+            font-size: 14px;
+            line-height: 1.6;
+            resize: none;
+            white-space: pre;
+            overflow-wrap: normal;
+            overflow-x: auto;
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 10px; height: 10px; }
+        ::-webkit-scrollbar-track { background: var(--bg-app); }
+        ::-webkit-scrollbar-thumb { background: #45475a; border-radius: 5px; }
+        ::-webkit-scrollbar-thumb:hover { background: #585b70; }
+
+        iframe {
+            flex: 1;
+            border: none;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Footer */
+        .status-bar {
+            height: 25px;
+            background-color: var(--bg-sidebar);
+            border-top: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 15px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        /* Modal/Inputs */
+        input[type="file"] { display: none; }
+        
+        /* Utility */
+        .hidden { display: none !important; }
+        .blink { animation: blink 1s infinite; }
+        @keyframes blink { 50% { opacity: 0; } }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .workspace { flex-direction: column; }
+            .sidebar { position: absolute; left: -250px; height: 100%; z-index: 100; box-shadow: var(--shadow); }
+            .sidebar.open { left: 0; transform: translateX(0); }
+            .preview-container { height: 40%; border-left: none; border-top: 1px solid var(--border); }
         }
     </style>
 </head>
-<body class="material3-theme">
-    <div class="water-effect" id="waterEffect"></div>
-    
-    <div class="container">
-        <header>
-            <h1>Cody</h1>
-            <p class="tagline">Your cozy, zen code runner for HTML, CSS & JavaScript</p>
-        </header>
+<body>
+
+    <div class="sidebar" id="sidebar">
+        <div class="brand">
+            <span>☕ Cody Pro</span>
+        </div>
+
+        <div class="section-title">
+            <span>Explorer</span>
+            <button class="btn btn-sm" onclick="createNewFile()" title="New File">＋</button>
+        </div>
+        <div class="file-list" id="fileList">
+            </div>
+
+        <div class="section-title"><span>Data & Share</span></div>
+        <div class="sidebar-actions">
+            <button class="btn" onclick="exportData()">
+                <i>📤</i> Export JSON
+            </button>
+            <button class="btn" onclick="triggerImport()">
+                <i>📥</i> Import JSON
+            </button>
+            <button class="btn" onclick="downloadZip()">
+                <i>💾</i> Download ZIP
+            </button>
+            <input type="file" id="importInput" accept=".json" onchange="importData(this)">
+        </div>
         
-        <div class="editor-container">
-            <div class="code-panel">
-                <div class="panel-header">
-                    <div class="panel-title">
-                        <i>📝</i> Code Editor
+        <div style="margin-top: auto;">
+             <div class="section-title"><span>Settings</span></div>
+             <button class="btn" onclick="clearProject()" style="width: 100%; color: var(--danger); border-color: var(--danger); background: transparent;">
+                Reset Project
+            </button>
+        </div>
+    </div>
+
+    <div class="main">
+        <div class="top-bar">
+            <div style="display:flex; align-items:center; gap:10px;">
+                <button class="btn btn-sm hidden" id="menuToggle" onclick="toggleSidebar()" style="display:none;">☰</button>
+                <div class="tabs" id="tabsContainer">
                     </div>
-                </div>
-                <div class="code-tabs">
-                    <div class="code-tab active" data-tab="html">HTML</div>
-                    <div class="code-tab" data-tab="css">CSS</div>
-                    <div class="code-tab" data-tab="js">JavaScript</div>
-                </div>
-                <textarea class="code-area" id="htmlCode" placeholder="Write your HTML code here..."></textarea>
-                <textarea class="code-area hidden" id="cssCode" placeholder="Write your CSS code here..."></textarea>
-                <textarea class="code-area hidden" id="jsCode" placeholder="Write your JavaScript code here..."></textarea>
             </div>
             
-            <div class="preview-panel">
-                <div class="panel-header">
-                    <div class="panel-title">
-                        <i>👁️</i> Preview
-                    </div>
-                </div>
-                <iframe id="preview"></iframe>
+            <div class="run-actions">
+                <button class="btn btn-primary" onclick="runCode()">
+                    <i>▶</i> Run
+                </button>
             </div>
         </div>
-        
-        <div class="controls">
-            <button id="runBtn">
-                <i>▶️</i> Run Code
-            </button>
-            <button id="clearBtn">
-                <i>🗑️</i> Clear All
-            </button>
-            <button id="previewFullscreenBtn">
-                <i>🖼️</i> Preview in Full Page
-            </button>
-            <button id="codeFullscreenBtn">
-                <i>💻</i> Code in Full Page
-            </button>
-            <button id="downloadBtn">
-                <i>💾</i> Download Code
-            </button>
-            <button id="backBtn" class="hidden">
-                <i>↩️</i> Back to Editor
-            </button>
+
+        <div class="workspace">
+            <div class="editor-container">
+                <span class="panel-label">Editor</span>
+                <textarea class="code-area" id="codeEditor" spellcheck="false" placeholder="// Select a file to edit..."></textarea>
+            </div>
+            <div class="preview-container">
+                <span class="panel-label" style="color:#000; opacity: 0.1;">Live Preview</span>
+                <iframe id="previewFrame"></iframe>
+            </div>
         </div>
-        <div class="status" id="status">Ready to code!</div>
-    </div>
-    
-    <div class="zen-elements">
-        <div class="zen-element" id="themeToggle">
-            <select id="themeSelector" style="background: transparent; border: none; color: var(--light); -webkit-appearance: none; -moz-appearance: none; appearance: none; text-align-last: center;">
-                <option value="material3-theme" style="color: black;">Material 3</option>
-                <option value="liquid-glass-theme" style="color: black;">Liquid Glass</option>
-                <option value="cozy-theme" style="color: black;">Cozy</option>
-                <option value="aurora-theme" style="color: black;">Aurora</option>
-            </select>
+
+        <div class="status-bar">
+            <span id="statusMsg">Ready</span>
+            <span id="fileInfo">No file selected</span>
         </div>
-        <div class="zen-element" id="fullscreenToggle">⛶</div>
     </div>
 
     <script>
-        // DOM Elements
-        const htmlCode = document.getElementById('htmlCode');
-        const cssCode = document.getElementById('cssCode');
-        const jsCode = document.getElementById('jsCode');
-        const preview = document.getElementById('preview');
-        const codeTabs = document.querySelectorAll('.code-tab');
-        const codeAreas = document.querySelectorAll('.code-area');
-        const runBtn = document.getElementById('runBtn');
-        const clearBtn = document.getElementById('clearBtn');
-        const themeSelector = document.getElementById('themeSelector');
-        const fullscreenToggle = document.getElementById('fullscreenToggle');
-        const previewFullscreenBtn = document.getElementById('previewFullscreenBtn');
-        const codeFullscreenBtn = document.getElementById('codeFullscreenBtn');
-        const waterEffect = document.getElementById('waterEffect');
-        const status = document.getElementById('status');
-        const codePanel = document.querySelector('.code-panel');
-        const previewPanel = document.querySelector('.preview-panel');
-        const editorContainer = document.querySelector('.editor-container');
-        const downloadBtn = document.getElementById('downloadBtn');
-        const backBtn = document.getElementById('backBtn');
-        
-        // --- Local Storage ---
-        
-        function saveCode() {
-            localStorage.setItem('cody_html_code', htmlCode.value);
-            localStorage.setItem('cody_css_code', cssCode.value);
-            localStorage.setItem('cody_js_code', jsCode.value);
+        // --- State Management ---
+        const defaultFiles = [
+            {
+                id: '1',
+                name: 'index.html',
+                language: 'html',
+                content: '<!DOCTYPE html>\n<html>\n<head>\n  <title>My App</title>\n  <link rel="stylesheet" href="style.css">\n</head>\n<body>\n  <div class="container">\n    <h1>Hello, Cody!</h1>\n    <p>Edit the files to see magic happen.</p>\n    <button id="btn">Click Me</button>\n  </div>\n  <script src="script.js"><\/script>\n</body>\n</html>'
+            },
+            {
+                id: '2',
+                name: 'style.css',
+                language: 'css',
+                content: 'body {\n  font-family: sans-serif;\n  background: #f0f2f5;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  height: 100vh;\n  margin: 0;\n}\n\n.container {\n  background: white;\n  padding: 2rem;\n  border-radius: 12px;\n  box-shadow: 0 4px 15px rgba(0,0,0,0.1);\n  text-align: center;\n}\n\nh1 {\n  color: #6c5ce7;\n}\n\nbutton {\n  background: #6c5ce7;\n  color: white;\n  border: none;\n  padding: 10px 20px;\n  border-radius: 6px;\n  cursor: pointer;\n  font-size: 1rem;\n  transition: 0.3s;\n}\n\nbutton:hover {\n  background: #5649c0;\n}'
+            },
+            {
+                id: '3',
+                name: 'script.js',
+                language: 'javascript',
+                content: 'document.getElementById("btn").addEventListener("click", () => {\n  alert("You clicked the button! 🚀");\n  document.body.style.backgroundColor = "#dfe6e9";\n});'
+            }
+        ];
+
+        let files = JSON.parse(localStorage.getItem('cody_pro_files')) || JSON.parse(JSON.stringify(defaultFiles));
+        let activeFileId = null;
+
+        // --- DOM Elements ---
+        const fileListEl = document.getElementById('fileList');
+        const tabsContainer = document.getElementById('tabsContainer');
+        const codeEditor = document.getElementById('codeEditor');
+        const previewFrame = document.getElementById('previewFrame');
+        const statusMsg = document.getElementById('statusMsg');
+        const fileInfo = document.getElementById('fileInfo');
+
+        // --- Initialization ---
+        function init() {
+            if(files.length > 0) {
+                setActiveFile(files[0].id);
+            }
+            renderUI();
+            
+            // Auto run on load after small delay
+            setTimeout(runCode, 500);
+
+            // Responsive toggle check
+            if(window.innerWidth <= 768) {
+                document.getElementById('menuToggle').style.display = 'block';
+            }
         }
-        
-        function loadCode() {
-            htmlCode.value = localStorage.getItem('cody_html_code') || `<!DOCTYPE html>
-<html>
-<head>
-    <title>My Page</title>
-</head>
-<body>
-    <h1>Hello, Cody!</h1>
-    <p>This is a sample HTML page.</p>
-    <button onclick="showMessage()">Click Me</button>
-    <div id="output"></div>
-</body>
-</html>`;
-            cssCode.value = localStorage.getItem('cody_css_code') || `body {
-    font-family: Arial, sans-serif;
-    text-align: center;
-    padding: 50px;
-    background: linear-gradient(135deg, #EADDFF, #B39DDB);
-    color: #333;
-}
-
-h1 {
-    color: #311B92;
-    margin-bottom: 20px;
-}
-
-button {
-    background-color: #6750A4;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 20px;
-    cursor: pointer;
-    font-size: 16px;
-    margin-top: 20px;
-}
-
-button:hover {
-    background-color: #533E85;
-}
-
-#output {
-    margin-top: 20px;
-    font-size: 18px;
-    font-weight: bold;
-}`;
-            jsCode.value = localStorage.getItem('cody_js_code') || `function showMessage() {
-    const output = document.getElementById('output');
-    output.innerHTML = 'Welcome to Cody Code Runner!';
-    output.style.color = '#B00020'; /* M3 Error Color */
-    
-    // Add a little animation
-    output.style.transform = 'scale(1.1)';
-    setTimeout(() => {
-        output.style.transform = 'scale(1)';
-    }, 300);
-}`;
-        }
-        
-        // --- Tab switching ---
-        
-        codeTabs.forEach(tab => {
-            tab.addEventListener('click', () => {
-                const tabName = tab.getAttribute('data-tab');
-                
-                // Update active tab
-                codeTabs.forEach(t => t.classList.remove('active'));
-                tab.classList.add('active');
-                
-                // Show corresponding code area
-                codeAreas.forEach(area => {
-                    area.classList.add('hidden');
-                    if (area.id === `${tabName}Code`) {
-                        area.classList.remove('hidden');
-                    }
-                });
-            });
-        });
 
         // --- Core Functions ---
 
-        function runCode() {
-            try {
-                const html = htmlCode.value;
-                const css = cssCode.value;
-                const js = jsCode.value;
+        function renderUI() {
+            renderFileList();
+            renderTabs();
+        }
+
+        function renderFileList() {
+            fileListEl.innerHTML = '';
+            files.forEach(file => {
+                const item = document.createElement('div');
+                item.className = `file-item ${file.id === activeFileId ? 'active' : ''}`;
+                item.onclick = () => setActiveFile(file.id);
                 
-                const fullHtml = `
-                    <!DOCTYPE html>
-                    <html>
-                    <head>
-                        <meta charset="UTF-8">
-                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                        <style>${css}</style>
-                    </head>
-                    <body>
-                        ${html}
-                        <script>
-                            try {
-                                ${js}
-                            } catch(e) {
-                                document.body.innerHTML = '<div style="color: red; padding: 20px; font-family: Arial;">JavaScript Error: ' + e.message + '</div>';
-                            }
-                        <\/script>
-                    </body>
-                    </html>
+                // Simple icon logic
+                let icon = '📄';
+                if(file.name.endsWith('.html')) icon = '🌐';
+                if(file.name.endsWith('.css')) icon = '🎨';
+                if(file.name.endsWith('.js')) icon = '⚡';
+                if(file.name.endsWith('.json')) icon = '📋';
+
+                item.innerHTML = `
+                    <span class="file-icon">${icon}</span>
+                    <span>${file.name}</span>
+                    ${file.id === activeFileId ? '<span style="margin-left:auto; font-size:10px;">●</span>' : ''}
                 `;
-                
-                preview.srcdoc = fullHtml;
-                status.textContent = "Code executed successfully!";
-                status.style.color = "#a8e6cf";
-            } catch (error) {
-                status.textContent = "Error: " + error.message;
-                status.style.color = "#ff8b94";
-                console.error("Code execution error:", error);
+                // Add right click to delete (simple implementation)
+                item.oncontextmenu = (e) => {
+                    e.preventDefault();
+                    if(confirm(`Delete ${file.name}?`)) deleteFile(file.id);
+                };
+                fileListEl.appendChild(item);
+            });
+        }
+
+        function renderTabs() {
+            tabsContainer.innerHTML = '';
+            files.forEach(file => {
+                // Ideally tabs only show open files, but for simplicity we show all files as tabs
+                const tab = document.createElement('div');
+                tab.className = `tab ${file.id === activeFileId ? 'active' : ''}`;
+                tab.onclick = () => setActiveFile(file.id);
+                tab.innerHTML = `
+                    ${file.name}
+                    ${files.length > 1 ? `<span class="tab-close" onclick="event.stopPropagation(); deleteFile('${file.id}')">×</span>` : ''}
+                `;
+                tabsContainer.appendChild(tab);
+            });
+        }
+
+        function setActiveFile(id) {
+            // Save current before switching
+            if(activeFileId) {
+                const currentFile = files.find(f => f.id === activeFileId);
+                if(currentFile) currentFile.content = codeEditor.value;
+            }
+
+            activeFileId = id;
+            const file = files.find(f => f.id === id);
+            
+            if (file) {
+                codeEditor.value = file.content;
+                fileInfo.textContent = `${file.language.toUpperCase()} • ${file.name}`;
+            } else {
+                codeEditor.value = '';
+            }
+
+            renderUI();
+            saveState();
+        }
+
+        function createNewFile() {
+            const name = prompt("Enter file name (e.g., about.html, style2.css):");
+            if (!name) return;
+
+            const ext = name.split('.').pop();
+            let lang = 'text';
+            if (ext === 'html') lang = 'html';
+            if (ext === 'css') lang = 'css';
+            if (ext === 'js') lang = 'javascript';
+
+            const newFile = {
+                id: Date.now().toString(),
+                name: name,
+                language: lang,
+                content: ''
+            };
+            files.push(newFile);
+            setActiveFile(newFile.id);
+        }
+
+        function deleteFile(id) {
+            if (files.length <= 1) {
+                alert("You must have at least one file.");
+                return;
+            }
+            files = files.filter(f => f.id !== id);
+            if (activeFileId === id) {
+                setActiveFile(files[0].id);
+            } else {
+                renderUI();
+                saveState();
             }
         }
 
-        function clearCode() {
-            if (confirm('Are you sure you want to clear all code?')) {
-                htmlCode.value = '';
-                cssCode.value = '';
-                jsCode.value = '';
-                saveCode();
-                
-                preview.srcdoc = '<html><body style="display: flex; align-items: center; justify-content: center; height: 100%; font-family: Arial;"><div>Preview will appear here</div></body></html>';
-                status.textContent = "All code cleared!";
-            }
-        }
+        // --- The "Smart Compiler" ---
         
-        function downloadCode() {
-            const zip = new JSZip();
-            zip.file("index.html", htmlCode.value);
-            zip.file("style.css", cssCode.value);
-            zip.file("script.js", jsCode.value);
+        function runCode() {
+            // Save current state first
+            const currentFile = files.find(f => f.id === activeFileId);
+            if(currentFile) currentFile.content = codeEditor.value;
+            saveState();
+
+            // Find index.html
+            const indexFile = files.find(f => f.name === 'index.html') || files.find(f => f.name.endsWith('.html'));
             
+            if (!indexFile) {
+                setStatus("Error: No .html file found to run.", true);
+                return;
+            }
+
+            setStatus("Compiling & Running...", false);
+
+            let finalHTML = indexFile.content;
+
+            // 1. Inject CSS
+            // Regex finds <link rel="stylesheet" href="style.css">
+            finalHTML = finalHTML.replace(/<link[^>]+href=["']([^"']+\.css)["'][^>]*>/g, (match, href) => {
+                const cssFile = files.find(f => f.name === href);
+                if (cssFile) {
+                    return `<style>/* Injected from ${href} */\n${cssFile.content}</style>`;
+                }
+                return match;
+            });
+
+            // 2. Inject JS
+            // Regex finds <script src="script.js"></script>
+            finalHTML = finalHTML.replace(/<script[^>]+src=["']([^"']+\.js)["'][^>]*><\/script>/g, (match, src) => {
+                const jsFile = files.find(f => f.name === src);
+                if (jsFile) {
+                    return `<script>/* Injected from ${src} */\ntry{\n${jsFile.content}\n}catch(e){console.error(e)}<\/script>`;
+                }
+                return match;
+            });
+
+            const blob = new Blob([finalHTML], { type: 'text/html' });
+            previewFrame.src = URL.createObjectURL(blob);
+            
+            setTimeout(() => setStatus("Ready", false), 1000);
+        }
+
+        // --- Data Sharing & Persistence ---
+
+        function saveState() {
+            localStorage.setItem('cody_pro_files', JSON.stringify(files));
+        }
+
+        function exportData() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(files));
+            const downloadAnchorNode = document.createElement('a');
+            downloadAnchorNode.setAttribute("href", dataStr);
+            downloadAnchorNode.setAttribute("download", "cody_project.json");
+            document.body.appendChild(downloadAnchorNode); // required for firefox
+            downloadAnchorNode.click();
+            downloadAnchorNode.remove();
+            setStatus("Project exported successfully!");
+        }
+
+        function triggerImport() {
+            document.getElementById('importInput').click();
+        }
+
+        function importData(input) {
+            const file = input.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const importedFiles = JSON.parse(e.target.result);
+                    if (Array.isArray(importedFiles)) {
+                        files = importedFiles;
+                        setActiveFile(files[0].id);
+                        runCode();
+                        setStatus("Project imported successfully!");
+                    } else {
+                        alert("Invalid file format.");
+                    }
+                } catch (err) {
+                    alert("Error reading file: " + err.message);
+                }
+            };
+            reader.readAsText(file);
+            input.value = ''; // Reset
+        }
+
+        function downloadZip() {
+            const zip = new JSZip();
+            files.forEach(file => {
+                zip.file(file.name, file.content);
+            });
             zip.generateAsync({type:"blob"}).then(function(content) {
                 const link = document.createElement('a');
                 link.href = URL.createObjectURL(content);
                 link.download = "cody-project.zip";
                 link.click();
+                setStatus("ZIP Downloaded!");
             });
         }
-        
-        // --- UI Functions ---
 
-        function changeTheme(theme) {
-            document.body.className = theme;
-        }
-
-        function toggleFullscreen() {
-            if (!document.fullscreenElement) {
-                document.documentElement.requestFullscreen();
-                fullscreenToggle.textContent = '⛶';
-            } else {
-                if (document.exitFullscreen) {
-                    document.exitFullscreen();
-                    fullscreenToggle.textContent = '⛶';
-                }
-            }
-        }
-        
-        function setFocusMode(mode) {
-            editorContainer.classList.remove('code-fullscreen', 'preview-fullscreen');
-            if (mode) {
-                editorContainer.classList.add(mode);
-                backBtn.classList.remove('hidden');
-                runBtn.classList.add('hidden');
-                clearBtn.classList.add('hidden');
-                previewFullscreenBtn.classList.add('hidden');
-                codeFullscreenBtn.classList.add('hidden');
-                downloadBtn.classList.add('hidden');
-            } else {
-                backBtn.classList.add('hidden');
-                runBtn.classList.remove('hidden');
-                clearBtn.classList.remove('hidden');
-                previewFullscreenBtn.classList.remove('hidden');
-                codeFullscreenBtn.classList.remove('hidden');
-                downloadBtn.classList.remove('hidden');
+        function clearProject() {
+            if(confirm("Are you sure? This deletes everything.")) {
+                files = JSON.parse(JSON.stringify(defaultFiles));
+                setActiveFile(files[0].id);
+                saveState();
+                runCode();
             }
         }
 
-        previewFullscreenBtn.addEventListener('click', () => setFocusMode('preview-fullscreen'));
-        codeFullscreenBtn.addEventListener('click', () => setFocusMode('code-fullscreen'));
-        backBtn.addEventListener('click', () => setFocusMode(null));
-        
-        // --- Water Effect ---
-
-        function createRipple() {
-            const ripple = document.createElement('div');
-            ripple.classList.add('ripple');
-            
-            const size = Math.random() * 100 + 50;
-            const x = Math.random() * 100;
-            const y = Math.random() * 100;
-            
-            ripple.style.width = `${size}px`;
-            ripple.style.height = `${size}px`;
-            ripple.style.left = `${x}%`;
-            ripple.style.top = `${y}%`;
-            ripple.style.animationDuration = `${Math.random() * 3 + 2}s`;
-            
-            waterEffect.appendChild(ripple);
-            
-            setTimeout(() => {
-                ripple.remove();
-            }, 3000);
+        // --- Helper ---
+        function setStatus(msg, isError = false) {
+            statusMsg.textContent = msg;
+            statusMsg.style.color = isError ? 'var(--danger)' : 'var(--text-muted)';
         }
 
-        // --- Event Listeners ---
+        function toggleSidebar() {
+            const sb = document.getElementById('sidebar');
+            sb.classList.toggle('open');
+        }
 
-        runBtn.addEventListener('click', runCode);
-        clearBtn.addEventListener('click', clearCode);
-        downloadBtn.addEventListener('click', downloadCode);
-        fullscreenToggle.addEventListener('click', toggleFullscreen);
-        themeSelector.addEventListener('change', (e) => changeTheme(e.target.value));
-
-        let timeout;
-        [htmlCode, cssCode, jsCode].forEach(editor => {
-            editor.addEventListener('input', () => {
-                clearTimeout(timeout);
-                timeout = setTimeout(() => {
-                    runCode();
-                    saveCode();
-                }, 1000);
-                status.textContent = "Typing...";
-                status.style.color = "#ffd3b6";
-            });
+        // Auto-save on typing
+        codeEditor.addEventListener('input', () => {
+            const currentFile = files.find(f => f.id === activeFileId);
+            if(currentFile) currentFile.content = codeEditor.value;
+            saveState();
         });
 
-        // --- Initialization ---
+        // Tab intent for textarea
+        codeEditor.addEventListener('keydown', function(e) {
+            if (e.key == 'Tab') {
+                e.preventDefault();
+                var start = this.selectionStart;
+                var end = this.selectionEnd;
+                this.value = this.value.substring(0, start) +
+                "  " + this.value.substring(end);
+                this.selectionStart = this.selectionEnd = start + 2;
+            }
+        });
 
-        loadCode();
-        
-        for (let i = 0; i < 5; i++) {
-            setTimeout(createRipple, i * 500);
-        }
+        // Start
+        init();
 
-        setInterval(createRipple, 2000);
-
-        preview.srcdoc = '<html><body style="display: flex; align-items: center; justify-content: center; height: 100%; font-family: Arial;"><div>Preview will appear here</div></body></html>';
-        
-        setTimeout(runCode, 500);
     </script>
 </body>
 </html>
-
 
 
